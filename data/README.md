@@ -11,6 +11,7 @@ The files are organized as follows:
 ## issues.tsv
 
 We've added two extra columns to the data provided by Github:
+
     - num_PR_created: counts the number of PR created before that issue/PR by
       the corresponding author.
     - num_issue_created: counts the number of issues created before that
