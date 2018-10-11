@@ -1,22 +1,23 @@
-# oss-community-health
+# Community Health of Open-Source Software
 
-Exploration of community health in open-source software communities developing on GitHub
+Exploration of community health in open-source software communities developing
+on GitHub.
 
 ## Data
 
-Download the data from the related OSF account and unzip it here.
+Data for this project were obtained through the GitHub API. For reproducibility,
+we provide access to the data as they existed at the time of our analysis. Data
+can be found in a zipped folder in our [OSF project](https://osf.io/6ncwt/). The
+files are organized in that folder as follows:
 
-The files are organized as follows:
-
-    - project_name/comments.tsv
-    - project_name/issues.tsv
-
-
-### issues.tsv
-
-We've added two extra columns to the data provided by Github:
-
-    - num_PR_created: counts the number of PR created before that issue/PR by
-      the corresponding author.
-    - num_issue_created: counts the number of issues created before that
-      issue/PR by the corresponding author.
+* `project_name`: Each project included in our experiment includes its own top-
+  directory, named according to the repository.
+  * `project_name/issues.tsv`: Includes tickets, issues, and pull requests made
+    on the project. In addition to the columns provided automatically by GitHub,
+    we have also created two additional columns:
+      * `num_PR_created`: the number of PR created before that issue/PR by that
+        user.
+      * `num_issue_created`: the number of issues created before that issue/PR
+        by the corresponding author.
+  * `project_name/comments.tsv`: Includes all comments made on the issues for
+    the project.
