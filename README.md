@@ -21,3 +21,15 @@ files are organized in that folder as follows:
         by the corresponding author.
   * `project_name/comments.tsv`: Includes all comments made on the issues for
     the project.
+
+## Sample
+
+Currently, our data include 8 projects:
+  * matplotlib
+  * mayavi
+  * numpy
+  * pandas
+  * scikit-image
+  * scikit-learn
+  * scipy
+  * sphinx-gallery
