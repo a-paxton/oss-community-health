@@ -1,7 +1,7 @@
 # Community Health of Open-Source Software
 
-Exploration of community health in open-source software communities developing
-on GitHub.
+This repository contains the code for our quantitative exploration of community
+health in open-source software communities developing on GitHub.
 
 ## Data
 
