@@ -63,7 +63,7 @@ def annotate_comments_tickets(comments, tickets):
 
     # identify whether the PR is closed
     tickets['is_closed'] = pd.notnull(tickets['closed_at'])
-    tmp = tickets["closed_ad"]
+    tmp = tickets["closed_at"]
     tmp[tmp.isnull()] = pd.to_datetime(datetime.now())
     tickets["open_duration"] = (
         pd.to_datetime(tmp) - pd.to_datetime(tickets["created_at"]))
