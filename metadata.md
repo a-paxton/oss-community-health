@@ -66,3 +66,9 @@ the new variables we create throughout the process.
       before this ticket
     * `was_updated`: Whether the ticket body was updated after posting
     * `is_closed`: Whether the ticket has been closed
+    * `open_duration`: Length of time the ticket has been opened
+      * If still open, returns the intervening time between when the ticket
+        was created
+      * We noted an error with GitHub's API that caused some tickets to say
+        that they were created in 1970. Tickets with this error return `NaN`
+        for this variable.
