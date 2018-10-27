@@ -4,10 +4,13 @@ def annotate_comments_tickets(comments, tickets):
     """
     Annotates comments and tickets with additional information
 
-    1. whether the comment was updated (0/1)
+    1. whether the body was updated (Boolean)
     2. the number of PRs and issues opened by the comment author at the time
-    of the comment posting
-    3. total number of comments on the ticket
+         of the comment posting
+    3. comment order (comment dataframe only)
+    4. identify whether ticket is closed (ticket dataframe only)
+
+    Requires: pandas
 
     Parameters
     ----------
