@@ -31,9 +31,6 @@ def annotate_comments_tickets(comments, tickets):
     # identify whether the body of comments or tickets were updated
     comments["was_updated"] = comments["created_at"] != comments["updated_at"]
     tickets["was_updated"] = tickets["created_at"] != tickets["updated_at"]
-    tickets["num_comments"] = [
-        sum(comments["ticket_id"] == ticket_id)
-        for ticket_id in tickets["ticket_id"]]
 
     # add number of PRs created by author to date
     num_PR_per_pers = [
