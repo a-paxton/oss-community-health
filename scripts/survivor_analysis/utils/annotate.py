@@ -1,3 +1,6 @@
+import pandas as pd
+import numpy as np
+from datetime import datetime
 
 
 def annotate_comments_tickets(comments, tickets):
@@ -31,9 +34,6 @@ def annotate_comments_tickets(comments, tickets):
     >> comments, tickets = utils.annotate_comments(comments, tickets)
     """
 
-    # import pandas
-    import pandas as pd
-
     # identify whether the body of comments or tickets were updated
     comments["was_updated"] = comments["created_at"] != comments["updated_at"]
     tickets["was_updated"] = tickets["created_at"] != tickets["updated_at"]
@@ -63,6 +63,13 @@ def annotate_comments_tickets(comments, tickets):
 
     # identify whether the PR is closed
     tickets['is_closed'] = pd.notnull(tickets['closed_at'])
-
+    tmp = tickets["closed_ad"]
+    tmp[tmp.isnull()] = pd.to_datetime(datetime.now())
+    tickets["open_duration"] = (
+        pd.to_datetime(tmp) - pd.to_datetime(tickets["created_at"]))
+    # Now we want to remove this estimate for anything created before 1970
+    m = [True if c.startswith("1970") else False
+         for c in tickets["created_at"]]
+    tickets[m]["open_duration"] = np.nan
     # return the dataframes
     return comments, tickets
