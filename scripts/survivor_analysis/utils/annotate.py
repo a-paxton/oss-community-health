@@ -49,4 +49,11 @@ def annotate_comments_tickets(comments, tickets):
         for created_at, author_id
         in zip(comments["created_at"], comments["author_id"])]
     comments["num_issue_created"] = num_issue_per_pers
+
+    # track the comment order
+    comments['comment_order'] = comments.sort_values(by=['created_at']) \
+                                        .groupby(by=['ticket_id']) \
+                                        .cumcount()
+
+    # return the dataframes
     return comments, tickets
