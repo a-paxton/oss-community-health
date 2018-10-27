@@ -27,12 +27,15 @@ def annotate_comments_tickets(comments, tickets):
     >> comments = pd.read_csv("data/numpy/comments.tsv", sep="\t")
     >> comments, tickets = utils.annotate_comments(comments, tickets)
     """
+
+    # identify whether the body of comments or tickets were updated
     comments["was_updated"] = comments["created_at"] != comments["updated_at"]
     tickets["was_updated"] = tickets["created_at"] != tickets["updated_at"]
     tickets["num_comments"] = [
         sum(comments["ticket_id"] == ticket_id)
         for ticket_id in tickets["ticket_id"]]
 
+    # add number of PRs created by author to date
     num_PR_per_pers = [
         sum((tickets["created_at"] < created_at) &
             (tickets["type"] == "pull_request") &
@@ -41,6 +44,7 @@ def annotate_comments_tickets(comments, tickets):
         in zip(comments["created_at"], comments["author_id"])]
     comments["num_PR_created"] = num_PR_per_pers
 
+    # add number of issues created by author to date
     num_issue_per_pers = [
         sum((tickets["created_at"] < created_at) &
             (tickets["type"] == "issue") &
