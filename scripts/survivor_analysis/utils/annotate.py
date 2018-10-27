@@ -55,5 +55,8 @@ def annotate_comments_tickets(comments, tickets):
                                         .groupby(by=['ticket_id']) \
                                         .cumcount()
 
+    # identify whether the PR is closed
+    tickets['is_closed'] = pd.notnull(tickets['closed_at'])
+
     # return the dataframes
     return comments, tickets
