@@ -8,7 +8,7 @@ def annotate_comments_tickets(comments, tickets):
     2. the number of PRs and issues opened by the comment author at the time
          of the comment posting
     3. comment order (comment dataframe only)
-    4. identify whether ticket is closed (ticket dataframe only)
+    4. identify whether ticket is closed (Boolean; ticket dataframe only)
 
     Requires: pandas
 
