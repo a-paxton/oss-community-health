@@ -28,6 +28,9 @@ def annotate_comments_tickets(comments, tickets):
     >> comments, tickets = utils.annotate_comments(comments, tickets)
     """
 
+    # import pandas
+    import pandas as pd
+
     # identify whether the body of comments or tickets were updated
     comments["was_updated"] = comments["created_at"] != comments["updated_at"]
     tickets["was_updated"] = tickets["created_at"] != tickets["updated_at"]
