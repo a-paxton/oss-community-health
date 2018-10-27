@@ -1,0 +1,51 @@
+
+
+def annotate_comments_tickets(comments, tickets):
+    """
+    Annotates comments and tickets with additional information
+
+    1. whether the comment was updated (0/1)
+    2. the number of PRs and issues opened by the comment author at the time
+    of the comment posting
+    3. total number of comments on the ticket
+
+    Parameters
+    ----------
+    comments : pd.DataFrame
+
+    tickets : pd.DataFrame
+
+    Returns
+    -------
+    The same dataframe, but with additional columns
+
+    Examples
+    --------
+    >> import pandas as pd
+    >> import utils
+    >> tickets = pd.read_csv("data/numpy/issues.tsv", sep="\t")
+    >> comments = pd.read_csv("data/numpy/comments.tsv", sep="\t")
+    >> comments, tickets = utils.annotate_comments(comments, tickets)
+    """
+    comments["was_updated"] = comments["created_at"] != comments["updated_at"]
+    tickets["was_updated"] = tickets["created_at"] != tickets["updated_at"]
+    tickets["num_comments"] = [
+        sum(comments["ticket_id"] == ticket_id)
+        for ticket_id in tickets["ticket_id"]]
+
+    num_PR_per_pers = [
+        sum((tickets["created_at"] < created_at) &
+            (tickets["type"] == "pull_request") &
+            (tickets["author_id"] == author_id))
+        for created_at, author_id
+        in zip(comments["created_at"], comments["author_id"])]
+    comments["num_PR_created"] = num_PR_per_pers
+
+    num_issue_per_pers = [
+        sum((tickets["created_at"] < created_at) &
+            (tickets["type"] == "issue") &
+            (tickets["author_id"] == author_id))
+        for created_at, author_id
+        in zip(comments["created_at"], comments["author_id"])]
+    comments["num_issue_created"] = num_issue_per_pers
+    return comments, tickets
