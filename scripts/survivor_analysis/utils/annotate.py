@@ -73,3 +73,61 @@ def annotate_comments_tickets(comments, tickets):
     tickets[m]["open_duration"] = np.nan
     # return the dataframes
     return comments, tickets
+
+
+def comment_cleanup(comments, bot_list):
+    """
+    Prepare comment dataframe for text analysis:
+
+    1. Remove quoted text
+    2. Strip newlines
+    3. Count and remove code blocks
+    4. Identify other users referenced in body
+    5. Flag whether the author was a bot
+
+    Requires: pandas
+
+    Parameters
+    ----------
+    comments : pd.DataFrame, ideally annotated with `annotate_comments_tickets()`
+    
+    bot_list : list or pd.Series of bot usernames to be ignored
+
+    Returns
+    -------
+    The same dataframe, but with cleaned body text and new columns
+    (code_blocks , referenced_users , bot_flag)
+
+    Examples
+    --------
+    >> import pandas as pd
+    >> import utils
+    >> comments = pd.read_csv("data/numpy/comments.tsv", sep="\t")
+    >> comments, tickets = utils.annotate.annotate_comments(comments, tickets)
+    >> comments = utils.comment_cleanup(comments, bot_list_df)
+    """
+    
+    # remove text quotes
+    comments['body'] = (comments['body']
+                              .replace("(^|\n|\r)+\>.*(?=\n|$)", " ",
+                                       regex = True))
+    
+    # remove newlines
+    comments['body'] = (comments['body']
+                              .replace("(\n|\r)+", " ",
+                                       regex = True))
+    
+    # count and then remove code blocks
+    comments['code_blocks'] = comments['body'].str.count("\`{3}")/2
+    comments['body'] = (comments['body']
+                              .replace("\`{3}.*\`{3}", " ",
+                                       regex = True))
+    
+    # identify other humans
+    comments['referenced_users'] = comments['body'].str.findall('@\w{1,}')
+
+    # identify bots
+    comments['bot_flag'] = comments['author_name'].isin(bot_list)
+    
+    # return our dataframe
+    return comments
