@@ -72,3 +72,9 @@ the new variables we create throughout the process.
       * We noted an error with GitHub's API that caused some tickets to say
         that they were created in 1970. Tickets with this error return `NaN`
         for this variable.
+* Created in `oss_community-sentiment_analysis_preparation.ipynb`
+  * `comments_df`
+    * Calculated from `body` variable
+      * `code_blocks`: Number of code blocks in comment body
+      * `referenced_users`: List of users referenced in comment body
+      * `bot_flag`: whether comment was created by a bot or not (Boolean)
