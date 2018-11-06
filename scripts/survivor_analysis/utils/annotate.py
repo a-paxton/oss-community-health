@@ -177,10 +177,10 @@ def add_sentiment(comments):
     
     # split the emotion output dictionary into new columns
     # (thanks to https://stackoverflow.com/a/13053267 for partial solution)
-    comments['negative'] = sentiment_df[0].str.split(': ').str[-1].astype(float)
-    comments['neutral'] = sentiment_df[1].str.split(': ').str[-1].astype(float)
-    comments['positive'] = sentiment_df[2].str.split(': ').str[-1].astype(float)
-    comments['compound'] = sentiment_df[3].str.split(': ').str[-1].astype(float)
+    comments['negative_emotion'] = sentiment_df[0].str.split(': ').str[-1].astype(float)
+    comments['neutral_emotion'] = sentiment_df[1].str.split(': ').str[-1].astype(float)
+    comments['positive_emotion'] = sentiment_df[2].str.split(': ').str[-1].astype(float)
+    comments['compound_emotion'] = sentiment_df[3].str.split(': ').str[-1].astype(float)
     
     # return our dataframe
     return comments
