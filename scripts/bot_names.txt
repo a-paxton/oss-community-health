@@ -1,0 +1,4 @@
+bot_name
+codecov-io
+meeseeksbox
+travisbot
