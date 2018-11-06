@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from datetime import datetime
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 
 def annotate_comments_tickets(comments, tickets):
@@ -128,6 +129,58 @@ def comment_cleanup(comments, bot_list):
 
     # identify bots
     comments['bot_flag'] = comments['author_name'].isin(bot_list)
+    
+    # return our dataframe
+    return comments
+
+
+def add_sentiment(comments):
+    """
+    Add sentiment analysis scores to comments dataframe:
+    * negative emotion
+    * positive emotion
+    * neutral emotion
+    * compound emotion
+   
+    Requires: pandas , vaderSentiment
+    
+    For more on vaderSentiment, see https://github.com/cjhutto/vaderSentiment
+
+    Parameters
+    ----------
+    comments : pd.DataFrame, ideally after `annotate_comments_tickets()` and
+        `comment_cleanup()`
+
+    Returns
+    -------
+    The same dataframe but with new sentiment columns
+
+    Examples
+    --------
+    >> import pandas as pd
+    >> import utils
+    >> comments = pd.read_csv("data/numpy/comments.tsv", sep="\t")
+    >> comments, tickets = utils.annotate.annotate_comments(comments, tickets)
+    >> comments = utils.comment_cleanup(comments, bot_list_df)
+    >> sentiment_df = utils.add_sentiment(comments)
+    """
+
+    # initialize sentiment analyzer
+    analyser = SentimentIntensityAnalyzer()
+
+    # run sentiment analyzer over each comment body
+    sentiment_df = (comments['body']
+                        .apply(analyser.polarity_scores)
+                        .astype(str)
+                        .str.strip('{}')
+                        .str.split(', ', expand=True))
+    
+    # split the emotion output dictionary into new columns
+    # (thanks to https://stackoverflow.com/a/13053267 for partial solution)
+    comments['negative'] = sentiment_df[0].str.split(': ').str[-1].astype(float)
+    comments['neutral'] = sentiment_df[1].str.split(': ').str[-1].astype(float)
+    comments['positive'] = sentiment_df[2].str.split(': ').str[-1].astype(float)
+    comments['compound'] = sentiment_df[3].str.split(': ').str[-1].astype(float)
     
     # return our dataframe
     return comments
