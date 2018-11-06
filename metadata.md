@@ -51,30 +51,36 @@ the new variables we create throughout the process.
 
 ## Calculated variables
 
-* Created with `annotate_comments_tickets.py`
-  * `comments_df`
-    * `num_PR_created`: Number of pull requests created by the commenter before
-      this comment
-    * `num_issue_created`: Number of issues created by the commenter before
-      this comment
-    * `was_updated`: Whether the comment body was updated after posting
-    * `comment_order`: The index of the comment within the ticket
-  * `issues_df`
-    * `num_PR_created`: Number of pull requests created by the ticket creator
-      before this ticket
-    * `num_issue_created`: Number of issues created by the ticket creator
-      before this ticket
-    * `was_updated`: Whether the ticket body was updated after posting
-    * `is_closed`: Whether the ticket has been closed
-    * `open_duration`: Length of time the ticket has been opened
-      * If still open, returns the intervening time between when the ticket
-        was created
-      * We noted an error with GitHub's API that caused some tickets to say
-        that they were created in 1970. Tickets with this error return `NaN`
-        for this variable.
-* Created in `oss_community-sentiment_analysis_preparation.ipynb`
-  * `comments_df`
-    * Calculated from `body` variable
-      * `code_blocks`: Number of code blocks in comment body
-      * `referenced_users`: List of users referenced in comment body
-      * `bot_flag`: whether comment was created by a bot or not (Boolean)
+* Created with functions in `scripts/survivor_analysis/utils/annotate.py`
+    * Created with `annotate_comments_tickets()`
+      * `comments_df`
+        * `num_PR_created`: Number of pull requests created by the commenter before
+          this comment
+        * `num_issue_created`: Number of issues created by the commenter before
+          this comment
+        * `was_updated`: Whether the comment body was updated after posting
+        * `comment_order`: The index of the comment within the ticket
+      * `issues_df`
+        * `num_PR_created`: Number of pull requests created by the ticket creator
+          before this ticket
+        * `num_issue_created`: Number of issues created by the ticket creator
+          before this ticket
+        * `was_updated`: Whether the ticket body was updated after posting
+        * `is_closed`: Whether the ticket has been closed
+        * `open_duration`: Length of time the ticket has been opened
+          * If still open, returns the intervening time between when the ticket
+            was created
+          * We noted an error with GitHub's API that caused some tickets to say
+            that they were created in 1970. Tickets with this error return `NaN`
+            for this variable.
+    * Created with `comment_cleanup()`
+      * `comments_df`
+        * `code_blocks`: Number of code blocks in comment body
+        * `referenced_users`: List of users referenced in comment body
+        * `bot_flag`: Whether comment was created by a bot or not (Boolean)
+    * Created with `add_sentiment()`
+      * `comments_df`
+        * `negative_emotion`: Proportion of negative emotion words to total words in comment body
+        * `positive_emotion`: Proportion of positive emotion words to total words in comment body
+        * `neutral_emotion`: Proportion of neutral emotion words to total words in comment body
+        * `compound_emotion`: Compound emotion score from -1 (negative) to +1 (positive)
