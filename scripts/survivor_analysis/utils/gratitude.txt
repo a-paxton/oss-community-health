@@ -1,7 +1,6 @@
 expressions_of_gratitude
 thank
 thanks
-thank you
 thankful
 appreciate
 appreciated
@@ -9,4 +8,4 @@ appreciative
 grateful
 gratitude
 indebted
-much obliged
+obliged

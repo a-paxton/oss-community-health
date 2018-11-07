@@ -209,7 +209,8 @@ def add_gratitude(comments, grateful_list):
     comments : pd.DataFrame, ideally after `annotate_logs()` and `body_cleanup()`;
         can be run with either comments df or issues/tickets df
         
-    grateful_list : list or pd.Series of words to identify
+    grateful_list : list or pd.Series of gratitude words to identify; currently works
+        only with grateful unigrams
 
     Returns
     -------
