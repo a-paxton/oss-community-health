@@ -242,7 +242,7 @@ def add_gratitude(comments, grateful_list):
                                                      if k in grateful_list]))
     
     # remove the columns we don't need anymore
-    comments.drop(columns=['tokenized', 'word_count'])
+    comments = comments.drop(columns=['tokenized', 'word_count'])
     
     # spit back our dataframe now
     return comments
