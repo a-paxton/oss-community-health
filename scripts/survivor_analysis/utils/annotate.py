@@ -167,6 +167,10 @@ def add_sentiment(comments):
 
     # initialize sentiment analyzer
     analyser = SentimentIntensityAnalyzer()
+    
+    
+    # remove NaNs
+    comments['body'] = comments['body'].replace(np.nan, ' ', regex=True)
 
     # run sentiment analyzer over each comment body
     sentiment_df = (comments['body']
