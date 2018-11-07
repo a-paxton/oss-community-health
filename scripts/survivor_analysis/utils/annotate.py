@@ -94,7 +94,8 @@ def body_cleanup(comments, bot_list):
 
     Parameters
     ----------
-    comments : pd.DataFrame, ideally annotated with `annotate_logs()`
+    comments : pd.DataFrame, ideally annotated with `annotate_logs()`;
+        can be run with either comments df or issues/tickets df
     
     bot_list : list or pd.Series of bot usernames to be ignored
 
@@ -152,8 +153,8 @@ def add_sentiment(comments):
 
     Parameters
     ----------
-    comments : pd.DataFrame, ideally after `annotate_logs()` and
-        `body_cleanup()`
+    comments : pd.DataFrame, ideally after `annotate_logs()` and `body_cleanup()`; 
+        can be run with either comments df or issues/tickets df
 
     Returns
     -------
@@ -205,8 +206,8 @@ def add_gratitude(comments, grateful_list):
 
     Parameters
     ----------
-    comments : pd.DataFrame, ideally after `annotate_logs()` and
-        `body_cleanup()`
+    comments : pd.DataFrame, ideally after `annotate_logs()` and `body_cleanup()`;
+        can be run with either comments df or issues/tickets df
         
     grateful_list : list or pd.Series of words to identify
 
