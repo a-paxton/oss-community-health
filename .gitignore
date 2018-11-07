@@ -3,3 +3,4 @@ __pycache__
 images
 *.swp
 *checkpoint.ipynb
+*.ipynb_checkpoints/
