@@ -6,10 +6,10 @@ from nltk.tokenize import RegexpTokenizer
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 
-def annotate_comments_tickets(comments, tickets):
+def annotate_logs(comments, tickets):
     """
-    Annotates comments and tickets with additional information
-
+    Annotates comments and tickets with additional information:
+    
     1. whether the body was updated (Boolean)
     2. the number of PRs and issues opened by the comment author at the time
          of the comment posting
@@ -34,7 +34,7 @@ def annotate_comments_tickets(comments, tickets):
     >> import utils
     >> tickets = pd.read_csv("data/numpy/issues.tsv", sep="\t")
     >> comments = pd.read_csv("data/numpy/comments.tsv", sep="\t")
-    >> comments, tickets = utils.annotate_comments(comments, tickets)
+    >> comments, tickets = utils.annotate_logs(comments, tickets)
     """
 
     # identify whether the body of comments or tickets were updated
@@ -92,7 +92,7 @@ def body_cleanup(comments, bot_list):
 
     Parameters
     ----------
-    comments : pd.DataFrame, ideally annotated with `annotate_comments_tickets()`
+    comments : pd.DataFrame, ideally annotated with `annotate_logs()`
     
     bot_list : list or pd.Series of bot usernames to be ignored
 
@@ -106,7 +106,7 @@ def body_cleanup(comments, bot_list):
     >> import pandas as pd
     >> import utils
     >> comments = pd.read_csv("data/numpy/comments.tsv", sep="\t")
-    >> comments, tickets = utils.annotate.annotate_comments(comments, tickets)
+    >> comments, tickets = utils.annotate.annotate_logs(comments, tickets)
     >> comments = utils.annotate.body_cleanup(comments, bot_list_df)
     """
     
@@ -150,7 +150,7 @@ def add_sentiment(comments):
 
     Parameters
     ----------
-    comments : pd.DataFrame, ideally after `annotate_comments_tickets()` and
+    comments : pd.DataFrame, ideally after `annotate_logs()` and
         `body_cleanup()`
 
     Returns
@@ -162,7 +162,7 @@ def add_sentiment(comments):
     >> import pandas as pd
     >> import utils
     >> comments = pd.read_csv("data/numpy/comments.tsv", sep="\t")
-    >> comments, tickets = utils.annotate.annotate_comments(comments, tickets)
+    >> comments, tickets = utils.annotate.annotate_logs(comments, tickets)
     >> comments = utils.annotate.body_cleanup(comments, bot_list_df)
     >> comments = utils.annotate.add_sentiment(comments)
     """
@@ -203,7 +203,7 @@ def add_gratitude(comments, grateful_list):
 
     Parameters
     ----------
-    comments : pd.DataFrame, ideally after `annotate_comments_tickets()` and
+    comments : pd.DataFrame, ideally after `annotate_logs()` and
         `body_cleanup()`
         
     grateful_list : list or pd.Series of words to identify
@@ -217,7 +217,7 @@ def add_gratitude(comments, grateful_list):
     >> import pandas as pd
     >> import utils
     >> comments = pd.read_csv("data/numpy/comments.tsv", sep="\t")
-    >> comments, tickets = utils.annotate.annotate_comments(comments, tickets)
+    >> comments, tickets = utils.annotate.annotate_logs(comments, tickets)
     >> comments = utils.annotate.body_cleanup(comments, bot_list_df)
     >> comments = utils.annotate.add_gratitude(comments)
     """
