@@ -70,10 +70,12 @@ def annotate_logs(comments, tickets):
     tmp[tmp.isnull()] = pd.to_datetime(datetime.now())
     tickets["open_duration"] = (
         pd.to_datetime(tmp) - pd.to_datetime(tickets["created_at"]))
+    
     # Now we want to remove this estimate for anything created before 1970
     m = [True if c.startswith("1970") else False
          for c in tickets["created_at"]]
     tickets[m]["open_duration"] = np.nan
+    
     # return the dataframes
     return comments, tickets
 
