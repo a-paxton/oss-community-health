@@ -234,7 +234,7 @@ def add_gratitude(comments, grateful_list):
     # count words if they're in our grateful list
     comments['grateful_count'] = (comments['word_count']
                                    .apply(lambda x: np.sum([v for k, v in x.items() 
-                                                            if k in gratitude_list])))
+                                                            if k in grateful_list])))
 
     # let us know which ones were used
     comments['grateful_list'] = (comments['word_count']
