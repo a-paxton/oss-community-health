@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
+from collections import Counter
 from datetime import datetime
+from nltk.tokenize import RegexpTokenizer
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 
@@ -115,7 +117,7 @@ def comment_cleanup(comments, bot_list):
     
     # remove newlines
     comments['body'] = (comments['body']
-                              .replace("(\n|\r)+", " ",
+                              .replace("[\n\r]+", " ",
                                        regex = True))
     
     # count and then remove code blocks
@@ -162,12 +164,11 @@ def add_sentiment(comments):
     >> comments = pd.read_csv("data/numpy/comments.tsv", sep="\t")
     >> comments, tickets = utils.annotate.annotate_comments(comments, tickets)
     >> comments = utils.comment_cleanup(comments, bot_list_df)
-    >> sentiment_df = utils.add_sentiment(comments)
+    >> comments = utils.add_sentiment(comments)
     """
 
     # initialize sentiment analyzer
     analyser = SentimentIntensityAnalyzer()
-    
     
     # remove NaNs
     comments['body'] = comments['body'].replace(np.nan, ' ', regex=True)
@@ -188,3 +189,50 @@ def add_sentiment(comments):
     
     # return our dataframe
     return comments
+
+
+def add_gratitude(comments, grateful_list):
+    """
+    Track expressions of gratitude:
+    * overall counts
+    * specific words
+
+    Thanks to https://stackoverflow.com/a/47686394
+
+    Requires: pandas , nltk , collections
+
+    Parameters
+    ----------
+    comments : pd.DataFrame, ideally after `annotate_comments_tickets()` and
+        `comment_cleanup()`
+        
+    grateful_list : list or pd.Series of words to identify
+
+    Returns
+    -------
+    The same dataframe but with new gratitude columns
+
+    Examples
+    --------
+    >> import pandas as pd
+    >> import utils
+    >> comments = pd.read_csv("data/numpy/comments.tsv", sep="\t")
+    >> comments, tickets = utils.annotate.annotate_comments(comments, tickets)
+    >> comments = utils.comment_cleanup(comments, bot_list_df)
+    >> comments = utils.add_sentiment(comments)
+    """
+
+    # tokenize and count words
+    tokenizer = RegexpTokenizer(r'\w+')
+    comment['tokenized'] = comment['body'].apply(str.lower).apply(tokenizer.tokenize)
+    comment['word_count'] = comment['tokenized'].apply(lambda x: Counter(x))
+    
+    # count words if they're in our grateful list
+    comment_df['grateful_count'] = (comment_df['word_count']
+                                   .apply(lambda x: np.sum([v for k, v in x.items() 
+                                                            if k in gratitude_list])))
+
+    # let us know which ones were used
+    comment['grateful_list'] = (comment['word_count']
+                                   .apply(lambda x: [k for k in x 
+                                                     if k in grateful_list]))
