@@ -78,9 +78,9 @@ def annotate_comments_tickets(comments, tickets):
     return comments, tickets
 
 
-def comment_cleanup(comments, bot_list):
+def body_cleanup(comments, bot_list):
     """
-    Prepare comment dataframe for text analysis:
+    Prepare comment or issue dataframe for text analysis:
 
     1. Remove quoted text
     2. Strip newlines
@@ -107,7 +107,7 @@ def comment_cleanup(comments, bot_list):
     >> import utils
     >> comments = pd.read_csv("data/numpy/comments.tsv", sep="\t")
     >> comments, tickets = utils.annotate.annotate_comments(comments, tickets)
-    >> comments = utils.comment_cleanup(comments, bot_list_df)
+    >> comments = utils.annotate.body_cleanup(comments, bot_list_df)
     """
     
     # remove text quotes
@@ -151,7 +151,7 @@ def add_sentiment(comments):
     Parameters
     ----------
     comments : pd.DataFrame, ideally after `annotate_comments_tickets()` and
-        `comment_cleanup()`
+        `body_cleanup()`
 
     Returns
     -------
@@ -163,8 +163,8 @@ def add_sentiment(comments):
     >> import utils
     >> comments = pd.read_csv("data/numpy/comments.tsv", sep="\t")
     >> comments, tickets = utils.annotate.annotate_comments(comments, tickets)
-    >> comments = utils.comment_cleanup(comments, bot_list_df)
-    >> comments = utils.add_sentiment(comments)
+    >> comments = utils.annotate.body_cleanup(comments, bot_list_df)
+    >> comments = utils.annotate.add_sentiment(comments)
     """
 
     # initialize sentiment analyzer
@@ -204,7 +204,7 @@ def add_gratitude(comments, grateful_list):
     Parameters
     ----------
     comments : pd.DataFrame, ideally after `annotate_comments_tickets()` and
-        `comment_cleanup()`
+        `body_cleanup()`
         
     grateful_list : list or pd.Series of words to identify
 
@@ -218,8 +218,8 @@ def add_gratitude(comments, grateful_list):
     >> import utils
     >> comments = pd.read_csv("data/numpy/comments.tsv", sep="\t")
     >> comments, tickets = utils.annotate.annotate_comments(comments, tickets)
-    >> comments = utils.comment_cleanup(comments, bot_list_df)
-    >> comments = utils.add_sentiment(comments)
+    >> comments = utils.annotate.body_cleanup(comments, bot_list_df)
+    >> comments = utils.annotate.add_gratitude(comments)
     """
 
     # tokenize and count words
