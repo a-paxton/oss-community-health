@@ -53,14 +53,14 @@ the new variables we create throughout the process.
 
 * Created with functions in `scripts/survivor_analysis/utils/annotate.py`
     * Created with `annotate_comments_tickets()`
-      * `comments_df`
+      * `comments` dataframe
         * `num_PR_created`: Number of pull requests created by the commenter before
           this comment
         * `num_issue_created`: Number of issues created by the commenter before
           this comment
         * `was_updated`: Whether the comment body was updated after posting
         * `comment_order`: The index of the comment within the ticket
-      * `issues_df`
+      * `issues` dataframe
         * `num_PR_created`: Number of pull requests created by the ticket creator
           before this ticket
         * `num_issue_created`: Number of issues created by the ticket creator
@@ -74,12 +74,12 @@ the new variables we create throughout the process.
             that they were created in 1970. Tickets with this error return `NaN`
             for this variable.
     * Created with `comment_cleanup()`
-      * `comments_df`
+      * `comments` and `issues` dataframes
         * `code_blocks`: Number of code blocks in comment body
         * `referenced_users`: List of users referenced in comment body
         * `bot_flag`: Whether comment was created by a bot or not (Boolean)
-    * Created with `add_sentiment()`
-      * `comments_df`
+    * Created with `add_sentiment()` 
+      * `comments` and `issues` dataframes
         * `negative_emotion`: Proportion of negative emotion words to total words in comment body
         * `positive_emotion`: Proportion of positive emotion words to total words in comment body
         * `neutral_emotion`: Proportion of neutral emotion words to total words in comment body
