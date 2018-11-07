@@ -228,15 +228,15 @@ def add_gratitude(comments, grateful_list):
 
     # tokenize and count words
     tokenizer = RegexpTokenizer(r'\w+')
-    comment['tokenized'] = comment['body'].apply(str.lower).apply(tokenizer.tokenize)
-    comment['word_count'] = comment['tokenized'].apply(lambda x: Counter(x))
+    comments['tokenized'] = comments['body'].apply(str.lower).apply(tokenizer.tokenize)
+    comments['word_count'] = comments['tokenized'].apply(lambda x: Counter(x))
     
     # count words if they're in our grateful list
-    comment_df['grateful_count'] = (comment_df['word_count']
+    comments['grateful_count'] = (comments['word_count']
                                    .apply(lambda x: np.sum([v for k, v in x.items() 
                                                             if k in gratitude_list])))
 
     # let us know which ones were used
-    comment['grateful_list'] = (comment['word_count']
+    comments['grateful_list'] = (comments['word_count']
                                    .apply(lambda x: [k for k in x 
                                                      if k in grateful_list]))
