@@ -41,7 +41,7 @@ def annotate_logs(comments, tickets):
     comments["was_updated"] = comments["created_at"] != comments["updated_at"]
     tickets["was_updated"] = tickets["created_at"] != tickets["updated_at"]
 
-    # add number of PRs created by author to date
+    # comments df: add number of PRs created by author to date
     num_PR_per_pers = [
         sum((tickets["created_at"] < created_at) &
             (tickets["type"] == "pull_request") &
@@ -49,8 +49,17 @@ def annotate_logs(comments, tickets):
         for created_at, author_id
         in zip(comments["created_at"], comments["author_id"])]
     comments["num_PR_created"] = num_PR_per_pers
+    
+    # issues df: add number of PRs created by author to date
+    num_PR_per_pers = [
+        sum((tickets["created_at"] < created_at) &
+            (tickets["type"] == "pull_request") &
+            (tickets["author_id"] == author_id))
+        for created_at, author_id
+        in zip(tickets["created_at"], tickets["author_id"])]
+    tickets["num_PR_created"] = num_PR_per_pers
 
-    # add number of issues created by author to date
+    # comments df: add number of issues created by author to date
     num_issue_per_pers = [
         sum((tickets["created_at"] < created_at) &
             (tickets["type"] == "issue") &
@@ -58,6 +67,15 @@ def annotate_logs(comments, tickets):
         for created_at, author_id
         in zip(comments["created_at"], comments["author_id"])]
     comments["num_issue_created"] = num_issue_per_pers
+    
+    # tickets df: add number of issues created by author to date
+    num_issue_per_pers = [
+        sum((tickets["created_at"] < created_at) &
+            (tickets["type"] == "issue") &
+            (tickets["author_id"] == author_id))
+        for created_at, author_id
+        in zip(tickets["created_at"], tickets["author_id"])]
+    tickets["num_issue_created"] = num_issue_per_pers    
 
     # track the comment order
     comments['comment_order'] = comments.sort_values(by=['created_at']) \
