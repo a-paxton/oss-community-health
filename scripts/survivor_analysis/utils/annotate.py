@@ -9,7 +9,7 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 def annotate_logs(comments, tickets):
     """
     Annotates comments and tickets with additional information:
-    
+
     1. whether the body was updated (Boolean)
     2. the number of PRs and issues opened by the comment author at the time
          of the comment posting
@@ -88,12 +88,12 @@ def annotate_logs(comments, tickets):
     tmp[tmp.isnull()] = pd.to_datetime(datetime.now())
     tickets["open_duration"] = (
         pd.to_datetime(tmp) - pd.to_datetime(tickets["created_at"]))
-    
+
     # Now we want to remove this estimate for anything created before 1970
     m = [True if c.startswith("1970") else False
          for c in tickets["created_at"]]
     tickets[m]["open_duration"] = np.nan
-    
+
     # return the dataframes
     return comments, tickets
 
@@ -114,7 +114,7 @@ def body_cleanup(comments, bot_list):
     ----------
     comments : pd.DataFrame, ideally annotated with `annotate_logs()`;
         can be run with either comments df or issues/tickets df
-    
+
     bot_list : list or pd.Series of bot usernames to be ignored
 
     Returns
@@ -130,29 +130,26 @@ def body_cleanup(comments, bot_list):
     >> comments, tickets = utils.annotate.annotate_logs(comments, tickets)
     >> comments = utils.annotate.body_cleanup(comments, bot_list_df)
     """
-    
+
     # remove text quotes
-    comments['body'] = (comments['body']
-                              .replace("(^|\n|\r)+\>.*(?=\n|$)", " ",
-                                       regex = True))
-    
+    comments['body'] = (comments['body'].replace(
+        "(^|\n|\r)+\>.*(?=\n|$)", " ",
+        regex=True))
+
     # remove newlines
-    comments['body'] = (comments['body']
-                              .replace("[\n\r]+", " ",
-                                       regex = True))
-    
+    comments['body'] = (comments['body'].replace(
+        "[\n\r]+", " ", regex=True))
+
     # count and then remove code blocks
     comments['code_blocks'] = comments['body'].str.count("\`{3}")/2
-    comments['body'] = (comments['body']
-                              .replace("\`{3}.*\`{3}", " ",
-                                       regex = True))
-    
+    comments['body'] = (comments['body'].replace(
+        "\`{3}.*\`{3}", " ", regex=True))
+
     # identify other humans
     comments['referenced_users'] = comments['body'].str.findall('@\w{1,}')
 
     # identify bots
     comments['bot_flag'] = comments['author_name'].isin(bot_list)
-    
     # return our dataframe
     return comments
 
@@ -164,14 +161,15 @@ def add_sentiment(comments):
     * positive emotion
     * neutral emotion
     * compound emotion
-   
+
     Requires: pandas , vaderSentiment
-    
+
     For more on vaderSentiment, see https://github.com/cjhutto/vaderSentiment
 
     Parameters
     ----------
-    comments : pd.DataFrame, ideally after `annotate_logs()` and `body_cleanup()`; 
+    comments : pd.DataFrame
+        ideally after `annotate_logs()` and `body_cleanup()`;
         can be run with either comments df or issues/tickets df
 
     Returns
@@ -190,24 +188,29 @@ def add_sentiment(comments):
 
     # initialize sentiment analyzer
     analyser = SentimentIntensityAnalyzer()
-    
+
     # remove NaNs
     comments['body'] = comments['body'].replace(np.nan, ' ', regex=True)
 
     # run sentiment analyzer over each comment body
-    sentiment_df = (comments['body']
-                        .apply(analyser.polarity_scores)
-                        .astype(str)
-                        .str.strip('{}')
-                        .str.split(', ', expand=True))
-    
+    sentiment_df = (
+        comments['body']
+        .apply(analyser.polarity_scores)
+        .astype(str)
+        .str.strip('{}')
+        .str.split(', ', expand=True))
+
     # split the emotion output dictionary into new columns
     # (thanks to https://stackoverflow.com/a/13053267 for partial solution)
-    comments['negative_emotion'] = sentiment_df[0].str.split(': ').str[-1].astype(float)
-    comments['neutral_emotion'] = sentiment_df[1].str.split(': ').str[-1].astype(float)
-    comments['positive_emotion'] = sentiment_df[2].str.split(': ').str[-1].astype(float)
-    comments['compound_emotion'] = sentiment_df[3].str.split(': ').str[-1].astype(float)
-    
+    comments['negative_emotion'] = sentiment_df[0].str.split(
+        ': ').str[-1].astype(float)
+    comments['neutral_emotion'] = sentiment_df[1].str.split(
+        ': ').str[-1].astype(float)
+    comments['positive_emotion'] = sentiment_df[2].str.split(
+        ': ').str[-1].astype(float)
+    comments['compound_emotion'] = sentiment_df[3].str.split(
+        ': ').str[-1].astype(float)
+
     # return our dataframe
     return comments
 
@@ -224,11 +227,12 @@ def add_gratitude(comments, grateful_list):
 
     Parameters
     ----------
-    comments : pd.DataFrame, ideally after `annotate_logs()` and `body_cleanup()`;
+    comments : pd.DataFrame
+        ideally after `annotate_logs()` and `body_cleanup()`;
         can be run with either comments df or issues/tickets df
-        
-    grateful_list : list or pd.Series of gratitude words to identify; currently works
-        only with grateful unigrams
+
+    grateful_list : list or pd.Series of gratitude words to identify;
+        currently works only with grateful unigrams
 
     Returns
     -------
@@ -246,21 +250,23 @@ def add_gratitude(comments, grateful_list):
 
     # tokenize and count words
     tokenizer = RegexpTokenizer(r'\w+')
-    comments['tokenized'] = comments['body'].apply(str.lower).apply(tokenizer.tokenize)
+    comments['tokenized'] = comments['body'].apply(
+        str.lower).apply(tokenizer.tokenize)
     comments['word_count'] = comments['tokenized'].apply(lambda x: Counter(x))
-    
+
     # count words if they're in our grateful list
-    comments['grateful_count'] = (comments['word_count']
-                                   .apply(lambda x: np.sum([v for k, v in x.items() 
-                                                            if k in grateful_list])))
+    comments['grateful_count'] = (
+        comments['word_count'].apply(
+            lambda x: np.sum([v for k, v in x.items()
+                              if k in grateful_list])))
 
     # let us know which ones were used
-    comments['grateful_list'] = (comments['word_count']
-                                   .apply(lambda x: [k for k in x 
-                                                     if k in grateful_list]))
-    
+    comments['grateful_list'] = (
+        comments['word_count'].apply(
+            lambda x: [k for k in x if k in grateful_list]))
+
     # remove the columns we don't need anymore
     comments = comments.drop(columns=['tokenized', 'word_count'])
-    
+
     # spit back our dataframe now
     return comments
