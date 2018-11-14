@@ -31,7 +31,7 @@ open_duration[open_duration > 200] = 200
 fig, ax = plt.subplots()
 ax.hist(open_duration, color="#000000", bins=100)
 visualization.format_ax(ax)
-ax.set_xlabel("Number of days before a ticket is closed",
+ax.set_xlabel("Number of days before a ticket is closed (capped at 200)",
               fontweight="bold", fontsize="small")
 ax.set_ylabel("Number of tickets", fontweight="bold", fontsize="small")
 ax.set_title(project, fontweight="bold")

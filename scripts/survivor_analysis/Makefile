@@ -1,8 +1,8 @@
 
-ISSUES = $(wildcard data/*/issues.tsv)
-HISTOGRAM_CONTRIBUTORS = $(patsubst data/%/issues.tsv, images/%/histogram_pull_request_pre_contributor.png, $(ISSUES))
-HISTOGRAM_OPEN_DURATION = $(patsubst data/%/issues.tsv, images/%/histogram_duration_open_pullrequest.png, $(ISSUES)) \
-			  $(patsubst data/%/issues.tsv, images/%/histogram_duration_open_tickets.png, $(ISSUES)) \
+ISSUES = $(wildcard data/raw_data/*/issues.tsv)
+HISTOGRAM_CONTRIBUTORS = $(patsubst data/raw_data/%/issues.tsv, images/%/histogram_pull_request_pre_contributor.png, $(ISSUES))
+HISTOGRAM_OPEN_DURATION = $(patsubst data/raw_data/%/issues.tsv, images/%/histogram_duration_open_pullrequest.png, $(ISSUES)) \
+			  $(patsubst data/raw_data/%/issues.tsv, images/%/histogram_duration_open_tickets.png, $(ISSUES)) \
 
 GLOBAL_IMAGES = images/survival_plot_all_projects.png \
 		images/proportion_survival_at_2PR.png \

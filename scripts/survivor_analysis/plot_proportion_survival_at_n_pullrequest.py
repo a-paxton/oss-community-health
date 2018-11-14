@@ -15,7 +15,7 @@ args = parser.parse_args()
 outname = args.outname
 num_pull_request = args.n_pull_request
 
-filenames = glob("data/*/issues.tsv")
+filenames = glob("data/raw_data/*/issues.tsv")
 
 fig, ax = plt.subplots()
 labels = []
