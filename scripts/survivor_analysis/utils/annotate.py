@@ -49,7 +49,7 @@ def annotate_logs(comments, tickets):
         for created_at, author_id
         in zip(comments["created_at"], comments["author_id"])]
     comments["num_PR_created"] = num_PR_per_pers
-    
+
     # issues df: add number of PRs created by author to date
     num_PR_per_pers = [
         sum((tickets["created_at"] < created_at) &
@@ -67,7 +67,7 @@ def annotate_logs(comments, tickets):
         for created_at, author_id
         in zip(comments["created_at"], comments["author_id"])]
     comments["num_issue_created"] = num_issue_per_pers
-    
+
     # tickets df: add number of issues created by author to date
     num_issue_per_pers = [
         sum((tickets["created_at"] < created_at) &
@@ -75,7 +75,7 @@ def annotate_logs(comments, tickets):
             (tickets["author_id"] == author_id))
         for created_at, author_id
         in zip(tickets["created_at"], tickets["author_id"])]
-    tickets["num_issue_created"] = num_issue_per_pers    
+    tickets["num_issue_created"] = num_issue_per_pers
 
     # track the comment order
     comments['comment_order'] = comments.sort_values(by=['created_at']) \
@@ -93,6 +93,15 @@ def annotate_logs(comments, tickets):
     m = [True if c.startswith("1970") else False
          for c in tickets["created_at"]]
     tickets[m]["open_duration"] = np.nan
+
+    # For each comment, get the information on when the corresponding ticket
+    # has been opened when it is available (comments can also be added to
+    # commits)
+    tickets.set_index("ticket_id", inplace=True)
+    comments["ticket_created_at"] = tickets.loc[
+        comments["ticket_id"]]["created_at"].values
+    # Reset the old index
+    tickets.set_index("id", inplace=True)
 
     # return the dataframes
     return comments, tickets

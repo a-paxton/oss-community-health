@@ -26,7 +26,7 @@ for i, filename in enumerate(filenames):
     project = filename.split("/")[2].split("_")[0]
 
     commits = pd.read_csv(filename, sep="\t", keep_default_na=False)
-    bus_factor = project_features.compute_bus_factor(commits) 
+    bus_factor = project_features.compute_bus_factor(commits)
     labels.append(project)
     ax.bar([i],
            [bus_factor],
