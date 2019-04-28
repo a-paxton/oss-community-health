@@ -3,5 +3,4 @@ codecov-io
 meeseeksbox
 travisbot
 scipy-gitbot
-i3robot
 LindonAtChannelRobot
