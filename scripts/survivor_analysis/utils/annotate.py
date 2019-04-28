@@ -101,7 +101,7 @@ def annotate_logs(comments, tickets):
     comments["ticket_created_at"] = tickets.loc[
         comments["ticket_id"]]["created_at"].values
     # Reset the old index
-    tickets.set_index("id", inplace=True)
+    tickets.set_index("id", inplace=True, drop=False)
 
     # return the dataframes
     return comments, tickets
