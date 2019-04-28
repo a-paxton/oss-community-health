@@ -2,3 +2,6 @@ bot_name
 codecov-io
 meeseeksbox
 travisbot
+scipy-gitbot
+i3robot
+LindonAtChannelRobot
