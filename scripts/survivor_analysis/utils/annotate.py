@@ -97,7 +97,7 @@ def annotate_logs(comments, tickets):
     # For each comment, get the information on when the corresponding ticket
     # has been opened when it is available (comments can also be added to
     # commits)
-    tickets.set_index("ticket_id", inplace=True)
+    tickets.set_index("ticket_id", inplace=True, drop=False)
     comments["ticket_created_at"] = tickets.loc[
         comments["ticket_id"]]["created_at"].values
     # Reset the old index
