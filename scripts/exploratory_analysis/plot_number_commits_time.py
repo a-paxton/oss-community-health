@@ -21,15 +21,17 @@ commits.set_index("date", inplace=True)
 commits = commits.resample(
     '3M').sum().replace(np.nan, 0).astype(int)
 
-fig, ax = plt.subplots(figsize=(12, 6))
+fig, ax = plt.subplots(figsize=(6, 3), tight_layout=True)
 ax.bar(np.arange(commits.shape[0]), commits["total"], color="black")
 ax.set_xticks(np.arange(0, len(commits), 4))
 ax.set_xticklabels(
-    commits.index.strftime("%b %Y")[::4], rotation=45,
+    commits.index.strftime("%Y")[::4], rotation=45,
     horizontalalignment="right",
     fontsize="small")
-ax.set_title(project, fontweight="bold")
-ax.set_ylabel("Number of commits")
+ax.set_title("%s (Commits)" % (project, ), fontweight="bold")
+ax.set_ylabel("Number of commits", fontweight="bold")
+ax.spines["right"].set_linewidth(0)
+ax.spines["top"].set_linewidth(0)
 
 if outname is not None:
     try:

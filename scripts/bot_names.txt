@@ -3,4 +3,6 @@ codecov-io
 meeseeksbox
 travisbot
 scipy-gitbot
+coveralls
+sklearn-lgtm
 LindonAtChannelRobot
