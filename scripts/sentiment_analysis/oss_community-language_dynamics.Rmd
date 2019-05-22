@@ -287,24 +287,25 @@ sentiment_plot = ggplot(data=sentiment_frame,
            colour=type)) +
   stat_summary(fun.y=mean, geom="point", size=2) + 
   stat_summary(fun.data = mean_se, geom = "errorbar") +
-  coord_cartesian(ylim=c(.05,.25)) +
+  coord_cartesian(ylim=c(0,.4)) +
   ggtitle('Message sentiment by contribution\nand community membership') +
   ylab('Sentiment score') +
   xlab('Community membership') +
   labs(color='Contribution type') +
   scale_color_manual(labels = c("Comment", "Issue"), 
-                     values = c("darkgreen", "orange"))
+                     values = c("darkgreen", "orange")) +
+  facet_grid(. ~ project)
 
 # plot a full-size version
 ggsave(plot = sentiment_plot,
        height = 4,
-       width = 5,
+       width = 10,
        filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution.jpg')
 
 # plot a smaller one for knitr
 ggsave(plot = sentiment_plot,
        height = 4,
-       width = 5,
+       width = 10,
        dpi = 150,
        filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution-knitr.jpg')
 
@@ -363,7 +364,8 @@ sentiment_time_member_plot = ggplot(data=member_frame,
                                 2018)) +
   labs(color='Contribution type') +
   scale_color_manual(labels = c("Comment", "Issue"), 
-                     values = c("darkgreen", "orange"))
+                     values = c("darkgreen", "orange")) +
+  facet_grid(. ~ project)
 
 # nonmembership plot
 sentiment_time_nonmember_plot = ggplot(data=nonmember_frame,
@@ -384,7 +386,8 @@ sentiment_time_nonmember_plot = ggplot(data=nonmember_frame,
                                 2018)) +
   labs(color='Contribution type') +
   scale_color_manual(labels = c("Comment", "Issue"), 
-                     values = c("darkgreen", "orange"))
+                     values = c("darkgreen", "orange")) +
+  facet_grid(. ~ project)
 
 # create another nonmember plot just for the legend
 sentiment_time_nonmember_legend = ggplot(data=nonmember_frame,
@@ -399,7 +402,8 @@ sentiment_time_nonmember_legend = ggplot(data=nonmember_frame,
   xlab('Date') +
   labs(color='Contribution type') +
   scale_color_manual(labels = c("Comment", "Issue"), 
-                     values = c("darkgreen", "orange"))
+                     values = c("darkgreen", "orange")) +
+  facet_grid(. ~ project)
 
 # create a master legend
 master_legend = gtable_filter(ggplot_gtable(
@@ -409,28 +413,29 @@ master_legend = gtable_filter(ggplot_gtable(
 
 # save full version
 ggsave(filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time.jpg',
-       units = "in", height = 4, width = 5,
+       units = "in", height = 8, width = 12,
        grid.arrange(
          top=grid::textGrob("Message sentiment by contribution\nand community membership",
                       gp=grid::gpar(fontsize=14)),
          sentiment_time_member_plot,
          sentiment_time_nonmember_plot,
          bottom=master_legend,
-         ncol = 2
+         ncol = 1,
+         nrow = 2
        ))
 
 # save smaller version for knitr
 ggsave(filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-knitr.jpg',
-       dpi = 150, height = 4, width = 5,
+       dpi = 150, height = 8, width = 12,
        grid.arrange(
          top=grid::textGrob("Message sentiment by contribution\nand community membership",
                       gp=grid::gpar(fontsize=14)),
          sentiment_time_member_plot,
          sentiment_time_nonmember_plot,
          bottom=master_legend,
-         ncol = 2
+         ncol = 1,
+         nrow = 2
        ))
-
 
 ```
 ![**Figure**. Sentiment over time by contribution type (issue vs. comment) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-knitr.jpg)
@@ -477,18 +482,19 @@ grateful_plot = ggplot(data=sentiment_frame,
   xlab('Community membership') +
   labs(color='Contribution type') +
   scale_color_manual(labels = c("Comment", "Issue"), 
-                     values = c("darkgreen", "orange"))
+                     values = c("darkgreen", "orange")) +
+  facet_grid(. ~ project)
 
 # save full version
 ggsave(plot = grateful_plot,
        height = 4,
-       width = 5,
+       width = 10,
        filename = '../../figures/sentiment_analysis/ossc-grateful_membership_contribution.jpg')
 
 # save smaller version for knitr
 ggsave(plot = grateful_plot,
        height = 4,
-       width = 5,
+       width = 10,
        dpi = 150,
        filename = '../../figures/sentiment_analysis/ossc-grateful_membership_contribution-knitr.jpg')
 
@@ -538,7 +544,8 @@ gratitude_time_member_plot = ggplot(data=member_frame,
                                 2018)) +
   labs(color='Contribution type') +
   scale_color_manual(labels = c("Comment", "Issue"), 
-                     values = c("darkgreen", "orange"))
+                     values = c("darkgreen", "orange")) +
+  facet_grid(. ~ project)
 
 # nonmembership plot
 gratitude_time_nonmember_plot = ggplot(data=nonmember_frame,
@@ -559,7 +566,8 @@ gratitude_time_nonmember_plot = ggplot(data=nonmember_frame,
                                 2018)) +
   labs(color='Contribution type') +
   scale_color_manual(labels = c("Comment", "Issue"), 
-                     values = c("darkgreen", "orange"))
+                     values = c("darkgreen", "orange")) +
+  facet_grid(. ~ project)
 
 # create another nonmember plot just for the legend
 gratitude_time_nonmember_legend = ggplot(data=nonmember_frame,
@@ -574,7 +582,8 @@ gratitude_time_nonmember_legend = ggplot(data=nonmember_frame,
   xlab('Date') +
   labs(color='Contribution type') +
   scale_color_manual(labels = c("Comment", "Issue"), 
-                     values = c("darkgreen", "orange"))
+                     values = c("darkgreen", "orange")) +
+  facet_grid(. ~ project)
 
 # create a master legend
 gratitude_master_legend = gtable_filter(ggplot_gtable(
@@ -584,26 +593,28 @@ gratitude_master_legend = gtable_filter(ggplot_gtable(
 
 # save full version
 ggsave(filename = '../../figures/sentiment_analysis/ossc-gratitude_membership_contribution_time.jpg',
-       units = "in", height = 4, width = 5,
+       units = "in", height = 8, width = 12,
        grid.arrange(
          top=grid::textGrob("Gratitude by contribution\nand community membership",
                       gp=grid::gpar(fontsize=14)),
          gratitude_time_member_plot,
          gratitude_time_nonmember_plot,
          bottom=gratitude_master_legend,
-         ncol = 2
+         ncol = 1,
+         nrow = 2
        ))
 
 # save smaller version for knitr
 ggsave(filename = '../../figures/sentiment_analysis/ossc-gratitude_membership_contribution_time-knitr.jpg',
-       dpi = 150, height = 4, width = 5,
+       dpi = 150, height = 8, width = 12,
        grid.arrange(
          top=grid::textGrob("Gratitude by contribution\nand community membership",
                       gp=grid::gpar(fontsize=14)),
          gratitude_time_member_plot,
          gratitude_time_nonmember_plot,
          bottom=gratitude_master_legend,
-         ncol = 2
+         ncol = 1,
+         nrow = 2
        ))
 
 ```
