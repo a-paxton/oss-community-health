@@ -18,7 +18,7 @@ To run this from scratch, you will need the following files:
 
 **Code written by**: A. Paxton (University of Connecticut)
 
-**Date last modified**: 28 April 2019
+**Date last modified**: 22 May 2019
 
 ***
 
@@ -107,87 +107,14 @@ joined_frame = joined_frame %>% ungroup() %>%
 # Basic summary stats
 
 
-```r
-unique_commenters = as.character(unique(joined_frame$author_name_comment))
-unique_issuers = as.character(unique(joined_frame$author_name_issue))
-unique_users = as.character(unique(append(unique_commenters, unique_issuers)))
-
-print(paste0("Unique commenters included: ", length(unique_commenters)))
-```
-
-```
-## [1] "Unique commenters included: 5944"
-```
-
-```r
-print(paste0("Unique issue-creators included: ", length(unique_issuers)))
-```
-
-```
-## [1] "Unique issue-creators included: 7019"
-```
-
-```r
-print(paste0("Unique users included: ", length(unique_users)))
-```
-
-```
-## [1] "Unique users included: 8659"
-```
 
 
-```r
-activity_counts = joined_frame %>% ungroup() %>%
-  dplyr::select(project, id_issue) %>%
-  distinct() %>%
-  group_by(project) %>%
-  summarize(unique_issues = n())
 
-print(paste0("Unique projects included: ", dim(activity_counts)[1]))
-```
+Our dataset includes 8 unique projects with a total of 33752 unique issues, with a mean of 4219 issues per project.
 
-```
-## [1] "Unique projects included: 8"
-```
+On these issues, the dataset includes 210014 unique comments, with `mean(comment_counts$unique_comments)` average comments per issue.
 
-```r
-print(paste0("Unique issues included: ", sum(activity_counts$unique_issues)))
-```
-
-```
-## [1] "Unique issues included: 33822"
-```
-
-```r
-print(paste0("Mean issues per project: ", mean(activity_counts$unique_issues)))
-```
-
-```
-## [1] "Mean issues per project: 4227.75"
-```
-
-```r
-comment_counts = joined_frame %>% ungroup() %>%
-  dplyr::select(project, id_issue, id_comment) %>%
-  distinct() %>%
-  group_by(project, id_issue) %>%
-  summarize(unique_comments = n())
-
-print(paste0("Unique comments included: ", sum(comment_counts$unique_comments)))
-```
-
-```
-## [1] "Unique comments included: 213904"
-```
-
-```r
-print(paste0("Mean comments per issue: ", mean(comment_counts$unique_comments)))
-```
-
-```
-## [1] "Mean comments per issue: 6.32440423393058"
-```
-
+In total, we have 5942 unique commenters, 7016 unique issue-creators, and 8654 overall unique users.
 
 ***
 
@@ -335,10 +262,10 @@ pander_lme(creators_v_commenters_emotion)
 
 |               &nbsp;                | Estimate  | Std..Error | t.value |   p    | sig |
 |:-----------------------------------:|:---------:|:----------:|:-------:|:------:|:---:|
-|           **(Intercept)**           |   0.209   |  0.009478  |  22.05  | 0.0001 | *** |
-|            **typeissue**            |  -0.1144  |  0.002959  | -38.66  | 0.0001 | *** |
-|      **author_groupnonmember**      | -0.009759 |  0.005565  | -1.754  |  0.08  |  .  |
-| **typeissue:author_groupnonmember** | -0.008198 |  0.006424  | -1.276  | 0.202  |     |
+|           **(Intercept)**           |   0.209   |  0.009345  |  22.37  | 0.0001 | *** |
+|            **typeissue**            |  -0.1143  |  0.002984  |  -38.3  | 0.0001 | *** |
+|      **author_groupnonmember**      | -0.009831 |  0.005574  | -1.764  | 0.078  |  .  |
+| **typeissue:author_groupnonmember** | -0.00866  |  0.006467  | -1.339  |  0.18  |     |
 
 These results are quite different from our results conducted
 over a smaller dataset last year. One potential reason is
@@ -366,16 +293,16 @@ pander_lme(creators_v_commenters_emotion_time)
 
 
 
-|                  &nbsp;                  | Estimate  | Std..Error | t.value |   p    | sig |
-|:----------------------------------------:|:---------:|:----------:|:-------:|:------:|:---:|
-|             **(Intercept)**              |   6.031   |   1.544    |  3.907  | 0.0001 | *** |
-|              **typeissue**               |  -15.81   |   3.197    | -4.946  | 0.0001 | *** |
-|        **author_groupnonmember**         |  -3.855   |   4.529    | -0.8512 |  0.4   |     |
-|                 **date**                 | -0.00289  |  0.000766  | -3.773  | 0.0002 | *** |
-|   **typeissue:author_groupnonmember**    |   2.697   |   6.989    | 0.3859  |  0.7   |     |
-|            **typeissue:date**            | 0.007792  |  0.001587  |  4.91   | 0.0001 | *** |
-|      **author_groupnonmember:date**      | 0.001909  |  0.002248  | 0.8493  |  0.4   |     |
-| **typeissue:author_groupnonmember:date** | -0.001344 |  0.003469  | -0.3874 |  0.7   |     |
+|                  &nbsp;                  |  Estimate  | Std..Error | t.value |   p    | sig |
+|:----------------------------------------:|:----------:|:----------:|:-------:|:------:|:---:|
+|             **(Intercept)**              |   6.115    |   1.555    |  3.931  | 0.0001 | *** |
+|              **typeissue**               |   -15.65   |   3.219    | -4.863  | 0.0001 | *** |
+|        **author_groupnonmember**         |   1.088    |   4.572    |  0.238  |  0.81  |     |
+|                 **date**                 | -0.002931  | 0.0007719  | -3.798  | 0.0001 | *** |
+|   **typeissue:author_groupnonmember**    |   -1.112   |   7.042    | -0.158  |  0.87  |     |
+|            **typeissue:date**            |  0.007713  |  0.001598  |  4.827  | 0.0001 | *** |
+|      **author_groupnonmember:date**      | -0.0005443 |  0.002269  | -0.2399 |  0.81  |     |
+| **typeissue:author_groupnonmember:date** | 0.0005466  |  0.003495  | 0.1564  |  0.88  |     |
 
 Interestingly, we see much more volatility here in the emotion dynamics
 of community members relative to the community nonmembers over time, even
@@ -406,7 +333,7 @@ pander(gratitude_summary_stats)
 --------------------------------------------------
  author_group    type     grateful_count     n    
 -------------- --------- ---------------- --------
-    member      comment         0          169740 
+    member      comment         0          169737 
 
     member      comment         1          20471  
 
@@ -416,7 +343,7 @@ pander(gratitude_summary_stats)
 
     member      comment         4            1    
 
-    member       issue          0          24201  
+    member       issue          0          24133  
 
     member       issue          1           654   
 
@@ -424,15 +351,15 @@ pander(gratitude_summary_stats)
 
     member       issue          3            3    
 
-  nonmember     comment         0          19342  
+  nonmember     comment         0          15457  
 
-  nonmember     comment         1           3438  
+  nonmember     comment         1           3436  
 
   nonmember     comment         2           263   
 
   nonmember     comment         3            18   
 
-  nonmember      issue          0           8049  
+  nonmember      issue          0           8047  
 
   nonmember      issue          1           834   
 
@@ -465,30 +392,30 @@ summary(creators_v_commenters_gratitude)
 ##    Data: sentiment_frame
 ## 
 ##      AIC      BIC   logLik deviance df.resid 
-## 164849.8 164901.9 -82419.9 164839.8   247721 
+## 164768.8 164820.8 -82379.4 164758.8   243761 
 ## 
 ## Scaled residuals: 
 ##     Min      1Q  Median      3Q     Max 
-## -1.1026 -0.3827 -0.2623 -0.2147 21.6055 
+## -1.0991 -0.3827 -0.2663 -0.2148 16.6547 
 ## 
 ## Random effects:
 ##  Groups      Name        Variance  Std.Dev.
-##  author_name (Intercept) 0.6756950 0.82201 
-##  project     (Intercept) 0.0008876 0.02979 
-## Number of obs: 247726, groups:  author_name, 8659; project, 8
+##  author_name (Intercept) 0.6503609 0.80645 
+##  project     (Intercept) 0.0009403 0.03066 
+## Number of obs: 243766, groups:  author_name, 8654; project, 8
 ## 
 ## Fixed effects:
 ##                       Estimate Std. Error z value            Pr(>|z|)    
-## (Intercept)           -2.07941    0.02984  -69.69 <0.0000000000000002 ***
-## author_groupnonmember  0.42951    0.03144   13.66 <0.0000000000000002 ***
-## typeissue             -1.13937    0.02670  -42.67 <0.0000000000000002 ***
+## (Intercept)           -2.07462    0.02978  -69.66 <0.0000000000000002 ***
+## author_groupnonmember  0.43539    0.03130   13.91 <0.0000000000000002 ***
+## typeissue             -1.13669    0.02670  -42.57 <0.0000000000000002 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
 ## Correlation of Fixed Effects:
 ##             (Intr) athr_g
-## athr_grpnnm -0.633       
-## typeissue   -0.121 -0.031
+## athr_grpnnm -0.631       
+## typeissue   -0.127 -0.027
 ```
 
 
@@ -510,7 +437,7 @@ creators_v_commenters_gratitude_time = glmer(grateful_count ~ (author_group + ty
 
 ```
 ## Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl =
-## control$checkConv, : Model failed to converge with max|grad| = 7.51619 (tol
+## control$checkConv, : Model failed to converge with max|grad| = 4.72115 (tol
 ## = 0.001, component 1)
 ```
 
@@ -533,44 +460,44 @@ summary(creators_v_commenters_gratitude_time)
 ##    Data: sentiment_frame
 ## 
 ##      AIC      BIC   logLik deviance df.resid 
-## 173819.5 173892.4 -86902.7 173805.5   247719 
+## 171913.5 171986.3 -85949.7 171899.5   243759 
 ## 
 ## Scaled residuals: 
 ##     Min      1Q  Median      3Q     Max 
-## -0.5644 -0.3491 -0.3125 -0.2967 15.3012 
+## -0.6255 -0.3566 -0.3072 -0.2881 16.4522 
 ## 
 ## Random effects:
 ##  Groups  Name        Variance Std.Dev.
-##  project (Intercept) 0.06152  0.248   
-## Number of obs: 247726, groups:  project, 8
+##  project (Intercept) 0.06638  0.2576  
+## Number of obs: 243766, groups:  project, 8
 ## 
 ## Fixed effects:
 ##                               Estimate  Std. Error z value
-## (Intercept)                  2.0959917   0.2807653   7.465
-## author_groupnonmember      -28.1058157   0.3224714 -87.158
-## typeissue                   10.6622147   0.2565953  41.553
-## date                        -0.0021032   0.0001461 -14.400
-## author_groupnonmember:date   0.0141934   0.0001603  88.545
-## typeissue:date              -0.0057770   0.0001283 -45.038
-##                                        Pr(>|z|)    
-## (Intercept)                  0.0000000000000831 ***
-## author_groupnonmember      < 0.0000000000000002 ***
-## typeissue                  < 0.0000000000000002 ***
-## date                       < 0.0000000000000002 ***
-## author_groupnonmember:date < 0.0000000000000002 ***
-## typeissue:date             < 0.0000000000000002 ***
+## (Intercept)                  4.1752430   0.2471912   16.89
+## author_groupnonmember       57.8282774   0.2157337  268.05
+## typeissue                  -10.9232492   0.3072801  -35.55
+## date                        -0.0031389   0.0001308  -24.00
+## author_groupnonmember:date  -0.0283526   0.0001074 -263.97
+## typeissue:date               0.0048998   0.0001534   31.94
+##                                       Pr(>|z|)    
+## (Intercept)                <0.0000000000000002 ***
+## author_groupnonmember      <0.0000000000000002 ***
+## typeissue                  <0.0000000000000002 ***
+## date                       <0.0000000000000002 ***
+## author_groupnonmember:date <0.0000000000000002 ***
+## typeissue:date             <0.0000000000000002 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
 ## Correlation of Fixed Effects:
 ##             (Intr) athr_g typess date   athr_:
-## athr_grpnnm -0.161                            
-## typeissue    0.098 -0.013                     
-## date        -0.954  0.154 -0.093              
-## athr_grpnn:  0.161 -0.999  0.013 -0.155       
-## typeissu:dt -0.098  0.013 -0.995  0.093 -0.014
+## athr_grpnnm  0.023                            
+## typeissue    0.200 -0.075                     
+## date        -0.938 -0.021 -0.187              
+## athr_grpnn: -0.023 -0.997  0.076  0.020       
+## typeissu:dt -0.200  0.075 -0.997  0.187 -0.077
 ## convergence code: 0
-## Model failed to converge with max|grad| = 7.51619 (tol = 0.001, component 1)
+## Model failed to converge with max|grad| = 4.72115 (tol = 0.001, component 1)
 ## Model is nearly unidentifiable: very large eigenvalue
 ##  - Rescale variables?
 ## Model is nearly unidentifiable: large eigenvalue ratio
@@ -627,24 +554,24 @@ summary(dropout_predictors)
 ##    Data: retention_frame_st
 ## 
 ##      AIC      BIC   logLik deviance df.resid 
-##  37688.6  37747.6 -18837.3  37674.6    33815 
+##  37622.3  37681.3 -18804.1  37608.3    33745 
 ## 
 ## Scaled residuals: 
 ##     Min      1Q  Median      3Q     Max 
-## -1.3660 -0.6014 -0.5420  1.1181  2.5233 
+## -1.3626 -0.6016 -0.5466  1.1200  2.5238 
 ## 
 ## Random effects:
 ##  Groups  Name                   Variance Std.Dev. Corr 
-##  project (Intercept)            0.15801  0.3975        
-##          grateful_count_comment 0.02353  0.1534   -0.62
-## Number of obs: 33822, groups:  project, 8
+##  project (Intercept)            0.15874  0.3984        
+##          grateful_count_comment 0.02572  0.1604   -0.62
+## Number of obs: 33752, groups:  project, 8
 ## 
 ## Fixed effects:
-##                        Estimate Std. Error z value             Pr(>|z|)
-## (Intercept)            -1.06137    0.14241  -7.453   0.0000000000000913
-## compound_emotion       -0.00167    0.01260  -0.133              0.89458
-## grateful_count_comment  0.18625    0.05748   3.240              0.00119
-## open_time               0.15448    0.01199  12.889 < 0.0000000000000002
+##                         Estimate Std. Error z value             Pr(>|z|)
+## (Intercept)            -1.058779   0.142562  -7.427    0.000000000000111
+## compound_emotion       -0.001483   0.012613  -0.118               0.9064
+## grateful_count_comment  0.181746   0.059876   3.035               0.0024
+## open_time               0.153680   0.012010  12.796 < 0.0000000000000002
 ##                           
 ## (Intercept)            ***
 ## compound_emotion          
@@ -656,8 +583,8 @@ summary(dropout_predictors)
 ## Correlation of Fixed Effects:
 ##             (Intr) cmpnd_ grtf__
 ## compond_mtn -0.002              
-## grtfl_cnt_c -0.582 -0.001       
-## open_time   -0.006 -0.069  0.041
+## grtfl_cnt_c -0.588 -0.001       
+## open_time   -0.006 -0.069  0.040
 ```
 
 **Note**. Need to fix this. Not really sure how best to demonstrate this given the limits of the linear fit...

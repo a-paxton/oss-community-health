@@ -18,7 +18,7 @@ To run this from scratch, you will need the following files:
 
 **Code written by**: A. Paxton (University of Connecticut)
 
-**Date last modified**: 28 April 2019
+**Date last modified**: 22 May 2019
 
 ***
 
@@ -108,30 +108,25 @@ joined_frame = joined_frame %>% ungroup() %>%
 
 # Basic summary stats
 
-```{r user-stats}
+```{r user-stats, include=FALSE, echo=FALSE, eval=TRUE}
 
+# get unique values
 unique_commenters = as.character(unique(joined_frame$author_name_comment))
 unique_issuers = as.character(unique(joined_frame$author_name_issue))
 unique_users = as.character(unique(append(unique_commenters, unique_issuers)))
 
-print(paste0("Unique commenters included: ", length(unique_commenters)))
-print(paste0("Unique issue-creators included: ", length(unique_issuers)))
-print(paste0("Unique users included: ", length(unique_users)))
-
 ```
 
-```{r activity-stats}
+```{r activity-stats, include=FALSE, echo=FALSE, eval=TRUE}
 
+# get counts of issue activity per project
 activity_counts = joined_frame %>% ungroup() %>%
   dplyr::select(project, id_issue) %>%
   distinct() %>%
   group_by(project) %>%
   summarize(unique_issues = n())
 
-print(paste0("Unique projects included: ", dim(activity_counts)[1]))
-print(paste0("Unique issues included: ", sum(activity_counts$unique_issues)))
-print(paste0("Mean issues per project: ", mean(activity_counts$unique_issues)))
-
+# get counts of comment activity per project
 comment_counts = joined_frame %>% ungroup() %>%
   dplyr::select(project, id_issue, id_comment) %>%
   distinct() %>%
@@ -143,6 +138,17 @@ print(paste0("Mean comments per issue: ", mean(comment_counts$unique_comments)))
 
 ```
 
+Our dataset includes `r dim(activity_counts)[1]` unique projects with a total 
+of `r sum(activity_counts$unique_issues)` unique issues, with a mean of `
+r mean(activity_counts$unique_issues)` issues per project.
+
+On these issues, the dataset includes `r sum(comment_counts$unique_comments)` 
+unique comments, with `r mean(comment_counts$unique_comments)` average comments 
+per issue.
+
+In total, we have `r length(unique_commenters)` unique commenters, 
+`r length(unique_issuers)` unique issue-creators, and `r length(unique_users)` 
+overall unique users.
 
 ***
 
@@ -225,7 +231,6 @@ sentiment_frame = sentiment_frame %>% ungroup() %>%
   # convert to factors
   mutate(author_group = as.factor(author_group)) %>%
   mutate(type = as.factor(type))
-  
 
 ```
 
@@ -234,7 +239,7 @@ we would have to remove first-time contributors and first-timers from
 the dataset when we're analyzing `type` as a covariate, since both types
 of users only ever submitted issues.
 
-```{r rationale-for-dropping-firsters}
+```{r rationale-for-dropping-firsters, eval=TRUE}
 
 # first time contributors
 first_time_contrib_df = sentiment_frame %>%
@@ -274,7 +279,7 @@ over a smaller dataset last year. One potential reason is
 that these effects may be time-dependent. Our next model
 explores this possibility by adding a time term.
 
-```{r plot-model-emotion-by-type-and-author, echo=FALSE, eval=FALSE}
+```{r plot-model-emotion-by-type-and-author, echo=FALSE, include=FALSE, eval=FALSE}
 
 sentiment_plot = ggplot(data=sentiment_frame,
        aes(x=author_group,
