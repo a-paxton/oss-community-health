@@ -10,14 +10,14 @@ img: histograms
 
 histograms: $(HIST_COMMENTS) $(HIST_COMMITS) $(HIST_ISSUES)
 
-images/%/hist_comments.png: data/raw_data/%/comments.tsv plot_number_comments_time.py
+images/%/hist_comments.png: data/raw_data/%/comments.tsv plot_number_comments_time.py ../bot_names.txt
 	python plot_number_comments_time.py $* -o $@
 
-images/%/hist_issues.png: data/raw_data/%/issues.tsv plot_number_issues_time.py
+images/%/hist_issues.png: data/raw_data/%/issues.tsv plot_number_issues_time.py ../bot_names.txt
 	python plot_number_issues_time.py $* -o $@
 
 
-images/%/hist_commits.png: data/raw_data/%/commits.tsv plot_number_commits_time.py
+images/%/hist_commits.png: data/raw_data/%/commits.tsv plot_number_commits_time.py ../bot_names.txt
 	python plot_number_commits_time.py $* -o $@
 
 clean:

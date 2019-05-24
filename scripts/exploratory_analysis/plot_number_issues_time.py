@@ -1,3 +1,7 @@
+"""
+Plotting the number of issues every two months.
+"""
+
 import argparse
 import os
 import numpy as np
@@ -29,8 +33,9 @@ issues = issues.resample(
     '2M').sum().replace(np.nan, 0).astype(int)
 
 fig, ax = plt.subplots(figsize=(6, 3), tight_layout=True)
-ax.bar(np.arange(issues.shape[0]), issues["total"], color="black")
-ax.bar(np.arange(issues.shape[0]), issues["bots"], color="#AB0000")
+ax.bar(np.arange(issues.shape[0]), issues["total"], color="#C1C1C1")
+ax.bar(np.arange(issues.shape[0]), issues["total"] - issues["bots"],
+       color="#000000")
 ax.set_xticks(np.arange(0, len(issues), 2))
 ax.set_xticklabels(
     issues.index.strftime("%b %Y")[::2], rotation=45,

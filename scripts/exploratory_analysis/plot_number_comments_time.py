@@ -1,3 +1,7 @@
+"""
+Plotting the number of comments for each project every two months.
+"""
+
 import argparse
 import os
 import numpy as np
@@ -11,9 +15,9 @@ args = parser.parse_args()
 
 project = args.project
 outname = args.outname
+
 ##############################################################################
 # Load stuff in memory.
-
 filename = os.path.join("data/raw_data", project, "comments.tsv")
 comments = pd.read_csv(filename, sep="\t")
 # Now load the bot names
@@ -28,8 +32,9 @@ comments = comments.resample(
     '2M').sum().replace(np.nan, 0).astype(int)
 
 fig, ax = plt.subplots(figsize=(6, 3), tight_layout=True)
-ax.bar(np.arange(comments.shape[0]), comments["total"], color="black")
-ax.bar(np.arange(comments.shape[0]), comments["bots"], color="#AB0000")
+ax.bar(np.arange(comments.shape[0]), comments["total"], color="#C1C1C1")
+ax.bar(np.arange(comments.shape[0]), comments["total"] - comments["bots"],
+       color="#000000")
 
 ax.set_xticks(np.arange(0, len(comments), 4))
 ax.set_xticklabels(
