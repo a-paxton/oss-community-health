@@ -34,6 +34,8 @@ source('./utils/ossc-libraries_and_functions.r')
 library(jtools)
 library(magrittr)
 
+library(splines)
+
 # load data
 joined_frame = read.table('../../data/analysis_data/all-sentiment_frame-for_r.csv', 
                           sep = ',', header=TRUE, fill=TRUE)
@@ -316,9 +318,8 @@ ggsave(plot = sentiment_plot,
 ### Model 2.2: Do issues and comments materially differ in emotion over time?
 
 ```{r model-emotion-by-type-author-time}
-
 # do issues and comments materially differ in emotion over time?
-creators_v_commenters_emotion_time = lmer(compound_emotion ~ type * author_group * date +
+creators_v_commenters_emotion_time = lmer(compound_emotion ~ type * author_group * ns(date) +
                                             (1 | project) +
                                             (1 | author_name),
                                           data = sentiment_frame,
@@ -452,13 +453,10 @@ gratitude_summary_stats = sentiment_frame %>% ungroup() %>%
 pander(gratitude_summary_stats)
 
 ```
-
-This model fails to converge if we include the interaction term.
-
 ```{r gratitude-predictors}
 
 # do users tend to express appreciation and gratitude differently by group and content?
-creators_v_commenters_gratitude = glmer(grateful_count ~ author_group + type +
+creators_v_commenters_gratitude = glmer(grateful_count ~ author_group * type +
                                           (1 | project) +
                                           (1 | author_name),
                                         data=sentiment_frame,
@@ -507,9 +505,9 @@ ggsave(plot = grateful_plot,
 **Note**: Having difficulty getting this to converge.
 
 ```{r gratitude-predictors-time}
-
+library(splines)
 # do users tend to express appreciation and gratitude differently by group and content?
-creators_v_commenters_gratitude_time = glmer(grateful_count ~ (author_group + type) * date +
+creators_v_commenters_gratitude_time = glmer(grateful_count ~ (author_group + type) * ns(date) +
                                                (1 | project),
                                              data=sentiment_frame,
                                              family=poisson)

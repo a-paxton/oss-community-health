@@ -15,7 +15,7 @@ args = parser.parse_args()
 
 outname = args.outname
 
-filenames = glob("data/raw_data/*/issues.tsv")
+filenames = glob("data/raw_data/dataset_upto2019/*/issues.tsv")
 filenames.sort()
 
 columns = ["Project", "Issues", "Pull requests", "Comments", "Authors"]
