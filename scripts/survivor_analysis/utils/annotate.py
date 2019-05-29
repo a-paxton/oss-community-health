@@ -15,6 +15,7 @@ def annotate_logs(comments, tickets):
          of the comment posting
     3. comment order (comment dataframe only)
     4. identify whether ticket is closed (Boolean; ticket dataframe only)
+    5. identify whether a comment is associated to an issue or a PR
 
     Requires: pandas
 
@@ -100,6 +101,8 @@ def annotate_logs(comments, tickets):
     tickets.set_index("ticket_id", inplace=True, drop=False)
     comments["ticket_created_at"] = tickets.loc[
         comments["ticket_id"]]["created_at"].values
+    comments["type"] = tickets.loc[
+        comments["ticket_id"]]["type"].values
     # Reset the old index
     tickets.set_index("id", inplace=True, drop=False)
 

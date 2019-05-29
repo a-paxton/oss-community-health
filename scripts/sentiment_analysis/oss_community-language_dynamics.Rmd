@@ -74,7 +74,7 @@ to be run.
 
 ```
 
-## Convert time to dates
+## Convert time to numbers
 
 ```{r convert-time-to-days}
 
@@ -96,8 +96,8 @@ joined_frame = joined_frame %>% ungroup() %>%
   mutate(year_issue = as.numeric(format(as.Date(created_at_issue), "%Y"))) %>%
   mutate(month_comment = as.numeric(format(as.Date(created_at_comment), "%m"))) %>%
   mutate(month_issue = as.numeric(format(as.Date(created_at_issue), "%m"))) %>%
-  mutate(date_comment = year_comment + (month_comment/12.1)) %>%
-  mutate(date_issue = year_issue + (month_issue/12.1)) %>%
+  mutate(date_comment = as.numeric(as.Date(created_at_comment))) %>%
+  mutate(date_issue = as.numeric(as.Date(created_at_issue))) %>%
   
   # drop old columns
   select(-ends_with('_at'), -contains('_at_'),
@@ -281,7 +281,7 @@ over a smaller dataset last year. One potential reason is
 that these effects may be time-dependent. Our next model
 explores this possibility by adding a time term.
 
-```{r plot-model-emotion-by-type-and-author, echo=FALSE, include=FALSE, eval=FALSE}
+```{r plot-model-emotion-by-type-and-author, echo=FALSE, include=FALSE, eval=TRUE}
 
 sentiment_plot = ggplot(data=sentiment_frame,
        aes(x=author_group,
@@ -340,7 +340,7 @@ nonmembers' issues are becoming more negative.
 
 We'll need to do an analysis to follow up on this.
 
-```{r plot-model-emotion-by-type-author-time, echo=FALSE, eval=FALSE}
+```{r plot-model-emotion-by-type-author-time, echo=FALSE, eval=TRUE}
 
 # split by membership type
 member_frame = sentiment_frame %>% filter(author_group == 'member')
@@ -352,17 +352,20 @@ sentiment_time_member_plot = ggplot(data=member_frame,
                                         y=compound_emotion,
                                         colour=type)) +
   stat_smooth() +
-  stat_summary(alpha=0.5, size=.1) +
+  # stat_summary(alpha=0.5, size=.1) +
   coord_cartesian(ylim=c(-.6,1.0)) +
   theme(legend.position = "none") +
   ggtitle('For members') +
   ylab('Sentiment score') +
   scale_x_continuous(name = 'Date',
-                     breaks = c(2010,
-                                2012,
-                                2014,
-                                2016,
-                                2018)) +
+                     breaks = c(as.numeric(as.Date("2010-01-01")),
+				as.numeric(as.Date("2012-01-01")),
+				as.numeric(as.Date("2014-01-01")),
+				as.numeric(as.Date("2016-01-01")),
+				as.numeric(as.Date("2018-01-01"))),
+		     labels = c("2010", "2012",
+				"2014", "2016",
+				"2018")) +
   labs(color='Contribution type') +
   scale_color_manual(labels = c("Comment", "Issue"), 
                      values = c("darkgreen", "orange")) +
@@ -374,17 +377,20 @@ sentiment_time_nonmember_plot = ggplot(data=nonmember_frame,
                                            y=compound_emotion,
                                            colour=type)) +
   stat_smooth() +
-  stat_summary(alpha=0.5, size=.1) +
+  # stat_summary(alpha=0.5, size=.1) +
   coord_cartesian(ylim=c(-.6,1.0)) +
   ggtitle('For nonmembers') +
   theme(legend.position = "none") +
   ylab('Sentiment score') +
   scale_x_continuous(name = 'Date',
-                     breaks = c(2010,
-                                2012,
-                                2014,
-                                2016,
-                                2018)) +
+                     breaks = c(as.numeric(as.Date("2010-01-01")),
+				as.numeric(as.Date("2012-01-01")),
+				as.numeric(as.Date("2014-01-01")),
+				as.numeric(as.Date("2016-01-01")),
+				as.numeric(as.Date("2018-01-01"))),
+		     labels = c("2010", "2012",
+				"2014", "2016",
+				"2018")) +
   labs(color='Contribution type') +
   scale_color_manual(labels = c("Comment", "Issue"), 
                      values = c("darkgreen", "orange")) +
@@ -396,7 +402,7 @@ sentiment_time_nonmember_legend = ggplot(data=nonmember_frame,
                                            y=compound_emotion,
                                            colour=type)) +
   stat_smooth() +
-  stat_summary(alpha=0.5, size=.1) +
+  # stat_summary(alpha=0.5, size=.1) +
   coord_cartesian(ylim=c(-.6,1.0)) +
   ggtitle('For nonmembers') +
   ylab('') +
@@ -467,7 +473,7 @@ summary(creators_v_commenters_gratitude)
 
 ```
 
-```{r plot-gratitude-predictors, echo=FALSE, eval=FALSE}
+```{r plot-gratitude-predictors, echo=FALSE, eval=TRUE}
 
 grateful_plot = ggplot(data=sentiment_frame,
        aes(colour=type,
@@ -517,7 +523,7 @@ summary(creators_v_commenters_gratitude_time)
 
 ```
 
-```{r plot-gratitude-predictors-time, echo=FALSE, eval=FALSE}
+```{r plot-gratitude-predictors-time, echo=FALSE, eval=TRUE}
 
 # split by membership type
 member_frame = sentiment_frame %>% filter(author_group == 'member')
@@ -529,17 +535,20 @@ gratitude_time_member_plot = ggplot(data=member_frame,
                                         y=grateful_count,
                                         colour=type)) +
   stat_smooth() +
-  stat_summary(alpha=0.5, size=.1) +
+  # stat_summary(alpha=0.5, size=.1) +
   coord_cartesian(ylim=c(0,1.0)) +
   theme(legend.position = "none") +
   ggtitle('For members') +
   ylab('Mean expressions of gratitude') +
   scale_x_continuous(name = 'Date',
-                     breaks = c(2010,
-                                2012,
-                                2014,
-                                2016,
-                                2018)) +
+                     breaks = c(as.numeric(as.Date("2010-01-01")),
+				as.numeric(as.Date("2012-01-01")),
+				as.numeric(as.Date("2014-01-01")),
+				as.numeric(as.Date("2016-01-01")),
+				as.numeric(as.Date("2018-01-01"))),
+		     labels = c("2010", "2012",
+				"2014", "2016",
+				"2018")) +
   labs(color='Contribution type') +
   scale_color_manual(labels = c("Comment", "Issue"), 
                      values = c("darkgreen", "orange")) +
@@ -551,17 +560,20 @@ gratitude_time_nonmember_plot = ggplot(data=nonmember_frame,
                                            y=grateful_count,
                                            colour=type)) +
   stat_smooth() +
-  stat_summary(alpha=0.5, size=.1) +
+  # stat_summary(alpha=0.5, size=.1) +
   coord_cartesian(ylim=c(0,1.0)) +
   ggtitle('For nonmembers') +
   theme(legend.position = "none") +
   ylab('Mean expressions of gratitude') +
   scale_x_continuous(name = 'Date',
-                     breaks = c(2010,
-                                2012,
-                                2014,
-                                2016,
-                                2018)) +
+                     breaks = c(as.numeric(as.Date("2010-01-01")),
+				as.numeric(as.Date("2012-01-01")),
+				as.numeric(as.Date("2014-01-01")),
+				as.numeric(as.Date("2016-01-01")),
+				as.numeric(as.Date("2018-01-01"))),
+		     labels = c("2010", "2012",
+				"2014", "2016",
+				"2018")) +
   labs(color='Contribution type') +
   scale_color_manual(labels = c("Comment", "Issue"), 
                      values = c("darkgreen", "orange")) +
@@ -573,7 +585,7 @@ gratitude_time_nonmember_legend = ggplot(data=nonmember_frame,
                                            y=grateful_count,
                                            colour=type)) +
   stat_smooth() +
-  stat_summary(alpha=0.5, size=.1) +
+  # stat_summary(alpha=0.5, size=.1) +
   # coord_cartesian(ylim=c(-.6,1.0)) +
   ggtitle('For nonmembers') +
   ylab('Sentiment score') +
@@ -655,7 +667,7 @@ summary(dropout_predictors)
 
 **Note**. Need to fix this. Not really sure how best to demonstrate this given the limits of the linear fit...
 
-```{r plot-predicting-retention, echo=FALSE, eval=FALSE}
+```{r plot-predicting-retention, echo=FALSE, eval=TRUE}
 
 retention_plot = ggplot(data=retention_frame,
        aes(y=open_time,
