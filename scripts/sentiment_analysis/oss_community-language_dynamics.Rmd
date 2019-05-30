@@ -633,6 +633,10 @@ ggsave(filename = '../../figures/sentiment_analysis/ossc-gratitude_membership_co
 
 ## Model Series 3: Retention
 
+- **FIXME** we're using several times the same predictor observations, which
+  means they are not IID. Here, we'll probably have to pull together all
+  comments associated to one ticket.
+
 ```{r prep-analysis}
 
 # combine information by issue
