@@ -16,9 +16,10 @@ To run this from scratch, you will need the following files:
 * `./utils/ossc-libraries_and_functions.r`: Loads in necessary libraries and creates 
   new functions for our analyses.
 
-**Code written by**: A. Paxton (University of Connecticut)
+**Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux (University 
+of California, Berkeley)
 
-**Date last modified**: 22 May 2019
+**Date last modified**: 29 May 2019
 
 ***
 
@@ -31,10 +32,6 @@ rm(list=ls())
 
 # load libraries and add new functions
 source('./utils/ossc-libraries_and_functions.r')
-library(jtools)
-library(magrittr)
-
-library(splines)
 
 # load data
 joined_frame = read.table('../../data/analysis_data/all-sentiment_frame-for_r.csv', 
@@ -169,6 +166,7 @@ change whether they come back to make another ticket?
 
 **To do**: See whether this can be modeled against a Poisson distribution, then see whether the
 communities tend to be more similar or different to one another.
+
 * Need to figure out how to do this (cf. orthogonal polynomials)
 
 ```{r}
@@ -246,16 +244,23 @@ of users only ever submitted issues.
 # first time contributors
 first_time_contrib_df = sentiment_frame %>%
   filter(author_association=='FIRST_TIME_CONTRIBUTOR')
-print(paste0("Unique contribution types for first-time contributors: ",
-             unique(first_time_contrib_df$type)))
 
 # first time contributors
 first_timers_df = sentiment_frame %>%
   filter(author_association=='FIRST_TIMER')
-print(paste0("Unique contribution types for first-timers: ",
-             unique(first_timers_df$type)))
 
 ```
+
+```{r print-rationale-for-droping-firsters, eval=TRUE, echo=FALSE, include=FALSE}
+
+# print the output
+print(paste0("Unique contribution types for first-timers: ",
+             unique(first_timers_df$type)))
+print(paste0("Unique contribution types for first-time contributors: ",
+             unique(first_time_contrib_df$type)))
+
+```
+
 
 However, because we are grouping simply by members and non-members,
 we can retain them in the dataset.
@@ -340,7 +345,7 @@ nonmembers' issues are becoming more negative.
 
 We'll need to do an analysis to follow up on this.
 
-```{r plot-model-emotion-by-type-author-time, echo=FALSE, eval=TRUE}
+```{r plot-model-emotion-by-type-author-time, include=FALSE, echo=FALSE, eval=TRUE}
 
 # split by membership type
 member_frame = sentiment_frame %>% filter(author_group == 'member')
@@ -449,16 +454,16 @@ ggsave(filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_co
 
 ### Model 2.3: Do issues and comments materially differ in gratitude?
 
-```{r}
+```{r gratitude-summary-stats}
 
 # create a summary table of gratitude by type and author association
 gratitude_summary_stats = sentiment_frame %>% ungroup() %>%
   group_by(author_group, type, grateful_count) %>%
   summarise(n = n())
-
 pander(gratitude_summary_stats)
 
 ```
+
 ```{r gratitude-predictors}
 
 # do users tend to express appreciation and gratitude differently by group and content?
@@ -473,7 +478,7 @@ summary(creators_v_commenters_gratitude)
 
 ```
 
-```{r plot-gratitude-predictors, echo=FALSE, eval=TRUE}
+```{r plot-gratitude-predictors, include=FALSE, echo=FALSE, eval=TRUE}
 
 grateful_plot = ggplot(data=sentiment_frame,
        aes(colour=type,
@@ -511,7 +516,7 @@ ggsave(plot = grateful_plot,
 **Note**: Having difficulty getting this to converge.
 
 ```{r gratitude-predictors-time}
-library(splines)
+
 # do users tend to express appreciation and gratitude differently by group and content?
 creators_v_commenters_gratitude_time = glmer(grateful_count ~ (author_group + type) * ns(date) +
                                                (1 | project),
@@ -671,7 +676,7 @@ summary(dropout_predictors)
 
 **Note**. Need to fix this. Not really sure how best to demonstrate this given the limits of the linear fit...
 
-```{r plot-predicting-retention, echo=FALSE, eval=TRUE}
+```{r plot-predicting-retention, echo=FALSE, include=FALSE, eval=TRUE}
 
 retention_plot = ggplot(data=retention_frame,
        aes(y=open_time,

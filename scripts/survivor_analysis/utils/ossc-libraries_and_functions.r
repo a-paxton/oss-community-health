@@ -23,7 +23,10 @@ required_packages = c(
   'jsonlite',
   'tidyr',
   'tibble',
-  'RCurl'
+  'RCurl',
+  'splines',
+  'magrittr',
+  'jtools'
 )
 
 # load required packages
