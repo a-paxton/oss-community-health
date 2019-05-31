@@ -102,10 +102,13 @@ def annotate_logs(comments, tickets):
     # has been opened when it is available (comments can also be added to
     # commits)
     tickets.set_index("ticket_id", inplace=True, drop=False)
-    comments["ticket_created_at"] = tickets.loc[
-        comments["ticket_id"], "created_at"].values
-    comments["type"] = tickets.loc[
-        comments["ticket_id"], "type"].values
+
+    # We're using the reindex function to tacket the case where we don't have
+    # the ticket associated to a particular comment.
+    comments["ticket_created_at"] = tickets.reindex(
+        comments["ticket_id"])["created_at"].values
+    comments["type"] = tickets.reindex(
+        comments["ticket_id"])["type"].values
     # Reset the old index
     tickets.set_index("id", inplace=True, drop=False)
 
