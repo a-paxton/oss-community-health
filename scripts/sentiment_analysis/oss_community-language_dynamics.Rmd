@@ -183,6 +183,7 @@ body_sentiment_df = joined_frame %>% ungroup() %>%
          contains('date_'),
          contains('open_'),
          contains('num_PR_'),
+         contains('type_'),
          -contains('ticket_id'))
 
 # separate out comments, issues, and last activity counters
@@ -196,18 +197,22 @@ last_counters = joined_frame %>% ungroup() %>%
   select(id_issue, id_comment, project, bus_factor,
          issue_author_last_issue, issue_author_last_comment)
 
-# merge counters
+# merge issues and comments separately with last comments
 comment_sentiment_df = full_join(comment_sentiment_df,
                                  last_counters,
                                  by=c('id' = 'id_comment')) %>%
   select(-id_issue) %>%
-  mutate(type = 'comment') %>%
+  mutate(ticket_family = type,
+         type = paste0(type,"_reply"),
+         type_family = 'reply') %>%
   distinct()
 issue_sentiment_df = full_join(issue_sentiment_df,
                                distinct(select(last_counters,
                                                -id_comment)),
                                by=c('id' = 'id_issue')) %>%
-  mutate(type = 'issue') %>%
+  mutate(ticket_family = type,
+         type = paste0(type,"_post"),
+         type_family = 'post') %>%
   distinct()
 
 # append the dataframes
@@ -215,7 +220,7 @@ sentiment_frame = rbind.data.frame(comment_sentiment_df, issue_sentiment_df)
 
 # concatenate association groups
 sentiment_frame = sentiment_frame %>% ungroup() %>%
-  mutate(author_group = ifelse(author_association=='MEMBER',
+  mutate(author_group = dplyr::if_else(author_association=='MEMBER',
                                'member',
                                ifelse(author_association=='CONTRIBUTOR',
                                       'member',
@@ -223,9 +228,11 @@ sentiment_frame = sentiment_frame %>% ungroup() %>%
                                              'member',
                                              'nonmember')))) %>%
   
-  # convert to factors
-  mutate(author_group = as.factor(author_group)) %>%
-  mutate(type = as.factor(type))
+  # convert to factors (as needed) for proper modeling
+  mutate(author_group = as.factor(author_group),
+         type = as.factor(type),
+         type_family = as.factor(type_family),
+         ticket_family = as.factor(ticket_family))
 
 ```
 
