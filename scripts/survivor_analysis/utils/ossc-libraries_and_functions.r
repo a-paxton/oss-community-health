@@ -4,7 +4,7 @@
 # additional functions to facilitate data prep and analysis.
 #
 # Written by: A. Paxton (University of Connecticut)
-# Date last modified: 14 November 2018
+# Date last modified: 30 May 2019
 #####################################################################################
 
 #### Load necessary packages ####
