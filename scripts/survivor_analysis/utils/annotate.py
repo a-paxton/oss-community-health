@@ -87,9 +87,11 @@ def annotate_logs(comments, tickets):
     tickets['is_closed'] = pd.notnull(tickets['closed_at'])
     mask = tickets["closed_at"].isnull()
     tickets.loc[mask, "closed_at"] = pd.to_datetime(datetime.now())
-    tickets["open_duration"] = (
+    open_duration = (
         pd.to_datetime(tickets["closed_at"]) -
         pd.to_datetime(tickets["created_at"]))
+    tickets["open_duration"] = open_duration.apply(
+        lambda x: x.total_seconds())
 
     # Now we want to remove this estimate for anything created before 1970
     m = [True if c.startswith("1970") else False
