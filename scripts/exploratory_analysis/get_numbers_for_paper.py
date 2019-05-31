@@ -15,20 +15,20 @@ args = parser.parse_args()
 
 outname = args.outname
 
-filenames = glob("data/raw_data/dataset_upto2019/*/issues.tsv")
+filenames = glob("data/processed_data/dataset_upto2019/*/processed-issues.csv")
 filenames.sort()
 
-columns = ["Project", "Issues", "Pull requests", "Comments", "Authors"]
+columns = ["Project", "Issues", "Pull requests", "Comments on issues",
+           "Comments on Pull requests", "Authors"]
 summary_data = pd.DataFrame(
     columns=columns)
 
 all_authors = None
-for filename in filenames[1:]:
+for filename in filenames:
     project = filename.split("/")[-2]
-    tickets = pd.read_csv(filename, sep="\t", keep_default_na=False)
+    tickets = pd.read_csv(filename, keep_default_na=False)
     comments = pd.read_csv(
-        filename.replace("issues.tsv", "comments.tsv"),
-        sep="\t",
+        filename.replace("issues.csv", "comments.csv"),
         keep_default_na=False)
     project_authors = np.unique(comments["author_name"])
     project_authors = np.unique(
@@ -38,8 +38,11 @@ for filename in filenames[1:]:
         {"Project": [project],
          "Pull requests": [sum(tickets["type"] == "pull_request")],
          "Issues": [sum(tickets["type"] == "issue")],
-         "Comments": [len(comments)],
+         "Comments on issues": [sum(comments["type"] == "issue")],
+         "Comments on Pull requests": [
+            sum(comments["type"] == "pull_request")],
          "Authors": [len(project_authors)]})
+
     if all_authors is None:
         all_authors = project_authors
     else:
@@ -52,7 +55,8 @@ row = pd.DataFrame(
         {"Project": ["all"],
          "Pull requests": [summary_data["Pull requests"].sum()],
          "Issues": [summary_data["Issues"].sum()],
-         "Comments": [summary_data["Comments"].sum()],
+         "Comments on issues": [summary_data["Comments on issues"].sum()],
+         "Comments on Pull requests": [summary_data["Comments on Pull requests"].sum()],
          "Authors": [len(all_authors)]})
 
 summary_data = summary_data.append(row)
