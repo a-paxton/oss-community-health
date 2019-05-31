@@ -524,8 +524,7 @@ pander(gratitude_summary_stats)
 ```{r gratitude-predictors}
 
 # do users tend to express appreciation and gratitude differently by group and content?
-creators_v_commenters_gratitude = glmer(grateful_count ~ author_group * type +
-                                          (1 | project) +
+creators_v_commenters_gratitude = glmer(grateful_count ~ project + author_group * type +
                                           (1 | author_name),
                                         data=sentiment_frame,
                                         family=poisson)
@@ -582,8 +581,8 @@ ggsave(plot = grateful_plot,
 ```{r gratitude-predictors-time}
 
 # do users tend to express appreciation and gratitude differently by group and content?
-creators_v_commenters_gratitude_time = glmer(grateful_count ~ (author_group + type) * ns(date) +
-                                               (1 | project),
+creators_v_commenters_gratitude_time = glmer(grateful_count ~ project + (author_group + type) * ns(date, df=8) +
+                                               (1 | author_name),
                                              data=sentiment_frame,
                                              family=poisson)
 
