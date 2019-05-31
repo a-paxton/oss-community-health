@@ -11,15 +11,20 @@ This R markdown provides the data preparation for our forthcoming manuscript
 
 To run this from scratch, you will need the following files:
 
-* `../../data/analysis_data/all-sentiment_frame.csv`: Contains cleaned data and derived 
-  variables from scraped GitHub data.
-* `./utils/ossc-libraries_and_functions.r`: Loads in necessary libraries and creates 
-  new functions for our analyses.
+* `../../data/analysis_data/all-sentiment_frame.csv`: Contains cleaned data and
+  derived variables from scraped GitHub data.
+* `./utils/ossc-libraries_and_functions.r`: Loads in necessary libraries and 
+  creates new functions for our analyses.
 
-**Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux (University 
-of California, Berkeley)
+**Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux 
+(University of California, Berkeley)
 
-**Date last modified**: 29 May 2019
+**Date last modified**: 30 May 2019
+
+```{r silent-preparations, echo=FALSE, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(cache=TRUE, autodep=TRUE)
+```
 
 ***
 
@@ -42,14 +47,11 @@ bot_names = read.table('../bot_names.txt') %>% .$V1 %>% as.character(.)
 
 ***
 
-# Data preparation
-
 ## Identify potential remaining bots
 
-**Note**: This is useful to run if more data are collected. The results
-should be manually inspected, and any additional bots detected should
-be added to the `../bot_names.txt` file. Otherwise, it does not need 
-to be run.
+**Note**: This is useful to run if more data are collected. The results should 
+be manually inspected, and any additional bots detected should be added to the
+`../bot_names.txt` file. Otherwise, it does not need to be run.
 
 ```{r identify-bots, eval=FALSE}
 
@@ -71,16 +73,21 @@ to be run.
 
 ```
 
-## Convert time to numbers
+***
 
-```{r convert-time-to-days}
+## Remove bots and clean up dates
+
+Here, we ensure that all the users identified to be bots have been removed 
+and convert the dates to a more interpretable format.
+
+```{r dates-and-bots}
 
 # fix time
 joined_frame = joined_frame %>% ungroup() %>%
   
   # filter out bots
-  filter(!author_name_issue %in% bot_names) %>% 
-  filter(!author_name_comment %in% bot_names) %>% 
+  filter(!author_name_issue %in% bot_names) %>%
+  filter(!author_name_comment %in% bot_names) %>%
   
   # get time in days
   mutate(open_time_comment = strsplit(as.character(open_duration), ' ') %>%
@@ -102,10 +109,12 @@ joined_frame = joined_frame %>% ungroup() %>%
          -open_duration)
 ```
 
-
 ***
 
-# Basic summary stats
+## Basic summary stats
+
+Now that our data have been largely cleaned, let's take a look at some basic
+patterns.
 
 ```{r user-stats, include=FALSE, echo=FALSE, eval=TRUE}
 
@@ -132,17 +141,14 @@ comment_counts = joined_frame %>% ungroup() %>%
   group_by(project, id_issue) %>%
   summarize(unique_comments = n())
 
-print(paste0("Unique comments included: ", sum(comment_counts$unique_comments)))
-print(paste0("Mean comments per issue: ", mean(comment_counts$unique_comments)))
-
 ```
 
 Our dataset includes `r dim(activity_counts)[1]` unique projects with a total 
-of `r sum(activity_counts$unique_issues)` unique issues, with a mean of `
-r mean(activity_counts$unique_issues)` issues per project.
+of `r sum(activity_counts$unique_issues)` unique issues, with a mean of 
+`r mean(activity_counts$unique_issues)` issues per project.
 
 On these issues, the dataset includes `r sum(comment_counts$unique_comments)` 
-unique comments, with `r mean(comment_counts$unique_comments)` average comments 
+unique comments, with `r mean(comment_counts$unique_comments)` average comments
 per issue.
 
 In total, we have `r length(unique_commenters)` unique commenters, 
@@ -153,29 +159,18 @@ overall unique users.
 
 # Data analysis
 
-Ideas:
-* Do comments, generally, get more friendly or more hostile over time?
-* Does the emotional valence of a contributor's first ticket predict whether they'll come 
-back to make a second one?
-* Are requesters more or less polite?
-* Does friendliness bring people back?
-* Does the number and intensity of negative and positive comments on a first-time contributor's issue 
-change whether they come back to make another ticket?
+***
 
-## Model Series 1: Survivor curves
+## Model Series 1: Sentiment analysis
 
-**To do**: See whether this can be modeled against a Poisson distribution, then see whether the
-communities tend to be more similar or different to one another.
+### Data preparation
 
-* Need to figure out how to do this (cf. orthogonal polynomials)
-
-```{r}
-
-
-
-```
-
-## Model Series 2: Sentiment analysis
+Before we can run our models, we need to transform some our data into a
+proper long-form format, with one unit (comment or issue) per line. However, 
+because `joined_frame` includes unique lines by *comment*, it necessarily 
+includes repeated instances of *issues* if multiple comments have been made on
+the same issue. As a result, we must de-duplicate the dataframe after we 
+disentangle the comments and issues.
 
 ```{r prepare-data-for-sentiment-analysis}
 
@@ -234,10 +229,21 @@ sentiment_frame = sentiment_frame %>% ungroup() %>%
 
 ```
 
-For Model 2, if we were going to keep original author associations,
-we would have to remove first-time contributors and first-timers from 
-the dataset when we're analyzing `type` as a covariate, since both types
-of users only ever submitted issues.
+#### Rationale for simplifying associations
+
+Although we are eventually interested in studying first-time contributors,
+we group everyone only into one of two categories for Model Series 1---either
+`member` or `nonmember`. 
+
+This is partly because the "first" tags are only applied in very specific
+circumstances related to pull requests and issues. As a result, if we were 
+going to keep original author associations, we would have to remove first-time
+contributors and first-timers from the dataset when we're analyzing `type` 
+as a covariate, since both types of users only ever submitted issues. However, 
+because we are grouping simply by members and non-members, we can retain them 
+in the dataset.
+
+Here, we just confirm that this is the case.
 
 ```{r rationale-for-dropping-firsters, eval=TRUE}
 
@@ -261,13 +267,15 @@ print(paste0("Unique contribution types for first-time contributors: ",
 
 ```
 
+### Model 1.1: Do different kinds of user contributions materially differ in emotion?
 
-However, because we are grouping simply by members and non-members,
-we can retain them in the dataset.
+Now we begin the actual modeling. Our first general question is whether users'
+patterns of sentiment differ materially by whether they are a member of the
+community versus a nonmember of the community and by their different kinds of
+possible contributions (i.e., a posted pull request, a reply to a pull request,
+a posted issue, or a reply to an issue).
 
-### Model 2.1: Do issues and comments materially differ in emotion?
-
-```{r model-emotion-by-type-and-author}
+```{r model-emotion-by-type-and-author-and-project}
 
 # do issues and comments materially differ in emotion?
 creators_v_commenters_emotion = lmer(compound_emotion ~ type * author_group +
@@ -281,10 +289,9 @@ pander_lme(creators_v_commenters_emotion)
 
 ```
 
-These results are quite different from our results conducted
-over a smaller dataset last year. One potential reason is
-that these effects may be time-dependent. Our next model
-explores this possibility by adding a time term.
+These results are quite different from our results conducted over a smaller
+dataset last year. One potential reason is that these effects may be 
+time-dependent. Our next model explores this possibility by adding a time term.
 
 ```{r plot-model-emotion-by-type-and-author, echo=FALSE, include=FALSE, eval=TRUE}
 
@@ -320,9 +327,10 @@ ggsave(plot = sentiment_plot,
 
 ![**Figure**. Sentiment by contribution type (issue vs. comment) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution-knitr.jpg)
 
-### Model 2.2: Do issues and comments materially differ in emotion over time?
+### Model 1.2: Do issues and comments materially differ in emotion over time?
 
-```{r model-emotion-by-type-author-time}
+```{r model-emotion-by-type-author-project-time}
+
 # do issues and comments materially differ in emotion over time?
 creators_v_commenters_emotion_time = lmer(compound_emotion ~ type * author_group * ns(date) +
                                             (1 | project) +
@@ -452,7 +460,7 @@ ggsave(filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_co
 ```
 ![**Figure**. Sentiment over time by contribution type (issue vs. comment) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-knitr.jpg)
 
-### Model 2.3: Do issues and comments materially differ in gratitude?
+### Model 1.3: Do issues and comments materially differ in gratitude?
 
 ```{r gratitude-summary-stats}
 
@@ -511,7 +519,7 @@ ggsave(plot = grateful_plot,
 
 ![**Figure**. Expressions of gratitude by contribution type (issue vs. comment) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-grateful_membership_contribution-knitr.jpg)
 
-### Model 2.4: Do issues and comments materially differ in gratitude over time?
+### Model 1.4: Do issues and comments materially differ in gratitude over time?
 
 **Note**: Having difficulty getting this to converge.
 
@@ -636,11 +644,13 @@ ggsave(filename = '../../figures/sentiment_analysis/ossc-gratitude_membership_co
 
 ![**Figure**. Expressions of gratitude over time by contribution type (issue vs. comment) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-gratitude_membership_contribution_time-knitr.jpg)
 
-## Model Series 3: Retention
+## Model Series 2: Retention
 
 - **FIXME** we're using several times the same predictor observations, which
   means they are not IID. Here, we'll probably have to pull together all
   comments associated to one ticket.
+
+### Data preparation
 
 ```{r prep-analysis}
 
@@ -708,3 +718,18 @@ ggsave(plot = retention_plot,
 ```
 
 ![**Figure**. Whether a first-time issue creator will open a second issue by commenters' expressions of gratitude and responsiveness.](../../figures/sentiment_analysis/ossc-retention_emotion-knitr.jpg)
+
+***
+
+# Future directions
+
+Ideas:
+
+* Do comments, generally, get more friendly or more hostile over time?
+* Does the emotional valence of a contributor's first ticket predict whether 
+  they'll come back to make a second one?
+* Are requesters more or less polite?
+* Does friendliness bring people back?
+* Does the number and intensity of negative and positive comments on a 
+  first-time contributor's issue change whether they come back to make another 
+  ticket?
