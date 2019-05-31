@@ -302,19 +302,28 @@ time-dependent. Our next model explores this possibility by adding a time term.
 ```{r plot-model-emotion-by-type-and-author, echo=FALSE, include=FALSE, eval=TRUE}
 
 sentiment_plot = ggplot(data=sentiment_frame,
-       aes(x=author_group,
-           y=compound_emotion,
-           colour=type)) +
+                        aes(x=author_group,
+                            y=compound_emotion,
+                            colour=type)) +
   stat_summary(fun.y=mean, geom="point", size=2) + 
   stat_summary(fun.data = mean_se, geom = "errorbar") +
-  coord_cartesian(ylim=c(0,.4)) +
+  #coord_cartesian(ylim=c(0,.5)) +
+  facet_grid(cols=vars(ticket_family),
+             rows=vars(project)) +
   ggtitle('Message sentiment by contribution\nand community membership') +
   ylab('Sentiment score') +
   xlab('Community membership') +
   labs(color='Contribution type') +
-  scale_color_manual(labels = c("Comment", "Issue"), 
-                     values = c("darkgreen", "orange")) +
-  facet_grid(. ~ project)
+  scale_color_manual(labels = c("Issue: Post",
+                                "Issue: Reply",
+                                "PR: Post",
+                                "PR: Reply"), 
+                     values = c("#e66101", # issue: post (darker)
+                                "#fdb863", # issue: reply (lighter)
+                                "#5e3c99", # PR: post (darker)
+                                "#b2abd2")) # PR: reply (lighter)
+
+# another possible color scheme: #ca0020, #f4a582, #92c5de, #0571b0 (red to blue)
 
 # plot a full-size version
 ggsave(plot = sentiment_plot,
@@ -369,66 +378,101 @@ sentiment_time_member_plot = ggplot(data=member_frame,
                                     aes(x=date,
                                         y=compound_emotion,
                                         colour=type)) +
-  stat_smooth() +
-  # stat_summary(alpha=0.5, size=.1) +
-  coord_cartesian(ylim=c(-.6,1.0)) +
+  # geom_smooth(method=lm, formula=y ~ bs(x, df=8)) +
+  stat_smooth()+
+  coord_cartesian(ylim=c(-1.0,1.0)) +
+  facet_grid(cols = vars(ticket_family),
+             rows = vars(project)) +
   theme(legend.position = "none") +
   ggtitle('For members') +
   ylab('Sentiment score') +
   scale_x_continuous(name = 'Date',
                      breaks = c(as.numeric(as.Date("2010-01-01")),
-				as.numeric(as.Date("2012-01-01")),
-				as.numeric(as.Date("2014-01-01")),
-				as.numeric(as.Date("2016-01-01")),
-				as.numeric(as.Date("2018-01-01"))),
-		     labels = c("2010", "2012",
-				"2014", "2016",
-				"2018")) +
+                                as.numeric(as.Date("2012-01-01")),
+                                as.numeric(as.Date("2014-01-01")),
+                                as.numeric(as.Date("2016-01-01")),
+                                as.numeric(as.Date("2018-01-01"))),
+                     labels = c("2010", 
+                                "2012",
+                                "2014", 
+                                "2016",
+                                "2018")) +
   labs(color='Contribution type') +
-  scale_color_manual(labels = c("Comment", "Issue"), 
-                     values = c("darkgreen", "orange")) +
-  facet_grid(. ~ project)
+  scale_color_manual(labels = c("Issue: Post",
+                                "Issue: Reply",
+                                "PR: Post",
+                                "PR: Reply"), 
+                     values = c("#e66101", # issue: post (darker)
+                                "#fdb863", # issue: reply (lighter)
+                                "#5e3c99", # PR: post (darker)
+                                "#b2abd2")) # PR: reply (lighter)
+  
 
 # nonmembership plot
 sentiment_time_nonmember_plot = ggplot(data=nonmember_frame,
                                        aes(x=date,
                                            y=compound_emotion,
                                            colour=type)) +
-  stat_smooth() +
+  #stat_smooth() +
   # stat_summary(alpha=0.5, size=.1) +
-  coord_cartesian(ylim=c(-.6,1.0)) +
+  geom_smooth(method=lm, formula=y ~ bs(x, df=4)) +
+  coord_cartesian(ylim=c(-1.0,1.0)) +
+  facet_grid(cols = vars(ticket_family),
+             rows = vars(project)) +
   ggtitle('For nonmembers') +
   theme(legend.position = "none") +
   ylab('Sentiment score') +
   scale_x_continuous(name = 'Date',
                      breaks = c(as.numeric(as.Date("2010-01-01")),
-				as.numeric(as.Date("2012-01-01")),
-				as.numeric(as.Date("2014-01-01")),
-				as.numeric(as.Date("2016-01-01")),
-				as.numeric(as.Date("2018-01-01"))),
-		     labels = c("2010", "2012",
-				"2014", "2016",
-				"2018")) +
+                                as.numeric(as.Date("2012-01-01")),
+                                as.numeric(as.Date("2014-01-01")),
+                                as.numeric(as.Date("2016-01-01")),
+                                as.numeric(as.Date("2018-01-01"))),
+                     labels = c("2010", "2012",
+                                "2014", "2016",
+                                "2018")) +
   labs(color='Contribution type') +
-  scale_color_manual(labels = c("Comment", "Issue"), 
-                     values = c("darkgreen", "orange")) +
-  facet_grid(. ~ project)
+  scale_color_manual(labels = c("Issue: Post",
+                                "Issue: Reply",
+                                "PR: Post",
+                                "PR: Reply"), 
+                     values = c("#e66101", # issue: post (darker)
+                                "#fdb863", # issue: reply (lighter)
+                                "#5e3c99", # PR: post (darker)
+                                "#b2abd2")) # PR: reply (lighter)
 
 # create another nonmember plot just for the legend
 sentiment_time_nonmember_legend = ggplot(data=nonmember_frame,
-                                       aes(x=date,
-                                           y=compound_emotion,
-                                           colour=type)) +
-  stat_smooth() +
+                                         aes(x=date,
+                                             y=compound_emotion,
+                                             colour=type)) +
+  #stat_smooth() +
   # stat_summary(alpha=0.5, size=.1) +
-  coord_cartesian(ylim=c(-.6,1.0)) +
+  geom_smooth(method=lm, formula=y ~ bs(x, df=4)) +
+  coord_cartesian(ylim=c(-1.0,1.0)) +
+  facet_grid(cols = vars(ticket_family),
+             rows = vars(project)) +
   ggtitle('For nonmembers') +
-  ylab('') +
-  xlab('Date') +
+  theme(legend.position = "none") +
+  ylab('Sentiment score') +
+  scale_x_continuous(name = 'Date',
+                     breaks = c(as.numeric(as.Date("2010-01-01")),
+                                as.numeric(as.Date("2012-01-01")),
+                                as.numeric(as.Date("2014-01-01")),
+                                as.numeric(as.Date("2016-01-01")),
+                                as.numeric(as.Date("2018-01-01"))),
+                     labels = c("2010", "2012",
+                                "2014", "2016",
+                                "2018")) +
   labs(color='Contribution type') +
-  scale_color_manual(labels = c("Comment", "Issue"), 
-                     values = c("darkgreen", "orange")) +
-  facet_grid(. ~ project)
+  scale_color_manual(labels = c("Issue: Post",
+                                "Issue: Reply",
+                                "PR: Post",
+                                "PR: Reply"), 
+                     values = c("#e66101", # issue: post (darker)
+                                "#fdb863", # issue: reply (lighter)
+                                "#5e3c99", # PR: post (darker)
+                                "#b2abd2")) # PR: reply (lighter)
 
 # create a master legend
 master_legend = gtable_filter(ggplot_gtable(
@@ -494,18 +538,25 @@ summary(creators_v_commenters_gratitude)
 ```{r plot-gratitude-predictors, include=FALSE, echo=FALSE, eval=TRUE}
 
 grateful_plot = ggplot(data=sentiment_frame,
-       aes(colour=type,
-           y=grateful_count,
-           x=author_group)) +
+                       aes(colour=type,
+                           y=grateful_count,
+                           x=author_group)) +
   stat_summary(fun.y=mean, geom="point", size=2) + 
   stat_summary(fun.data = mean_se, geom = "errorbar") +
+  facet_grid(cols = vars(ticket_family),
+             rows = vars(project)) +
   ggtitle('Expressions of gratitude by contribution\nand community membership') +
   ylab('Gratitude') +
   xlab('Community membership') +
   labs(color='Contribution type') +
-  scale_color_manual(labels = c("Comment", "Issue"), 
-                     values = c("darkgreen", "orange")) +
-  facet_grid(. ~ project)
+  scale_color_manual(labels = c("Issue: Post",
+                                "Issue: Reply",
+                                "PR: Post",
+                                "PR: Reply"), 
+                     values = c("#e66101", # issue: post (darker)
+                                "#fdb863", # issue: reply (lighter)
+                                "#5e3c99", # PR: post (darker)
+                                "#b2abd2")) # PR: reply (lighter)
 
 # save full version
 ggsave(plot = grateful_plot,
@@ -554,23 +605,32 @@ gratitude_time_member_plot = ggplot(data=member_frame,
                                         colour=type)) +
   stat_smooth() +
   # stat_summary(alpha=0.5, size=.1) +
+  facet_grid(cols = vars(ticket_family),
+             rows = vars(project)) +
   coord_cartesian(ylim=c(0,1.0)) +
   theme(legend.position = "none") +
   ggtitle('For members') +
   ylab('Mean expressions of gratitude') +
   scale_x_continuous(name = 'Date',
                      breaks = c(as.numeric(as.Date("2010-01-01")),
-				as.numeric(as.Date("2012-01-01")),
-				as.numeric(as.Date("2014-01-01")),
-				as.numeric(as.Date("2016-01-01")),
-				as.numeric(as.Date("2018-01-01"))),
-		     labels = c("2010", "2012",
-				"2014", "2016",
-				"2018")) +
+                                as.numeric(as.Date("2012-01-01")),
+                                as.numeric(as.Date("2014-01-01")),
+                                as.numeric(as.Date("2016-01-01")),
+                                as.numeric(as.Date("2018-01-01"))),
+                     labels = c("2010", 
+                                "2012",
+                                "2014",
+                                "2016",
+                                "2018")) +
   labs(color='Contribution type') +
-  scale_color_manual(labels = c("Comment", "Issue"), 
-                     values = c("darkgreen", "orange")) +
-  facet_grid(. ~ project)
+  scale_color_manual(labels = c("Issue: Post",
+                                "Issue: Reply",
+                                "PR: Post",
+                                "PR: Reply"), 
+                     values = c("#e66101", # issue: post (darker)
+                                "#fdb863", # issue: reply (lighter)
+                                "#5e3c99", # PR: post (darker)
+                                "#b2abd2")) # PR: reply (lighter)
 
 # nonmembership plot
 gratitude_time_nonmember_plot = ggplot(data=nonmember_frame,
@@ -579,23 +639,32 @@ gratitude_time_nonmember_plot = ggplot(data=nonmember_frame,
                                            colour=type)) +
   stat_smooth() +
   # stat_summary(alpha=0.5, size=.1) +
+  facet_grid(cols = vars(ticket_family),
+             rows = vars(project)) +
   coord_cartesian(ylim=c(0,1.0)) +
-  ggtitle('For nonmembers') +
   theme(legend.position = "none") +
+  ggtitle('For members') +
   ylab('Mean expressions of gratitude') +
   scale_x_continuous(name = 'Date',
                      breaks = c(as.numeric(as.Date("2010-01-01")),
-				as.numeric(as.Date("2012-01-01")),
-				as.numeric(as.Date("2014-01-01")),
-				as.numeric(as.Date("2016-01-01")),
-				as.numeric(as.Date("2018-01-01"))),
-		     labels = c("2010", "2012",
-				"2014", "2016",
-				"2018")) +
+                                as.numeric(as.Date("2012-01-01")),
+                                as.numeric(as.Date("2014-01-01")),
+                                as.numeric(as.Date("2016-01-01")),
+                                as.numeric(as.Date("2018-01-01"))),
+                     labels = c("2010", 
+                                "2012",
+                                "2014",
+                                "2016",
+                                "2018")) +
   labs(color='Contribution type') +
-  scale_color_manual(labels = c("Comment", "Issue"), 
-                     values = c("darkgreen", "orange")) +
-  facet_grid(. ~ project)
+  scale_color_manual(labels = c("Issue: Post",
+                                "Issue: Reply",
+                                "PR: Post",
+                                "PR: Reply"), 
+                     values = c("#e66101", # issue: post (darker)
+                                "#fdb863", # issue: reply (lighter)
+                                "#5e3c99", # PR: post (darker)
+                                "#b2abd2")) # PR: reply (lighter)
 
 # create another nonmember plot just for the legend
 gratitude_time_nonmember_legend = ggplot(data=nonmember_frame,
@@ -604,14 +673,32 @@ gratitude_time_nonmember_legend = ggplot(data=nonmember_frame,
                                            colour=type)) +
   stat_smooth() +
   # stat_summary(alpha=0.5, size=.1) +
-  # coord_cartesian(ylim=c(-.6,1.0)) +
-  ggtitle('For nonmembers') +
-  ylab('Sentiment score') +
-  xlab('Date') +
+  facet_grid(cols = vars(ticket_family),
+             rows = vars(project)) +
+  coord_cartesian(ylim=c(0,1.0)) +
+  theme(legend.position = "none") +
+  ggtitle('For members') +
+  ylab('Mean expressions of gratitude') +
+  scale_x_continuous(name = 'Date',
+                     breaks = c(as.numeric(as.Date("2010-01-01")),
+                                as.numeric(as.Date("2012-01-01")),
+                                as.numeric(as.Date("2014-01-01")),
+                                as.numeric(as.Date("2016-01-01")),
+                                as.numeric(as.Date("2018-01-01"))),
+                     labels = c("2010", 
+                                "2012",
+                                "2014",
+                                "2016",
+                                "2018")) +
   labs(color='Contribution type') +
-  scale_color_manual(labels = c("Comment", "Issue"), 
-                     values = c("darkgreen", "orange")) +
-  facet_grid(. ~ project)
+  scale_color_manual(labels = c("Issue: Post",
+                                "Issue: Reply",
+                                "PR: Post",
+                                "PR: Reply"), 
+                     values = c("#e66101", # issue: post (darker)
+                                "#fdb863", # issue: reply (lighter)
+                                "#5e3c99", # PR: post (darker)
+                                "#b2abd2")) # PR: reply (lighter)
 
 # create a master legend
 gratitude_master_legend = gtable_filter(ggplot_gtable(
