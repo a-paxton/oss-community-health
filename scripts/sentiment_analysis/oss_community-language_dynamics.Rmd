@@ -285,14 +285,13 @@ a posted issue, or a reply to an issue).
 ```{r model-emotion-by-type-and-author-and-project}
 
 # do issues and comments materially differ in emotion?
-creators_v_commenters_emotion = lmer(compound_emotion ~ type * author_group +
-                                       (1 | project) +
-                                       (1 | author_name),
-                                     data = sentiment_frame,
-                                     REML=FALSE)
+creators_v_commenters_emotion_by_project = lmer(compound_emotion ~ project + type * author_group  +
+                                                  (1 | author_name),
+                                                data = sentiment_frame,
+                                                REML = TRUE)
 
 # print results
-pander_lme(creators_v_commenters_emotion)
+pander_lme(creators_v_commenters_emotion_by_project)
 
 ```
 
@@ -339,14 +338,13 @@ ggsave(plot = sentiment_plot,
 ```{r model-emotion-by-type-author-project-time}
 
 # do issues and comments materially differ in emotion over time?
-creators_v_commenters_emotion_time = lmer(compound_emotion ~ type * author_group * ns(date) +
-                                            (1 | project) +
-                                            (1 | author_name),
-                                          data = sentiment_frame,
-                                          REML=FALSE)
+creators_v_commenters_emotion_by_project_time = lmer(compound_emotion ~ project + type * author_group * ns(date, 8) +
+                                                       (1 | author_name),
+                                                     data = sentiment_frame,
+                                                     REML=TRUE)
 
 # print results
-pander_lme(creators_v_commenters_emotion_time)
+pander_lme(creators_v_commenters_emotion_by_project_time)
 
 ```
 
