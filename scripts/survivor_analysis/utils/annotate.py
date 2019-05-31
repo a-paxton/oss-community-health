@@ -85,24 +85,25 @@ def annotate_logs(comments, tickets):
 
     # identify whether the PR is closed
     tickets['is_closed'] = pd.notnull(tickets['closed_at'])
-    tmp = tickets["closed_at"]
-    tmp[tmp.isnull()] = pd.to_datetime(datetime.now())
+    mask = tickets["closed_at"].isnull()
+    tickets.loc[mask, "closed_at"] = pd.to_datetime(datetime.now())
     tickets["open_duration"] = (
-        pd.to_datetime(tmp) - pd.to_datetime(tickets["created_at"]))
+        pd.to_datetime(tickets["closed_at"]) -
+        pd.to_datetime(tickets["created_at"]))
 
     # Now we want to remove this estimate for anything created before 1970
     m = [True if c.startswith("1970") else False
          for c in tickets["created_at"]]
-    tickets[m]["open_duration"] = np.nan
+    tickets.loc[m, "open_duration"] = np.nan
 
     # For each comment, get the information on when the corresponding ticket
     # has been opened when it is available (comments can also be added to
     # commits)
     tickets.set_index("ticket_id", inplace=True, drop=False)
     comments["ticket_created_at"] = tickets.loc[
-        comments["ticket_id"]]["created_at"].values
+        comments["ticket_id"], "created_at"].values
     comments["type"] = tickets.loc[
-        comments["ticket_id"]]["type"].values
+        comments["ticket_id"], "type"].values
     # Reset the old index
     tickets.set_index("id", inplace=True, drop=False)
 

@@ -18,6 +18,8 @@ output_folder = args.output_folder
 
 project = folder.split("/")[-1]
 
+print("Extracting features for", project)
+
 # load in the lists needed
 bot_list = pd.read_csv('../bot_names.txt')['bot_name']
 gratitude_list = set(
@@ -52,12 +54,14 @@ temp_comments = annotate.body_cleanup(temp_comments, bot_list)
 temp_issues = annotate.body_cleanup(temp_issues, bot_list)
 # temp_commits = annotate.body_cleanup(temp_commits, bot_list)
 
+print("Running sentiment analysis for", project)
 # run sentiment analysis
 temp_comments = annotate.add_sentiment(temp_comments)
 temp_issues = annotate.add_sentiment(temp_issues)
 # temp_commits = annotate.add_sentiment(temp_commits)
 
 # add gratitude info
+print("Running gratitude analysis for", project)
 temp_comments = annotate.add_gratitude(temp_comments, gratitude_list)
 temp_issues = annotate.add_gratitude(temp_issues, gratitude_list)
 # temp_commits = annotate.add_gratitude(temp_commits, gratitude_list)
@@ -79,6 +83,8 @@ temp_joined_frame['bus_factor'] = temp_bus_factor
 
 # save cleaned data to intermediary folders
 if output_folder is not None:
+    print("Writing results in", output_folder)
+
     try:
         os.makedirs(output_folder)
     except OSError:
