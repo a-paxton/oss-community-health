@@ -11,8 +11,11 @@ This R markdown provides the data preparation for our forthcoming manuscript
 
 To run this from scratch, you will need the following files:
 
-* `../../data/analysis_data/all-sentiment_frame.csv`: Contains cleaned data and
-  derived variables from scraped GitHub data.
+* `../../data/analysis_data/sentiment_frame_issues-for_r.csv`: Contains cleaned
+  **tickets**-related data and derived variables from scraped GitHub data.
+* `../../data/analysis_data/sentiment_frame_comments-for_r.csv`: Contains 
+  cleaned **comments**-related data and derived variables from scraped GitHub 
+  data.
 * `./utils/ossc-libraries_and_functions.r`: Loads in necessary libraries and 
   creates new functions for our analyses.
 
@@ -39,37 +42,10 @@ rm(list=ls())
 source('./utils/ossc-libraries_and_functions.r')
 
 # load data
-joined_frame = read.table('../../data/analysis_data/all-sentiment_frame-for_r.csv', 
-                          sep = ',', header=TRUE, fill=TRUE)
-bot_names = read.table('../bot_names.txt') %>% .$V1 %>% as.character(.)
-
-```
-
-***
-
-## Identify potential remaining bots
-
-**Note**: This is useful to run if more data are collected. The results should 
-be manually inspected, and any additional bots detected should be added to the
-`../bot_names.txt` file. Otherwise, it does not need to be run.
-
-```{r identify-bots, eval=FALSE}
-
-# # identify potential bots based on who uses "bot" in their names
-# potential_bot_df = joined_frame %>% ungroup() %>%
-#   filter(grepl("bot",author_name_issue)) %>% 
-#   filter(grepl("bot",author_name_comment)) %>%
-#   select(author_name_issue, author_name_comment)
-# 
-# # find all unique instances
-# bot_issues = as.character(unique(potential_bot_df$author_name_issue))
-# bot_comments = as.character(unique(potential_bot_df$author_name_comment))
-# potential_bots = unique(c(bot_issues,bot_comments))
-# potential_bots = potential_bots[grepl("bot",potential_bots)]
-# 
-# # save to file
-# write.table(potential_bots, file="ossc-potential_bots.csv",
-#           col.names=FALSE, row.names=FALSE)
+tickets_frame = read.table('../../data/analysis_data/sentiment_frame_issues-for_r.csv', 
+                          sep = ',', header=TRUE, fill=TRUE, stringsAsFactors = FALSE)
+comments_frame = read.table('../../data/analysis_data/sentiment_frame_comments-for_r.csv', 
+                            sep = ',', header=TRUE, fill=TRUE, stringsAsFactors = FALSE)
 
 ```
 
@@ -82,31 +58,40 @@ and convert the dates to a more interpretable format.
 
 ```{r dates-and-bots}
 
-# fix time
-joined_frame = joined_frame %>% ungroup() %>%
+# fix tickets dataframe
+tickets_frame = tickets_frame %>% ungroup() %>%
   
   # filter out bots
-  filter(!author_name_issue %in% bot_names) %>%
-  filter(!author_name_comment %in% bot_names) %>%
+  dplyr::filter(bot_flag == "False") %>%
+  select(-bot_flag) %>%
   
   # get time in days
-  mutate(open_time_comment = strsplit(as.character(open_duration), ' ') %>%
+  mutate(open_time = strsplit(as.character(open_duration), ' ') %>%
            sapply(magrittr::extract2, 1) %>%
            as.numeric()) %>%
-  mutate(open_time_issue = open_time_comment) %>%
   
   # get the year and month it was created 
-  mutate(year_comment = as.numeric(format(as.Date(created_at_comment), "%Y"))) %>%
-  mutate(year_issue = as.numeric(format(as.Date(created_at_issue), "%Y"))) %>%
-  mutate(month_comment = as.numeric(format(as.Date(created_at_comment), "%m"))) %>%
-  mutate(month_issue = as.numeric(format(as.Date(created_at_issue), "%m"))) %>%
-  mutate(date_comment = as.numeric(as.Date(created_at_comment))) %>%
-  mutate(date_issue = as.numeric(as.Date(created_at_issue))) %>%
+  mutate(year = as.numeric(format(as.Date(created_at), "%Y"))) %>%
+  mutate(month = as.numeric(format(as.Date(created_at), "%m"))) %>%
+  mutate(date = as.numeric(as.Date(created_at))) %>%
   
   # drop old columns
-  select(-ends_with('_at'), -contains('_at_'),
-         -contains('month'), -contains('year'),
-         -open_duration)
+  select(-ends_with('_at'))
+
+# fix comments dataframe
+comments_frame = comments_frame %>% ungroup() %>%
+  
+  # filter out bots
+  dplyr::filter(bot_flag == "False") %>%
+  select(-bot_flag) %>%
+  
+  # get the year and month it was created 
+  mutate(year = as.numeric(format(as.Date(created_at), "%Y"))) %>%
+  mutate(month = as.numeric(format(as.Date(created_at), "%m"))) %>%
+  mutate(date = as.numeric(as.Date(created_at))) %>%
+  
+  # drop old columns
+  select(-ends_with('_at'))
 ```
 
 ***
@@ -119,41 +104,47 @@ patterns.
 ```{r user-stats, include=FALSE, echo=FALSE, eval=TRUE}
 
 # get unique values
-unique_commenters = as.character(unique(joined_frame$author_name_comment))
-unique_issuers = as.character(unique(joined_frame$author_name_issue))
-unique_users = as.character(unique(append(unique_commenters, unique_issuers)))
+unique_commenters = as.character(unique(comments_frame$author_name))
+unique_ticketers = as.character(unique(tickets_frame$author_name))
+unique_users = as.character(unique(append(unique_commenters, unique_ticketers)))
 
 ```
 
 ```{r activity-stats, include=FALSE, echo=FALSE, eval=TRUE}
 
-# get counts of issue activity per project
-activity_counts = joined_frame %>% ungroup() %>%
-  dplyr::select(project, id_issue) %>%
+# get counts of ticket activity per project
+ticket_counts = tickets_frame %>% ungroup() %>%
+  dplyr::select(project, id) %>%
   distinct() %>%
   group_by(project) %>%
-  summarize(unique_issues = n())
+  summarize(unique_tickets = n())
 
 # get counts of comment activity per project
-comment_counts = joined_frame %>% ungroup() %>%
-  dplyr::select(project, id_issue, id_comment) %>%
+comment_counts = comments_frame %>% ungroup() %>%
+  dplyr::select(project, id, ticket_id) %>%
   distinct() %>%
-  group_by(project, id_issue) %>%
+  group_by(project) %>%
   summarize(unique_comments = n())
+
+# bind the two
+contribution_counts = dplyr::full_join(ticket_counts, comment_counts,
+                                        by='project')
+pander(contribution_counts)
+rm(ticket_counts, comment_counts)
 
 ```
 
-Our dataset includes `r dim(activity_counts)[1]` unique projects with a total 
-of `r sum(activity_counts$unique_issues)` unique issues, with a mean of 
-`r mean(activity_counts$unique_issues)` issues per project.
+Our dataset includes `r dim(contribution_counts)[1]` unique projects with a 
+total of `r sum(contribution_counts$unique_tickets)` unique tickets, with a 
+mean of `r mean(contribution_counts$unique_tickets)` tickets per project.
 
-On these issues, the dataset includes `r sum(comment_counts$unique_comments)` 
-unique comments, with `r mean(comment_counts$unique_comments)` average comments
-per issue.
+On these tickets, the dataset includes 
+`r sum(contribution_counts$unique_comments)` unique comments, with 
+`r mean(contribution_counts$unique_comments)` average comments per ticket.
 
 In total, we have `r length(unique_commenters)` unique commenters, 
-`r length(unique_issuers)` unique issue-creators, and `r length(unique_users)` 
-overall unique users.
+`r length(unique_ticketers)` unique ticket-creators, and 
+`r length(unique_users)` overall unique users.
 
 ***
 
@@ -165,14 +156,23 @@ overall unique users.
 
 ### Data preparation
 
-Before we can run our models, we need to transform some our data into a
-proper long-form format, with one unit (comment or issue) per line. However, 
-because `joined_frame` includes unique lines by *comment*, it necessarily 
-includes repeated instances of *issues* if multiple comments have been made on
-the same issue. As a result, we must de-duplicate the dataframe after we 
-disentangle the comments and issues.
+Before we can run Model Series 1, we need to combine `tickets_frame` and
+`comments_frame` into a single dataframe.
 
 ```{r prepare-data-for-sentiment-analysis}
+
+# add some type and ticket family information to each dataframe
+tickets_frame = tickets_frame %>%
+  mutate(type_family = 'post')
+comments_frame = comments_frame %>%
+  mutate(type_family = 'reply') %>%
+  
+# merge tickets and comments into a single frame
+joined_frame = tickets_frame %>% 
+  dplyr::bind_rows(., comments_frame) %>%
+  dplyr::rename(ticket_family = type) %>%
+  mutate(ticket_family = recode(ticket_family, pull_request = "pr")) %>%
+  mutate(type = paste0(ticket_family,'_',type_family))
 
 # mutate wide-form into long-form data
 body_sentiment_df = joined_frame %>% ungroup() %>%
@@ -186,37 +186,37 @@ body_sentiment_df = joined_frame %>% ungroup() %>%
          contains('type_'),
          -contains('ticket_id'))
 
-# separate out comments, issues, and last activity counters
+# separate out comments, tickets, and last activity counters
 comment_sentiment_df = body_sentiment_df %>% ungroup() %>%
   select(ends_with('_comment')) %>%
   rename_all(funs(gsub('_comment','',.)))
-issue_sentiment_df = body_sentiment_df %>% ungroup() %>%
-  select(ends_with('_issue')) %>%
-  rename_all(funs(gsub('_issue','',.)))
+ticket_sentiment_df = body_sentiment_df %>% ungroup() %>%
+  select(ends_with('_ticket')) %>%
+  rename_all(funs(gsub('_ticket','',.)))
 last_counters = joined_frame %>% ungroup() %>%
-  select(id_issue, id_comment, project, bus_factor,
+  select(id_ticket, id_comment, project, bus_factor,
          issue_author_last_issue, issue_author_last_comment)
 
-# merge issues and comments separately with last comments
+# merge tickets and comments separately with last comments
 comment_sentiment_df = full_join(comment_sentiment_df,
                                  last_counters,
                                  by=c('id' = 'id_comment')) %>%
-  select(-id_issue) %>%
+  select(-id_ticket) %>%
   mutate(ticket_family = type,
          type = paste0(type,"_reply"),
          type_family = 'reply') %>%
   distinct()
-issue_sentiment_df = full_join(issue_sentiment_df,
+ticket_sentiment_df = full_join(ticket_sentiment_df,
                                distinct(select(last_counters,
                                                -id_comment)),
-                               by=c('id' = 'id_issue')) %>%
+                               by=c('id' = 'id_ticket')) %>%
   mutate(ticket_family = type,
          type = paste0(type,"_post"),
          type_family = 'post') %>%
   distinct()
 
 # append the dataframes
-sentiment_frame = rbind.data.frame(comment_sentiment_df, issue_sentiment_df)
+sentiment_frame = rbind.data.frame(comment_sentiment_df, ticket_sentiment_df)
 
 # concatenate association groups
 sentiment_frame = sentiment_frame %>% ungroup() %>%
@@ -243,10 +243,10 @@ we group everyone only into one of two categories for Model Series 1---either
 `member` or `nonmember`. 
 
 This is partly because the "first" tags are only applied in very specific
-circumstances related to pull requests and issues. As a result, if we were 
+circumstances related to pull requests and tickets. As a result, if we were 
 going to keep original author associations, we would have to remove first-time
 contributors and first-timers from the dataset when we're analyzing `type` 
-as a covariate, since both types of users only ever submitted issues. However, 
+as a covariate, since both types of users only ever submitted tickets. However, 
 because we are grouping simply by members and non-members, we can retain them 
 in the dataset.
 
@@ -280,11 +280,11 @@ Now we begin the actual modeling. Our first general question is whether users'
 patterns of sentiment differ materially by whether they are a member of the
 community versus a nonmember of the community and by their different kinds of
 possible contributions (i.e., a posted pull request, a reply to a pull request,
-a posted issue, or a reply to an issue).
+a posted ticket, or a reply to an ticket).
 
 ```{r model-emotion-by-type-and-author-and-project}
 
-# do issues and comments materially differ in emotion?
+# do tickets and comments materially differ in emotion?
 creators_v_commenters_emotion_by_project = lmer(compound_emotion ~ project + type * author_group  +
                                                   (1 | author_name),
                                                 data = sentiment_frame,
@@ -340,13 +340,13 @@ ggsave(plot = sentiment_plot,
 
 ```
 
-![**Figure**. Sentiment by contribution type (issue vs. comment) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution-knitr.jpg)
+![**Figure**. Sentiment by contribution type (ticket vs. comment) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution-knitr.jpg)
 
-### Model 1.2: Do issues and comments materially differ in emotion over time?
+### Model 1.2: Do tickets and comments materially differ in emotion over time?
 
 ```{r model-emotion-by-type-author-project-time}
 
-# do issues and comments materially differ in emotion over time?
+# do tickets and comments materially differ in emotion over time?
 creators_v_commenters_emotion_by_project_time = lmer(compound_emotion ~ project + type * author_group * ns(date, 8) +
                                                        (1 | author_name),
                                                      data = sentiment_frame,
@@ -362,8 +362,8 @@ of community members relative to the community nonmembers over time, even
 when we collapse across all projects.
 
 Perhaps more interestingly, we see a difference in the affect dynamics
-only in the last year: Members' issues are becoming more positive, while
-nonmembers' issues are becoming more negative.
+only in the last year: Members' tickets are becoming more positive, while
+nonmembers' tickets are becoming more negative.
 
 We'll need to do an analysis to follow up on this.
 
@@ -507,9 +507,9 @@ ggsave(filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_co
        ))
 
 ```
-![**Figure**. Sentiment over time by contribution type (issue vs. comment) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-knitr.jpg)
+![**Figure**. Sentiment over time by contribution type (ticket vs. comment) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-knitr.jpg)
 
-### Model 1.3: Do issues and comments materially differ in gratitude?
+### Model 1.3: Do tickets and comments materially differ in gratitude?
 
 ```{r gratitude-summary-stats}
 
@@ -572,9 +572,9 @@ ggsave(plot = grateful_plot,
 
 ```
 
-![**Figure**. Expressions of gratitude by contribution type (issue vs. comment) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-grateful_membership_contribution-knitr.jpg)
+![**Figure**. Expressions of gratitude by contribution type (ticket vs. comment) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-grateful_membership_contribution-knitr.jpg)
 
-### Model 1.4: Do issues and comments materially differ in gratitude over time?
+### Model 1.4: Do tickets and comments materially differ in gratitude over time?
 
 **Note**: Having difficulty getting this to converge.
 
@@ -733,7 +733,7 @@ ggsave(filename = '../../figures/sentiment_analysis/ossc-gratitude_membership_co
 
 ```
 
-![**Figure**. Expressions of gratitude over time by contribution type (issue vs. comment) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-gratitude_membership_contribution_time-knitr.jpg)
+![**Figure**. Expressions of gratitude over time by contribution type (ticket vs. comment) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-gratitude_membership_contribution_time-knitr.jpg)
 
 ## Model Series 2: Retention
 
@@ -745,14 +745,14 @@ ggsave(filename = '../../figures/sentiment_analysis/ossc-gratitude_membership_co
 
 ```{r prep-analysis}
 
-# combine information by issue
+# combine information by ticket
 retention_frame = joined_frame %>% ungroup() %>%
-  group_by(project, id_issue) %>%
+  group_by(project, id_ticket) %>%
   summarize_if(is.numeric, mean, na.rm=TRUE) %>%
   ungroup() %>%
-  left_join(., issue_sentiment_df,
+  left_join(., ticket_sentiment_df,
             by=c('project', 'bus_factor',
-                 'id_issue' = 'id'))
+                 'id_ticket' = 'id'))
 
 # normalize
 retention_frame_st = retention_frame %>%
@@ -808,7 +808,7 @@ ggsave(plot = retention_plot,
 
 ```
 
-![**Figure**. Whether a first-time issue creator will open a second issue by commenters' expressions of gratitude and responsiveness.](../../figures/sentiment_analysis/ossc-retention_emotion-knitr.jpg)
+![**Figure**. Whether a first-time ticket creator will open a second ticket by commenters' expressions of gratitude and responsiveness.](../../figures/sentiment_analysis/ossc-retention_emotion-knitr.jpg)
 
 ***
 
@@ -822,5 +822,5 @@ Ideas:
 * Are requesters more or less polite?
 * Does friendliness bring people back?
 * Does the number and intensity of negative and positive comments on a 
-  first-time contributor's issue change whether they come back to make another 
+  first-time contributor's ticket change whether they come back to make another 
   ticket?
