@@ -343,7 +343,43 @@ nonmembers' tickets are becoming more negative.
 
 We'll need to do an analysis to follow up on this.
 
-```{r plot-model-emotion-by-type-author-time, include=FALSE, echo=FALSE, eval=TRUE}
+```{r plot-model-emotion-by-contribution-and-membership, include=FALSE, echo=FALSE, eval=TRUE}
+
+ggplot(data=sentiment_frame,
+                                       aes(x=date,
+                                           y=compound_emotion,
+                                           colour=type)) +
+  stat_smooth() +
+  # stat_summary(alpha=0.5, size=.1) +
+  #geom_smooth(method=lm, formula=y ~ bs(x, df=8)) +
+  #coord_cartesian(ylim=c(-1.0,1.0)) +
+  facet_grid(cols = c(vars(ticket_family),vars(author_group))) +
+  ggtitle('Message sentiment by contribution\nand community membership over time') +
+  #theme(legend.position = "none") +
+  ylab('Sentiment score') +
+  scale_x_continuous(name = 'Date',
+                     breaks = c(as.numeric(as.Date("2010-01-01")),
+                                as.numeric(as.Date("2012-01-01")),
+                                as.numeric(as.Date("2014-01-01")),
+                                as.numeric(as.Date("2016-01-01")),
+                                as.numeric(as.Date("2018-01-01"))),
+                     labels = c("2010", "2012",
+                                "2014", "2016",
+                                "2018")) +
+  labs(color='Contribution type') +
+  scale_color_manual(labels = c("Issue: Post",
+                                "Issue: Reply",
+                                "PR: Post",
+                                "PR: Reply"), 
+                     values = c("#e66101", # issue: post (darker)
+                                "#fdb863", # issue: reply (lighter)
+                                "#5e3c99", # PR: post (darker)
+                                "#b2abd2")) # PR: reply (lighter)
+
+```
+
+
+```{r plot-model-emotion-by-contribution-and-membership-and-time, include=FALSE, echo=FALSE, eval=TRUE}
 
 # split by membership type
 member_frame = sentiment_frame %>% filter(author_group == 'member')
