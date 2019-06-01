@@ -30,7 +30,7 @@ required_packages = c(
 )
 
 # load required packages
-invisible(lapply(required_packages, require, character.only = TRUE))
+invisible(lapply(required_packages, library, character.only = TRUE))
 
 #### Prevent scientific notation ####
 options(scipen=999)

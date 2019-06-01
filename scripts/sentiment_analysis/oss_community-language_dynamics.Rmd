@@ -7,19 +7,19 @@ output:
 ---
 
 This R markdown provides the data preparation for our forthcoming manuscript
-(Paxton, Varoquaux, Geiger, & Holdgraf, *in preparation*). 
+(Paxton, Varoquaux, Geiger, & Holdgraf, *in preparation*).
 
 To run this from scratch, you will need the following files:
 
-* `../../data/analysis_data/sentiment_frame_issues-for_r.csv`: Contains cleaned
+* `../../data/analysis_data/sentiment_frame_tickets-for_r.csv`: Contains cleaned
   **tickets**-related data and derived variables from scraped GitHub data.
-* `../../data/analysis_data/sentiment_frame_comments-for_r.csv`: Contains 
-  cleaned **comments**-related data and derived variables from scraped GitHub 
+* `../../data/analysis_data/sentiment_frame_comments-for_r.csv`: Contains
+  cleaned **comments**-related data and derived variables from scraped GitHub
   data.
-* `./utils/ossc-libraries_and_functions.r`: Loads in necessary libraries and 
+* `./utils/ossc-libraries_and_functions.r`: Loads in necessary libraries and
   creates new functions for our analyses.
 
-**Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux 
+**Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux
 (University of California, Berkeley)
 
 **Date last modified**: 30 May 2019
@@ -42,9 +42,9 @@ rm(list=ls())
 source('./utils/ossc-libraries_and_functions.r')
 
 # load data
-tickets_frame = read.table('../../data/analysis_data/sentiment_frame_issues-for_r.csv', 
+tickets_frame = read.table('../../data/analysis_data/sentiment_frame_tickets-for_r.csv',
                           sep = ',', header=TRUE, fill=TRUE, stringsAsFactors = FALSE)
-comments_frame = read.table('../../data/analysis_data/sentiment_frame_comments-for_r.csv', 
+comments_frame = read.table('../../data/analysis_data/sentiment_frame_comments-for_r.csv',
                             sep = ',', header=TRUE, fill=TRUE, stringsAsFactors = FALSE)
 
 ```
@@ -53,43 +53,43 @@ comments_frame = read.table('../../data/analysis_data/sentiment_frame_comments-f
 
 ## Remove bots and clean up dates
 
-Here, we ensure that all the users identified to be bots have been removed 
+Here, we ensure that all the users identified to be bots have been removed
 and convert the dates to a more interpretable format.
 
 ```{r dates-and-bots}
 
 # fix tickets dataframe
 tickets_frame = tickets_frame %>% ungroup() %>%
-  
+
   # filter out bots
   dplyr::filter(bot_flag == "False") %>%
   select(-bot_flag) %>%
-  
+
   # get time in days
   mutate(open_time = strsplit(as.character(open_duration), ' ') %>%
            sapply(magrittr::extract2, 1) %>%
            as.numeric()) %>%
-  
-  # get the year and month it was created 
+
+  # get the year and month it was created
   mutate(year = as.numeric(format(as.Date(created_at), "%Y"))) %>%
   mutate(month = as.numeric(format(as.Date(created_at), "%m"))) %>%
   mutate(date = as.numeric(as.Date(created_at))) %>%
-  
+
   # drop old columns
   select(-ends_with('_at'))
 
 # fix comments dataframe
 comments_frame = comments_frame %>% ungroup() %>%
-  
+
   # filter out bots
   dplyr::filter(bot_flag == "False") %>%
   select(-bot_flag) %>%
-  
-  # get the year and month it was created 
+
+  # get the year and month it was created
   mutate(year = as.numeric(format(as.Date(created_at), "%Y"))) %>%
   mutate(month = as.numeric(format(as.Date(created_at), "%m"))) %>%
   mutate(date = as.numeric(as.Date(created_at))) %>%
-  
+
   # drop old columns
   select(-ends_with('_at'))
 ```
@@ -134,16 +134,16 @@ rm(ticket_counts, comment_counts)
 
 ```
 
-Our dataset includes `r dim(contribution_counts)[1]` unique projects with a 
-total of `r sum(contribution_counts$unique_tickets)` unique tickets, with a 
+Our dataset includes `r dim(contribution_counts)[1]` unique projects with a
+total of `r sum(contribution_counts$unique_tickets)` unique tickets, with a
 mean of `r mean(contribution_counts$unique_tickets)` tickets per project.
 
-On these tickets, the dataset includes 
-`r sum(contribution_counts$unique_comments)` unique comments, with 
+On these tickets, the dataset includes
+`r sum(contribution_counts$unique_comments)` unique comments, with
 `r mean(contribution_counts$unique_comments)` average comments per ticket.
 
-In total, we have `r length(unique_commenters)` unique commenters, 
-`r length(unique_ticketers)` unique ticket-creators, and 
+In total, we have `r length(unique_commenters)` unique commenters,
+`r length(unique_ticketers)` unique ticket-creators, and
 `r length(unique_users)` overall unique users.
 
 ***
@@ -172,9 +172,9 @@ comments_frame = comments_frame %>%
   dplyr::filter(!type == "")
 
 # merge tickets and comments into a single frame
-sentiment_frame = tickets_frame %>% 
+sentiment_frame = tickets_frame %>%
   dplyr::bind_rows(., comments_frame) %>%
-  
+
   # rename variables associated with type of ticket and type of contribution
   dplyr::rename(ticket_family = type) %>%
   mutate(ticket_family = recode(ticket_family, pull_request = "pr")) %>%
@@ -182,7 +182,7 @@ sentiment_frame = tickets_frame %>%
 
   # keep only select variables
   select(project,
-         contains('author'), 
+         contains('author'),
          first_ticket,
          contains('num_'),
          contains('ticket'),
@@ -238,7 +238,7 @@ pander_lme(creators_v_commenters_emotion_by_project)
 ```
 
 These results are quite different from our results conducted over a smaller
-dataset last year. One potential reason is that these effects may be 
+dataset last year. One potential reason is that these effects may be
 time-dependent. Our next model explores this possibility by adding a time term.
 
 ```{r plot-model-emotion-by-type-and-membership, echo=FALSE, include=FALSE, eval=TRUE}
@@ -248,7 +248,7 @@ sentiment_plot_aggregated = ggplot(data=sentiment_frame,
                                    aes(x=author_group,
                                        y=compound_emotion,
                                        colour=type)) +
-  stat_summary(fun.y=mean, geom="point", size=2) + 
+  stat_summary(fun.y=mean, geom="point", size=2) +
   stat_summary(fun.data = mean_se, geom = "errorbar") +
   #coord_cartesian(ylim=c(0,.5)) +
   facet_grid(cols=vars(ticket_family)) +
@@ -259,7 +259,7 @@ sentiment_plot_aggregated = ggplot(data=sentiment_frame,
   scale_color_manual(labels = c("Issue: Post",
                                 "Issue: Reply",
                                 "PR: Post",
-                                "PR: Reply"), 
+                                "PR: Reply"),
                      values = c("#e66101", # issue: post (darker)
                                 "#fdb863", # issue: reply (lighter)
                                 "#5e3c99", # PR: post (darker)
@@ -289,7 +289,7 @@ sentiment_plot_by_project = ggplot(data=sentiment_frame,
                                    aes(x=author_group,
                                        y=compound_emotion,
                                        colour=type)) +
-  stat_summary(fun.y=mean, geom="point", size=2) + 
+  stat_summary(fun.y=mean, geom="point", size=2) +
   stat_summary(fun.data = mean_se, geom = "errorbar") +
   #coord_cartesian(ylim=c(0,.5)) +
   facet_grid(cols=vars(ticket_family),
@@ -301,7 +301,7 @@ sentiment_plot_by_project = ggplot(data=sentiment_frame,
   scale_color_manual(labels = c("Issue: Post",
                                 "Issue: Reply",
                                 "PR: Post",
-                                "PR: Reply"), 
+                                "PR: Reply"),
                      values = c("#e66101", # issue: post (darker)
                                 "#fdb863", # issue: reply (lighter)
                                 "#5e3c99", # PR: post (darker)
@@ -376,21 +376,21 @@ sentiment_time_member_plot = ggplot(data=member_frame,
                                 as.numeric(as.Date("2014-01-01")),
                                 as.numeric(as.Date("2016-01-01")),
                                 as.numeric(as.Date("2018-01-01"))),
-                     labels = c("2010", 
+                     labels = c("2010",
                                 "2012",
-                                "2014", 
+                                "2014",
                                 "2016",
                                 "2018")) +
   labs(color='Contribution type') +
   scale_color_manual(labels = c("Issue: Post",
                                 "Issue: Reply",
                                 "PR: Post",
-                                "PR: Reply"), 
+                                "PR: Reply"),
                      values = c("#e66101", # issue: post (darker)
                                 "#fdb863", # issue: reply (lighter)
                                 "#5e3c99", # PR: post (darker)
                                 "#b2abd2")) # PR: reply (lighter)
-  
+
 
 # nonmembership plot
 sentiment_time_nonmember_plot = ggplot(data=nonmember_frame,
@@ -419,7 +419,7 @@ sentiment_time_nonmember_plot = ggplot(data=nonmember_frame,
   scale_color_manual(labels = c("Issue: Post",
                                 "Issue: Reply",
                                 "PR: Post",
-                                "PR: Reply"), 
+                                "PR: Reply"),
                      values = c("#e66101", # issue: post (darker)
                                 "#fdb863", # issue: reply (lighter)
                                 "#5e3c99", # PR: post (darker)
@@ -452,7 +452,7 @@ sentiment_time_nonmember_legend = ggplot(data=nonmember_frame,
   scale_color_manual(labels = c("Issue: Post",
                                 "Issue: Reply",
                                 "PR: Post",
-                                "PR: Reply"), 
+                                "PR: Reply"),
                      values = c("#e66101", # issue: post (darker)
                                 "#fdb863", # issue: reply (lighter)
                                 "#5e3c99", # PR: post (darker)
@@ -460,7 +460,7 @@ sentiment_time_nonmember_legend = ggplot(data=nonmember_frame,
 
 # create a master legend
 master_legend = gtable_filter(ggplot_gtable(
-  ggplot_build(sentiment_time_nonmember_legend + 
+  ggplot_build(sentiment_time_nonmember_legend +
                  theme(legend.position="bottom"))),
   "guide-box")
 
@@ -524,7 +524,7 @@ grateful_plot = ggplot(data=sentiment_frame,
                        aes(colour=type,
                            y=grateful_count,
                            x=author_group)) +
-  stat_summary(fun.y=mean, geom="point", size=2) + 
+  stat_summary(fun.y=mean, geom="point", size=2) +
   stat_summary(fun.data = mean_se, geom = "errorbar") +
   facet_grid(cols = vars(ticket_family),
              rows = vars(project)) +
@@ -535,7 +535,7 @@ grateful_plot = ggplot(data=sentiment_frame,
   scale_color_manual(labels = c("Issue: Post",
                                 "Issue: Reply",
                                 "PR: Post",
-                                "PR: Reply"), 
+                                "PR: Reply"),
                      values = c("#e66101", # issue: post (darker)
                                 "#fdb863", # issue: reply (lighter)
                                 "#5e3c99", # PR: post (darker)
@@ -600,7 +600,7 @@ gratitude_time_member_plot = ggplot(data=member_frame,
                                 as.numeric(as.Date("2014-01-01")),
                                 as.numeric(as.Date("2016-01-01")),
                                 as.numeric(as.Date("2018-01-01"))),
-                     labels = c("2010", 
+                     labels = c("2010",
                                 "2012",
                                 "2014",
                                 "2016",
@@ -609,7 +609,7 @@ gratitude_time_member_plot = ggplot(data=member_frame,
   scale_color_manual(labels = c("Issue: Post",
                                 "Issue: Reply",
                                 "PR: Post",
-                                "PR: Reply"), 
+                                "PR: Reply"),
                      values = c("#e66101", # issue: post (darker)
                                 "#fdb863", # issue: reply (lighter)
                                 "#5e3c99", # PR: post (darker)
@@ -634,7 +634,7 @@ gratitude_time_nonmember_plot = ggplot(data=nonmember_frame,
                                 as.numeric(as.Date("2014-01-01")),
                                 as.numeric(as.Date("2016-01-01")),
                                 as.numeric(as.Date("2018-01-01"))),
-                     labels = c("2010", 
+                     labels = c("2010",
                                 "2012",
                                 "2014",
                                 "2016",
@@ -643,7 +643,7 @@ gratitude_time_nonmember_plot = ggplot(data=nonmember_frame,
   scale_color_manual(labels = c("Issue: Post",
                                 "Issue: Reply",
                                 "PR: Post",
-                                "PR: Reply"), 
+                                "PR: Reply"),
                      values = c("#e66101", # issue: post (darker)
                                 "#fdb863", # issue: reply (lighter)
                                 "#5e3c99", # PR: post (darker)
@@ -668,7 +668,7 @@ gratitude_time_nonmember_legend = ggplot(data=nonmember_frame,
                                 as.numeric(as.Date("2014-01-01")),
                                 as.numeric(as.Date("2016-01-01")),
                                 as.numeric(as.Date("2018-01-01"))),
-                     labels = c("2010", 
+                     labels = c("2010",
                                 "2012",
                                 "2014",
                                 "2016",
@@ -677,7 +677,7 @@ gratitude_time_nonmember_legend = ggplot(data=nonmember_frame,
   scale_color_manual(labels = c("Issue: Post",
                                 "Issue: Reply",
                                 "PR: Post",
-                                "PR: Reply"), 
+                                "PR: Reply"),
                      values = c("#e66101", # issue: post (darker)
                                 "#fdb863", # issue: reply (lighter)
                                 "#5e3c99", # PR: post (darker)
@@ -685,7 +685,7 @@ gratitude_time_nonmember_legend = ggplot(data=nonmember_frame,
 
 # create a master legend
 gratitude_master_legend = gtable_filter(ggplot_gtable(
-  ggplot_build(gratitude_time_nonmember_legend + 
+  ggplot_build(gratitude_time_nonmember_legend +
                  theme(legend.position="bottom"))),
   "guide-box")
 
@@ -774,7 +774,7 @@ retention_plot = ggplot(data=retention_frame,
   ylab('Time open (in days)') +
   xlab('Expressions of gratitude in comments') +
   labs(color='Newcomer') +
-  scale_color_manual(labels = c("Retained", "Lost"), 
+  scale_color_manual(labels = c("Retained", "Lost"),
                      values = c("blue", "red"))
 
 # save full version
@@ -801,10 +801,10 @@ ggsave(plot = retention_plot,
 Ideas:
 
 * Do comments, generally, get more friendly or more hostile over time?
-* Does the emotional valence of a contributor's first ticket predict whether 
+* Does the emotional valence of a contributor's first ticket predict whether
   they'll come back to make a second one?
 * Are requesters more or less polite?
 * Does friendliness bring people back?
-* Does the number and intensity of negative and positive comments on a 
-  first-time contributor's ticket change whether they come back to make another 
+* Does the number and intensity of negative and positive comments on a
+  first-time contributor's ticket change whether they come back to make another
   ticket?
