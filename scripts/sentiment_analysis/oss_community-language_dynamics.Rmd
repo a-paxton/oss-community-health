@@ -241,12 +241,54 @@ These results are quite different from our results conducted over a smaller
 dataset last year. One potential reason is that these effects may be 
 time-dependent. Our next model explores this possibility by adding a time term.
 
-```{r plot-model-emotion-by-type-and-author, echo=FALSE, include=FALSE, eval=TRUE}
+```{r plot-model-emotion-by-type-and-membership, echo=FALSE, include=FALSE, eval=TRUE}
 
-sentiment_plot = ggplot(data=sentiment_frame,
-                        aes(x=author_group,
-                            y=compound_emotion,
-                            colour=type)) +
+# aggregate sentiment over all projects
+sentiment_plot_aggregated = ggplot(data=sentiment_frame,
+                                   aes(x=author_group,
+                                       y=compound_emotion,
+                                       colour=type)) +
+  stat_summary(fun.y=mean, geom="point", size=2) + 
+  stat_summary(fun.data = mean_se, geom = "errorbar") +
+  #coord_cartesian(ylim=c(0,.5)) +
+  facet_grid(cols=vars(ticket_family)) +
+  ggtitle('Message sentiment by contribution\nand community membership') +
+  ylab('Sentiment score') +
+  xlab('Community membership') +
+  labs(color='Contribution type') +
+  scale_color_manual(labels = c("Issue: Post",
+                                "Issue: Reply",
+                                "PR: Post",
+                                "PR: Reply"), 
+                     values = c("#e66101", # issue: post (darker)
+                                "#fdb863", # issue: reply (lighter)
+                                "#5e3c99", # PR: post (darker)
+                                "#b2abd2")) # PR: reply (lighter)
+
+# plot a full-size version
+ggsave(plot = sentiment_plot_aggregated,
+       height = 4,
+       width = 5,
+       filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution-aggregated.jpg')
+
+# plot a smaller one for knitr
+ggsave(plot = sentiment_plot_aggregated,
+       height = 4,
+       width = 5,
+       dpi = 150,
+       filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution-aggregated-knitr.jpg')
+
+```
+
+![**Figure**. Sentiment by contribution type (ticket vs. comment) and community membership at the time of posting (member vs. nonmember).](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution-aggregated-knitr.jpg)
+
+```{r plot-model-emotion-by-type-and-membership-and-project, echo=FALSE, include=FALSE, eval=TRUE}
+
+# separate across each project
+sentiment_plot_by_project = ggplot(data=sentiment_frame,
+                                   aes(x=author_group,
+                                       y=compound_emotion,
+                                       colour=type)) +
   stat_summary(fun.y=mean, geom="point", size=2) + 
   stat_summary(fun.data = mean_se, geom = "errorbar") +
   #coord_cartesian(ylim=c(0,.5)) +
@@ -268,21 +310,21 @@ sentiment_plot = ggplot(data=sentiment_frame,
 # another possible color scheme: #ca0020, #f4a582, #92c5de, #0571b0 (red to blue)
 
 # plot a full-size version
-ggsave(plot = sentiment_plot,
-       height = 4,
-       width = 10,
-       filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution.jpg')
+ggsave(plot = sentiment_plot_by_project,
+       height = 10,
+       width = 4,
+       filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution-by_project.jpg')
 
 # plot a smaller one for knitr
-ggsave(plot = sentiment_plot,
-       height = 4,
-       width = 10,
+ggsave(plot = sentiment_plot_by_project,
+       height = 10,
+       width = 4,
        dpi = 150,
-       filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution-knitr.jpg')
+       filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution-by_project-knitr.jpg')
 
 ```
 
-![**Figure**. Sentiment by contribution type (ticket vs. comment) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution-knitr.jpg)
+![**Figure**. Sentiment by contribution type (ticket vs. comment) and community membership at the time of posting (member vs. nonmember) for each project.](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution-by_project-knitr.jpg)
 
 ### Model 1.2: Do tickets and comments materially differ in emotion over time?
 
