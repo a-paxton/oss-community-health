@@ -59,7 +59,7 @@ comment_frame_preserve = comments_frame
 Here, we ensure that all the users identified to be bots have been removed
 and convert the dates to a more interpretable format.
 
-```{r dates-and-bots}
+```{r fix-dates-and-bots}
 
 # fix tickets dataframe
 tickets_frame = tickets_frame %>% ungroup() %>%
