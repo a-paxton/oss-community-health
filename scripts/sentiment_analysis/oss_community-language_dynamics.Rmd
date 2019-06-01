@@ -48,48 +48,98 @@ comments_frame = read.table('../../data/analysis_data/dataset_upto2019/sentiment
                             sep = ',', header=TRUE, fill=TRUE, stringsAsFactors = FALSE)
 
 ticket_frame_preserve = tickets_frame
+tickets_frame = ticket_frame_preserve
 comment_frame_preserve = comments_frame
+comments_frame = comment_frame_preserve
 
 ```
 
 ***
 
-## Remove bots and clean up dates
+## Clean up dataframes
 
-Here, we ensure that all the users identified to be bots have been removed
-and convert the dates to a more interpretable format.
+Here, we run a number of cleanup stages to ensure that we have the data we need
+(and in the right format) for our models.
 
-```{r fix-dates-and-bots}
+```{r clean-tickets}
 
 # fix tickets dataframe
 tickets_frame = tickets_frame %>% ungroup() %>%
-
+  
   # filter out bots
   dplyr::filter(bot_flag == "False") %>%
-  select(-bot_flag) %>%
-
+  dplyr::select(-bot_flag) %>%
+  
   # get time in seconds, read creation date properly, and specify contribution type
   dplyr::rename(open_time = open_duration) %>%
   mutate(date = as.numeric(as.Date(created_at))) %>%
   mutate(type_family = 'post') %>%
-
+  
+  # figure out author associations
+  mutate(total_tickets = num_PR_created + num_issue_created) %>%
+  mutate(author_group = dplyr::if_else(total_tickets < 5,
+                                       'nonmember',
+                                       'member')) %>%
+  
+  # rename variables associated with type of ticket and type of contribution
+  dplyr::rename(ticket_family = type) %>%
+  mutate(ticket_family = recode(ticket_family, pull_request = "pr")) %>%
+  mutate(type = paste0(ticket_family,'_',type_family)) %>%
+  
+  # convert to factors (as needed) for proper modeling
+  mutate_at(vars(first_ticket),
+            as.logical) %>%
+  mutate_at(vars(project,
+                 author_name,
+                 author_group,
+                 author_association,
+                 type,
+                 type_family,
+                 ticket_family),
+            as.factor) %>%
+  
   # drop old columns
-  select(-ends_with('_at'))
+  dplyr::select(-ends_with('_at'))
+
+```
+
+```{r fix-comments}
 
 # fix comments dataframe
 comments_frame = comments_frame %>% ungroup() %>%
-
+  
   # filter out bots and comments on tickets that have been filtered out (due to modification date)
-  dplyr::filter(!type == "") %>%
   dplyr::filter(bot_flag == "False") %>%
-  select(-bot_flag) %>%
-
+  dplyr::select(-bot_flag) %>%
+  dplyr::filter(!type == "") %>%
+  
   # read creation date properly and add contribution type
   mutate(date = as.numeric(as.Date(created_at))) %>%
   mutate(type_family = 'reply') %>%
+  
+  # figure out author associations
+  mutate(total_tickets = num_PR_created + num_issue_created) %>%
+  mutate(author_group = dplyr::if_else(total_tickets < 5,
+                                       'nonmember',
+                                       'member')) %>%
+  
+  # rename variables associated with type of ticket and type of contribution
+  dplyr::rename(ticket_family = type) %>%
+  mutate(ticket_family = recode(ticket_family, pull_request = "pr")) %>%
+  mutate(type = paste0(ticket_family,'_',type_family)) %>%
+  
+  # convert to factors (as needed) for proper modeling
+  mutate_at(vars(project,
+                 author_name,
+                 author_group,
+                 author_association,
+                 type,
+                 type_family,
+                 ticket_family),
+            as.factor) %>%
 
   # drop old columns
-  select(-ends_with('_at')) 
+  dplyr::select(-ends_with('_at')) 
 
 ```
 
@@ -163,31 +213,20 @@ Before we can run Model Series 1, we need to combine `tickets_frame` and
 # merge tickets and comments into a single frame
 sentiment_frame = tickets_frame %>%
   dplyr::bind_rows(., comments_frame) %>%
-
-  # rename variables associated with type of ticket and type of contribution
-  dplyr::rename(ticket_family = type) %>%
-  mutate(ticket_family = recode(ticket_family, pull_request = "pr")) %>%
-  mutate(type = paste0(ticket_family,'_',type_family)) %>%
-
+  
   # keep only select variables
-  select(project,
-         contains('author'),
-         first_ticket,
-         contains('num_'),
-         contains('ticket'),
-         contains('type'),
-         contains('grateful_count'),
-         contains('emotion'),
-         contains('date'),
-         contains('open_'),
-         -contains('ticket_author_')) %>%
-
-  # figure out author associations
-  mutate(total_tickets = num_PR_created + num_issue_created) %>%
-  mutate(author_group = dplyr::if_else(total_tickets < 5,
-                                       'nonmember',
-                                       'member')) %>%
-
+  dplyr::select(project,
+                date,
+                contains('author'),
+                first_ticket,
+                contains('num_'),
+                contains('ticket'),
+                contains('type'),
+                contains('grateful_count'),
+                contains('emotion'),
+                contains('open_'),
+                -contains('ticket_author_')) %>%
+  
   # convert to factors (as needed) for proper modeling
   mutate_at(vars(first_ticket),
             as.logical) %>%
