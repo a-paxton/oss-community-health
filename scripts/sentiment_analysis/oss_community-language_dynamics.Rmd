@@ -227,7 +227,7 @@ a posted ticket, or a reply to an ticket).
 ```{r model-emotion-by-type-and-author-and-project}
 
 # do tickets and comments materially differ in emotion?
-creators_v_commenters_emotion_by_project = lmer(compound_emotion ~ project + type * author_group  +
+creators_v_commenters_emotion_by_project = lmer(compound_emotion ~ project * type * author_group  +
                                                   (1 | author_name),
                                                 data = sentiment_frame,
                                                 REML = TRUE)
