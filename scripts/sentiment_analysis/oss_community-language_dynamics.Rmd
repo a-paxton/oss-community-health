@@ -331,7 +331,7 @@ ggsave(plot = sentiment_plot_by_project,
 ```{r model-emotion-by-type-author-project-time}
 
 # do tickets and comments materially differ in emotion over time?
-creators_v_commenters_emotion_by_project_time = lmer(compound_emotion ~ project + type * author_group * ns(date, 8) +
+creators_v_commenters_emotion_by_project_time = lmer(compound_emotion ~ 0 + project * type * author_group * ns(date) +
                                                        (1 | author_name),
                                                      data = sentiment_frame,
                                                      REML=TRUE)
