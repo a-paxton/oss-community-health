@@ -11,7 +11,7 @@ This R markdown provides the data preparation for our forthcoming manuscript
 
 To run this from scratch, you will need the following files:
 
-* `../../data/analysis_data/sentiment_frame_issues-for_r.csv`: Contains cleaned
+* `../../data/analysis_data/sentiment_frame_tickets-for_r.csv`: Contains cleaned
   **tickets**-related data and derived variables from scraped GitHub data.
 * `../../data/analysis_data/sentiment_frame_comments-for_r.csv`: Contains 
   cleaned **comments**-related data and derived variables from scraped GitHub 
@@ -42,7 +42,7 @@ rm(list=ls())
 source('./utils/ossc-libraries_and_functions.r')
 
 # load data
-tickets_frame = read.table('../../data/analysis_data/sentiment_frame_issues-for_r.csv', 
+tickets_frame = read.table('../../data/analysis_data/sentiment_frame_tickets-for_r.csv', 
                           sep = ',', header=TRUE, fill=TRUE, stringsAsFactors = FALSE)
 comments_frame = read.table('../../data/analysis_data/sentiment_frame_comments-for_r.csv', 
                             sep = ',', header=TRUE, fill=TRUE, stringsAsFactors = FALSE)
@@ -165,7 +165,7 @@ Before we can run Model Series 1, we need to combine `tickets_frame` and
 tickets_frame = tickets_frame %>%
   mutate(type_family = 'post')
 comments_frame = comments_frame %>%
-  mutate(type_family = 'reply') %>%
+  mutate(type_family = 'reply')
   
 # merge tickets and comments into a single frame
 joined_frame = tickets_frame %>% 
@@ -195,7 +195,7 @@ ticket_sentiment_df = body_sentiment_df %>% ungroup() %>%
   rename_all(funs(gsub('_ticket','',.)))
 last_counters = joined_frame %>% ungroup() %>%
   select(id_ticket, id_comment, project, bus_factor,
-         issue_author_last_issue, issue_author_last_comment)
+         ticket_author_last_ticket, ticket_author_last_comment)
 
 # merge tickets and comments separately with last comments
 comment_sentiment_df = full_join(comment_sentiment_df,
