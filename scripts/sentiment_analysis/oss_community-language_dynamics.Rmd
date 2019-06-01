@@ -68,9 +68,10 @@ tickets_frame = tickets_frame %>% ungroup() %>%
   dplyr::filter(bot_flag == "False") %>%
   select(-bot_flag) %>%
 
-  # get time in seconds and read creation date properly
+  # get time in seconds, read creation date properly, and specify contribution type
   dplyr::rename(open_time = open_duration) %>%
   mutate(date = as.numeric(as.Date(created_at))) %>%
+  mutate(type_family = 'post') %>%
 
   # drop old columns
   select(-ends_with('_at'))
@@ -78,15 +79,17 @@ tickets_frame = tickets_frame %>% ungroup() %>%
 # fix comments dataframe
 comments_frame = comments_frame %>% ungroup() %>%
 
-  # filter out bots
+  # filter out bots and comments on tickets that have been filtered out (due to modification date)
+  dplyr::filter(!type == "") %>%
   dplyr::filter(bot_flag == "False") %>%
   select(-bot_flag) %>%
 
-  # read creation date properly
+  # read creation date properly and add contribution type
   mutate(date = as.numeric(as.Date(created_at))) %>%
+  mutate(type_family = 'reply') %>%
 
   # drop old columns
-  select(-ends_with('_at'))
+  select(-ends_with('_at')) 
 
 ```
 
@@ -156,16 +159,6 @@ Before we can run Model Series 1, we need to combine `tickets_frame` and
 `comments_frame` into a single dataframe.
 
 ```{r prepare-data-for-sentiment-analysis}
-
-# add contribution type to ticket dataframe
-tickets_frame = tickets_frame %>%
-  mutate(type_family = 'post')
-
-# add contribution type to ticket dataframe and filter out comments
-# associated with tickets that have been filtered out due to date modified
-comments_frame = comments_frame %>%
-  mutate(type_family = 'reply') %>%
-  dplyr::filter(!type == "")
 
 # merge tickets and comments into a single frame
 sentiment_frame = tickets_frame %>%
@@ -536,7 +529,10 @@ ggsave(filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_co
 
 ### Model 1.3: Do tickets and comments materially differ in gratitude?
 
-```{r gratitude-summary-stats}
+First, let's take a look at a summary table of expressions of gratitude by
+membership status and contribution type.
+
+```{r gratitude-summary-stats, eval=TRUE, include=FALSE, echo=FALSE}
 
 # create a summary table of gratitude by type and author association
 gratitude_summary_stats = sentiment_frame %>% ungroup() %>%
@@ -546,16 +542,19 @@ pander(gratitude_summary_stats)
 
 ```
 
-```{r gratitude-predictors}
+Now that we have a better idea of how the underlying data look, let's go ahead
+and build our model.
+
+```{r model-gratitude-by-type-and-author-and-project, eval = FALSE}
 
 # do users tend to express appreciation and gratitude differently by group and content?
-creators_v_commenters_gratitude = glmer(grateful_count ~ project + author_group * type +
+creators_v_commenters_gratitude_by_project = glmer(grateful_count ~ project * author_group * type +
                                           (1 | author_name),
                                         data=sentiment_frame,
                                         family=poisson)
 
 # print results
-summary(creators_v_commenters_gratitude)
+summary(creators_v_commenters_gratitude_by_project)
 
 ```
 
@@ -603,7 +602,7 @@ ggsave(plot = grateful_plot,
 
 **Note**: Having difficulty getting this to converge.
 
-```{r gratitude-predictors-time}
+```{r gratitude-predictors-time, eval = FALSE}
 
 # do users tend to express appreciation and gratitude differently by group and content?
 creators_v_commenters_gratitude_time = glmer(grateful_count ~ project + (author_group + type) * ns(date, df=8) +
