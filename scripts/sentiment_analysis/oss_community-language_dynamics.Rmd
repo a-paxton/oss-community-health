@@ -87,6 +87,7 @@ comments_frame = comments_frame %>% ungroup() %>%
 
   # drop old columns
   select(-ends_with('_at'))
+
 ```
 
 ***
@@ -345,17 +346,17 @@ We'll need to do an analysis to follow up on this.
 
 ```{r plot-model-emotion-by-contribution-and-membership, include=FALSE, echo=FALSE, eval=TRUE}
 
-ggplot(data=sentiment_frame,
-                                       aes(x=date,
-                                           y=compound_emotion,
-                                           colour=type)) +
+sentiment_contribution_membership_time_plot = ggplot(data=sentiment_frame,
+                                                     aes(x=date,
+                                                         y=compound_emotion,
+                                                         colour=type)) +
   stat_smooth() +
-  # stat_summary(alpha=0.5, size=.1) +
-  #geom_smooth(method=lm, formula=y ~ bs(x, df=8)) +
-  #coord_cartesian(ylim=c(-1.0,1.0)) +
-  facet_grid(cols = c(vars(ticket_family),vars(author_group))) +
+  facet_grid(cols = c(vars(ticket_family),vars(author_group)),
+             labeller = labeller(
+               ticket_family = c(issue = "Issue", pr = "PR"),
+               author_group = c(member="Member", nonmember="Nonmember"))
+             ) +
   ggtitle('Message sentiment by contribution\nand community membership over time') +
-  #theme(legend.position = "none") +
   ylab('Sentiment score') +
   scale_x_continuous(name = 'Date',
                      breaks = c(as.numeric(as.Date("2010-01-01")),
@@ -376,8 +377,22 @@ ggplot(data=sentiment_frame,
                                 "#5e3c99", # PR: post (darker)
                                 "#b2abd2")) # PR: reply (lighter)
 
+# plot a full-size version
+ggsave(plot = sentiment_contribution_membership_time_plot,
+       height = 4,
+       width = 10,
+       filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-aggregated.jpg')
+
+# plot a smaller one for knitr
+ggsave(plot = sentiment_contribution_membership_time_plot,
+       height = 4,
+       width = 10,
+       dpi = 150,
+       filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-aggregated-knitr.jpg')
+
 ```
 
+![**Figure**. Sentiment over time by contribution type (ticket vs. comment) and community membership at the time of posting (member vs. nonmember).](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-aggregated-knitr.jpg)
 
 ```{r plot-model-emotion-by-contribution-and-membership-and-time, include=FALSE, echo=FALSE, eval=TRUE}
 
@@ -386,13 +401,12 @@ member_frame = sentiment_frame %>% filter(author_group == 'member')
 nonmember_frame = sentiment_frame %>% filter(author_group == 'nonmember')
 
 # membership plot
-sentiment_time_member_plot = ggplot(data=member_frame,
-                                    aes(x=date,
-                                        y=compound_emotion,
-                                        colour=type)) +
+sentiment_contribution_member_time_plot = ggplot(data=member_frame,
+                                                 aes(x=date,
+                                                     y=compound_emotion,
+                                                     colour=type)) +
   # geom_smooth(method=lm, formula=y ~ bs(x, df=8)) +
   stat_smooth()+
-  coord_cartesian(ylim=c(-1.0,1.0)) +
   facet_grid(cols = vars(ticket_family),
              rows = vars(project)) +
   theme(legend.position = "none") +
@@ -419,12 +433,11 @@ sentiment_time_member_plot = ggplot(data=member_frame,
                                 "#5e3c99", # PR: post (darker)
                                 "#b2abd2")) # PR: reply (lighter)
 
-
 # nonmembership plot
-sentiment_time_nonmember_plot = ggplot(data=nonmember_frame,
-                                       aes(x=date,
-                                           y=compound_emotion,
-                                           colour=type)) +
+sentiment_contribution_nonmember_time_plot = ggplot(data=nonmember_frame,
+                                                    aes(x=date,
+                                                        y=compound_emotion,
+                                                        colour=type)) +
   #stat_smooth() +
   # stat_summary(alpha=0.5, size=.1) +
   geom_smooth(method=lm, formula=y ~ bs(x, df=4)) +
@@ -493,33 +506,33 @@ master_legend = gtable_filter(ggplot_gtable(
   "guide-box")
 
 # save full version
-ggsave(filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time.jpg',
+ggsave(filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-by_project.jpg',
        units = "in", height = 8, width = 12,
        grid.arrange(
          top=grid::textGrob("Message sentiment by contribution\nand community membership",
                       gp=grid::gpar(fontsize=14)),
-         sentiment_time_member_plot,
-         sentiment_time_nonmember_plot,
+         sentiment_contribution_member_time_plot,
+         sentiment_contribution_nonmember_time_plot,
          bottom=master_legend,
-         ncol = 1,
-         nrow = 2
+         ncol = 2,
+         nrow = 1
        ))
 
 # save smaller version for knitr
-ggsave(filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-knitr.jpg',
+ggsave(filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-by_project-knitr.jpg',
        dpi = 150, height = 8, width = 12,
        grid.arrange(
          top=grid::textGrob("Message sentiment by contribution\nand community membership",
                       gp=grid::gpar(fontsize=14)),
-         sentiment_time_member_plot,
-         sentiment_time_nonmember_plot,
+         sentiment_contribution_member_time_plot,
+         sentiment_contribution_nonmember_time_plot,
          bottom=master_legend,
          ncol = 1,
          nrow = 2
        ))
 
 ```
-![**Figure**. Sentiment over time by contribution type (ticket vs. comment) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-knitr.jpg)
+![**Figure**. Sentiment over time by contribution type (ticket vs. comment) and community membership  at the time of posting (member vs. nonmember) by project.](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-by_project-knitr.jpg)
 
 ### Model 1.3: Do tickets and comments materially differ in gratitude?
 
