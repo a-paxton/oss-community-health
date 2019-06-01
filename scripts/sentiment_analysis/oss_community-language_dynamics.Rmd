@@ -161,116 +161,58 @@ Before we can run Model Series 1, we need to combine `tickets_frame` and
 
 ```{r prepare-data-for-sentiment-analysis}
 
-# add some type and ticket family information to each dataframe
+# add contribution type to ticket dataframe
 tickets_frame = tickets_frame %>%
   mutate(type_family = 'post')
+
+# add contribution type to ticket dataframe and filter out comments
+# associated with tickets that have been filtered out due to date modified
 comments_frame = comments_frame %>%
   mutate(type_family = 'reply') %>%
-  
+  dplyr::filter(!type == "")
+
 # merge tickets and comments into a single frame
-joined_frame = tickets_frame %>% 
+sentiment_frame = tickets_frame %>% 
   dplyr::bind_rows(., comments_frame) %>%
+  
+  # rename variables associated with type of ticket and type of contribution
   dplyr::rename(ticket_family = type) %>%
   mutate(ticket_family = recode(ticket_family, pull_request = "pr")) %>%
-  mutate(type = paste0(ticket_family,'_',type_family))
+  mutate(type = paste0(ticket_family,'_',type_family)) %>%
 
-# mutate wide-form into long-form data
-body_sentiment_df = joined_frame %>% ungroup() %>%
-  select(contains('author'), 
+  # keep only select variables
+  select(project,
+         contains('author'), 
+         first_ticket,
+         contains('num_'),
+         contains('ticket'),
+         contains('type'),
          contains('grateful_count'),
          contains('emotion'),
-         contains('id_'),
-         contains('date_'),
+         contains('date'),
          contains('open_'),
-         contains('num_PR_'),
-         contains('type_'),
-         -contains('ticket_id'))
+         -contains('issue_author_'),
+         issue_author_last_issue,
+         issue_author_last_comment) %>%
 
-# separate out comments, tickets, and last activity counters
-comment_sentiment_df = body_sentiment_df %>% ungroup() %>%
-  select(ends_with('_comment')) %>%
-  rename_all(funs(gsub('_comment','',.)))
-ticket_sentiment_df = body_sentiment_df %>% ungroup() %>%
-  select(ends_with('_ticket')) %>%
-  rename_all(funs(gsub('_ticket','',.)))
-last_counters = joined_frame %>% ungroup() %>%
-  select(id_ticket, id_comment, project, bus_factor,
-         issue_author_last_issue, issue_author_last_comment)
+  # figure out author associations
+  mutate(total_tickets = num_PR_created + num_issue_created) %>%
+  mutate(author_group = dplyr::if_else(total_tickets < 5,
+                                       'nonmember',
+                                       'member')) %>%
 
-# merge tickets and comments separately with last comments
-comment_sentiment_df = full_join(comment_sentiment_df,
-                                 last_counters,
-                                 by=c('id' = 'id_comment')) %>%
-  select(-id_ticket) %>%
-  mutate(ticket_family = type,
-         type = paste0(type,"_reply"),
-         type_family = 'reply') %>%
-  distinct()
-ticket_sentiment_df = full_join(ticket_sentiment_df,
-                               distinct(select(last_counters,
-                                               -id_comment)),
-                               by=c('id' = 'id_ticket')) %>%
-  mutate(ticket_family = type,
-         type = paste0(type,"_post"),
-         type_family = 'post') %>%
-  distinct()
-
-# append the dataframes
-sentiment_frame = rbind.data.frame(comment_sentiment_df, ticket_sentiment_df)
-
-# concatenate association groups
-sentiment_frame = sentiment_frame %>% ungroup() %>%
-  mutate(author_group = dplyr::if_else(author_association=='MEMBER',
-                               'member',
-                               ifelse(author_association=='CONTRIBUTOR',
-                                      'member',
-                                      ifelse(author_association=='OWNER',
-                                             'member',
-                                             'nonmember')))) %>%
-  
   # convert to factors (as needed) for proper modeling
-  mutate(author_group = as.factor(author_group),
-         type = as.factor(type),
-         type_family = as.factor(type_family),
-         ticket_family = as.factor(ticket_family))
-
-```
-
-#### Rationale for simplifying associations
-
-Although we are eventually interested in studying first-time contributors,
-we group everyone only into one of two categories for Model Series 1---either
-`member` or `nonmember`. 
-
-This is partly because the "first" tags are only applied in very specific
-circumstances related to pull requests and tickets. As a result, if we were 
-going to keep original author associations, we would have to remove first-time
-contributors and first-timers from the dataset when we're analyzing `type` 
-as a covariate, since both types of users only ever submitted tickets. However, 
-because we are grouping simply by members and non-members, we can retain them 
-in the dataset.
-
-Here, we just confirm that this is the case.
-
-```{r rationale-for-dropping-firsters, eval=TRUE}
-
-# first time contributors
-first_time_contrib_df = sentiment_frame %>%
-  filter(author_association=='FIRST_TIME_CONTRIBUTOR')
-
-# first time contributors
-first_timers_df = sentiment_frame %>%
-  filter(author_association=='FIRST_TIMER')
-
-```
-
-```{r print-rationale-for-droping-firsters, eval=TRUE, echo=FALSE, include=FALSE}
-
-# print the output
-print(paste0("Unique contribution types for first-timers: ",
-             unique(first_timers_df$type)))
-print(paste0("Unique contribution types for first-time contributors: ",
-             unique(first_time_contrib_df$type)))
+  mutate_at(vars(contains('issue_author_')),
+            as.logical) %>%
+  mutate_at(vars(project,
+                 author_name,
+                 author_group,
+                 author_association,
+                 type,
+                 type_family,
+                 ticket_family,
+                 contains('issue_author_')),
+            as.factor)
 
 ```
 
