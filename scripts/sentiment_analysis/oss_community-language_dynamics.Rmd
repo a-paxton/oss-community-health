@@ -42,10 +42,13 @@ rm(list=ls())
 source('./utils/ossc-libraries_and_functions.r')
 
 # load data
-tickets_frame = read.table('../../data/analysis_data/sentiment_frame_tickets-for_r.csv',
+tickets_frame = read.table('../../data/analysis_data/dataset_upto2019/sentiment_frame_tickets-for_r.csv',
                           sep = ',', header=TRUE, fill=TRUE, stringsAsFactors = FALSE)
-comments_frame = read.table('../../data/analysis_data/sentiment_frame_comments-for_r.csv',
+comments_frame = read.table('../../data/analysis_data/dataset_upto2019/sentiment_frame_comments-for_r.csv',
                             sep = ',', header=TRUE, fill=TRUE, stringsAsFactors = FALSE)
+
+ticket_frame_preserve = tickets_frame
+comment_frame_preserve = comments_frame
 
 ```
 
@@ -65,14 +68,8 @@ tickets_frame = tickets_frame %>% ungroup() %>%
   dplyr::filter(bot_flag == "False") %>%
   select(-bot_flag) %>%
 
-  # get time in days
-  mutate(open_time = strsplit(as.character(open_duration), ' ') %>%
-           sapply(magrittr::extract2, 1) %>%
-           as.numeric()) %>%
-
-  # get the year and month it was created
-  mutate(year = as.numeric(format(as.Date(created_at), "%Y"))) %>%
-  mutate(month = as.numeric(format(as.Date(created_at), "%m"))) %>%
+  # get time in seconds and read creation date properly
+  dplyr::rename(open_time = open_duration) %>%
   mutate(date = as.numeric(as.Date(created_at))) %>%
 
   # drop old columns
@@ -85,9 +82,7 @@ comments_frame = comments_frame %>% ungroup() %>%
   dplyr::filter(bot_flag == "False") %>%
   select(-bot_flag) %>%
 
-  # get the year and month it was created
-  mutate(year = as.numeric(format(as.Date(created_at), "%Y"))) %>%
-  mutate(month = as.numeric(format(as.Date(created_at), "%m"))) %>%
+  # read creation date properly
   mutate(date = as.numeric(as.Date(created_at))) %>%
 
   # drop old columns
@@ -140,7 +135,7 @@ mean of `r mean(contribution_counts$unique_tickets)` tickets per project.
 
 On these tickets, the dataset includes
 `r sum(contribution_counts$unique_comments)` unique comments, with
-`r mean(contribution_counts$unique_comments)` average comments per ticket.
+`r mean(contribution_counts$unique_comments)` average comments per project.
 
 In total, we have `r length(unique_commenters)` unique commenters,
 `r length(unique_ticketers)` unique ticket-creators, and
@@ -191,9 +186,7 @@ sentiment_frame = tickets_frame %>%
          contains('emotion'),
          contains('date'),
          contains('open_'),
-         -contains('issue_author_'),
-         issue_author_last_issue,
-         issue_author_last_comment) %>%
+         -contains('ticket_author_')) %>%
 
   # figure out author associations
   mutate(total_tickets = num_PR_created + num_issue_created) %>%
@@ -202,7 +195,7 @@ sentiment_frame = tickets_frame %>%
                                        'member')) %>%
 
   # convert to factors (as needed) for proper modeling
-  mutate_at(vars(contains('issue_author_')),
+  mutate_at(vars(first_ticket),
             as.logical) %>%
   mutate_at(vars(project,
                  author_name,
@@ -210,8 +203,7 @@ sentiment_frame = tickets_frame %>%
                  author_association,
                  type,
                  type_family,
-                 ticket_family,
-                 contains('issue_author_')),
+                 ticket_family),
             as.factor)
 
 ```
