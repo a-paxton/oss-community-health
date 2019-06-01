@@ -87,9 +87,11 @@ def annotate_logs(comments, tickets):
     tickets['is_closed'] = pd.notnull(tickets['closed_at'])
     mask = tickets["closed_at"].isnull()
     tickets.loc[mask, "closed_at"] = pd.to_datetime(datetime.now())
-    tickets["open_duration"] = (
+    open_duration = (
         pd.to_datetime(tickets["closed_at"]) -
         pd.to_datetime(tickets["created_at"]))
+    tickets["open_duration"] = open_duration.apply(
+        lambda x: x.total_seconds())
 
     # Now we want to remove this estimate for anything created before 1970
     m = [True if c.startswith("1970") else False
@@ -100,10 +102,13 @@ def annotate_logs(comments, tickets):
     # has been opened when it is available (comments can also be added to
     # commits)
     tickets.set_index("ticket_id", inplace=True, drop=False)
-    comments["ticket_created_at"] = tickets.loc[
-        comments["ticket_id"], "created_at"].values
-    comments["type"] = tickets.loc[
-        comments["ticket_id"], "type"].values
+
+    # We're using the reindex function to tacket the case where we don't have
+    # the ticket associated to a particular comment.
+    comments["ticket_created_at"] = tickets.reindex(
+        comments["ticket_id"])["created_at"].values
+    comments["type"] = tickets.reindex(
+        comments["ticket_id"])["type"].values
     # Reset the old index
     tickets.set_index("id", inplace=True, drop=False)
 
