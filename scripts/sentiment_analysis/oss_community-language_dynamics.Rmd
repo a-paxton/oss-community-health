@@ -718,41 +718,111 @@ ggsave(filename = '../../figures/sentiment_analysis/ossc-gratitude_membership_co
 
 ## Model Series 2: Retention
 
-- **FIXME** we're using several times the same predictor observations, which
-  means they are not IID. Here, we'll probably have to pull together all
-  comments associated to one ticket.
+Our second set of models investigates what aspects of the response to a 
+newcomer's first contribution might predict their likelihood to come back
+to contribute a second time.
 
 ### Data preparation
 
-```{r prep-analysis}
+Because each ticket has multiple comments, we cannot use the standard long-form
+format for the dataset, or we would lead to (uneven) duplication of tickets
+based on the varying numbers of comments. As a result, we pull metrics of the
+whole comment chain and use them as our measures of the community's response
+to the newcomer's contribution.
 
-# combine information by ticket
-retention_frame = joined_frame %>% ungroup() %>%
-  group_by(project, id_ticket) %>%
-  summarize_if(is.numeric, mean, na.rm=TRUE) %>%
-  ungroup() %>%
-  left_join(., ticket_sentiment_df,
-            by=c('project', 'bus_factor',
-                 'id_ticket' = 'id'))
+```{r aggregate-comments-frame}
 
-# normalize
-retention_frame_st = retention_frame %>%
-  mutate_all(funs(as.numeric(scale(as.numeric(.))))) %>%
-  mutate(issue_author_last_issue = as.factor(issue_author_last_issue)) %>%
-  mutate(project = as.factor(project))
+# aggregate ticket-level metrics for comments
+aggregated_comments = comments_frame %>% ungroup() %>%
+  
+  # convert author group to numeric
+  mutate(author_group_numeric = dplyr::if_else(author_group=='member',
+                                                          1,
+                                                          0)) %>%
+
+  # create metrics for each unique ticket in each project
+  dplyr::group_by(project, ticket_id) %>%
+  dplyr::summarise(number_of_comments = n(),
+                   comment_sentiment_mean = mean(compound_emotion, na.rm=TRUE),
+                   comment_sentiment_variance = var(compound_emotion),
+                   comment_sentiment_max_negative = max(negative_emotion),
+                   comment_sentiment_max_positive = max(positive_emotion),
+                   comment_grateful_cumulative = sum(grateful_count),
+                   comment_first_response = min(date),
+                   comment_member_ratio = sum(author_group_numeric)/n())
 
 ```
+
+After we've summarized the comment threads, we next join those metrics with the
+tickets dataframe in preparation for our models.
+
+```{r prep-for-retention-analysis}
+
+# create joint dataframe
+retention_frame = tickets_frame %>%
+  dplyr::left_join(., aggregated_comments,
+                   by=c('project', 'ticket_id')) %>%
+  
+  # keep only newcomers
+  dplyr::filter(first_ticket == TRUE) %>%
+  
+  # keep only select variables
+  dplyr::select(project,
+                date,
+                contains('author'),
+                first_ticket,
+                contains('num_'),
+                contains('ticket'),
+                contains('type'),
+                contains('grateful_count'),
+                contains('emotion'),
+                open_time,
+                contains('comment_'),
+                number_of_comments,
+                -contains('stamp'),
+                -contains('last_comment')) %>%
+  
+  # read appropriate variables as logical
+  mutate_at(vars(first_ticket,
+                 ticket_author_last_ticket),
+            as.logical) %>%
+  
+  # recode and rename retention variable so that it reflects continued engagement
+  dplyr::rename(retained_newcomer = ticket_author_last_ticket) %>%
+  mutate(retained_newcomer = dplyr::if_else(retained_newcomer==TRUE,
+                                            FALSE,
+                                            TRUE)) %>%
+  
+  #convert to factors (as needed) for proper modeling
+  mutate_at(vars(project,
+                 author_name,
+                 author_group,
+                 author_association,
+                 type,
+                 type_family,
+                 ticket_family,
+                 retained_newcomer),
+            as.factor)
+
+```
+
+### Model 2.1: How does a community's response to newcomers predict the newcomer's decision to return?
 
 ```{r predicting-retention}
 
 # what predicts continuing retention?
-dropout_predictors = glmer(issue_author_last_issue ~ compound_emotion + grateful_count_comment + open_time +
-                             (1 + grateful_count_comment | project),
-                           data=retention_frame_st,
-                           family=binomial)
+retention_predictors = glm(retained_newcomer ~ (project +
+                                                open_time +
+                                                comment_sentiment_mean + 
+                                                comment_sentiment_max_negative + 
+                                                comment_grateful_cumulative +
+                                                number_of_comments +
+                                                comment_member_ratio) * ticket_family,
+                         data=retention_frame,
+                         family=binomial)
 
 # print it
-summary(dropout_predictors)
+summary(retention_predictors)
 
 ```
 
