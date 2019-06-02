@@ -826,36 +826,79 @@ summary(retention_predictors)
 
 ```
 
-**Note**. Need to fix this. Not really sure how best to demonstrate this given the limits of the linear fit...
+```{r plot-predicting-retention-aggregated, echo=FALSE, include=FALSE, eval=TRUE}
 
-```{r plot-predicting-retention, echo=FALSE, include=FALSE, eval=TRUE}
-
-retention_plot = ggplot(data=retention_frame,
-       aes(y=open_time,
-           x=grateful_count_comment,
-           color=issue_author_last_issue)) +
-  stat_smooth(alpha=.5, geom='line', method=lm, formula = y ~ splines::bs(x, 3), se=TRUE) +
-  geom_point(alpha=0.3, size=.1) +
-  stat_smooth(method=lm) +
-  ggtitle("Newcomer retention by gratitude\nand community attentiveness") +
-  ylab('Time open (in days)') +
-  xlab('Expressions of gratitude in comments') +
-  labs(color='Newcomer') +
-  scale_color_manual(labels = c("Retained", "Lost"),
-                     values = c("blue", "red"))
+# create the plot of newcomer retention across all projects
+retention_plot_aggregated = ggplot(data=retention_frame,
+                                   aes(x=open_time/(60*60*24),
+                                       color=comment_member_ratio,
+                                       y=comment_sentiment_mean)) +
+  geom_jitter(alpha=0.3, size=.1) +
+  facet_grid(cols = c(vars(ticket_family),
+                      vars(retained_newcomer)),
+             labeller = labeller(
+               ticket_family = c(issue = "Issue", 
+                                 pr = "PR"),
+               retained_newcomer = c('TRUE'="Retained",
+                                     'FALSE'="Lost"))) +
+  ggtitle("Newcomer retention by community response\nand community attentiveness") +
+  xlab('Time open (in days)') +
+  ylab('Mean sentiment of comments') +
+  scale_color_viridis() + 
+  labs(color='Ratio of comments\nmade by members') +
+  theme(legend.position = "bottom")
 
 # save full version
-ggsave(plot = retention_plot,
-       height = 4,
-       width = 5,
-       filename = '../../figures/sentiment_analysis/ossc-retention_emotion.jpg')
+ggsave(plot = retention_plot_aggregated,
+       height = 5,
+       width = 6,
+       filename = '../../figures/sentiment_analysis/ossc-retention_emotion-aggregated.jpg')
 
 # save smaller version for knitr
-ggsave(plot = retention_plot,
-       height = 4,
-       width = 5,
+ggsave(plot = retention_plot_aggregated,
+       height = 5,
+       width = 6,
        dpi = 150,
-       filename = '../../figures/sentiment_analysis/ossc-retention_emotion-knitr.jpg')
+       filename = '../../figures/sentiment_analysis/ossc-retention_emotion-aggregated-knitr.jpg')
+
+```
+
+```{r plot-predicting-retention-by-project, echo=FALSE, include=FALSE, eval=TRUE}
+
+# create the plot of newcomer retention by each project
+retention_plot_by_project = ggplot(data=retention_frame,
+                                   aes(x=open_time/(60*60*24),
+                                       color=comment_member_ratio,
+                                       y=comment_sentiment_mean)) +
+  geom_jitter(alpha=0.3, size=.1) +
+  facet_grid(rows = vars(project),
+             cols = c(vars(ticket_family),
+                      vars(retained_newcomer)
+             ),
+             labeller = labeller(
+               ticket_family = c(issue = "Issue", 
+                                 pr = "PR"),
+               retained_newcomer = c('TRUE'="Retained",
+                                     'FALSE'="Lost"))) +
+  ggtitle("Newcomer retention by community response\nand community attentiveness (by project)") +
+  xlab('Time open (in days)') +
+  ylab('Mean sentiment of comments') +
+  scale_color_viridis() + 
+  labs(color='Ratio of comments\nmade by members') +
+  theme(legend.position = "bottom")
+
+# save full version
+ggsave(plot = retention_plot_by_project,
+       height = 10,
+       width = 6,
+       filename = '../../figures/sentiment_analysis/ossc-retention_emotion-by_project.jpg')
+
+# save smaller version for knitr
+ggsave(plot = retention_plot_by_project,
+       height = 10,
+       width = 6,
+       dpi = 150,
+       filename = '../../figures/sentiment_analysis/ossc-retention_emotion-by_project-knitr.jpg')
 
 ```
 
