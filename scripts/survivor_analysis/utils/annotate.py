@@ -4,7 +4,7 @@ from collections import Counter
 from datetime import datetime
 from nltk.tokenize import RegexpTokenizer
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-
+import re
 
 def annotate_logs(comments, tickets):
     """
@@ -116,22 +116,29 @@ def annotate_logs(comments, tickets):
     return comments, tickets
 
 
-def body_cleanup(comments, bot_list):
+def body_cleanup(comments, grateful_list, bot_list):
     """
     Prepare comment or issue dataframe for text analysis:
+    
+    1. Count number of times gratitude words appear in HTML comments
+        (i.e., auto-generated templates for PRs and issues provided
+        by projects)
+    2. Remove HTML comments
+    3. Remove quoted text
+    4. Strip newlines
+    5. Count and remove code blocks
+    6. Identify other users referenced in body
+    7. Flag whether the author was a bot
 
-    1. Remove quoted text
-    2. Strip newlines
-    3. Count and remove code blocks
-    4. Identify other users referenced in body
-    5. Flag whether the author was a bot
-
-    Requires: pandas
+    Requires: pandas , nltk , collections , re
 
     Parameters
     ----------
     comments : pd.DataFrame, ideally annotated with `annotate_logs()`;
         can be run with either comments df or issues/tickets df
+        
+    grateful_list : list or pd.Series of gratitude words to identify;
+        currently works only with grateful unigrams
 
     bot_list : list or pd.Series of bot usernames to be ignored
 
@@ -148,7 +155,39 @@ def body_cleanup(comments, bot_list):
     >> comments, tickets = utils.annotate.annotate_logs(comments, tickets)
     >> comments = utils.annotate.body_cleanup(comments, bot_list_df)
     """
+    
+    # replace all NaN with empty strings
+    comments['body'] = comments['body'].replace(np.nan, '', regex=True)
+    
+    # count thanks in HTML comments
+    comments['html_comments'] = comments['body'].str.findall('(\<\!--.*?--\>)').apply(' '.join)
+    
+    # tokenize and count words
+    tokenizer = RegexpTokenizer(r'\w+')
+    comments['html_tokenized'] = comments['html_comments'].apply(str.lower).apply(tokenizer.tokenize)
+    comments['html_word_count'] = comments['html_tokenized'].apply(lambda x: Counter(x))
 
+    # count words if they're in our grateful list
+    comments['automatic_grateful_count'] = (
+        comments['html_word_count'].apply(
+            lambda x: np.sum([v for k, v in x.items()
+                              if k in grateful_list])))
+
+    # let us know which ones were used
+    comments['automatic_grateful_list'] = (
+        comments['html_word_count'].apply(
+            lambda x: [k for k in x if k in grateful_list]))
+
+    # remove the columns we don't need anymore
+    comments = comments.drop(columns=['html_tokenized', 
+                                      'html_word_count'])
+    
+    # remove the HTML comments from the body
+    comments['body'] = (comments['body'].str.replace(
+        "(<!--.*?-->)", " ",
+        regex=True,
+        flags=re.DOTALL))
+    
     # remove text quotes
     comments['body'] = (comments['body'].replace(
         "(^|\n|\r)+\>.*(?=\n|$)", " ",
@@ -168,6 +207,7 @@ def body_cleanup(comments, bot_list):
 
     # identify bots
     comments['bot_flag'] = comments['author_name'].isin(bot_list)
+    
     # return our dataframe
     return comments
 
