@@ -34,7 +34,8 @@ knitr::opts_chunk$set(cache=TRUE, autodep=TRUE)
 # Preliminaries
 
 ```{r prelim, warning = FALSE, error = FALSE, message = FALSE}
-
+library(splines)
+library(lmerTest)
 # clear everything
 rm(list=ls())
 
@@ -250,17 +251,22 @@ possible contributions (i.e., a posted pull request, a reply to a pull request,
 a posted ticket, or a reply to an ticket).
 
 ```{r model-emotion-by-type-and-author-and-project}
-
 # do tickets and comments materially differ in emotion?
 creators_v_commenters_emotion_by_project = lmer(compound_emotion ~ project * type * author_group  +
-                                                  (1 | author_name),
+                                               (1 | author_name),
                                                 data = sentiment_frame,
                                                 REML = TRUE)
 
+
 # print results
 pander_lme(creators_v_commenters_emotion_by_project)
-
 ```
+
+```{r anova-model-emotion-by-type-author-project}
+anova_results = anova(creators_v_commenters_emotion_by_project)
+pander(anova_results)
+```
+
 
 These results are quite different from our results conducted over a smaller
 dataset last year. One potential reason is that these effects may be
@@ -353,17 +359,21 @@ ggsave(plot = sentiment_plot_by_project,
 
 ### Model 1.2: Do tickets and comments materially differ in emotion over time?
 
+
 ```{r model-emotion-by-type-author-project-time}
 
 # do tickets and comments materially differ in emotion over time?
 creators_v_commenters_emotion_by_project_time = lmer(compound_emotion ~ project * type * author_group * ns(date) +
                                                        (1 | author_name),
                                                      data = sentiment_frame,
-                                                     REML=TRUE)
-
+                                                     REML=FALSE)
 # print results
 pander_lme(creators_v_commenters_emotion_by_project_time)
+```
 
+```{r anova-model-emotion-by-type-author-project-time}
+anova_results = anova(creators_v_commenters_emotion_by_project_time)
+pander(anova_results)
 ```
 
 Interestingly, we see much more volatility here in the emotion dynamics
@@ -502,21 +512,24 @@ pander(gratitude_summary_stats)
 Now that we have a better idea of how the underlying data look, let's go ahead
 and build our model.
 
-```{r model-gratitude-by-type-and-author-and-project, eval = FALSE}
+```{r model-gratitude-by-type-and-author-and-project, eval = TRUE}
 
 # do users tend to express appreciation and gratitude differently by group and content?
-creators_v_commenters_gratitude_by_project = glmer(grateful_count ~ project * author_group * type +
+creators_v_commenters_gratitude_by_project = lmer(log(grateful_count + 1) ~ project * author_group * type +
                                           (1 | author_name),
-                                        data=sentiment_frame,
-                                        family=poisson)
+                                        data=sentiment_frame)
 
 # print results
 summary(creators_v_commenters_gratitude_by_project)
 
 ```
 
-```{r plot-gratitude-predictors-by-project, include=FALSE, echo=FALSE, eval=TRUE}
+```{r anova-gratitude-by-type-and-author-and-project}
+anova_results = anova(creators_v_commenters_gratitude_by_project)
+pander(anova_results)
+```
 
+```{r plot-gratitude-predictors-by-project, include=FALSE, echo=FALSE, eval=TRUE}
 grateful_plot = ggplot(data=sentiment_frame,
                        aes(colour=type,
                            y=grateful_count,
@@ -562,15 +575,21 @@ ggsave(plot = grateful_plot,
 ```{r gratitude-predictors-time, eval = FALSE}
 
 # do users tend to express appreciation and gratitude differently by group and content?
-creators_v_commenters_gratitude_time = glmer(grateful_count ~ project + (author_group + type) * ns(date, df=8) +
+creators_v_commenters_gratitude_time = lmer(log(grateful_count + 1) ~ project + (author_group + type) * ns(date, df=8) +
                                                (1 | author_name),
-                                             data=sentiment_frame,
-                                             family=poisson)
+                                             data=sentiment_frame)
+                                             #family=poisson)
 
 # print results
 summary(creators_v_commenters_gratitude_time)
 
 ```
+
+```{r anova_gratitude-predictors-time, eval = FALSE}
+anova_results = anova(creators_v_commenters_gratitude_time)
+pander(anova_results)
+```
+
 
 ```{r plot-gratitude-predictors-time, echo=FALSE, eval=TRUE}
 
