@@ -50,9 +50,8 @@ temp_tickets = temp_tickets.drop(
 # temp_commits = temp_commits.drop(columns=['author_id','sha'])
 
 # clean up the text body
-temp_comments = annotate.body_cleanup(temp_comments, bot_list)
-temp_tickets = annotate.body_cleanup(temp_tickets, bot_list)
-# temp_commits = annotate.body_cleanup(temp_commits, bot_list)
+temp_comments = annotate.body_cleanup(temp_comments, gratitude_list, bot_list)
+temp_tickets = annotate.body_cleanup(temp_tickets, gratitude_list, bot_list)
 
 print("Running sentiment analysis for", project)
 # run sentiment analysis
