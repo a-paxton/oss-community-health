@@ -250,6 +250,34 @@ community versus a nonmember of the community and by their different kinds of
 possible contributions (i.e., a posted pull request, a reply to a pull request,
 a posted ticket, or a reply to an ticket).
 
+```{r function_clean_anova}
+pander_clean_anova = function(model){
+    # First, rename the functions into something sane.
+    colnames(model) = c("sum_sq", "mean_sq", "num_df", "den_df",
+			"f_value", "p_value")
+    
+    # Now, apply the same rounding on the p_value than on the rest
+    model$p_value[model$p_value < .0001] = .0001
+    model$p_value[model$p_value >= .0001] = round(model$p_value[model$p_value >= .0001],4)
+    model$p_value[model$p_value >= .0005] = round(model$p_value[model$p_value >= .0005],3)
+    model$p_value[model$p_value >= .25] = round(model$p_value[model$p_value >= .25],2)
+
+    # Adjust p-values
+    model$p_adj = stats::p.adjust(model$p_value, method="BH")
+    model$p_adj[model$p_adj < .0001] = .0001
+    model$p_adj[model$p_adj >= .0001] = round(model$p_adj[model$p_adj >= .0001],4)
+    model$p_adj[model$p_adj >= .0005] = round(model$p_adj[model$p_adj >= .0005],3)
+    model$p_adj[model$p_adj >= .25] = round(model$p_adj[model$p_adj >= .25],2)
+
+    model$sig = ' '
+    model$sig[model$p_adj < .1] = '.'
+    model$sig[model$p_adj < .05] = '*'
+    model$sig[model$p_adj < .01] = '**'
+    model$sig[model$p_adj < .001] = '***'
+    return(pander(model, , split.table = Inf, style = 'rmarkdown'))
+}
+```
+
 ```{r model-emotion-by-type-and-author-and-project}
 # do tickets and comments materially differ in emotion?
 creators_v_commenters_emotion_by_project = lmer(compound_emotion ~ project * type * author_group  +
@@ -257,14 +285,13 @@ creators_v_commenters_emotion_by_project = lmer(compound_emotion ~ project * typ
                                                 data = sentiment_frame,
                                                 REML = TRUE)
 
-
 # print results
 pander_lme(creators_v_commenters_emotion_by_project)
 ```
 
 ```{r anova-model-emotion-by-type-author-project}
 anova_results = anova(creators_v_commenters_emotion_by_project)
-pander(anova_results)
+pander_clean_anova(anova_results)
 ```
 
 
@@ -373,7 +400,7 @@ pander_lme(creators_v_commenters_emotion_by_project_time)
 
 ```{r anova-model-emotion-by-type-author-project-time}
 anova_results = anova(creators_v_commenters_emotion_by_project_time)
-pander(anova_results)
+pander_clean_anova(anova_results)
 ```
 
 Interestingly, we see much more volatility here in the emotion dynamics
@@ -526,7 +553,7 @@ summary(creators_v_commenters_gratitude_by_project)
 
 ```{r anova-gratitude-by-type-and-author-and-project}
 anova_results = anova(creators_v_commenters_gratitude_by_project)
-pander(anova_results)
+pander_clean_anova(anova_results)
 ```
 
 ```{r plot-gratitude-predictors-by-project, include=FALSE, echo=FALSE, eval=TRUE}
@@ -572,7 +599,7 @@ ggsave(plot = grateful_plot,
 
 **Note**: Having difficulty getting this to converge.
 
-```{r gratitude-predictors-time, eval = FALSE}
+```{r gratitude-predictors-time, eval = TRUE}
 
 # do users tend to express appreciation and gratitude differently by group and content?
 creators_v_commenters_gratitude_time = lmer(log(grateful_count + 1) ~ project + (author_group + type) * ns(date, df=8) +
@@ -581,13 +608,13 @@ creators_v_commenters_gratitude_time = lmer(log(grateful_count + 1) ~ project + 
                                              #family=poisson)
 
 # print results
-summary(creators_v_commenters_gratitude_time)
+pander_lme(creators_v_commenters_gratitude_time)
 
 ```
 
-```{r anova_gratitude-predictors-time, eval = FALSE}
+```{r anova_gratitude-predictors-time, eval = TRUE}
 anova_results = anova(creators_v_commenters_gratitude_time)
-pander(anova_results)
+pander_clean_anova(anova_results)
 ```
 
 
@@ -921,7 +948,7 @@ ggsave(plot = retention_plot_by_project,
 
 ```
 
-![**Figure**. Whether a first-time ticket creator will open a second ticket by commenters' expressions of gratitude and responsiveness.](../../figures/sentiment_analysis/ossc-retention_emotion-knitr.jpg)
+![**Figure**. Whether a first-time ticket creator will open a second ticket by commenters' expressions of gratitude and responsiveness.](../../figures/sentiment_analysis/ossc-retention_emotion-by_project-knitr.jpg)
 
 ***
 
