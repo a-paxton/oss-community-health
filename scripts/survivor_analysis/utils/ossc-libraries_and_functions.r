@@ -26,8 +26,10 @@ required_packages = c(
   'RCurl',
   'splines',
   'magrittr',
-  'jtools'
-)
+  'jtools',
+  'splines',
+  'lmerTest'
+  )
 
 # load required packages
 invisible(lapply(required_packages, library, character.only = TRUE))

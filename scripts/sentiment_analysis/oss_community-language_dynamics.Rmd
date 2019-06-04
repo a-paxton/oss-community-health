@@ -34,8 +34,7 @@ knitr::opts_chunk$set(cache=TRUE, autodep=TRUE)
 # Preliminaries
 
 ```{r prelim, warning = FALSE, error = FALSE, message = FALSE}
-library(splines)
-library(lmerTest)
+
 # clear everything
 rm(list=ls())
 
