@@ -36,6 +36,6 @@ invisible(lapply(required_packages, library, character.only = TRUE))
 options(scipen=999)
 
 # read in pander_lme
-pander_lme_url = "https://raw.githubusercontent.com/a-paxton/stats-tools/1829d77f99cf1c6a58c87bdadf7313c74c7dd6dc/pander_lme.R"
+pander_lme_url = "https://raw.githubusercontent.com/NelleV/a-paxton/0b25835e65bc2e6be552b755d8aa69fc541bab23/pander_lme.R"
 pander_lme_file = getURL(pander_lme_url, ssl.verifypeer = FALSE)
 eval(parse(text = pander_lme_file))
