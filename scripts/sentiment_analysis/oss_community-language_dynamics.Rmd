@@ -4,6 +4,7 @@ output:
   html_document:
     keep_md: yes
     number_sections: yes
+    toc: true
 ---
 
 This R markdown provides the data preparation for our forthcoming manuscript
@@ -289,6 +290,33 @@ pander_clean_anova = function(model, rename_columns=TRUE,
 }
 ```
 
+
+```{r function_weltch_ttest}
+
+#' Welch t-test
+compute_t_statistics = function(means, standard_error,
+				contrasts){
+    all_tests = data.frame()
+    for(contrast in contrasts){
+	splits = unlist(strsplit(contrast, "-"))
+	if(length(splits) != 2){
+	    error("Dunno how to deal with this just yet") 
+	}
+
+	group1 = splits[1]
+	group2 = splits[2]
+
+        t = ((means[group1] - means[group2]) /
+	     (standard_error[group1]**2 +
+	      standard_error[group2]**2)**.5)
+	all_tests[contrast, "t_stats"] = t
+    }
+    return(all_tests) 
+}
+
+
+```
+
 #### Model 1.1a : the "traditional" psychology way.
 
 ```{r model-emotion-by-type-and-author}
@@ -310,6 +338,66 @@ pander_clean_anova(anova_results)
 
 Projects here are random effects, but the rest of the model is similar as
 before, except this allows us to do pairwise testing of elements
+
+##### First, are sentiments for types and groups significantly different?
+
+```{r model-emotion-by-author}
+fixed_creators_v_commenters_emotion = lmer(
+    compound_emotion ~ 0 + author_group + (1 | author_name) + (1 | project),
+    data=sentiment_frame,
+    REML=FALSE)
+
+coefficients_and_se = data.frame(
+    summary(fixed_creators_v_commenters_emotion)$coefficients)
+# Clean up row.names
+row_names = gsub("author_group", "", gsub("type", "", row.names(coefficients_and_se)))
+
+means = coefficients_and_se$Estimate
+names(means) = row_names
+
+se = coefficients_and_se$Std..Error
+names(se) = row_names
+
+contrasts = c("member-nonmember")
+tests = compute_t_statistics(
+    means, se,
+    contrasts)
+tests[, "p_value"] = compute_p_value_from_t_stats(tests$t_stats)
+pander_clean_anova(tests, rename_columns=FALSE)
+```
+
+```{r model-types-by-author}
+
+fixed_types_emotion = lmer(
+    compound_emotion ~ 0 + type + (1 | author_name) + (1 | project),
+    data=sentiment_frame,
+    REML=FALSE)
+
+coefficients_and_se = data.frame(
+    summary(fixed_types_emotion)$coefficients)
+# Clean up row.names
+row_names = gsub("author_group", "", gsub("type", "", row.names(coefficients_and_se)))
+
+means = coefficients_and_se$Estimate
+names(means) = row_names
+
+se = coefficients_and_se$Std..Error
+names(se) = row_names
+
+contrasts = c("issue_post-issue_reply",
+	       "pr_post-pr_reply",
+	       "issue_post-pr_post",
+	       "issue_reply-issue_post")
+
+tests = compute_t_statistics(
+    means, se,
+    contrasts)
+
+tests[, "p_value"] = compute_p_value_from_t_stats(tests$t_stats)
+pander_clean_anova(tests, rename_columns=FALSE)
+```
+
+##### Second, now test the interactions between types and author groups
 
 ```{r nelle_model-emotion-by-type-and-author}
 
@@ -337,31 +425,6 @@ names(means) = row_names
 se = coefficients_and_se$Std..Error
 names(se) = row_names
 
-number_samples = as.vector(
-    unlist(summarise(group_by(sentiment_frame, type:author_group), n())[2]))
-names(number_samples) = row_names
-
-#' Welch t-test
-compute_t_statistics = function(means, standard_error, number_samples,
-				contrasts){
-    all_tests = data.frame()
-    for(contrast in contrasts){
-	splits = unlist(strsplit(contrast, "-"))
-	if(length(splits) != 2){
-	    error("Dunno how to deal with this just yet") 
-	}
-
-	group1 = splits[1]
-	group2 = splits[2]
-
-        t = ((means[group1] - means[group2]) /
-	     (standard_error[group1]**2 +
-	      standard_error[group2]**2)**.5)
-	all_tests[contrast, "t_stats"] = t
-    }
-    return(all_tests) 
-}
-
 contrasts = c(
     "issue_post:member-issue_post:nonmember", 
     "issue_reply:member-issue_reply:nonmember",
@@ -376,9 +439,8 @@ contrasts = c(
     "issue_reply:member-pr_reply:member",  
     "issue_reply:nonmember-pr_reply:nonmember")
 
-
 tests = compute_t_statistics(
-    means, se, number_samples,
+    means, se,
     contrasts)
 ```
 
@@ -407,11 +469,11 @@ pander_lme(creators_v_commenters_emotion_by_project)
 ```
 
 
-
-
 These results are quite different from our results conducted over a smaller
 dataset last year. One potential reason is that these effects may be
 time-dependent. Our next model explores this possibility by adding a time term.
+
+#### Plots
 
 ```{r plot-model-emotion-by-type-and-membership, echo=FALSE, include=FALSE, eval=TRUE}
 
@@ -510,11 +572,6 @@ creators_v_commenters_emotion_by_project_time = lmer(compound_emotion ~ project 
                                                      REML=FALSE)
 # print results
 pander_lme(creators_v_commenters_emotion_by_project_time)
-```
-
-```{r anova-model-emotion-by-type-author-project-time}
-anova_results = anova(creators_v_commenters_emotion_by_project_time)
-pander_clean_anova(anova_results)
 ```
 
 Interestingly, we see much more volatility here in the emotion dynamics
@@ -665,11 +722,6 @@ pander_lme(creators_v_commenters_gratitude_by_project)
 
 ```
 
-```{r anova-gratitude-by-type-and-author-and-project}
-anova_results = anova(creators_v_commenters_gratitude_by_project)
-pander_clean_anova(anova_results)
-```
-
 ```{r plot-gratitude-predictors-by-project, include=FALSE, echo=FALSE, eval=TRUE}
 grateful_plot = ggplot(data=sentiment_frame,
                        aes(colour=type,
@@ -725,12 +777,6 @@ creators_v_commenters_gratitude_time = lmer(log(grateful_count + 1) ~ project + 
 pander_lme(creators_v_commenters_gratitude_time)
 
 ```
-
-```{r anova_gratitude-predictors-time, eval = TRUE}
-anova_results = anova(creators_v_commenters_gratitude_time)
-pander_clean_anova(anova_results)
-```
-
 
 ```{r plot-gratitude-predictors-time, echo=FALSE, eval=TRUE}
 
@@ -984,11 +1030,6 @@ retention_predictors = glm(retained_newcomer ~ (project +
 # print it
 summary(retention_predictors)
 
-```
-
-```{r anova_predicting-retention}
-anova_results = anova(retention_predictors, test="LRT")
-pander(anova_results)
 ```
 
 ```{r plot-predicting-retention-aggregated, echo=FALSE, include=FALSE, eval=TRUE}

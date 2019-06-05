@@ -4,6 +4,7 @@ output:
   html_document:
     keep_md: yes
     number_sections: yes
+    toc: true
 ---
 
 This R markdown provides the data preparation for our forthcoming manuscript
@@ -154,7 +155,7 @@ mean of 8709.25 tickets per project.
 
 On these tickets, the dataset includes
 411180 unique comments, with
-51397.5 average comments per project.
+5.13975\times 10^{4} average comments per project.
 
 In total, we have 14338 unique commenters,
 14232 unique ticket-creators, and
@@ -301,6 +302,31 @@ pander_clean_anova = function(model, rename_columns=TRUE,
 }
 ```
 
+
+
+```r
+#' Welch t-test
+compute_t_statistics = function(means, standard_error,
+				contrasts){
+    all_tests = data.frame()
+    for(contrast in contrasts){
+	splits = unlist(strsplit(contrast, "-"))
+	if(length(splits) != 2){
+	    error("Dunno how to deal with this just yet") 
+	}
+
+	group1 = splits[1]
+	group2 = splits[2]
+
+        t = ((means[group1] - means[group2]) /
+	     (standard_error[group1]**2 +
+	      standard_error[group2]**2)**.5)
+	all_tests[contrast, "t_stats"] = t
+    }
+    return(all_tests) 
+}
+```
+
 #### Model 1.1a : the "traditional" psychology way.
 
 
@@ -348,6 +374,82 @@ Table: Type III Analysis of Variance Table with Satterthwaite's method
 Projects here are random effects, but the rest of the model is similar as
 before, except this allows us to do pairwise testing of elements
 
+##### First, are sentiments for types and groups significantly different?
+
+
+```r
+fixed_creators_v_commenters_emotion = lmer(
+    compound_emotion ~ 0 + author_group + (1 | author_name) + (1 | project),
+    data=sentiment_frame,
+    REML=FALSE)
+
+coefficients_and_se = data.frame(
+    summary(fixed_creators_v_commenters_emotion)$coefficients)
+# Clean up row.names
+row_names = gsub("author_group", "", gsub("type", "", row.names(coefficients_and_se)))
+
+means = coefficients_and_se$Estimate
+names(means) = row_names
+
+se = coefficients_and_se$Std..Error
+names(se) = row_names
+
+contrasts = c("member-nonmember")
+tests = compute_t_statistics(
+    means, se,
+    contrasts)
+tests[, "p_value"] = compute_p_value_from_t_stats(tests$t_stats)
+pander_clean_anova(tests, rename_columns=FALSE)
+```
+
+
+
+|        &nbsp;        | t_stats | p_value | p_adj | sig |
+|:--------------------:|:-------:|:-------:|:-----:|:---:|
+| **member-nonmember** | -0.103  |  0.92   | 0.92  |     |
+
+
+```r
+fixed_types_emotion = lmer(
+    compound_emotion ~ 0 + type + (1 | author_name) + (1 | project),
+    data=sentiment_frame,
+    REML=FALSE)
+
+coefficients_and_se = data.frame(
+    summary(fixed_types_emotion)$coefficients)
+# Clean up row.names
+row_names = gsub("author_group", "", gsub("type", "", row.names(coefficients_and_se)))
+
+means = coefficients_and_se$Estimate
+names(means) = row_names
+
+se = coefficients_and_se$Std..Error
+names(se) = row_names
+
+contrasts = c("issue_post-issue_reply",
+	       "pr_post-pr_reply",
+	       "issue_post-pr_post",
+	       "issue_reply-issue_post")
+
+tests = compute_t_statistics(
+    means, se,
+    contrasts)
+
+tests[, "p_value"] = compute_p_value_from_t_stats(tests$t_stats)
+pander_clean_anova(tests, rename_columns=FALSE)
+```
+
+
+
+|           &nbsp;           | t_stats | p_value | p_adj | sig |
+|:--------------------------:|:-------:|:-------:|:-----:|:---:|
+| **issue_post-issue_reply** | -8.922  |  1e-04  | 1e-04 | *** |
+|    **pr_post-pr_reply**    | -12.02  |  1e-04  | 1e-04 | *** |
+|   **issue_post-pr_post**   | -0.6242 |  0.53   | 0.53  |     |
+| **issue_reply-issue_post** |  8.922  |  1e-04  | 1e-04 | *** |
+
+##### Second, now test the interactions between types and author groups
+
 
 ```r
 nelle_creators_v_commenters_emotion = lmer(
@@ -375,31 +477,6 @@ names(means) = row_names
 se = coefficients_and_se$Std..Error
 names(se) = row_names
 
-number_samples = as.vector(
-    unlist(summarise(group_by(sentiment_frame, type:author_group), n())[2]))
-names(number_samples) = row_names
-
-#' Welch t-test
-compute_t_statistics = function(means, standard_error, number_samples,
-				contrasts){
-    all_tests = data.frame()
-    for(contrast in contrasts){
-	splits = unlist(strsplit(contrast, "-"))
-	if(length(splits) != 2){
-	    error("Dunno how to deal with this just yet") 
-	}
-
-	group1 = splits[1]
-	group2 = splits[2]
-
-        t = ((means[group1] - means[group2]) /
-	     (standard_error[group1]**2 +
-	      standard_error[group2]**2)**.5)
-	all_tests[contrast, "t_stats"] = t
-    }
-    return(all_tests) 
-}
-
 contrasts = c(
     "issue_post:member-issue_post:nonmember", 
     "issue_reply:member-issue_reply:nonmember",
@@ -414,9 +491,8 @@ contrasts = c(
     "issue_reply:member-pr_reply:member",  
     "issue_reply:nonmember-pr_reply:nonmember")
 
-
 tests = compute_t_statistics(
-    means, se, number_samples,
+    means, se,
     contrasts)
 ```
 
@@ -429,20 +505,20 @@ pander_clean_anova(tests, rename_columns=FALSE)
 
 
 
-|                     &nbsp;                     | t_stats | p_value | p_adj  | sig |
-|:----------------------------------------------:|:-------:|:-------:|:------:|:---:|
-|   **issue_post:member-issue_post:nonmember**   | -0.7446 |  0.46   |  0.55  |     |
-|  **issue_reply:member-issue_reply:nonmember**  | -2.447  |  0.014  | 0.025  |  *  |
-|      **pr_post:member-pr_post:nonmember**      | -2.664  |  0.008  | 0.016  |  *  |
-|     **pr_reply:member-pr_reply:nonmember**     | -0.2967 |  0.77   |  0.78  |     |
-|    **issue_post:member-issue_reply:member**    | -6.884  | 0.0001  | 0.0001 | *** |
-| **issue_post:nonmember-issue_reply:nonmember** | -8.922  | 0.0001  | 0.0001 | *** |
-|       **pr_post:member-pr_reply:member**       | -10.82  | 0.0001  | 0.0001 | *** |
-|    **pr_post:nonmember-pr_reply:nonmember**    |  -8.44  | 0.0001  | 0.0001 | *** |
-|      **issue_post:member-pr_post:member**      | 0.2843  |  0.78   |  0.78  |     |
-|   **issue_post:nonmember-pr_post:nonmember**   | -1.667  |  0.096  | 0.143  |     |
-|     **issue_reply:member-pr_reply:member**     | -3.601  | 0.0003  | 0.001  | **  |
-|  **issue_reply:nonmember-pr_reply:nonmember**  | -1.528  |  0.126  | 0.169  |     |
+|                     &nbsp;                     | t_stats | p_value | p_adj | sig |
+|:----------------------------------------------:|:-------:|:-------:|:-----:|:---:|
+|   **issue_post:member-issue_post:nonmember**   | -0.7446 |  0.46   | 0.55  |     |
+|  **issue_reply:member-issue_reply:nonmember**  | -2.447  |  0.014  | 0.025 |  *  |
+|      **pr_post:member-pr_post:nonmember**      | -2.664  |  0.008  | 0.016 |  *  |
+|     **pr_reply:member-pr_reply:nonmember**     | -0.2967 |  0.77   | 0.78  |     |
+|    **issue_post:member-issue_reply:member**    | -6.884  |  1e-04  | 1e-04 | *** |
+| **issue_post:nonmember-issue_reply:nonmember** | -8.922  |  1e-04  | 1e-04 | *** |
+|       **pr_post:member-pr_reply:member**       | -10.82  |  1e-04  | 1e-04 | *** |
+|    **pr_post:nonmember-pr_reply:nonmember**    |  -8.44  |  1e-04  | 1e-04 | *** |
+|      **issue_post:member-pr_post:member**      | 0.2843  |  0.78   | 0.78  |     |
+|   **issue_post:nonmember-pr_post:nonmember**   | -1.667  |  0.096  | 0.143 |     |
+|     **issue_reply:member-pr_reply:member**     | -3.601  |  3e-04  | 0.001 | **  |
+|  **issue_reply:nonmember-pr_reply:nonmember**  | -1.528  |  0.126  | 0.169 |     |
 
 
 #### Model 1.1b : Do different kinds of user contributions differ in emotion by projects?
@@ -532,11 +608,11 @@ pander_lme(creators_v_commenters_emotion_by_project)
 |  **projectsphinx-gallery:typepr_reply:author_groupnonmember**   |  0.03611  |  0.06777   | 480513 |  0.5329  |  0.59  |  0.79  |     |
 
 
-
-
 These results are quite different from our results conducted over a smaller
 dataset last year. One potential reason is that these effects may be
 time-dependent. Our next model explores this possibility by adding a time term.
+
+#### Plots
 
 
 
@@ -694,34 +770,6 @@ pander_lme(creators_v_commenters_emotion_by_project_time)
 |       **projectscipy:typepr_reply:author_groupnonmember:ns(date)**       | -0.02605  |   0.1374   | 442645 | -0.1895  |  0.85  |  0.96  |     |
 |  **projectsphinx-gallery:typepr_reply:author_groupnonmember:ns(date)**   |   1.559   |   0.6433   | 480249 |  2.424   | 0.015  | 0.131  |     |
 
-
-```r
-anova_results = anova(creators_v_commenters_emotion_by_project_time)
-pander_clean_anova(anova_results)
-```
-
-
-
-|                 &nbsp;                 | sum_sq | mean_sq | num_df | den_df | f_value | p_value | p_adj  | sig |
-|:--------------------------------------:|:------:|:-------:|:------:|:------:|:-------:|:-------:|:------:|:---:|
-|              **project**               | 9.731  |  1.39   |   7    | 206076 |  8.227  | 0.0001  | 0.0001 | *** |
-|                **type**                | 9.788  |  3.263  |   3    | 476066 |  19.31  | 0.0001  | 0.0001 | *** |
-|            **author_group**            | 0.5728 | 0.5728  |   1    | 430759 |  3.39   |  0.066  | 0.089  |  .  |
-|              **ns(date)**              | 0.2589 | 0.2589  |   1    | 387166 |  1.532  |  0.216  | 0.249  |     |
-|            **project:type**            |  18.3  | 0.8712  |   21   | 422452 |  5.156  | 0.0001  | 0.0001 | *** |
-|        **project:author_group**        | 6.638  | 0.9483  |   7    | 312861 |  5.612  | 0.0001  | 0.0001 | *** |
-|         **type:author_group**          | 0.6321 | 0.2107  |   3    | 476218 |  1.247  |  0.29   |  0.31  |     |
-|          **project:ns(date)**          | 11.29  |  1.613  |   7    | 230089 |  9.544  | 0.0001  | 0.0001 | *** |
-|           **type:ns(date)**            | 2.403  |  0.801  |   3    | 470673 |  4.74   |  0.003  | 0.004  | **  |
-|       **author_group:ns(date)**        | 0.066  |  0.066  |   1    | 427534 | 0.3906  |  0.53   |  0.53  |     |
-|     **project:type:author_group**      |  9.51  | 0.4529  |   21   | 425566 |  2.68   | 0.0001  | 0.0001 | *** |
-|       **project:type:ns(date)**        | 23.16  |  1.103  |   21   | 404726 |  6.527  | 0.0001  | 0.0001 | *** |
-|   **project:author_group:ns(date)**    | 8.629  |  1.233  |   7    | 270842 |  7.295  | 0.0001  | 0.0001 | *** |
-|     **type:author_group:ns(date)**     | 1.076  | 0.3586  |   3    | 471022 |  2.122  |  0.095  | 0.119  |     |
-| **project:type:author_group:ns(date)** | 10.06  | 0.4789  |   21   | 407739 |  2.835  | 0.0001  | 0.0001 | *** |
-
-Table: Type III Analysis of Variance Table with Satterthwaite's method
-
 Interestingly, we see much more volatility here in the emotion dynamics
 of community members relative to the community nonmembers over time, even
 when we collapse across all projects.
@@ -830,26 +878,6 @@ pander_lme(creators_v_commenters_gratitude_by_project)
 |  **projectsphinx-gallery:author_groupnonmember:typepr_reply**   |  -0.09623  |  0.03514   | 477556 |  -2.738  | 0.006  | 0.015  |  *  |
 
 
-```r
-anova_results = anova(creators_v_commenters_gratitude_by_project)
-pander_clean_anova(anova_results)
-```
-
-
-
-|            &nbsp;             | sum_sq | mean_sq | num_df | den_df | f_value | p_value | p_adj  | sig |
-|:-----------------------------:|:------:|:-------:|:------:|:------:|:-------:|:-------:|:------:|:---:|
-|          **project**          | 2.843  | 0.4061  |   7    | 261810 |  9.017  | 0.0001  | 0.0001 | *** |
-|       **author_group**        |  1.42  |  1.42   |   1    | 415018 |  31.53  | 0.0001  | 0.0001 | *** |
-|           **type**            | 61.23  |  20.41  |   3    | 471397 |  453.2  | 0.0001  | 0.0001 | *** |
-|   **project:author_group**    | 1.884  | 0.2692  |   7    | 395490 |  5.977  | 0.0001  | 0.0001 | *** |
-|       **project:type**        | 8.633  | 0.4111  |   21   | 446377 |  9.128  | 0.0001  | 0.0001 | *** |
-|     **author_group:type**     | 9.502  |  3.167  |   3    | 471687 |  70.33  | 0.0001  | 0.0001 | *** |
-| **project:author_group:type** | 7.556  | 0.3598  |   21   | 447370 |  7.99   | 0.0001  | 0.0001 | *** |
-
-Table: Type III Analysis of Variance Table with Satterthwaite's method
-
-
 
 ![**Figure**. Expressions of gratitude by contribution type (ticket vs. comment) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-grateful_membership_contribution-knitr.jpg)
 
@@ -925,26 +953,6 @@ pander_lme(creators_v_commenters_gratitude_time)
 |    **typeissue_reply:ns(date, df = 8)8**    | 0.0001938 |  0.009747  | 470307 | 0.01988 |  0.98  |  0.98  |     |
 |      **typepr_post:ns(date, df = 8)8**      | -0.002133 |  0.01178   | 467571 | -0.1811 |  0.86  |  0.89  |     |
 |     **typepr_reply:ns(date, df = 8)8**      |  0.03815  |  0.009566  | 457346 |  3.987  | 0.0001 | 0.001  | **  |
-
-
-```r
-anova_results = anova(creators_v_commenters_gratitude_time)
-pander_clean_anova(anova_results)
-```
-
-
-
-|              &nbsp;               | sum_sq | mean_sq | num_df | den_df | f_value | p_value | p_adj  | sig |
-|:---------------------------------:|:------:|:-------:|:------:|:------:|:-------:|:-------:|:------:|:---:|
-|            **project**            | 6.325  | 0.9036  |   7    | 187379 |  20.05  | 0.0001  | 0.0001 | *** |
-|         **author_group**          | 0.627  |  0.627  |   1    | 458552 |  13.91  | 0.0002  | 0.0002 | *** |
-|             **type**              | 1.888  | 0.6292  |   3    | 479205 |  13.96  | 0.0001  | 0.0001 | *** |
-|       **ns(date, df = 8)**        | 2.209  | 0.2761  |   8    | 232378 |  6.126  | 0.0001  | 0.0001 | *** |
-| **author_group:ns(date, df = 8)** | 1.714  | 0.2142  |   8    | 212741 |  4.753  | 0.0001  | 0.0001 | *** |
-|     **type:ns(date, df = 8)**     | 14.66  | 0.6106  |   24   | 475633 |  13.55  | 0.0001  | 0.0001 | *** |
-
-Table: Type III Analysis of Variance Table with Satterthwaite's method
-
 
 
 ```
@@ -1176,127 +1184,6 @@ summary(retention_predictors)
 ## 
 ## Number of Fisher Scoring iterations: 4
 ```
-
-
-```r
-anova_results = anova(retention_predictors, test="LRT")
-pander(anova_results)
-```
-
-
-------------------------------------------------------------------------------
-                      &nbsp;                        Df   Deviance   Resid. Df 
--------------------------------------------------- ---- ---------- -----------
-                     **NULL**                       NA      NA        16584   
-
-                   **project**                      7     130.4       16577   
-
-                  **open_time**                     1    0.002046     16576   
-
-            **comment_sentiment_mean**              1     31.51       16575   
-
-        **comment_sentiment_max_negative**          1     13.64       16574   
-
-         **comment_grateful_cumulative**            1      15.8       16573   
-
-              **number_of_comments**                1     69.59       16572   
-
-             **comment_member_ratio**               1     43.98       16571   
-
-                **ticket_family**                   1     250.6       16570   
-
-            **project:ticket_family**               7      56.5       16563   
-
-           **open_time:ticket_family**              1     53.77       16562   
-
-     **comment_sentiment_mean:ticket_family**       1      2.26       16561   
-
- **comment_sentiment_max_negative:ticket_family**   1     7.363       16560   
-
-  **comment_grateful_cumulative:ticket_family**     1     3.691       16559   
-
-       **number_of_comments:ticket_family**         1     3.758       16558   
-
-      **comment_member_ratio:ticket_family**        1     16.94       16557   
-------------------------------------------------------------------------------
-
-Table: Analysis of Deviance Table (continued below)
-
- 
----------------------------------------------------------------
-                      &nbsp;                        Resid. Dev 
--------------------------------------------------- ------------
-                     **NULL**                         20872    
-
-                   **project**                        20742    
-
-                  **open_time**                       20742    
-
-            **comment_sentiment_mean**                20710    
-
-        **comment_sentiment_max_negative**            20697    
-
-         **comment_grateful_cumulative**              20681    
-
-              **number_of_comments**                  20611    
-
-             **comment_member_ratio**                 20567    
-
-                **ticket_family**                     20317    
-
-            **project:ticket_family**                 20260    
-
-           **open_time:ticket_family**                20206    
-
-     **comment_sentiment_mean:ticket_family**         20204    
-
- **comment_sentiment_max_negative:ticket_family**     20197    
-
-  **comment_grateful_cumulative:ticket_family**       20193    
-
-       **number_of_comments:ticket_family**           20189    
-
-      **comment_member_ratio:ticket_family**          20172    
----------------------------------------------------------------
-
-Table: Table continues below
-
- 
-------------------------------------------------------------------------------------------------------------------
-                      &nbsp;                                                  Pr(>Chi)                            
--------------------------------------------------- ---------------------------------------------------------------
-                     **NULL**                                                    NA                               
-
-                   **project**                                     0.0000000000000000000000005216                 
-
-                  **open_time**                                                0.9639                             
-
-            **comment_sentiment_mean**                                      0.00000001983                         
-
-        **comment_sentiment_max_negative**                                    0.0002215                           
-
-         **comment_grateful_cumulative**                                     0.00007049                           
-
-              **number_of_comments**                                   0.00000000000000007306                     
-
-             **comment_member_ratio**                                     0.00000000003325                        
-
-                **ticket_family**                   0.00000000000000000000000000000000000000000000000000000001918 
-
-            **project:ticket_family**                                      0.0000000007531                        
-
-           **open_time:ticket_family**                                   0.0000000000002251                       
-
-     **comment_sentiment_mean:ticket_family**                                  0.1328                             
-
- **comment_sentiment_max_negative:ticket_family**                             0.006659                            
-
-  **comment_grateful_cumulative:ticket_family**                                0.05469                            
-
-       **number_of_comments:ticket_family**                                    0.05256                            
-
-      **comment_member_ratio:ticket_family**                                 0.00003865                           
-------------------------------------------------------------------------------------------------------------------
 
 
 
