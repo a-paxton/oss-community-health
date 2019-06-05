@@ -250,13 +250,13 @@ Now we begin the actual modeling. Our first general question is whether users'
 patterns of sentiment differ materially by whether they are a member of the
 community versus a nonmember of the community and by their different kinds of
 possible contributions (i.e., a posted pull request, a reply to a pull request,
-a posted ticket, or a reply to an ticket).
+a posted issue, or a reply to an issue).
 
 ```{r function_clean_anova}
 
 compute_p_value_from_t_stats = function(t_stats){
     # From Alex -- this is the norm in Psychology, and should be more
-    # conservative  than trying to estimate the number of degrees of freedoms
+    # conservative than trying to estimate the number of degrees of freedoms
     # using Welch-Sattherwaite equation.
     p_values = 2*(1-pnorm(abs(t_stats)))
 }
