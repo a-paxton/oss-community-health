@@ -338,6 +338,10 @@ before, except this allows us to do pairwise testing of elements.
 
 ##### First, are sentiments for types and groups significantly different?
 
+First, look at whether there are differences between author group's in
+sentiments.
+
+
 ```{r model-emotion-by-author}
 fixed_creators_v_commenters_emotion = lmer(
     compound_emotion ~ 0 + author_group + (1 | author_name) + (1 | project),
@@ -356,12 +360,16 @@ se = coefficients_and_se$Std..Error
 names(se) = row_names
 
 contrasts = c("member-nonmember")
-tests = compute_t_statistics(
+author_groups_tests = compute_t_statistics(
     means, se,
     contrasts)
-tests[, "p_value"] = compute_p_value_from_t_stats(tests$t_stats)
-pander_clean_anova(tests, rename_columns=FALSE)
+author_groups_tests[, "p_value"] = compute_p_value_from_t_stats(
+    author_groups_tests$t_stats)
 ```
+
+
+Then, look at whether there are differences in emotion between types of
+tickets.
 
 ```{r model-types-by-author}
 
@@ -386,18 +394,24 @@ contrasts = c("issue_post-issue_reply",
 	       "issue_post-pr_post",
 	       "issue_reply-issue_post")
 
-tests = compute_t_statistics(
+types_tests = compute_t_statistics(
     means, se,
     contrasts)
 
-tests[, "p_value"] = compute_p_value_from_t_stats(tests$t_stats)
-pander_clean_anova(tests, rename_columns=FALSE)
+types_tests[, "p_value"] = compute_p_value_from_t_stats(types_tests$t_stats)
+```
+
+
+```{r combine_tests_author_groups_types}
+author_groups_tests["contrast"] = row.names(author_groups_tests)
+types_tests["contrast"] = row.names(types_tests)
+all_tests = merge(author_groups_tests, types_tests, all=TRUE, sort=FALSE)
+all_tests["model"] = "main terms"
 ```
 
 ##### Second, now test the interactions between types and author groups
 
 ```{r nelle_model-emotion-by-type-and-author}
-
 nelle_creators_v_commenters_emotion = lmer(
     compound_emotion ~ 0 + type:author_group + (1 | author_name) + (1 | project),
     data=sentiment_frame,
@@ -436,18 +450,22 @@ contrasts = c(
     "issue_reply:member-pr_reply:member",  
     "issue_reply:nonmember-pr_reply:nonmember")
 
-tests = compute_t_statistics(
+types_author_groups_tests = compute_t_statistics(
     means, se,
     contrasts)
 ```
 
 ```{r get_pvalue}
 
-tests[, "p_value"] = compute_p_value_from_t_stats(
-    tests$"t_stats")
-pander_clean_anova(tests, rename_columns=FALSE)
+types_author_groups_tests[, "p_value"] = compute_p_value_from_t_stats(
+    types_author_groups_tests$"t_stats")
 ```
 
+```{r combine_tests_types_author_groups_interactions}
+types_author_groups_tests["contrast"] = row.names(types_author_groups_tests)
+types_author_groups_tests["model"] = "2W: Types x Author Groups"
+all_tests = merge(all_tests, types_author_groups_tests, all=TRUE, sort=FALSE)
+```
 
 #### Model 1.1b : Do different kinds of user contributions differ in emotion by projects?
 
@@ -598,18 +616,37 @@ contrasts = c(
     "sphinx.gallery:issue_reply:nonmember-sphinx.gallery:pr_reply:nonmember"
     )
 
-tests = compute_t_statistics(
+project_types_author_group_tests = compute_t_statistics(
     means, se,
     contrasts)
-tests[, "p_value"] = compute_p_value_from_t_stats(tests$t_stats)
-pander_clean_anova(tests, rename_columns=FALSE)
-    
+project_types_author_group_tests[, "p_value"] = compute_p_value_from_t_stats(
+    project_types_author_group_tests$t_stats) 
 ```
+
+```{r combine_all_tests}
+project_types_author_group_tests["contrast"] = row.names(project_types_author_group_tests)
+project_types_author_group_tests["model"] = "3W: Types x Author Groups x Project"
+
+all_tests = merge(all_tests, project_types_author_group_tests, all=TRUE,
+		  sort=FALSE)
+```
+
 
 
 These results are quite different from our results conducted over a smaller
 dataset last year. One potential reason is that these effects may be
 time-dependent. Our next model explores this possibility by adding a time term.
+
+
+#### All results, corrected for the whole set of tests
+```{r model1_whole_set}
+
+row.names(all_tests) = all_tests$contrast
+all_tests = subset(all_tests, select=-c(contrast))
+# Reorder the columns for readibility
+all_tests = all_tests[c("model", "t_stats", "p_value")]
+pander_clean_anova(all_tests, rename_columns=FALSE)
+```
 
 #### Plots
 
