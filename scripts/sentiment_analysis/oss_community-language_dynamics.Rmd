@@ -331,15 +331,10 @@ pander_lme(creators_v_commenters_emotion_by_project)
 
 ```
 
-```{r anova-model-emotion-by-type-author-project}
-anova_results = anova(creators_v_commenters_emotion_by_project)
-pander_clean_anova(anova_results)
-```
-
 #### Model 1.1b: Do different kinds of user contributions materially differ in emotion?
 
 Projects here are random effects, but the rest of the model is similar as
-before, except this allows us to do pairwise testing of elements
+before, except this allows us to do pairwise testing of elements.
 
 ##### First, are sentiments for types and groups significantly different?
 
