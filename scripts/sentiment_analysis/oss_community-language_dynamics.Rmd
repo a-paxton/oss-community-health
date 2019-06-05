@@ -640,7 +640,7 @@ ggsave(plot = sentiment_contribution_member_time_by_project_plot,
 First, let's take a look at a summary table of expressions of gratitude by
 membership status and contribution type.
 
-```{r gratitude-summary-stats, eval=TRUE, include=FALSE, echo=FALSE}
+```{r gratitude-summary-stats, eval=TRUE, include=FALSE, echo=TRUE}
 
 # create a summary table of gratitude by type and author association
 gratitude_summary_stats = sentiment_frame %>% ungroup() %>%
