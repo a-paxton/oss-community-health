@@ -260,72 +260,7 @@ Now we begin the actual modeling. Our first general question is whether users'
 patterns of sentiment differ materially by whether they are a member of the
 community versus a nonmember of the community and by their different kinds of
 possible contributions (i.e., a posted pull request, a reply to a pull request,
-a posted ticket, or a reply to an ticket).
-
-
-```r
-compute_p_value_from_t_stats = function(t_stats){
-    # From Alex -- this is the norm in Psychology, and should be more
-    # conservative  than trying to estimate the number of degrees of freedoms
-    # using Welch-Sattherwaite equation.
-    p_values = 2*(1-pnorm(abs(t_stats)))
-}
-
-pander_clean_anova = function(model, rename_columns=TRUE,
-			      pval_correction_method="BH"){
-    # First, rename the functions into something sane.
-    if(rename_columns){
-        colnames(model) = c("sum_sq", "mean_sq", "num_df", "den_df",
-			 "f_value", "p_value")
-    }
-    
-    # Adjust p-values
-    model$p_adj = stats::p.adjust(model$p_value, method=pval_correction_method)
-
-    # Now, apply the same rounding on the p_value than on the rest
-    model$p_value[model$p_value < .0001] = .0001
-    model$p_value[model$p_value >= .0001] = round(model$p_value[model$p_value >= .0001],4)
-    model$p_value[model$p_value >= .0005] = round(model$p_value[model$p_value >= .0005],3)
-    model$p_value[model$p_value >= .25] = round(model$p_value[model$p_value >= .25],2)
-
-    model$p_adj[model$p_adj < .0001] = .0001
-    model$p_adj[model$p_adj >= .0001] = round(model$p_adj[model$p_adj >= .0001],4)
-    model$p_adj[model$p_adj >= .0005] = round(model$p_adj[model$p_adj >= .0005],3)
-    model$p_adj[model$p_adj >= .25] = round(model$p_adj[model$p_adj >= .25],2)
-
-    model$sig = ' '
-    model$sig[model$p_adj < .1] = '.'
-    model$sig[model$p_adj < .05] = '*'
-    model$sig[model$p_adj < .01] = '**'
-    model$sig[model$p_adj < .001] = '***'
-    return(pander(model, , split.table = Inf, style = 'rmarkdown'))
-}
-```
-
-
-
-```r
-#' Welch t-test
-compute_t_statistics = function(means, standard_error,
-				contrasts){
-    all_tests = data.frame()
-    for(contrast in contrasts){
-	splits = unlist(strsplit(contrast, "-"))
-	if(length(splits) != 2){
-	    error("Dunno how to deal with this just yet") 
-	}
-
-	group1 = splits[1]
-	group2 = splits[2]
-
-        t = ((means[group1] - means[group2]) /
-	     (standard_error[group1]**2 +
-	      standard_error[group2]**2)**.5)
-	all_tests[contrast, "t_stats"] = t
-    }
-    return(all_tests) 
-}
-```
+a posted issue, or a reply to an issue).
 
 #### Model 1.1a : the "traditional" psychology way.
 
@@ -333,9 +268,18 @@ compute_t_statistics = function(means, standard_error,
 ```r
 # do tickets and comments materially differ in emotion?
 creators_v_commenters_emotion_by_project = lmer(compound_emotion ~ type * author_group  +
-					        (1 | project) + (1 | author_name),
+                                                  (1 | project) + (1 | author_name),
                                                 data = sentiment_frame,
-                                                REML = TRUE)
+                                                REML = FALSE)
+```
+
+```
+## Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl =
+## control$checkConv, : Model failed to converge with max|grad| = 0.00206547
+## (tol = 0.002, component 1)
+```
+
+```r
 # print results
 pander_lme(creators_v_commenters_emotion_by_project)
 ```
@@ -344,44 +288,54 @@ pander_lme(creators_v_commenters_emotion_by_project)
 
 |                  &nbsp;                   | Estimate  | Std..Error |   df   | t.value |   p    | p_adj  | sig |
 |:-----------------------------------------:|:---------:|:----------:|:------:|:-------:|:------:|:------:|:---:|
-|              **(Intercept)**              |  0.07476  |  0.009608  |  10.1  |  7.781  | 0.0001 | 0.0001 | *** |
-|            **typeissue_reply**            |   0.091   |  0.003657  | 469064 |  24.88  | 0.0001 | 0.0001 | *** |
-|              **typepr_post**              | -0.003814 |  0.00439   | 470221 | -0.8688 |  0.38  |  0.38  |     |
-|             **typepr_reply**              |  0.1372   |  0.003636  | 470805 |  37.72  | 0.0001 | 0.0001 | *** |
-|         **author_groupnonmember**         |  0.00981  |  0.005348  | 282450 |  1.834  | 0.067  | 0.089  |  .  |
-| **typeissue_reply:author_groupnonmember** |  0.02102  |  0.005266  | 466954 |  3.992  | 0.0001 | 0.0001 | *** |
-|   **typepr_post:author_groupnonmember**   |  0.02551  |  0.006746  | 417727 |  3.781  | 0.0002 | 0.0002 | *** |
-|  **typepr_reply:author_groupnonmember**   | -0.006035 |  0.00557   | 321617 | -1.083  |  0.28  |  0.32  |     |
+|              **(Intercept)**              |  0.07484  |  0.009076  | 12.15  |  8.246  | 0.0001 | 0.0001 | *** |
+|            **typeissue_reply**            |   0.091   |  0.003657  | 469071 |  24.88  | 0.0001 | 0.0001 | *** |
+|              **typepr_post**              | -0.003814 |  0.00439   | 470228 | -0.8688 |  0.38  |  0.38  |     |
+|             **typepr_reply**              |  0.1372   |  0.003636  | 470812 |  37.72  | 0.0001 | 0.0001 | *** |
+|         **author_groupnonmember**         | 0.009788  |  0.005348  | 282409 |  1.83   | 0.067  |  0.09  |  .  |
+| **typeissue_reply:author_groupnonmember** |  0.02103  |  0.005266  | 466962 |  3.993  | 0.0001 | 0.0001 | *** |
+|   **typepr_post:author_groupnonmember**   |  0.02553  |  0.006746  | 417724 |  3.785  | 0.0002 | 0.0002 | *** |
+|  **typepr_reply:author_groupnonmember**   | -0.006008 |  0.00557   | 321582 | -1.079  |  0.28  |  0.32  |     |
 
 #### Model 1.1b: Do different kinds of user contributions materially differ in emotion?
 
 Projects here are random effects, but the rest of the model is similar as
 before, except this allows us to do pairwise testing of elements.
 
-##### First, are sentiments for types and groups significantly different?
+##### Model 1.1b.1: Does sentiment vary significantly by community membership?
 
-First, look at whether there are differences between author group's in
-sentiments.
-
+First, look at whether there are differences in sentiment between author 
+groups.
 
 
 ```r
+# do members and nonmembers materially differ in emotion?
 fixed_creators_v_commenters_emotion = lmer(
     compound_emotion ~ 0 + author_group + (1 | author_name) + (1 | project),
     data=sentiment_frame,
     REML=FALSE)
+```
 
+We will combine all submodels of Model 1.1b for output later in the file.
+
+
+```r
+# convert model output to dataframe
 coefficients_and_se = data.frame(
     summary(fixed_creators_v_commenters_emotion)$coefficients)
-# Clean up row.names
+
+# get comparison names as rownames
 row_names = gsub("author_group", "", gsub("type", "", row.names(coefficients_and_se)))
 
+# convert model estimates to a dataframe
 means = coefficients_and_se$Estimate
 names(means) = row_names
 
+# convert standard error to dataframe
 se = coefficients_and_se$Std..Error
 names(se) = row_names
 
+# compute t-statistics and p-values for desired contrasts
 contrasts = c("member-nonmember")
 author_groups_tests = compute_t_statistics(
     means, se,
@@ -389,7 +343,6 @@ author_groups_tests = compute_t_statistics(
 author_groups_tests[, "p_value"] = compute_p_value_from_t_stats(
     author_groups_tests$t_stats)
 ```
-
 
 Then, look at whether there are differences in emotion between types of
 tickets.
@@ -808,150 +761,127 @@ pander_clean_anova(all_tests, rename_columns=FALSE)
 ### Model 1.2: Do tickets and comments materially differ in emotion over time?
 
 
+```r
+# Number of splines basis to use.
+degrees_of_freedom = 4
+```
+
+In this model, we explore whether there are time ns in the
+observations from model1.1. First, let's look at the splines basis functions,
+and which time points they span by default.
+
+
+```r
+# Here, let's just plot the splines basis, to see what they look like.
+# ALEX FIXME
+basis = splines::ns(unique(sentiment_frame$date, df=degrees_of_freedom))
+```
+
+Now, let us use these splines model to model the time variation of the 3 way
+interaction terms. We model the intercept for the three way interaction
+separately from the splines: this allows us to only look at changes over time,
+and not changes in intercept.
+
+Note that we cannot use too many degrees of freedom, as nx-gallery spans a
+shorter time period than over project. Any spline basis function that covers
+only the 2012 to 2015 cannot be estimated on sphinx-gallery.
+
 
 ```r
 library(splines)
 # do tickets and comments materially differ in emotion over time?
-creators_v_commenters_emotion_by_project_time = lmer(compound_emotion ~ project * type * author_group * ns(date) +
-                                                       (1 | author_name),
+formula = (
+    compound_emotion ~ 0 +
+		       project:type:author_group +
+		       project:type:author_group:ns(date,
+						    df=degrees_of_freedom) +
+		       (1 | author_name))
+creators_v_commenters_emotion_by_project_time = lmer(formula,
                                                      data = sentiment_frame,
-                                                     REML=FALSE)
-# print results
-pander_lme(creators_v_commenters_emotion_by_project_time)
+                                                     REML=TRUE)
+```
+
+
+```r
+coefficients_and_se = data.frame(
+    summary(creators_v_commenters_emotion_by_project_time)$coefficients)
+# Clean up row.names
+row_names = gsub(
+    "project", "", gsub(
+	"author_group", "", gsub("type", "", row.names(coefficients_and_se))))
+
+# Now deal with the very annoying splines coefficient row.names
+row_names = gsub(
+    "ns(date, df = degrees_of_freedom)", "coef", row_names, fixed=TRUE)
+
+# The names scikit-learn, scikit-image and sphinx-gallery are going to cause
+# problem, as they are not valid R nmames.
+# Replace the "-" with a "." in those names
+row_names = gsub(
+    "scikit-", "scikit.", gsub(
+	"sphinx-", "sphinx.", row_names))
+
+means = coefficients_and_se$Estimate
+names(means) = row_names
+
+se = coefficients_and_se$Std..Error
+names(se) = row_names
+```
+
+
+```r
+# We're interested in looking at the coefficients of the splines.
+time_contrasts = c(
+    gsub("member", "member:coef1", contrasts),
+    gsub("member", "member:coef2", contrasts),
+    gsub("member", "member:coef3", contrasts),
+    gsub("member", "member:coef4", contrasts))
+
+project_type_author_group_time_tests = compute_t_statistics(
+    means, se, time_contrasts)
+project_type_author_group_time_tests[, "p_value"] = compute_p_value_from_t_stats(
+    project_type_author_group_time_tests$t_stats)
+```
+
+
+```r
+source("utils/ossc-libraries_and_functions.r")
+pander_clean_anova(project_type_author_group_time_tests, rename_columns=FALSE,
+		   display_only_significant=TRUE)
 ```
 
 
 
-|                                  &nbsp;                                  | Estimate  | Std..Error |   df   | t.value  |   p    | p_adj  | sig |
-|:------------------------------------------------------------------------:|:---------:|:----------:|:------:|:--------:|:------:|:------:|:---:|
-|                             **(Intercept)**                              |  0.04315  |  0.02876   | 459512 |   1.5    | 0.134  |  0.43  |     |
-|                            **projectmayavi**                             |  0.1724   |   0.2916   | 480627 |  0.5912  |  0.55  |  0.8   |     |
-|                             **projectnumpy**                             | -0.04867  |  0.03712   | 480633 |  -1.311  |  0.19  |  0.47  |     |
-|                            **projectpandas**                             | -0.01265  |  0.03131   | 472572 | -0.4041  |  0.69  |  0.89  |     |
-|                         **projectscikit-image**                          |  -0.1693  |  0.06208   | 475812 |  -2.727  | 0.006  | 0.112  |     |
-|                         **projectscikit-learn**                          |  0.01441  |  0.03592   | 479425 |  0.4011  |  0.69  |  0.89  |     |
-|                             **projectscipy**                             | -0.01242  |  0.05465   | 477094 | -0.2273  |  0.82  |  0.96  |     |
-|                        **projectsphinx-gallery**                         |  -0.5694  |   0.2594   | 469092 |  -2.195  | 0.028  | 0.144  |     |
-|                           **typeissue_reply**                            |  0.07708  |  0.02941   | 480545 |  2.621   | 0.009  | 0.112  |     |
-|                             **typepr_post**                              |  0.02581  |  0.03201   | 480848 |  0.8063  |  0.42  |  0.74  |     |
-|                             **typepr_reply**                             |  0.1678   |  0.02872   | 480269 |  5.844   | 0.0001 | 0.0001 | *** |
-|                        **author_groupnonmember**                         |  0.0658   |  0.03609   | 433096 |  1.823   | 0.068  |  0.26  |     |
-|                               **ns(date)**                               |  0.06329  |  0.05344   | 479660 |  1.184   | 0.236  |  0.53  |     |
-|                    **projectmayavi:typeissue_reply**                     |  -0.1089  |   0.2985   | 471005 | -0.3648  |  0.72  |  0.89  |     |
-|                     **projectnumpy:typeissue_reply**                     |  0.0593   |  0.03728   | 479544 |  1.591   | 0.112  |  0.38  |     |
-|                    **projectpandas:typeissue_reply**                     |  0.03555  |  0.03194   | 480850 |  1.113   |  0.27  |  0.58  |     |
-|                 **projectscikit-image:typeissue_reply**                  |  0.1581   |  0.06486   | 471361 |  2.437   | 0.015  | 0.131  |     |
-|                 **projectscikit-learn:typeissue_reply**                  |  0.04959  |  0.03682   | 479703 |  1.347   | 0.178  |  0.46  |     |
-|                     **projectscipy:typeissue_reply**                     |  0.04297  |  0.05642   | 473488 |  0.7617  |  0.45  |  0.74  |     |
-|                **projectsphinx-gallery:typeissue_reply**                 |  0.4097   |   0.2799   | 467197 |  1.464   | 0.143  |  0.44  |     |
-|                      **projectmayavi:typepr_post**                       |  -0.2157  |   0.3131   | 469377 | -0.6889  |  0.49  |  0.74  |     |
-|                       **projectnumpy:typepr_post**                       |  0.02013  |  0.04369   | 477873 |  0.4606  |  0.64  |  0.85  |     |
-|                      **projectpandas:typepr_post**                       | -0.004812 |  0.03697   | 480047 | -0.1301  |  0.9   |  0.97  |     |
-|                   **projectscikit-image:typepr_post**                    |  0.05893  |  0.06866   | 471444 |  0.8583  |  0.39  |  0.72  |     |
-|                   **projectscikit-learn:typepr_post**                    |  0.1429   |  0.04204   | 478042 |   3.4    | 0.001  | 0.029  |  *  |
-|                       **projectscipy:typepr_post**                       |  0.03371  |  0.06074   | 472830 |  0.555   |  0.58  |  0.8   |     |
-|                  **projectsphinx-gallery:typepr_post**                   |  0.8985   |   0.336    | 466841 |  2.674   | 0.008  | 0.112  |     |
-|                      **projectmayavi:typepr_reply**                      |  -0.4095  |   0.3024   | 471029 |  -1.354  | 0.176  |  0.46  |     |
-|                      **projectnumpy:typepr_reply**                       |  0.05326  |  0.03763   | 479754 |  1.415   | 0.157  |  0.44  |     |
-|                      **projectpandas:typepr_reply**                      | 0.001545  |  0.03147   | 480835 |  0.0491  |  0.96  |  0.98  |     |
-|                   **projectscikit-image:typepr_reply**                   |  0.2346   |  0.06252   | 471930 |  3.752   | 0.0002 | 0.011  |  *  |
-|                   **projectscikit-learn:typepr_reply**                   |  0.06917  |   0.0359   | 480038 |  1.927   | 0.054  |  0.21  |     |
-|                      **projectscipy:typepr_reply**                       |  0.0698   |  0.05507   | 473986 |  1.267   | 0.205  |  0.49  |     |
-|                  **projectsphinx-gallery:typepr_reply**                  |  0.6199   |   0.2709   | 467978 |  2.288   | 0.022  | 0.138  |     |
-|                 **projectmayavi:author_groupnonmember**                  |  -0.1961  |   0.2988   | 480842 | -0.6562  |  0.51  |  0.75  |     |
-|                  **projectnumpy:author_groupnonmember**                  |  -0.049   |  0.05087   | 444034 | -0.9633  |  0.34  |  0.67  |     |
-|                 **projectpandas:author_groupnonmember**                  | -0.04076  |  0.04108   | 425945 | -0.9922  |  0.32  |  0.66  |     |
-|              **projectscikit-image:author_groupnonmember**               |  0.09772  |  0.08526   | 460450 |  1.146   |  0.25  |  0.56  |     |
-|              **projectscikit-learn:author_groupnonmember**               |  -0.1075  |  0.04832   | 430315 |  -2.225  | 0.026  | 0.139  |     |
-|                  **projectscipy:author_groupnonmember**                  | -0.05314  |  0.06835   | 462156 | -0.7774  |  0.44  |  0.74  |     |
-|             **projectsphinx-gallery:author_groupnonmember**              |  0.8204   |   0.3554   | 480040 |  2.308   | 0.021  | 0.138  |     |
-|                **typeissue_reply:author_groupnonmember**                 | -0.007276 |   0.0399   | 471111 | -0.1824  |  0.86  |  0.96  |     |
-|                  **typepr_post:author_groupnonmember**                   | -0.03325  |   0.0461   | 453248 | -0.7212  |  0.47  |  0.74  |     |
-|                  **typepr_reply:author_groupnonmember**                  | 0.003994  |  0.04086   | 408948 | 0.09775  |  0.92  |  0.97  |     |
-|                        **projectmayavi:ns(date)**                        |  -0.5276  |   0.5378   | 473860 | -0.9811  |  0.33  |  0.66  |     |
-|                        **projectnumpy:ns(date)**                         | 0.006793  |  0.07056   | 480199 | 0.09627  |  0.92  |  0.97  |     |
-|                        **projectpandas:ns(date)**                        |  0.09059  |  0.05892   | 480553 |  1.538   | 0.124  |  0.41  |     |
-|                     **projectscikit-image:ns(date)**                     |  0.2476   |   0.1152   | 472853 |   2.15   | 0.032  |  0.15  |     |
-|                     **projectscikit-learn:ns(date)**                     | -0.009025 |  0.06779   | 480340 | -0.1331  |  0.89  |  0.97  |     |
-|                        **projectscipy:ns(date)**                         | -0.04754  |   0.1028   | 474803 | -0.4623  |  0.64  |  0.85  |     |
-|                    **projectsphinx-gallery:ns(date)**                    |  0.9402   |   0.4123   | 468330 |  2.281   | 0.023  | 0.138  |     |
-|                       **typeissue_reply:ns(date)**                       |  0.01874  |  0.05516   | 480846 |  0.3398  |  0.73  |  0.9   |     |
-|                         **typepr_post:ns(date)**                         | -0.04194  |  0.05943   | 480604 | -0.7057  |  0.48  |  0.74  |     |
-|                        **typepr_reply:ns(date)**                         |  -0.1058  |  0.05402   | 480850 |  -1.958  |  0.05  | 0.201  |     |
-|                    **author_groupnonmember:ns(date)**                    |  -0.1182  |  0.06726   | 432559 |  -1.758  | 0.079  |  0.28  |     |
-|         **projectmayavi:typeissue_reply:author_groupnonmember**          | 0.008279  |   0.3089   | 474639 |  0.0268  |  0.98  |  0.98  |     |
-|          **projectnumpy:typeissue_reply:author_groupnonmember**          |  0.01709  |  0.05648   | 471737 |  0.3026  |  0.76  |  0.91  |     |
-|         **projectpandas:typeissue_reply:author_groupnonmember**          |  0.1162   |   0.0458   | 469817 |  2.536   | 0.011  | 0.127  |     |
-|      **projectscikit-image:typeissue_reply:author_groupnonmember**       |  -0.1229  |  0.09595   | 477949 |  -1.281  |  0.2   |  0.48  |     |
-|      **projectscikit-learn:typeissue_reply:author_groupnonmember**       |  0.0279   |  0.05343   | 469902 |  0.5222  |  0.6   |  0.82  |     |
-|          **projectscipy:typeissue_reply:author_groupnonmember**          |  0.0418   |  0.07528   | 478051 |  0.5553  |  0.58  |  0.8   |     |
-|     **projectsphinx-gallery:typeissue_reply:author_groupnonmember**      |  -0.7986  |   0.3999   | 476646 |  -1.997  | 0.046  | 0.196  |     |
-|           **projectmayavi:typepr_post:author_groupnonmember**            |  0.06773  |   0.3395   | 478916 |  0.1995  |  0.84  |  0.96  |     |
-|            **projectnumpy:typepr_post:author_groupnonmember**            |  0.06177  |  0.06629   | 462130 |  0.9319  |  0.35  |  0.69  |     |
-|           **projectpandas:typepr_post:author_groupnonmember**            | -0.003816 |  0.05765   | 449433 | -0.06619 |  0.95  |  0.97  |     |
-|        **projectscikit-image:typepr_post:author_groupnonmember**         | -0.06936  |   0.1016   | 470282 | -0.6826  |  0.5   |  0.74  |     |
-|        **projectscikit-learn:typepr_post:author_groupnonmember**         |  0.02235  |  0.06233   | 454230 |  0.3585  |  0.72  |  0.89  |     |
-|            **projectscipy:typepr_post:author_groupnonmember**            |  0.06189  |   0.0821   | 468551 |  0.7539  |  0.45  |  0.74  |     |
-|       **projectsphinx-gallery:typepr_post:author_groupnonmember**        |   -1.08   |   0.5285   | 480795 |  -2.044  | 0.041  | 0.187  |     |
-|           **projectmayavi:typepr_reply:author_groupnonmember**           |  0.3885   |   0.3211   | 479831 |   1.21   | 0.226  |  0.53  |     |
-|           **projectnumpy:typepr_reply:author_groupnonmember**            | -0.004095 |  0.05731   | 428340 | -0.07146 |  0.94  |  0.97  |     |
-|           **projectpandas:typepr_reply:author_groupnonmember**           |  0.08634  |  0.04877   | 384161 |   1.77   | 0.077  |  0.28  |     |
-|        **projectscikit-image:typepr_reply:author_groupnonmember**        |  -0.2395  |  0.09116   | 452514 |  -2.628  | 0.009  | 0.112  |     |
-|        **projectscikit-learn:typepr_reply:author_groupnonmember**        |  0.01482  |  0.05356   | 410963 |  0.2767  |  0.78  |  0.93  |     |
-|           **projectscipy:typepr_reply:author_groupnonmember**            | -0.01268  |   0.0733   | 451249 |  -0.173  |  0.86  |  0.96  |     |
-|       **projectsphinx-gallery:typepr_reply:author_groupnonmember**       |  -0.909   |   0.395    | 480830 |  -2.301  | 0.021  | 0.138  |     |
-|                **projectmayavi:typeissue_reply:ns(date)**                |  0.2876   |   0.5525   | 470735 |  0.5205  |  0.6   |  0.82  |     |
-|                **projectnumpy:typeissue_reply:ns(date)**                 | -0.06634  |  0.07184   | 478310 | -0.9234  |  0.36  |  0.69  |     |
-|                **projectpandas:typeissue_reply:ns(date)**                |  -0.1045  |  0.06079   | 480392 |  -1.719  | 0.086  |  0.3   |     |
-|             **projectscikit-image:typeissue_reply:ns(date)**             |  -0.1799  |   0.1208   | 470572 |  -1.49   | 0.136  |  0.43  |     |
-|             **projectscikit-learn:typeissue_reply:ns(date)**             | -0.09343  |  0.07019   | 478434 |  -1.331  | 0.183  |  0.46  |     |
-|                **projectscipy:typeissue_reply:ns(date)**                 | -0.007258 |   0.1063   | 472543 | -0.06826 |  0.95  |  0.97  |     |
-|            **projectsphinx-gallery:typeissue_reply:ns(date)**            |  -0.5985  |   0.4433   | 466918 |  -1.35   | 0.177  |  0.46  |     |
-|                  **projectmayavi:typepr_post:ns(date)**                  |  0.4103   |   0.5762   | 469243 |  0.7122  |  0.48  |  0.74  |     |
-|                  **projectnumpy:typepr_post:ns(date)**                   | 0.001638  |  0.08234   | 476887 | 0.01989  |  0.98  |  0.98  |     |
-|                  **projectpandas:typepr_post:ns(date)**                  | -0.09842  |  0.06902   | 479388 |  -1.426  | 0.154  |  0.44  |     |
-|               **projectscikit-image:typepr_post:ns(date)**               |  0.05089  |   0.1294   | 470548 |  0.3931  |  0.69  |  0.89  |     |
-|               **projectscikit-learn:typepr_post:ns(date)**               |  -0.2627  |  0.07993   | 476915 |  -3.287  | 0.001  | 0.032  |  *  |
-|                  **projectscipy:typepr_post:ns(date)**                   | -0.02116  |   0.1146   | 471967 | -0.1846  |  0.85  |  0.96  |     |
-|              **projectsphinx-gallery:typepr_post:ns(date)**              |  -1.436   |   0.5318   | 466570 |   -2.7   | 0.007  | 0.112  |     |
-|                 **projectmayavi:typepr_reply:ns(date)**                  |  0.7948   |   0.5629   | 470549 |  1.412   | 0.158  |  0.44  |     |
-|                  **projectnumpy:typepr_reply:ns(date)**                  |  0.05038  |  0.07202   | 478610 |  0.6995  |  0.48  |  0.74  |     |
-|                 **projectpandas:typepr_reply:ns(date)**                  | -0.03477  |  0.05986   | 480605 | -0.5809  |  0.56  |  0.8   |     |
-|              **projectscikit-image:typepr_reply:ns(date)**               |  -0.2782  |   0.1169   | 471061 |  -2.379  | 0.017  | 0.138  |     |
-|              **projectscikit-learn:typepr_reply:ns(date)**               | -0.09735  |  0.06865   | 478814 |  -1.418  | 0.156  |  0.44  |     |
-|                  **projectscipy:typepr_reply:ns(date)**                  |  0.03256  |   0.1042   | 473018 |  0.3126  |  0.76  |  0.91  |     |
-|             **projectsphinx-gallery:typepr_reply:ns(date)**              |  -0.9627  |   0.4297   | 467596 |  -2.241  | 0.025  | 0.139  |     |
-|             **projectmayavi:author_groupnonmember:ns(date)**             |  0.5428   |   0.5508   | 477696 |  0.9856  |  0.32  |  0.66  |     |
-|             **projectnumpy:author_groupnonmember:ns(date)**              |  0.0787   |  0.09443   | 442680 |  0.8334  |  0.4   |  0.74  |     |
-|             **projectpandas:author_groupnonmember:ns(date)**             |  0.06196  |  0.07701   | 423609 |  0.8047  |  0.42  |  0.74  |     |
-|          **projectscikit-image:author_groupnonmember:ns(date)**          |  -0.1437  |   0.157    | 451158 | -0.9152  |  0.36  |  0.69  |     |
-|          **projectscikit-learn:author_groupnonmember:ns(date)**          |  0.2275   |  0.09044   | 429386 |  2.516   | 0.012  | 0.127  |     |
-|             **projectscipy:author_groupnonmember:ns(date)**              |  0.1732   |   0.1262   | 464023 |  1.373   |  0.17  |  0.46  |     |
-|         **projectsphinx-gallery:author_groupnonmember:ns(date)**         |  -1.424   |   0.5751   | 480699 |  -2.475  | 0.013  | 0.131  |     |
-|            **typeissue_reply:author_groupnonmember:ns(date)**            |  0.04182  |  0.07398   | 470589 |  0.5654  |  0.57  |  0.8   |     |
-|              **typepr_post:author_groupnonmember:ns(date)**              |  0.0692   |  0.08767   | 441364 |  0.7893  |  0.43  |  0.74  |     |
-|             **typepr_reply:author_groupnonmember:ns(date)**              | -0.01132  |  0.07792   | 381151 | -0.1452  |  0.88  |  0.97  |     |
-|     **projectmayavi:typeissue_reply:author_groupnonmember:ns(date)**     |  -0.1248  |   0.5706   | 474800 | -0.2187  |  0.83  |  0.96  |     |
-|     **projectnumpy:typeissue_reply:author_groupnonmember:ns(date)**      | -0.007668 |   0.1044   | 470483 | -0.07342 |  0.94  |  0.97  |     |
-|     **projectpandas:typeissue_reply:author_groupnonmember:ns(date)**     |  -0.184   |   0.0855   | 468291 |  -2.152  | 0.031  |  0.15  |     |
-|  **projectscikit-image:typeissue_reply:author_groupnonmember:ns(date)**  |  0.1891   |   0.1761   | 473403 |  1.074   |  0.28  |  0.6   |     |
-|  **projectscikit-learn:typeissue_reply:author_groupnonmember:ns(date)**  | -0.06928  |   0.0994   | 468411 |  -0.697  |  0.49  |  0.74  |     |
-|     **projectscipy:typeissue_reply:author_groupnonmember:ns(date)**      | -0.09579  |   0.1383   | 478074 | -0.6926  |  0.49  |  0.74  |     |
-| **projectsphinx-gallery:typeissue_reply:author_groupnonmember:ns(date)** |   1.442   |   0.6447   | 476754 |  2.236   | 0.025  | 0.139  |     |
-|       **projectmayavi:typepr_post:author_groupnonmember:ns(date)**       |  -0.2354  |   0.6312   | 480428 | -0.3729  |  0.71  |  0.89  |     |
-|       **projectnumpy:typepr_post:author_groupnonmember:ns(date)**        |  -0.1107  |   0.1254   | 451037 | -0.8827  |  0.38  |  0.71  |     |
-|       **projectpandas:typepr_post:author_groupnonmember:ns(date)**       |  0.08091  |   0.1073   | 437536 |  0.7541  |  0.45  |  0.74  |     |
-|    **projectscikit-image:typepr_post:author_groupnonmember:ns(date)**    |  0.3796   |   0.1918   | 461050 |  1.979   | 0.048  | 0.197  |     |
-|    **projectscikit-learn:typepr_post:author_groupnonmember:ns(date)**    | -0.05411  |   0.1183   | 447007 | -0.4575  |  0.65  |  0.85  |     |
-|       **projectscipy:typepr_post:author_groupnonmember:ns(date)**        |  -0.1074  |   0.1545   | 465321 | -0.6952  |  0.49  |  0.74  |     |
-|   **projectsphinx-gallery:typepr_post:author_groupnonmember:ns(date)**   |   1.985   |   0.8521   | 480489 |  2.329   |  0.02  | 0.138  |     |
-|      **projectmayavi:typepr_reply:author_groupnonmember:ns(date)**       |  -0.7217  |   0.6086   | 480839 |  -1.186  | 0.236  |  0.53  |     |
-|       **projectnumpy:typepr_reply:author_groupnonmember:ns(date)**       | -0.01057  |   0.1087   | 400809 | -0.09721 |  0.92  |  0.97  |     |
-|      **projectpandas:typepr_reply:author_groupnonmember:ns(date)**       |  -0.1834  |  0.09178   | 365222 |  -1.998  | 0.046  | 0.196  |     |
-|   **projectscikit-image:typepr_reply:author_groupnonmember:ns(date)**    |  0.4647   |   0.1705   | 436313 |  2.725   | 0.006  | 0.112  |     |
-|   **projectscikit-learn:typepr_reply:author_groupnonmember:ns(date)**    |  -0.036   |   0.1018   | 393198 | -0.3535  |  0.72  |  0.89  |     |
-|       **projectscipy:typepr_reply:author_groupnonmember:ns(date)**       | -0.02605  |   0.1374   | 442645 | -0.1895  |  0.85  |  0.96  |     |
-|  **projectsphinx-gallery:typepr_reply:author_groupnonmember:ns(date)**   |   1.559   |   0.6433   | 480249 |  2.424   | 0.015  | 0.131  |     |
+|                                       &nbsp;                                       | t_stats | p_value | p_adj  | sig |
+|:----------------------------------------------------------------------------------:|:-------:|:-------:|:------:|:---:|
+|   **matplotlib:issue_reply:member:coef1-matplotlib:issue_reply:nonmember:coef1**   |  2.93   |  0.003  | 0.048  |  *  |
+|      **matplotlib:issue_reply:member:coef1-matplotlib:pr_reply:member:coef1**      |  3.68   | 0.0002  | 0.008  | **  |
+|           **scipy:issue_reply:member:coef1-scipy:pr_reply:member:coef1**           |  3.087  |  0.002  | 0.035  |  *  |
+|   **scikit.learn:issue_post:member:coef2-scikit.learn:issue_reply:member:coef2**   |  2.962  |  0.003  | 0.047  |  *  |
+|     **scikit.learn:issue_post:member:coef2-scikit.learn:pr_post:member:coef2**     |  3.698  | 0.0002  | 0.008  | **  |
+|    **scikit.learn:issue_reply:member:coef2-scikit.learn:pr_reply:member:coef2**    |  2.941  |  0.003  | 0.048  |  *  |
+|        **matplotlib:pr_post:member:coef2-matplotlib:pr_reply:member:coef2**        |  3.313  |  0.001  |  0.02  |  *  |
+|         **pandas:issue_post:member:coef2-pandas:issue_reply:member:coef2**         |  4.175  | 0.0001  | 0.002  | **  |
+|           **scipy:issue_reply:member:coef2-scipy:pr_reply:member:coef2**           |  3.306  |  0.001  |  0.02  |  *  |
+|         **numpy:issue_post:nonmember:coef2-numpy:pr_post:nonmember:coef2**         |  3.162  |  0.002  | 0.031  |  *  |
+|   **matplotlib:issue_reply:member:coef3-matplotlib:issue_reply:nonmember:coef3**   |  3.06   |  0.002  | 0.037  |  *  |
+|     **matplotlib:issue_post:member:coef3-matplotlib:issue_reply:member:coef3**     |  -3.58  | 0.0003  | 0.009  | **  |
+|       **matplotlib:issue_post:member:coef3-matplotlib:pr_post:member:coef3**       | -3.583  | 0.0003  | 0.009  | **  |
+|           **scipy:issue_reply:member:coef3-scipy:pr_reply:member:coef3**           |  3.124  |  0.002  | 0.033  |  *  |
+|  **scikit.learn:issue_post:member:coef4-scikit.learn:issue_post:nonmember:coef4**  | -4.413  | 0.0001  | 0.001  | **  |
+| **scikit.learn:issue_reply:member:coef4-scikit.learn:issue_reply:nonmember:coef4** | -3.008  |  0.003  | 0.042  |  *  |
+|      **scikit.learn:pr_post:member:coef4-scikit.learn:pr_reply:member:coef4**      | -3.628  | 0.0003  | 0.009  | **  |
+|  **scikit.learn:issue_post:nonmember:coef4-scikit.learn:pr_post:nonmember:coef4**  |  4.719  | 0.0001  | 0.0002 | *** |
+|      **scikit.image:pr_post:member:coef4-scikit.image:pr_reply:member:coef4**      |  4.725  | 0.0001  | 0.0002 | *** |
+|    **scikit.image:issue_reply:member:coef4-scikit.image:pr_reply:member:coef4**    |  3.592  | 0.0003  | 0.009  | **  |
+|      **matplotlib:issue_reply:member:coef4-matplotlib:pr_reply:member:coef4**      |  4.059  | 0.0001  | 0.002  | **  |
+|       **pandas:issue_reply:member:coef4-pandas:issue_reply:nonmember:coef4**       |  5.463  | 0.0001  | 0.0001 | *** |
+|          **pandas:pr_reply:member:coef4-pandas:pr_reply:nonmember:coef4**          |  7.487  | 0.0001  | 0.0001 | *** |
+|      **pandas:issue_post:nonmember:coef4-pandas:issue_reply:nonmember:coef4**      |  3.377  |  0.001  | 0.018  |  *  |
+|         **pandas:pr_post:nonmember:coef4-pandas:pr_reply:nonmember:coef4**         |  4.27   | 0.0001  | 0.001  | **  |
+|       **pandas:issue_reply:nonmember:coef4-pandas:pr_reply:nonmember:coef4**       |  3.973  | 0.0001  | 0.003  | **  |
+|           **scipy:issue_reply:member:coef4-scipy:pr_reply:member:coef4**           |  3.155  |  0.002  | 0.031  |  *  |
+
 
 Interestingly, we see much more volatility here in the emotion dynamics
 of community members relative to the community nonmembers over time, even
@@ -1071,7 +1001,7 @@ pander_lme(creators_v_commenters_gratitude_by_project)
 
 ```r
 # do users tend to express appreciation and gratitude differently by group and content?
-creators_v_commenters_gratitude_time = lmer(log(grateful_count + 1) ~ project + (author_group + type) * ns(date, df=8) +
+creators_v_commenters_gratitude_time = lmer(log(grateful_count + 1) ~ project + (author_group + type) * ns(date, df=degrees_of_freedom) +
                                                (1 | author_name),
                                              data=sentiment_frame)
                                              #family=poisson)
@@ -1082,60 +1012,40 @@ pander_lme(creators_v_commenters_gratitude_time)
 
 
 
-|                   &nbsp;                    | Estimate  | Std..Error |   df   | t.value |   p    | p_adj  | sig |
-|:-------------------------------------------:|:---------:|:----------:|:------:|:-------:|:------:|:------:|:---:|
-|               **(Intercept)**               |  0.07424  |  0.01589   | 478081 |  4.671  | 0.0001 | 0.0001 | *** |
-|              **projectmayavi**              |  0.05131  |  0.007361  | 106539 |  6.971  | 0.0001 | 0.0001 | *** |
-|              **projectnumpy**               | -0.005685 |  0.002393  | 221015 | -2.375  | 0.018  | 0.059  |  .  |
-|              **projectpandas**              | -0.003797 |  0.00238   | 125897 | -1.595  | 0.111  | 0.206  |     |
-|           **projectscikit-image**           | -0.005136 |  0.003454  | 236075 | -1.487  | 0.137  | 0.238  |     |
-|           **projectscikit-learn**           | -0.007008 |  0.002532  | 124531 | -2.768  | 0.006  | 0.021  |  *  |
-|              **projectscipy**               | 0.009305  |  0.002506  | 219340 |  3.713  | 0.0002 | 0.002  | **  |
-|          **projectsphinx-gallery**          | -0.01429  |  0.005048  | 467546 | -2.832  | 0.005  |  0.02  |  *  |
-|          **author_groupnonmember**          |  0.03728  |  0.009995  | 458552 |  3.73   | 0.0002 | 0.002  | **  |
-|             **typeissue_reply**             |  0.02765  |  0.01728   | 478631 |   1.6   |  0.11  | 0.206  |     |
-|               **typepr_post**               | -0.02606  |  0.01964   | 480599 | -1.327  | 0.184  |  0.27  |     |
-|              **typepr_reply**               |   0.055   |  0.01609   | 480419 |  3.419  | 0.001  | 0.005  | **  |
-|            **ns(date, df = 8)1**            | -0.01832  |  0.01451   | 480801 | -1.262  | 0.207  |  0.29  |     |
-|            **ns(date, df = 8)2**            | -0.01401  |  0.01907   | 480637 | -0.7346 |  0.46  |  0.55  |     |
-|            **ns(date, df = 8)3**            | -0.004744 |  0.01685   | 480604 | -0.2815 |  0.78  |  0.84  |     |
-|            **ns(date, df = 8)4**            | -0.03053  |  0.01825   | 480148 | -1.673  | 0.094  | 0.196  |     |
-|            **ns(date, df = 8)5**            | -0.00315  |  0.01754   | 480043 | -0.1796 |  0.86  |  0.89  |     |
-|            **ns(date, df = 8)6**            | -0.01818  |  0.01258   | 475593 | -1.446  | 0.148  | 0.249  |     |
-|            **ns(date, df = 8)7**            | -0.02116  |  0.03548   | 480800 | -0.5965 |  0.55  |  0.64  |     |
-|            **ns(date, df = 8)8**            | 0.001346  |  0.009384  | 463233 | 0.1434  |  0.89  |  0.9   |     |
-| **author_groupnonmember:ns(date, df = 8)1** | -0.01294  |  0.009589  | 431440 | -1.349  | 0.177  |  0.26  |     |
-| **author_groupnonmember:ns(date, df = 8)2** | -0.01751  |   0.0123   | 416824 | -1.424  | 0.154  |  0.25  |     |
-| **author_groupnonmember:ns(date, df = 8)3** | -0.02349  |  0.01101   | 410675 | -2.135  | 0.033  |  0.09  |  .  |
-| **author_groupnonmember:ns(date, df = 8)4** | -0.006389 |   0.0118   | 397789 | -0.5413 |  0.59  |  0.65  |     |
-| **author_groupnonmember:ns(date, df = 8)5** | -0.02683  |  0.01136   | 398856 | -2.363  | 0.018  | 0.059  |  .  |
-| **author_groupnonmember:ns(date, df = 8)6** | -0.02502  |  0.008089  | 333398 | -3.093  | 0.002  | 0.012  |  *  |
-| **author_groupnonmember:ns(date, df = 8)7** | -0.03246  |  0.02312   | 438111 | -1.404  |  0.16  |  0.25  |     |
-| **author_groupnonmember:ns(date, df = 8)8** | -0.01897  |  0.006326  | 220662 | -2.999  | 0.003  | 0.014  |  *  |
-|    **typeissue_reply:ns(date, df = 8)1**    |  0.0174   |  0.01586   | 478514 |  1.097  |  0.27  |  0.34  |     |
-|      **typepr_post:ns(date, df = 8)1**      |  0.02186  |  0.01814   | 480663 |  1.205  | 0.228  |  0.29  |     |
-|     **typepr_reply:ns(date, df = 8)1**      |  0.02782  |  0.01484   | 480503 |  1.875  | 0.061  | 0.144  |     |
-|    **typeissue_reply:ns(date, df = 8)2**    |  0.02515  |  0.02068   | 480072 |  1.216  | 0.224  |  0.29  |     |
-|      **typepr_post:ns(date, df = 8)2**      |  0.02896  |  0.02409   | 480245 |  1.202  | 0.229  |  0.29  |     |
-|     **typepr_reply:ns(date, df = 8)2**      |  0.04528  |  0.01956   | 479813 |  2.315  | 0.021  | 0.063  |  .  |
-|    **typeissue_reply:ns(date, df = 8)3**    |  0.0105   |  0.01832   | 479942 |  0.573  |  0.57  |  0.64  |     |
-|      **typepr_post:ns(date, df = 8)3**      |  0.01945  |   0.0212   | 480169 | 0.9176  |  0.36  |  0.43  |     |
-|     **typepr_reply:ns(date, df = 8)3**      |  0.03703  |  0.01728   | 479770 |  2.143  | 0.032  |  0.09  |  .  |
-|    **typeissue_reply:ns(date, df = 8)4**    |  0.03987  |  0.01978   | 480570 |  2.016  | 0.044  | 0.108  |     |
-|      **typepr_post:ns(date, df = 8)4**      |  0.03102  |  0.02304   | 479669 |  1.346  | 0.178  |  0.26  |     |
-|     **typepr_reply:ns(date, df = 8)4**      |  0.06183  |  0.01871   | 478873 |  3.304  | 0.001  | 0.006  | **  |
-|    **typeissue_reply:ns(date, df = 8)5**    |  0.02313  |  0.01903   | 480580 |  1.215  | 0.224  |  0.29  |     |
-|      **typepr_post:ns(date, df = 8)5**      |  0.03656  |  0.02208   | 479597 |  1.655  | 0.098  | 0.196  |     |
-|     **typepr_reply:ns(date, df = 8)5**      |  0.05303  |  0.01798   | 478663 |  2.95   | 0.003  | 0.015  |  *  |
-|    **typeissue_reply:ns(date, df = 8)6**    |  0.02738  |  0.01347   | 479925 |  2.032  | 0.042  | 0.108  |     |
-|      **typepr_post:ns(date, df = 8)6**      |  0.02764  |  0.01569   | 475149 |  1.761  | 0.078  | 0.177  |     |
-|     **typepr_reply:ns(date, df = 8)6**      |  0.06425  |  0.01287   | 472283 |  4.993  | 0.0001 | 0.0001 | *** |
-|    **typeissue_reply:ns(date, df = 8)7**    |  0.06568  |  0.03884   | 479183 |  1.691  | 0.091  | 0.196  |     |
-|      **typepr_post:ns(date, df = 8)7**      |  0.06909  |  0.04472   | 480614 |  1.545  | 0.122  |  0.22  |     |
-|     **typepr_reply:ns(date, df = 8)7**      |  0.1023   |  0.03641   | 480368 |  2.81   | 0.005  |  0.02  |  *  |
-|    **typeissue_reply:ns(date, df = 8)8**    | 0.0001938 |  0.009747  | 470307 | 0.01988 |  0.98  |  0.98  |     |
-|      **typepr_post:ns(date, df = 8)8**      | -0.002133 |  0.01178   | 467571 | -0.1811 |  0.86  |  0.89  |     |
-|     **typepr_reply:ns(date, df = 8)8**      |  0.03815  |  0.009566  | 457346 |  3.987  | 0.0001 | 0.001  | **  |
+|                            &nbsp;                            |  Estimate   | Std..Error |   df   |  t.value  |   p    | p_adj  | sig |
+|:------------------------------------------------------------:|:-----------:|:----------:|:------:|:---------:|:------:|:------:|:---:|
+|                       **(Intercept)**                        |   0.0783    |  0.01099   | 466420 |   7.123   | 0.0001 | 0.0001 | *** |
+|                      **projectmayavi**                       |   0.05126   |  0.00736   | 106561 |   6.964   | 0.0001 | 0.0001 | *** |
+|                       **projectnumpy**                       |   -0.0057   |  0.002392  | 221100 |  -2.383   | 0.017  | 0.039  |  *  |
+|                      **projectpandas**                       |  -0.00377   |  0.00238   | 125952 |  -1.584   | 0.113  | 0.172  |     |
+|                   **projectscikit-image**                    |  -0.005205  |  0.003453  | 236613 |  -1.507   | 0.132  | 0.183  |     |
+|                   **projectscikit-learn**                    |  -0.006976  |  0.002532  | 124773 |  -2.756   | 0.006  | 0.016  |  *  |
+|                       **projectscipy**                       |  0.009373   |  0.002505  | 219548 |   3.741   | 0.0002 | 0.001  | **  |
+|                  **projectsphinx-gallery**                   |  -0.01398   |  0.005047  | 467645 |  -2.771   | 0.006  | 0.016  |  *  |
+|                  **author_groupnonmember**                   |   0.03298   |  0.007262  | 422340 |   4.541   | 0.0001 | 0.0001 | *** |
+|                     **typeissue_reply**                      |   0.0487    |  0.01134   | 479493 |   4.296   | 0.0001 | 0.0001 | *** |
+|                       **typepr_post**                        |  -0.01258   |  0.01348   | 480361 |  -0.933   |  0.35  |  0.43  |     |
+|                       **typepr_reply**                       |   0.06814   |  0.01094   | 480070 |   6.23    | 0.0001 | 0.0001 | *** |
+|            **ns(date, df = degrees_of_freedom)1**            |   -0.0137   |  0.009889  | 480555 |  -1.385   | 0.166  | 0.212  |     |
+|            **ns(date, df = degrees_of_freedom)2**            |  -0.01623   |  0.009169  | 477250 |   -1.77   | 0.077  | 0.136  |     |
+|            **ns(date, df = degrees_of_freedom)3**            |  -0.03891   |   0.0245   | 480526 |  -1.588   | 0.112  | 0.172  |     |
+|            **ns(date, df = degrees_of_freedom)4**            |  0.002366   |  0.006433  | 463630 |  0.3678   |  0.71  |  0.79  |     |
+| **author_groupnonmember:ns(date, df = degrees_of_freedom)1** |  -0.01408   |  0.00698   | 371036 |  -2.017   | 0.044  | 0.082  |  .  |
+| **author_groupnonmember:ns(date, df = degrees_of_freedom)2** |  -0.01354   |  0.006228  | 321156 |  -2.174   |  0.03  | 0.063  |  .  |
+| **author_groupnonmember:ns(date, df = degrees_of_freedom)3** |  -0.02742   |  0.01673   | 385948 |  -1.639   | 0.101  |  0.17  |     |
+| **author_groupnonmember:ns(date, df = degrees_of_freedom)4** |  -0.02052   |  0.004643  | 166257 |   -4.42   | 0.0001 | 0.0001 | *** |
+|    **typeissue_reply:ns(date, df = degrees_of_freedom)1**    |  -0.008322  |  0.01036   | 479692 |  -0.803   |  0.42  |  0.5   |     |
+|      **typepr_post:ns(date, df = degrees_of_freedom)1**      | -0.00005022 |  0.01253   | 480258 | -0.004006 |   1    |   1    |     |
+|     **typepr_reply:ns(date, df = degrees_of_freedom)1**      |   0.02633   |   0.0101   | 479869 |   2.608   | 0.009  | 0.022  |  *  |
+|    **typeissue_reply:ns(date, df = degrees_of_freedom)2**    |   0.01499   |  0.009606  | 480388 |   1.56    | 0.119  | 0.173  |     |
+|      **typepr_post:ns(date, df = degrees_of_freedom)2**      |   0.02439   |   0.0116   | 477238 |   2.102   | 0.036  | 0.071  |  .  |
+|     **typepr_reply:ns(date, df = degrees_of_freedom)2**      |   0.04566   |  0.009368  | 474856 |   4.874   | 0.0001 | 0.0001 | *** |
+|    **typeissue_reply:ns(date, df = degrees_of_freedom)3**    |   0.01946   |  0.02592   | 480199 |   0.751   |  0.45  |  0.52  |     |
+|      **typepr_post:ns(date, df = degrees_of_freedom)3**      |   0.04406   |  0.03085   | 480153 |   1.428   | 0.153  | 0.204  |     |
+|     **typepr_reply:ns(date, df = degrees_of_freedom)3**      |   0.07429   |  0.02503   | 479708 |   2.968   | 0.003  |  0.01  |  *  |
+|    **typeissue_reply:ns(date, df = degrees_of_freedom)4**    | -0.00004262 |  0.006555  | 468763 | -0.006501 |   1    |   1    |     |
+|      **typepr_post:ns(date, df = degrees_of_freedom)4**      |  -0.002184  |  0.00811   | 467739 |  -0.2693  |  0.79  |  0.84  |     |
+|     **typepr_reply:ns(date, df = degrees_of_freedom)4**      |   0.04166   |  0.006545  | 459020 |   6.365   | 0.0001 | 0.0001 | *** |
 
 
 ```

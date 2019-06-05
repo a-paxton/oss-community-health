@@ -27,7 +27,7 @@ To run this from scratch, you will need the following files:
 
 ```{r silent-preparations, echo=FALSE, include=FALSE}
 library(knitr)
-knitr::opts_chunk$set(cache=TRUE, autodep=TRUE)
+knitr::opts_chunk$set(cache=TRUE, autodep=TRUE, cache.lazy=FALSE)
 ```
 
 ***
@@ -684,17 +684,91 @@ ggsave(plot = sentiment_plot_by_project,
 
 ### Model 1.2: Do tickets and comments materially differ in emotion over time?
 
+```{r splines_options}
+# Number of splines basis to use.
+degrees_of_freedom = 4
+```
+
+In this model, we explore whether there are time ns in the
+observations from model1.1. First, let's look at the splines basis functions,
+and which time points they span by default.
+
+```{r plot_splines}
+# Here, let's just plot the splines basis, to see what they look like.
+# ALEX FIXME
+basis = splines::ns(unique(sentiment_frame$date, df=degrees_of_freedom))
+```
+
+Now, let us use these splines model to model the time variation of the 3 way
+interaction terms. We model the intercept for the three way interaction
+separately from the splines: this allows us to only look at changes over time,
+and not changes in intercept.
+
+Note that we cannot use too many degrees of freedom, as nx-gallery spans a
+shorter time period than over project. Any spline basis function that covers
+only the 2012 to 2015 cannot be estimated on sphinx-gallery.
 
 ```{r model-emotion-by-type-author-project-time}
 library(splines)
 # do tickets and comments materially differ in emotion over time?
-creators_v_commenters_emotion_by_project_time = lmer(compound_emotion ~ project * type * author_group * ns(date) +
-                                                       (1 | author_name),
+formula = (
+    compound_emotion ~ 0 +
+		       project:type:author_group +
+		       project:type:author_group:ns(date,
+						    df=degrees_of_freedom) +
+		       (1 | author_name))
+creators_v_commenters_emotion_by_project_time = lmer(formula,
                                                      data = sentiment_frame,
-                                                     REML=FALSE)
-# print results
-pander_lme(creators_v_commenters_emotion_by_project_time)
+                                                     REML=TRUE)
 ```
+
+```{r model-emotion-by-type-author-project-time_clean_up}
+coefficients_and_se = data.frame(
+    summary(creators_v_commenters_emotion_by_project_time)$coefficients)
+# Clean up row.names
+row_names = gsub(
+    "project", "", gsub(
+	"author_group", "", gsub("type", "", row.names(coefficients_and_se))))
+
+# Now deal with the very annoying splines coefficient row.names
+row_names = gsub(
+    "ns(date, df = degrees_of_freedom)", "coef", row_names, fixed=TRUE)
+
+# The names scikit-learn, scikit-image and sphinx-gallery are going to cause
+# problem, as they are not valid R nmames.
+# Replace the "-" with a "." in those names
+row_names = gsub(
+    "scikit-", "scikit.", gsub(
+	"sphinx-", "sphinx.", row_names))
+
+means = coefficients_and_se$Estimate
+names(means) = row_names
+
+se = coefficients_and_se$Std..Error
+names(se) = row_names
+```
+
+```{r automatically_generate_contrasts}
+
+# We're interested in looking at the coefficients of the splines.
+time_contrasts = c(
+    gsub("member", "member:coef1", contrasts),
+    gsub("member", "member:coef2", contrasts),
+    gsub("member", "member:coef3", contrasts),
+    gsub("member", "member:coef4", contrasts))
+
+project_type_author_group_time_tests = compute_t_statistics(
+    means, se, time_contrasts)
+project_type_author_group_time_tests[, "p_value"] = compute_p_value_from_t_stats(
+    project_type_author_group_time_tests$t_stats)
+```
+
+```{r display_significant_results}
+source("utils/ossc-libraries_and_functions.r")
+pander_clean_anova(project_type_author_group_time_tests, rename_columns=FALSE,
+		   display_only_significant=TRUE)
+```
+
 
 Interestingly, we see much more volatility here in the emotion dynamics
 of community members relative to the community nonmembers over time, even
@@ -741,13 +815,13 @@ sentiment_contribution_membership_time_plot = ggplot(data=sentiment_frame,
 
 # plot a full-size version
 ggsave(plot = sentiment_contribution_membership_time_plot,
-       height = 4,
+       height = 6,
        width = 10,
        filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-aggregated.jpg')
 
 # plot a smaller one for knitr
 ggsave(plot = sentiment_contribution_membership_time_plot,
-       height = 4,
+       height = 6,
        width = 10,
        dpi = 150,
        filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-aggregated-knitr.jpg')
@@ -890,7 +964,7 @@ ggsave(plot = grateful_plot,
 ```{r gratitude-predictors-time, eval = TRUE}
 
 # do users tend to express appreciation and gratitude differently by group and content?
-creators_v_commenters_gratitude_time = lmer(log(grateful_count + 1) ~ project + (author_group + type) * ns(date, df=8) +
+creators_v_commenters_gratitude_time = lmer(log(grateful_count + 1) ~ project + (author_group + type) * ns(date, df=degrees_of_freedom) +
                                                (1 | author_name),
                                              data=sentiment_frame)
                                              #family=poisson)
