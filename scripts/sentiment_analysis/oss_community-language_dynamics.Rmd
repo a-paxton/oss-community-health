@@ -160,7 +160,7 @@ unique_users = as.character(unique(append(unique_commenters, unique_ticketers)))
 
 ```
 
-```{r activity-stats, include=FALSE, echo=FALSE, eval=TRUE}
+```{r activity-stats, include=FALSE, echo=TRUE, eval=TRUE}
 
 # get counts of ticket activity per project
 ticket_counts = tickets_frame %>% ungroup() %>%
@@ -179,6 +179,8 @@ comment_counts = comments_frame %>% ungroup() %>%
 # bind the two
 contribution_counts = dplyr::full_join(ticket_counts, comment_counts,
                                         by='project')
+
+# print the table and then clean up a bit
 pander(contribution_counts)
 rm(ticket_counts, comment_counts)
 
