@@ -661,7 +661,7 @@ creators_v_commenters_gratitude_by_project = lmer(log(grateful_count + 1) ~ proj
                                         data=sentiment_frame)
 
 # print results
-summary(creators_v_commenters_gratitude_by_project)
+pander_lme(creators_v_commenters_gratitude_by_project)
 
 ```
 
