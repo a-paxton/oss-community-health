@@ -815,13 +815,13 @@ sentiment_contribution_membership_time_plot = ggplot(data=sentiment_frame,
 
 # plot a full-size version
 ggsave(plot = sentiment_contribution_membership_time_plot,
-       height = 6,
+       height = 4,
        width = 10,
        filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-aggregated.jpg')
 
 # plot a smaller one for knitr
 ggsave(plot = sentiment_contribution_membership_time_plot,
-       height = 6,
+       height = 4,
        width = 10,
        dpi = 150,
        filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-aggregated-knitr.jpg')
@@ -869,18 +869,18 @@ sentiment_contribution_member_time_by_project_plot = ggplot(data=sentiment_frame
                      values = c("#e66101", # issue: post (darker)
                                 "#fdb863", # issue: reply (lighter)
                                 "#5e3c99", # PR: post (darker)
-                                "#b2abd2")) # PR: reply (lighter)
+                                "#b2abd2")) # PR: reply (lighter) 
 
 # save full version
 ggsave(plot = sentiment_contribution_member_time_by_project_plot,
-       height = 8,
-       width = 12,
+       height = 12,
+       width = 10,
        filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-by_project.jpg')
 
 # save smaller version for knitr
 ggsave(plot = sentiment_contribution_member_time_by_project_plot,
-       height = 8,
-       width = 12,
+       height = 12,
+       width = 10,
        dpi = 150,
        filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-by_project-knitr.jpg')
 
