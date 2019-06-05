@@ -320,6 +320,7 @@ compute_t_statistics = function(means, standard_error,
 #### Model 1.1a : the "traditional" psychology way.
 
 ```{r model-emotion-by-type-and-author}
+
 # do tickets and comments materially differ in emotion?
 creators_v_commenters_emotion_by_project = lmer(compound_emotion ~ type * author_group  +
 					        (1 | project) + (1 | author_name),
@@ -327,6 +328,7 @@ creators_v_commenters_emotion_by_project = lmer(compound_emotion ~ type * author
                                                 REML = TRUE)
 # print results
 pander_lme(creators_v_commenters_emotion_by_project)
+
 ```
 
 ```{r anova-model-emotion-by-type-author-project}
@@ -1140,6 +1142,11 @@ retention_frame = tickets_frame %>%
                                             FALSE,
                                             TRUE)) %>%
   
+  # recode ticket group as two-level numeric factor
+  mutate(ticket_family_numeric = dplyr::if_else(ticket_family=='issue',
+                                                -.5,
+                                                .5)) %>%
+  
   #convert to factors (as needed) for proper modeling
   mutate_at(vars(project,
                  author_name,
@@ -1148,6 +1155,7 @@ retention_frame = tickets_frame %>%
                  type,
                  type_family,
                  ticket_family,
+                 ticket_family_numeric,
                  retained_newcomer),
             as.factor)
 
@@ -1158,15 +1166,15 @@ retention_frame = tickets_frame %>%
 ```{r predicting-retention}
 
 # what predicts continuing retention?
-retention_predictors = glm(retained_newcomer ~ (project +
-                                                open_time +
-                                                comment_sentiment_mean + 
-                                                comment_sentiment_max_negative + 
-                                                comment_grateful_cumulative +
-                                                number_of_comments +
-                                                comment_member_ratio) * ticket_family,
-                         data=retention_frame,
-                         family=binomial)
+retention_predictors = glm(retained_newcomer ~ 0 + ticket_family_numeric * (project +
+                                                                              open_time +
+                                                                              comment_sentiment_mean + 
+                                                                              comment_sentiment_max_negative + 
+                                                                              comment_grateful_cumulative +
+                                                                              number_of_comments +
+                                                                              comment_member_ratio),
+                           data=retention_frame,
+                           family=binomial)
 
 # print it
 summary(retention_predictors)
