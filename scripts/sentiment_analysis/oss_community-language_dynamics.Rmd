@@ -271,37 +271,49 @@ pander_lme(creators_v_commenters_emotion_by_project)
 Projects here are random effects, but the rest of the model is similar as
 before, except this allows us to do pairwise testing of elements.
 
-##### First, are sentiments for types and groups significantly different?
+##### Model 1.1b.1: Does sentiment vary significantly by community membership?
 
-First, look at whether there are differences between author group's in
-sentiments.
+First, look at whether there are differences in sentiment between author 
+groups.
 
+```{r model-emotion-by-author-group}
 
-```{r model-emotion-by-author}
+# do members and nonmembers materially differ in emotion?
 fixed_creators_v_commenters_emotion = lmer(
     compound_emotion ~ 0 + author_group + (1 | author_name) + (1 | project),
     data=sentiment_frame,
     REML=FALSE)
 
+```
+
+We will combine all submodels of Model 1.1b for output later in the file.
+
+```{r clean-up-model-1.1b1-output}
+
+# convert model output to dataframe
 coefficients_and_se = data.frame(
     summary(fixed_creators_v_commenters_emotion)$coefficients)
-# Clean up row.names
+
+# get comparison names as rownames
 row_names = gsub("author_group", "", gsub("type", "", row.names(coefficients_and_se)))
 
+# convert model estimates to a dataframe
 means = coefficients_and_se$Estimate
 names(means) = row_names
 
+# convert standard error to dataframe
 se = coefficients_and_se$Std..Error
 names(se) = row_names
 
+# compute t-statistics and p-values for desired contrasts
 contrasts = c("member-nonmember")
 author_groups_tests = compute_t_statistics(
     means, se,
     contrasts)
 author_groups_tests[, "p_value"] = compute_p_value_from_t_stats(
     author_groups_tests$t_stats)
-```
 
+```
 
 Then, look at whether there are differences in emotion between types of
 tickets.
