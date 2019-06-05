@@ -325,9 +325,9 @@ compute_t_statistics = function(means, standard_error,
 
 # do tickets and comments materially differ in emotion?
 creators_v_commenters_emotion_by_project = lmer(compound_emotion ~ type * author_group  +
-					        (1 | project) + (1 | author_name),
+                                                  (1 | project) + (1 | author_name),
                                                 data = sentiment_frame,
-                                                REML = TRUE)
+                                                REML = FALSE)
 # print results
 pander_lme(creators_v_commenters_emotion_by_project)
 
