@@ -32,8 +32,6 @@ To run this from scratch, you will need the following files:
 
 
 ```r
-library(splines)
-library(lmerTest)
 # clear everything
 rm(list=ls())
 
@@ -431,20 +429,20 @@ pander_clean_anova(tests, rename_columns=FALSE)
 
 
 
-|                     &nbsp;                     | t_stats | p_value | p_adj | sig |
-|:----------------------------------------------:|:-------:|:-------:|:-----:|:---:|
-|   **issue_post:member-issue_post:nonmember**   | -0.7446 |  0.46   | 0.55  |     |
-|  **issue_reply:member-issue_reply:nonmember**  | -2.447  |  0.014  | 0.025 |  *  |
-|      **pr_post:member-pr_post:nonmember**      | -2.664  |  0.008  | 0.016 |  *  |
-|     **pr_reply:member-pr_reply:nonmember**     | -0.2967 |  0.77   | 0.78  |     |
-|    **issue_post:member-issue_reply:member**    | -6.884  |  1e-04  | 1e-04 | *** |
-| **issue_post:nonmember-issue_reply:nonmember** | -8.922  |  1e-04  | 1e-04 | *** |
-|       **pr_post:member-pr_reply:member**       | -10.82  |  1e-04  | 1e-04 | *** |
-|    **pr_post:nonmember-pr_reply:nonmember**    |  -8.44  |  1e-04  | 1e-04 | *** |
-|      **issue_post:member-pr_post:member**      | 0.2843  |  0.78   | 0.78  |     |
-|   **issue_post:nonmember-pr_post:nonmember**   | -1.667  |  0.096  | 0.143 |     |
-|     **issue_reply:member-pr_reply:member**     | -3.601  |  3e-04  | 0.001 | **  |
-|  **issue_reply:nonmember-pr_reply:nonmember**  | -1.528  |  0.126  | 0.169 |     |
+|                     &nbsp;                     | t_stats | p_value | p_adj  | sig |
+|:----------------------------------------------:|:-------:|:-------:|:------:|:---:|
+|   **issue_post:member-issue_post:nonmember**   | -0.7446 |  0.46   |  0.55  |     |
+|  **issue_reply:member-issue_reply:nonmember**  | -2.447  |  0.014  | 0.025  |  *  |
+|      **pr_post:member-pr_post:nonmember**      | -2.664  |  0.008  | 0.016  |  *  |
+|     **pr_reply:member-pr_reply:nonmember**     | -0.2967 |  0.77   |  0.78  |     |
+|    **issue_post:member-issue_reply:member**    | -6.884  | 0.0001  | 0.0001 | *** |
+| **issue_post:nonmember-issue_reply:nonmember** | -8.922  | 0.0001  | 0.0001 | *** |
+|       **pr_post:member-pr_reply:member**       | -10.82  | 0.0001  | 0.0001 | *** |
+|    **pr_post:nonmember-pr_reply:nonmember**    |  -8.44  | 0.0001  | 0.0001 | *** |
+|      **issue_post:member-pr_post:member**      | 0.2843  |  0.78   |  0.78  |     |
+|   **issue_post:nonmember-pr_post:nonmember**   | -1.667  |  0.096  | 0.143  |     |
+|     **issue_reply:member-pr_reply:member**     | -3.601  | 0.0003  | 0.001  | **  |
+|  **issue_reply:nonmember-pr_reply:nonmember**  | -1.528  |  0.126  | 0.169  |     |
 
 
 #### Model 1.1b : Do different kinds of user contributions differ in emotion by projects?
@@ -759,364 +757,77 @@ creators_v_commenters_gratitude_by_project = lmer(log(grateful_count + 1) ~ proj
                                         data=sentiment_frame)
 
 # print results
-summary(creators_v_commenters_gratitude_by_project)
+pander_lme(creators_v_commenters_gratitude_by_project)
 ```
 
-```
-## Linear mixed model fit by REML. t-tests use Satterthwaite's method [
-## lmerModLmerTest]
-## Formula: log(grateful_count + 1) ~ project * author_group * type + (1 |  
-##     author_name)
-##    Data: sentiment_frame
-## 
-## REML criterion at convergence: -110177.8
-## 
-## Scaled residuals: 
-##     Min      1Q  Median      3Q     Max 
-## -3.2344 -0.4753 -0.2702 -0.0621  6.8493 
-## 
-## Random effects:
-##  Groups      Name        Variance Std.Dev.
-##  author_name (Intercept) 0.01489  0.1220  
-##  Residual                0.04503  0.2122  
-## Number of obs: 480854, groups:  author_name, 18346
-## 
-## Fixed effects:
-##                                                               Estimate
-## (Intercept)                                                  8.863e-02
-## projectmayavi                                               -3.917e-03
-## projectnumpy                                                -1.734e-02
-## projectpandas                                               -3.051e-02
-## projectscikit-image                                         -5.680e-02
-## projectscikit-learn                                         -3.699e-02
-## projectscipy                                                -1.426e-02
-## projectsphinx-gallery                                       -1.600e-02
-## author_groupnonmember                                       -2.029e-02
-## typeissue_reply                                              2.635e-02
-## typepr_post                                                  2.156e-03
-## typepr_reply                                                 5.429e-02
-## projectmayavi:author_groupnonmember                          8.492e-02
-## projectnumpy:author_groupnonmember                           1.072e-02
-## projectpandas:author_groupnonmember                          1.443e-02
-## projectscikit-image:author_groupnonmember                    7.129e-02
-## projectscikit-learn:author_groupnonmember                    6.597e-02
-## projectscipy:author_groupnonmember                           2.500e-02
-## projectsphinx-gallery:author_groupnonmember                  6.122e-02
-## projectmayavi:typeissue_reply                                2.350e-03
-## projectnumpy:typeissue_reply                                -8.104e-03
-## projectpandas:typeissue_reply                                1.346e-02
-## projectscikit-image:typeissue_reply                          3.363e-02
-## projectscikit-learn:typeissue_reply                          1.941e-02
-## projectscipy:typeissue_reply                                 7.676e-04
-## projectsphinx-gallery:typeissue_reply                       -6.058e-03
-## projectmayavi:typepr_post                                   -3.734e-02
-## projectnumpy:typepr_post                                    -1.152e-02
-## projectpandas:typepr_post                                    3.201e-03
-## projectscikit-image:typepr_post                              1.100e-02
-## projectscikit-learn:typepr_post                             -6.066e-04
-## projectscipy:typepr_post                                    -5.792e-03
-## projectsphinx-gallery:typepr_post                           -4.027e-03
-## projectmayavi:typepr_reply                                   1.124e-01
-## projectnumpy:typepr_reply                                    2.926e-02
-## projectpandas:typepr_reply                                   4.734e-02
-## projectscikit-image:typepr_reply                             7.064e-02
-## projectscikit-learn:typepr_reply                             4.060e-02
-## projectscipy:typepr_reply                                    4.646e-02
-## projectsphinx-gallery:typepr_reply                           9.267e-03
-## author_groupnonmember:typeissue_reply                        6.127e-02
-## author_groupnonmember:typepr_post                           -1.977e-02
-## author_groupnonmember:typepr_reply                           3.611e-02
-## projectmayavi:author_groupnonmember:typeissue_reply         -5.637e-02
-## projectnumpy:author_groupnonmember:typeissue_reply           1.532e-02
-## projectpandas:author_groupnonmember:typeissue_reply          1.060e-03
-## projectscikit-image:author_groupnonmember:typeissue_reply   -5.824e-02
-## projectscikit-learn:author_groupnonmember:typeissue_reply   -6.455e-02
-## projectscipy:author_groupnonmember:typeissue_reply          -8.380e-03
-## projectsphinx-gallery:author_groupnonmember:typeissue_reply -2.222e-02
-## projectmayavi:author_groupnonmember:typepr_post             -1.351e-02
-## projectnumpy:author_groupnonmember:typepr_post               1.066e-02
-## projectpandas:author_groupnonmember:typepr_post              5.523e-03
-## projectscikit-image:author_groupnonmember:typepr_post       -2.626e-02
-## projectscikit-learn:author_groupnonmember:typepr_post       -2.844e-02
-## projectscipy:author_groupnonmember:typepr_post               1.606e-03
-## projectsphinx-gallery:author_groupnonmember:typepr_post     -2.765e-02
-## projectmayavi:author_groupnonmember:typepr_reply            -1.128e-01
-## projectnumpy:author_groupnonmember:typepr_reply             -2.189e-02
-## projectpandas:author_groupnonmember:typepr_reply            -2.808e-02
-## projectscikit-image:author_groupnonmember:typepr_reply      -8.695e-02
-## projectscikit-learn:author_groupnonmember:typepr_reply      -7.012e-02
-## projectscipy:author_groupnonmember:typepr_reply             -4.239e-02
-## projectsphinx-gallery:author_groupnonmember:typepr_reply    -9.623e-02
-##                                                             Std. Error
-## (Intercept)                                                  5.862e-03
-## projectmayavi                                                2.919e-02
-## projectnumpy                                                 7.583e-03
-## projectpandas                                                6.512e-03
-## projectscikit-image                                          1.119e-02
-## projectscikit-learn                                          7.514e-03
-## projectscipy                                                 9.154e-03
-## projectsphinx-gallery                                        2.247e-02
-## author_groupnonmember                                        7.001e-03
-## typeissue_reply                                              5.437e-03
-## typepr_post                                                  5.965e-03
-## typepr_reply                                                 5.365e-03
-## projectmayavi:author_groupnonmember                          3.139e-02
-## projectnumpy:author_groupnonmember                           9.668e-03
-## projectpandas:author_groupnonmember                          8.134e-03
-## projectscikit-image:author_groupnonmember                    1.493e-02
-## projectscikit-learn:author_groupnonmember                    9.557e-03
-## projectscipy:author_groupnonmember                           1.114e-02
-## projectsphinx-gallery:author_groupnonmember                  3.161e-02
-## projectmayavi:typeissue_reply                                2.611e-02
-## projectnumpy:typeissue_reply                                 7.422e-03
-## projectpandas:typeissue_reply                                6.108e-03
-## projectscikit-image:typeissue_reply                          1.097e-02
-## projectscikit-learn:typeissue_reply                          7.161e-03
-## projectscipy:typeissue_reply                                 9.125e-03
-## projectsphinx-gallery:typeissue_reply                        2.359e-02
-## projectmayavi:typepr_post                                    2.876e-02
-## projectnumpy:typepr_post                                     8.435e-03
-## projectpandas:typepr_post                                    6.997e-03
-## projectscikit-image:typepr_post                              1.218e-02
-## projectscikit-learn:typepr_post                              8.288e-03
-## projectscipy:typepr_post                                     1.006e-02
-## projectsphinx-gallery:typepr_post                            2.792e-02
-## projectmayavi:typepr_reply                                   2.656e-02
-## projectnumpy:typepr_reply                                    7.403e-03
-## projectpandas:typepr_reply                                   6.053e-03
-## projectscikit-image:typepr_reply                             1.069e-02
-## projectscikit-learn:typepr_reply                             7.048e-03
-## projectscipy:typepr_reply                                    8.990e-03
-## projectsphinx-gallery:typepr_reply                           2.291e-02
-## author_groupnonmember:typeissue_reply                        7.268e-03
-## author_groupnonmember:typepr_post                            9.039e-03
-## author_groupnonmember:typepr_reply                           7.832e-03
-## projectmayavi:author_groupnonmember:typeissue_reply          3.014e-02
-## projectnumpy:author_groupnonmember:typeissue_reply           1.029e-02
-## projectpandas:author_groupnonmember:typeissue_reply          8.506e-03
-## projectscikit-image:author_groupnonmember:typeissue_reply    1.589e-02
-## projectscikit-learn:author_groupnonmember:typeissue_reply    9.942e-03
-## projectscipy:author_groupnonmember:typeissue_reply           1.185e-02
-## projectsphinx-gallery:author_groupnonmember:typeissue_reply  3.544e-02
-## projectmayavi:author_groupnonmember:typepr_post              4.001e-02
-## projectnumpy:author_groupnonmember:typepr_post               1.296e-02
-## projectpandas:author_groupnonmember:typepr_post              1.096e-02
-## projectscikit-image:author_groupnonmember:typepr_post        1.875e-02
-## projectscikit-learn:author_groupnonmember:typepr_post        1.230e-02
-## projectscipy:author_groupnonmember:typepr_post               1.427e-02
-## projectsphinx-gallery:author_groupnonmember:typepr_post      4.629e-02
-## projectmayavi:author_groupnonmember:typepr_reply             3.506e-02
-## projectnumpy:author_groupnonmember:typepr_reply              1.102e-02
-## projectpandas:author_groupnonmember:typepr_reply             9.262e-03
-## projectscikit-image:author_groupnonmember:typepr_reply       1.597e-02
-## projectscikit-learn:author_groupnonmember:typepr_reply       1.042e-02
-## projectscipy:author_groupnonmember:typepr_reply              1.227e-02
-## projectsphinx-gallery:author_groupnonmember:typepr_reply     3.514e-02
-##                                                                     df
-## (Intercept)                                                  4.443e+05
-## projectmayavi                                                4.574e+05
-## projectnumpy                                                 4.717e+05
-## projectpandas                                                4.799e+05
-## projectscikit-image                                          4.710e+05
-## projectscikit-learn                                          4.773e+05
-## projectscipy                                                 4.699e+05
-## projectsphinx-gallery                                        4.646e+05
-## author_groupnonmember                                        4.629e+05
-## typeissue_reply                                              4.651e+05
-## typepr_post                                                  4.654e+05
-## typepr_reply                                                 4.654e+05
-## projectmayavi:author_groupnonmember                          4.537e+05
-## projectnumpy:author_groupnonmember                           4.635e+05
-## projectpandas:author_groupnonmember                          4.574e+05
-## projectscikit-image:author_groupnonmember                    4.502e+05
-## projectscikit-learn:author_groupnonmember                    4.560e+05
-## projectscipy:author_groupnonmember                           4.697e+05
-## projectsphinx-gallery:author_groupnonmember                  4.767e+05
-## projectmayavi:typeissue_reply                                4.645e+05
-## projectnumpy:typeissue_reply                                 4.644e+05
-## projectpandas:typeissue_reply                                4.650e+05
-## projectscikit-image:typeissue_reply                          4.635e+05
-## projectscikit-learn:typeissue_reply                          4.644e+05
-## projectscipy:typeissue_reply                                 4.641e+05
-## projectsphinx-gallery:typeissue_reply                        4.633e+05
-## projectmayavi:typepr_post                                    4.636e+05
-## projectnumpy:typepr_post                                     4.645e+05
-## projectpandas:typepr_post                                    4.654e+05
-## projectscikit-image:typepr_post                              4.637e+05
-## projectscikit-learn:typepr_post                              4.646e+05
-## projectscipy:typepr_post                                     4.642e+05
-## projectsphinx-gallery:typepr_post                            4.633e+05
-## projectmayavi:typepr_reply                                   4.640e+05
-## projectnumpy:typepr_reply                                    4.647e+05
-## projectpandas:typepr_reply                                   4.654e+05
-## projectscikit-image:typepr_reply                             4.637e+05
-## projectscikit-learn:typepr_reply                             4.647e+05
-## projectscipy:typepr_reply                                    4.643e+05
-## projectsphinx-gallery:typepr_reply                           4.635e+05
-## author_groupnonmember:typeissue_reply                        4.804e+05
-## author_groupnonmember:typepr_post                            4.596e+05
-## author_groupnonmember:typepr_reply                           4.401e+05
-## projectmayavi:author_groupnonmember:typeissue_reply          4.803e+05
-## projectnumpy:author_groupnonmember:typeissue_reply           4.793e+05
-## projectpandas:author_groupnonmember:typeissue_reply          4.793e+05
-## projectscikit-image:author_groupnonmember:typeissue_reply    4.788e+05
-## projectscikit-learn:author_groupnonmember:typeissue_reply    4.773e+05
-## projectscipy:author_groupnonmember:typeissue_reply           4.806e+05
-## projectsphinx-gallery:author_groupnonmember:typeissue_reply  4.731e+05
-## projectmayavi:author_groupnonmember:typepr_post              4.745e+05
-## projectnumpy:author_groupnonmember:typepr_post               4.638e+05
-## projectpandas:author_groupnonmember:typepr_post              4.556e+05
-## projectscikit-image:author_groupnonmember:typepr_post        4.634e+05
-## projectscikit-learn:author_groupnonmember:typepr_post        4.608e+05
-## projectscipy:author_groupnonmember:typepr_post               4.702e+05
-## projectsphinx-gallery:author_groupnonmember:typepr_post      4.785e+05
-## projectmayavi:author_groupnonmember:typepr_reply             4.722e+05
-## projectnumpy:author_groupnonmember:typepr_reply              4.500e+05
-## projectpandas:author_groupnonmember:typepr_reply             4.321e+05
-## projectscikit-image:author_groupnonmember:typepr_reply       4.476e+05
-## projectscikit-learn:author_groupnonmember:typepr_reply       4.396e+05
-## projectscipy:author_groupnonmember:typepr_reply              4.606e+05
-## projectsphinx-gallery:author_groupnonmember:typepr_reply     4.776e+05
-##                                                             t value
-## (Intercept)                                                  15.118
-## projectmayavi                                                -0.134
-## projectnumpy                                                 -2.287
-## projectpandas                                                -4.686
-## projectscikit-image                                          -5.078
-## projectscikit-learn                                          -4.923
-## projectscipy                                                 -1.557
-## projectsphinx-gallery                                        -0.712
-## author_groupnonmember                                        -2.898
-## typeissue_reply                                               4.847
-## typepr_post                                                   0.361
-## typepr_reply                                                 10.120
-## projectmayavi:author_groupnonmember                           2.705
-## projectnumpy:author_groupnonmember                            1.109
-## projectpandas:author_groupnonmember                           1.774
-## projectscikit-image:author_groupnonmember                     4.775
-## projectscikit-learn:author_groupnonmember                     6.903
-## projectscipy:author_groupnonmember                            2.245
-## projectsphinx-gallery:author_groupnonmember                   1.937
-## projectmayavi:typeissue_reply                                 0.090
-## projectnumpy:typeissue_reply                                 -1.092
-## projectpandas:typeissue_reply                                 2.203
-## projectscikit-image:typeissue_reply                           3.064
-## projectscikit-learn:typeissue_reply                           2.711
-## projectscipy:typeissue_reply                                  0.084
-## projectsphinx-gallery:typeissue_reply                        -0.257
-## projectmayavi:typepr_post                                    -1.298
-## projectnumpy:typepr_post                                     -1.366
-## projectpandas:typepr_post                                     0.457
-## projectscikit-image:typepr_post                               0.903
-## projectscikit-learn:typepr_post                              -0.073
-## projectscipy:typepr_post                                     -0.576
-## projectsphinx-gallery:typepr_post                            -0.144
-## projectmayavi:typepr_reply                                    4.230
-## projectnumpy:typepr_reply                                     3.952
-## projectpandas:typepr_reply                                    7.821
-## projectscikit-image:typepr_reply                              6.610
-## projectscikit-learn:typepr_reply                              5.761
-## projectscipy:typepr_reply                                     5.168
-## projectsphinx-gallery:typepr_reply                            0.404
-## author_groupnonmember:typeissue_reply                         8.431
-## author_groupnonmember:typepr_post                            -2.187
-## author_groupnonmember:typepr_reply                            4.610
-## projectmayavi:author_groupnonmember:typeissue_reply          -1.871
-## projectnumpy:author_groupnonmember:typeissue_reply            1.489
-## projectpandas:author_groupnonmember:typeissue_reply           0.125
-## projectscikit-image:author_groupnonmember:typeissue_reply    -3.665
-## projectscikit-learn:author_groupnonmember:typeissue_reply    -6.493
-## projectscipy:author_groupnonmember:typeissue_reply           -0.707
-## projectsphinx-gallery:author_groupnonmember:typeissue_reply  -0.627
-## projectmayavi:author_groupnonmember:typepr_post              -0.338
-## projectnumpy:author_groupnonmember:typepr_post                0.823
-## projectpandas:author_groupnonmember:typepr_post               0.504
-## projectscikit-image:author_groupnonmember:typepr_post        -1.401
-## projectscikit-learn:author_groupnonmember:typepr_post        -2.312
-## projectscipy:author_groupnonmember:typepr_post                0.113
-## projectsphinx-gallery:author_groupnonmember:typepr_post      -0.597
-## projectmayavi:author_groupnonmember:typepr_reply             -3.218
-## projectnumpy:author_groupnonmember:typepr_reply              -1.986
-## projectpandas:author_groupnonmember:typepr_reply             -3.032
-## projectscikit-image:author_groupnonmember:typepr_reply       -5.444
-## projectscikit-learn:author_groupnonmember:typepr_reply       -6.729
-## projectscipy:author_groupnonmember:typepr_reply              -3.455
-## projectsphinx-gallery:author_groupnonmember:typepr_reply     -2.738
-##                                                             Pr(>|t|)    
-## (Intercept)                                                  < 2e-16 ***
-## projectmayavi                                               0.893237    
-## projectnumpy                                                0.022187 *  
-## projectpandas                                               2.79e-06 ***
-## projectscikit-image                                         3.82e-07 ***
-## projectscikit-learn                                         8.54e-07 ***
-## projectscipy                                                0.119410    
-## projectsphinx-gallery                                       0.476337    
-## author_groupnonmember                                       0.003758 ** 
-## typeissue_reply                                             1.25e-06 ***
-## typepr_post                                                 0.717769    
-## typepr_reply                                                 < 2e-16 ***
-## projectmayavi:author_groupnonmember                         0.006823 ** 
-## projectnumpy:author_groupnonmember                          0.267320    
-## projectpandas:author_groupnonmember                         0.076053 .  
-## projectscikit-image:author_groupnonmember                   1.80e-06 ***
-## projectscikit-learn:author_groupnonmember                   5.11e-12 ***
-## projectscipy:author_groupnonmember                          0.024799 *  
-## projectsphinx-gallery:author_groupnonmember                 0.052745 .  
-## projectmayavi:typeissue_reply                               0.928273    
-## projectnumpy:typeissue_reply                                0.274858    
-## projectpandas:typeissue_reply                               0.027579 *  
-## projectscikit-image:typeissue_reply                         0.002182 ** 
-## projectscikit-learn:typeissue_reply                         0.006716 ** 
-## projectscipy:typeissue_reply                                0.932955    
-## projectsphinx-gallery:typeissue_reply                       0.797297    
-## projectmayavi:typepr_post                                   0.194123    
-## projectnumpy:typepr_post                                    0.171855    
-## projectpandas:typepr_post                                   0.647349    
-## projectscikit-image:typepr_post                             0.366325    
-## projectscikit-learn:typepr_post                             0.941652    
-## projectscipy:typepr_post                                    0.564889    
-## projectsphinx-gallery:typepr_post                           0.885321    
-## projectmayavi:typepr_reply                                  2.34e-05 ***
-## projectnumpy:typepr_reply                                   7.75e-05 ***
-## projectpandas:typepr_reply                                  5.26e-15 ***
-## projectscikit-image:typepr_reply                            3.86e-11 ***
-## projectscikit-learn:typepr_reply                            8.37e-09 ***
-## projectscipy:typepr_reply                                   2.36e-07 ***
-## projectsphinx-gallery:typepr_reply                          0.685875    
-## author_groupnonmember:typeissue_reply                        < 2e-16 ***
-## author_groupnonmember:typepr_post                           0.028740 *  
-## author_groupnonmember:typepr_reply                          4.02e-06 ***
-## projectmayavi:author_groupnonmember:typeissue_reply         0.061396 .  
-## projectnumpy:author_groupnonmember:typeissue_reply          0.136489    
-## projectpandas:author_groupnonmember:typeissue_reply         0.900828    
-## projectscikit-image:author_groupnonmember:typeissue_reply   0.000247 ***
-## projectscikit-learn:author_groupnonmember:typeissue_reply   8.41e-11 ***
-## projectscipy:author_groupnonmember:typeissue_reply          0.479547    
-## projectsphinx-gallery:author_groupnonmember:typeissue_reply 0.530589    
-## projectmayavi:author_groupnonmember:typepr_post             0.735595    
-## projectnumpy:author_groupnonmember:typepr_post              0.410701    
-## projectpandas:author_groupnonmember:typepr_post             0.614198    
-## projectscikit-image:author_groupnonmember:typepr_post       0.161342    
-## projectscikit-learn:author_groupnonmember:typepr_post       0.020787 *  
-## projectscipy:author_groupnonmember:typepr_post              0.910413    
-## projectsphinx-gallery:author_groupnonmember:typepr_post     0.550196    
-## projectmayavi:author_groupnonmember:typepr_reply            0.001293 ** 
-## projectnumpy:author_groupnonmember:typepr_reply             0.047029 *  
-## projectpandas:author_groupnonmember:typepr_reply            0.002433 ** 
-## projectscikit-image:author_groupnonmember:typepr_reply      5.22e-08 ***
-## projectscikit-learn:author_groupnonmember:typepr_reply      1.71e-11 ***
-## projectscipy:author_groupnonmember:typepr_reply             0.000551 ***
-## projectsphinx-gallery:author_groupnonmember:typepr_reply    0.006176 ** 
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-```
 
-```
-## 
-## Correlation matrix not shown by default, as p = 64 > 12.
-## Use print(x, correlation=TRUE)  or
-##     vcov(x)        if you need it
-```
+
+|                             &nbsp;                              |  Estimate  | Std..Error |   df   | t.value  |   p    | p_adj  | sig |
+|:---------------------------------------------------------------:|:----------:|:----------:|:------:|:--------:|:------:|:------:|:---:|
+|                         **(Intercept)**                         |  0.08863   |  0.005862  | 444291 |  15.12   | 0.0001 | 0.0001 | *** |
+|                        **projectmayavi**                        | -0.003917  |  0.02919   | 457352 | -0.1342  |  0.89  |  0.94  |     |
+|                        **projectnumpy**                         |  -0.01734  |  0.007584  | 471685 |  -2.287  | 0.022  | 0.047  |  *  |
+|                        **projectpandas**                        |  -0.03051  |  0.006512  | 479882 |  -4.686  | 0.0001 | 0.0001 | *** |
+|                     **projectscikit-image**                     |  -0.0568   |  0.01119   | 471033 |  -5.078  | 0.0001 | 0.0001 | *** |
+|                     **projectscikit-learn**                     |  -0.03699  |  0.007514  | 477279 |  -4.923  | 0.0001 | 0.0001 | *** |
+|                        **projectscipy**                         |  -0.01426  |  0.009154  | 469892 |  -1.557  | 0.119  | 0.201  |     |
+|                    **projectsphinx-gallery**                    |   -0.016   |  0.02247   | 464614 | -0.7122  |  0.48  |  0.64  |     |
+|                    **author_groupnonmember**                    |  -0.02029  |  0.007001  | 462933 |  -2.898  | 0.004  |  0.01  |  *  |
+|                       **typeissue_reply**                       |  0.02635   |  0.005437  | 465115 |  4.847   | 0.0001 | 0.0001 | *** |
+|                         **typepr_post**                         |  0.002156  |  0.005965  | 465420 |  0.3614  |  0.72  |  0.84  |     |
+|                        **typepr_reply**                         |  0.05429   |  0.005365  | 465439 |  10.12   | 0.0001 | 0.0001 | *** |
+|             **projectmayavi:author_groupnonmember**             |  0.08492   |  0.03139   | 453686 |  2.705   | 0.007  | 0.016  |  *  |
+|             **projectnumpy:author_groupnonmember**              |  0.01072   |  0.009668  | 463527 |  1.109   |  0.27  |  0.4   |     |
+|             **projectpandas:author_groupnonmember**             |  0.01443   |  0.008134  | 457385 |  1.774   | 0.076  | 0.132  |     |
+|          **projectscikit-image:author_groupnonmember**          |  0.07129   |  0.01493   | 450242 |  4.775   | 0.0001 | 0.0001 | *** |
+|          **projectscikit-learn:author_groupnonmember**          |  0.06597   |  0.009557  | 455969 |  6.903   | 0.0001 | 0.0001 | *** |
+|             **projectscipy:author_groupnonmember**              |   0.025    |  0.01114   | 469656 |  2.245   | 0.025  | 0.051  |  .  |
+|         **projectsphinx-gallery:author_groupnonmember**         |  0.06122   |  0.03161   | 476693 |  1.937   | 0.053  | 0.096  |  .  |
+|                **projectmayavi:typeissue_reply**                |  0.00235   |  0.02611   | 464465 | 0.09002  |  0.93  |  0.94  |     |
+|                **projectnumpy:typeissue_reply**                 | -0.008104  |  0.007422  | 464409 |  -1.092  |  0.28  |  0.4   |     |
+|                **projectpandas:typeissue_reply**                |  0.01346   |  0.006108  | 465004 |  2.203   | 0.028  | 0.055  |  .  |
+|             **projectscikit-image:typeissue_reply**             |  0.03363   |  0.01097   | 463549 |  3.064   | 0.002  | 0.006  | **  |
+|             **projectscikit-learn:typeissue_reply**             |  0.01941   |  0.007161  | 464401 |  2.711   | 0.007  | 0.016  |  *  |
+|                **projectscipy:typeissue_reply**                 | 0.0007676  |  0.009125  | 464060 | 0.08413  |  0.93  |  0.94  |     |
+|            **projectsphinx-gallery:typeissue_reply**            | -0.006058  |  0.02359   | 463326 | -0.2568  |  0.8   |  0.9   |     |
+|                  **projectmayavi:typepr_post**                  |  -0.03734  |  0.02876   | 463593 |  -1.298  | 0.194  |  0.3   |     |
+|                  **projectnumpy:typepr_post**                   |  -0.01152  |  0.008435  | 464530 |  -1.366  | 0.172  |  0.27  |     |
+|                  **projectpandas:typepr_post**                  |  0.003201  |  0.006997  | 465358 |  0.4574  |  0.65  |  0.78  |     |
+|               **projectscikit-image:typepr_post**               |   0.011    |  0.01218   | 463725 |  0.9034  |  0.37  |  0.52  |     |
+|               **projectscikit-learn:typepr_post**               | -0.0006066 |  0.008288  | 464595 | -0.07319 |  0.94  |  0.94  |     |
+|                  **projectscipy:typepr_post**                   | -0.005792  |  0.01006   | 464203 | -0.5756  |  0.56  |  0.71  |     |
+|              **projectsphinx-gallery:typepr_post**              | -0.004027  |  0.02792   | 463349 | -0.1442  |  0.88  |  0.94  |     |
+|                 **projectmayavi:typepr_reply**                  |   0.1124   |  0.02656   | 463962 |   4.23   | 0.0001 | 0.0001 | *** |
+|                  **projectnumpy:typepr_reply**                  |  0.02926   |  0.007403  | 464694 |  3.952   | 0.0001 | 0.0003 | *** |
+|                 **projectpandas:typepr_reply**                  |  0.04734   |  0.006053  | 465432 |  7.821   | 0.0001 | 0.0001 | *** |
+|              **projectscikit-image:typepr_reply**               |  0.07064   |  0.01069   | 463720 |   6.61   | 0.0001 | 0.0001 | *** |
+|              **projectscikit-learn:typepr_reply**               |   0.0406   |  0.007048  | 464700 |  5.761   | 0.0001 | 0.0001 | *** |
+|                  **projectscipy:typepr_reply**                  |  0.04646   |  0.00899   | 464270 |  5.168   | 0.0001 | 0.0001 | *** |
+|             **projectsphinx-gallery:typepr_reply**              |  0.009267  |  0.02291   | 463463 |  0.4045  |  0.69  |  0.81  |     |
+|            **author_groupnonmember:typeissue_reply**            |  0.06127   |  0.007268  | 480420 |  8.431   | 0.0001 | 0.0001 | *** |
+|              **author_groupnonmember:typepr_post**              |  -0.01977  |  0.009039  | 459564 |  -2.187  | 0.029  | 0.056  |  .  |
+|             **author_groupnonmember:typepr_reply**              |  0.03611   |  0.007832  | 440123 |   4.61   | 0.0001 | 0.0001 | *** |
+|     **projectmayavi:author_groupnonmember:typeissue_reply**     |  -0.05637  |  0.03014   | 480265 |  -1.871  | 0.061  | 0.109  |     |
+|     **projectnumpy:author_groupnonmember:typeissue_reply**      |  0.01532   |  0.01029   | 479321 |  1.489   | 0.136  | 0.224  |     |
+|     **projectpandas:author_groupnonmember:typeissue_reply**     |  0.00106   |  0.008506  | 479260 |  0.1246  |  0.9   |  0.94  |     |
+|  **projectscikit-image:author_groupnonmember:typeissue_reply**  |  -0.05824  |  0.01589   | 478758 |  -3.665  | 0.0002 | 0.001  | **  |
+|  **projectscikit-learn:author_groupnonmember:typeissue_reply**  |  -0.06455  |  0.009942  | 477328 |  -6.493  | 0.0001 | 0.0001 | *** |
+|     **projectscipy:author_groupnonmember:typeissue_reply**      |  -0.00838  |  0.01185   | 480600 |  -0.707  |  0.48  |  0.64  |     |
+| **projectsphinx-gallery:author_groupnonmember:typeissue_reply** |  -0.02222  |  0.03544   | 473081 | -0.6271  |  0.53  |  0.69  |     |
+|       **projectmayavi:author_groupnonmember:typepr_post**       |  -0.01351  |  0.04001   | 474470 | -0.3377  |  0.74  |  0.84  |     |
+|       **projectnumpy:author_groupnonmember:typepr_post**        |  0.01066   |  0.01296   | 463837 |  0.8227  |  0.41  |  0.57  |     |
+|       **projectpandas:author_groupnonmember:typepr_post**       |  0.005523  |  0.01096   | 455597 |  0.5041  |  0.61  |  0.76  |     |
+|    **projectscikit-image:author_groupnonmember:typepr_post**    |  -0.02626  |  0.01875   | 463393 |  -1.401  | 0.161  |  0.26  |     |
+|    **projectscikit-learn:author_groupnonmember:typepr_post**    |  -0.02844  |   0.0123   | 460824 |  -2.312  | 0.021  | 0.046  |  *  |
+|       **projectscipy:author_groupnonmember:typepr_post**        |  0.001606  |  0.01427   | 470243 |  0.1125  |  0.91  |  0.94  |     |
+|   **projectsphinx-gallery:author_groupnonmember:typepr_post**   |  -0.02765  |  0.04629   | 478519 | -0.5975  |  0.55  |  0.7   |     |
+|      **projectmayavi:author_groupnonmember:typepr_reply**       |  -0.1128   |  0.03506   | 472213 |  -3.218  | 0.001  | 0.004  | **  |
+|       **projectnumpy:author_groupnonmember:typepr_reply**       |  -0.02189  |  0.01102   | 449975 |  -1.986  | 0.047  | 0.088  |  .  |
+|      **projectpandas:author_groupnonmember:typepr_reply**       |  -0.02808  |  0.009262  | 432117 |  -3.032  | 0.002  | 0.006  | **  |
+|   **projectscikit-image:author_groupnonmember:typepr_reply**    |  -0.08695  |  0.01597   | 447616 |  -5.444  | 0.0001 | 0.0001 | *** |
+|   **projectscikit-learn:author_groupnonmember:typepr_reply**    |  -0.07012  |  0.01042   | 439631 |  -6.729  | 0.0001 | 0.0001 | *** |
+|       **projectscipy:author_groupnonmember:typepr_reply**       |  -0.04239  |  0.01227   | 460599 |  -3.455  | 0.001  | 0.002  | **  |
+|  **projectsphinx-gallery:author_groupnonmember:typepr_reply**   |  -0.09623  |  0.03514   | 477556 |  -2.738  | 0.006  | 0.015  |  *  |
 
 
 ```r
