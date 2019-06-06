@@ -31,8 +31,8 @@ required_packages = c(
   'lmerTest'
   )
 
-# load required packages
-invisible(lapply(required_packages, library, character.only = TRUE))
+# load required packages using pacman
+pacman::p_load(required_packages, character.only=TRUE)
 
 #### Prevent scientific notation ####
 options(scipen=999)
