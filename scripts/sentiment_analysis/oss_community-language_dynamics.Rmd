@@ -336,16 +336,17 @@ names(means) = row_names
 se = coefficients_and_se$Std..Error
 names(se) = row_names
 
-contrasts = c("issue_post-issue_reply",
-	       "pr_post-pr_reply",
-	       "issue_post-pr_post",
-	       "issue_reply-issue_post")
+contrasts = c("issue_post-issue_reply", # issues: posts vs. replies
+              "pr_post-pr_reply",       # PRs: posts vs. replies
+              "issue_post-pr_post",     # posts: issues vs. PRs
+              "issue_reply-pr_reply") # replies: issues vs. PRs
 
 types_tests = compute_t_statistics(
     means, se,
     contrasts)
 
 types_tests[, "p_value"] = compute_p_value_from_t_stats(types_tests$t_stats)
+
 ```
 
 
