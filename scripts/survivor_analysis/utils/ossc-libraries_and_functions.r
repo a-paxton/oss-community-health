@@ -3,7 +3,7 @@
 # This script loads libraries and creates a number of 
 # additional functions to facilitate data prep and analysis.
 #
-# Written by: A. Paxton (University of Connecticut)
+# Written by: A. Paxton (University of Connecticut) & Nelle Varoquaux (University of California, Berkeley)
 # Date last modified: 30 May 2019
 #####################################################################################
 
