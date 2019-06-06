@@ -315,15 +315,19 @@ author_groups_tests[, "p_value"] = compute_p_value_from_t_stats(
 
 ```
 
-Then, look at whether there are differences in emotion between types of
-tickets.
+##### Model 1.1b.2: Does sentiment vary significantly across contribution types?
 
-```{r model-types-by-author}
+```{r model-emotion-by-type}
 
+# do tickets and comments materially differ in emotion?
 fixed_types_emotion = lmer(
     compound_emotion ~ 0 + type + (1 | author_name) + (1 | project),
     data=sentiment_frame,
     REML=FALSE)
+
+```
+
+```{r clean-up-model-1.1b2-output}
 
 coefficients_and_se = data.frame(
     summary(fixed_types_emotion)$coefficients)
