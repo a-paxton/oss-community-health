@@ -384,19 +384,20 @@ names(means) = row_names
 se = coefficients_and_se$Std..Error
 names(se) = row_names
 
+# specify all contrasts with member vs. nonmember comparisons
 contrasts = c(
-    "issue_post:member-issue_post:nonmember", 
-    "issue_reply:member-issue_reply:nonmember",
-    "pr_post:member-pr_post:nonmember",       
-    "pr_reply:member-pr_reply:nonmember",     
-    "issue_post:member-issue_reply:member",
-    "issue_post:nonmember-issue_reply:nonmember",
-    "pr_post:member-pr_reply:member",     
-    "pr_post:nonmember-pr_reply:nonmember",    
-    "issue_post:member-pr_post:member",   
-    "issue_post:nonmember-pr_post:nonmember",    
-    "issue_reply:member-pr_reply:member",  
-    "issue_reply:nonmember-pr_reply:nonmember")
+    "issue_post:member-issue_post:nonmember",     # contribution static (issue posts); membership varies (members v. nonmembers)
+    "issue_reply:member-issue_reply:nonmember",   # contribution static (issue replies); membership varies (members v. nonmembers)
+    "pr_post:member-pr_post:nonmember",           # contribution static (PR posts); membership varies (members v. nonmembers)
+    "pr_reply:member-pr_reply:nonmember",         # contribution static (PR replies); membership varies (members v. nonmembers)
+    "issue_post:member-issue_reply:member",       # contribution varies (issue posts vs. issue replies); membership static (members)
+    "issue_post:nonmember-issue_reply:nonmember", # contribution varies (issue posts vs. issue replies); membership static (nonmembers)
+    "pr_post:member-pr_reply:member",             # contribution varies (PR posts vs. PR replies); membership static (members)
+    "pr_post:nonmember-pr_reply:nonmember",       # contribution varies (PR posts vs. PR replies); membership static (nonmembers)
+    "issue_post:member-pr_post:member",           # contribution varies (issue posts vs. PR posts); membership static (members)
+    "issue_post:nonmember-pr_post:nonmember",     # contribution varies (issue posts vs. PR posts); membership static (nonmembers)
+    "issue_reply:member-pr_reply:member",         # contribution varies (issue replies vs. PR replies); membership static (members)
+    "issue_reply:nonmember-pr_reply:nonmember")   # contribution varies (issue replies vs. PR replies); membership static (nonmembers)
 
 types_author_groups_tests = compute_t_statistics(
     means, se,
