@@ -252,7 +252,13 @@ community versus a nonmember of the community and by their different kinds of
 possible contributions (i.e., a posted pull request, a reply to a pull request,
 a posted issue, or a reply to an issue).
 
-#### Model 1.1a : the "traditional" psychology way.
+#### Model 1.1a: As a linear mixed-effects model
+
+This model presents the analyses in a way that is typical of psychological
+analyses. We predict the changes in emotion by community membership and 
+contribution type, including random effects for project and for author. This
+allows us to explore the general patterns of the main and interaction terms,
+rather than focusing in on the project-specific variability.
 
 ```{r model-emotion-by-type-and-author}
 
@@ -261,15 +267,31 @@ creators_v_commenters_emotion_by_project = lmer(compound_emotion ~ type * author
                                                   (1 | project) + (1 | author_name),
                                                 data = sentiment_frame,
                                                 REML = FALSE)
+
+```
+
+```{r print-model-emotion-by-type-and-author, eval=TRUE, include=FALSE, echo=TRUE}
+
 # print results
 pander_lme(creators_v_commenters_emotion_by_project)
 
 ```
 
-#### Model 1.1b: Do different kinds of user contributions materially differ in emotion?
+While we see significant differences in the model, interpreting the results is
+difficult because of the way that `lmer` handles factor comparisons. All 
+factors are compared against a "reference level," the first level in the model.
+This makes intepreting models with factors that include more than two levels
+incredibly difficult, because the intercept is essentially an interaction term
+among all reference levels of all factors.
 
-Projects here are random effects, but the rest of the model is similar as
-before, except this allows us to do pairwise testing of elements.
+As a result, we turn to the biostatistics approach of multiple pairwise 
+*t*-tests (corrected for comparisons) to better understand the effects.
+
+#### Model 1.1b: As a series of pairwise *t*-tests
+
+Projects here are random effects, but the rest of the model is the same as 
+before. This allows us to do pairwise testing of main and interaction terms,
+along with better exploring inter-project variability.
 
 ##### Model 1.1b.1: Does sentiment vary significantly by community membership?
 
@@ -280,19 +302,110 @@ groups.
 
 # do members and nonmembers materially differ in emotion?
 fixed_creators_v_commenters_emotion = lmer(
-    compound_emotion ~ 0 + author_group + (1 | author_name) + (1 | project),
-    data=sentiment_frame,
-    REML=FALSE)
+  compound_emotion ~ 0 + author_group + (1 | author_name) + (1 | project),
+  data=sentiment_frame,
+  REML=FALSE)
 
 ```
 
-We will combine all submodels of Model 1.1b for output later in the file.
+Prepare for the Model 1.1b table later in the file.
 
 ```{r clean-up-model-1.1b1-output}
 
-# convert model output to dataframe
+# convert Model 1.1b1 output to dataframe
 coefficients_and_se = data.frame(
-    summary(fixed_creators_v_commenters_emotion)$coefficients)
+  summary(fixed_creators_v_commenters_emotion)$coefficients)
+
+# get comparison names as rownames
+row_names = gsub("author_group", "", 
+                 gsub("type", "", row.names(coefficients_and_se)))
+
+# convert model estimates to a dataframe
+means = coefficients_and_se$Estimate
+names(means) = row_names
+
+# convert standard error to dataframe
+se = coefficients_and_se$Std..Error
+names(se) = row_names
+
+# compute t-statistics and p-values for desired contrasts
+contrasts = c("member-nonmember")
+author_groups_tests = compute_t_statistics(
+  means, se,
+  contrasts)
+author_groups_tests[, "p_value"] = compute_p_value_from_t_stats(
+  author_groups_tests$t_stats)
+
+```
+
+##### Model 1.1b.2: Does sentiment vary significantly across contribution types?
+
+Now, look at whether there are differences in sentiment between contribution
+types.
+
+```{r model-emotion-by-type}
+
+# do tickets and comments materially differ in emotion?
+fixed_types_emotion = lmer(
+  compound_emotion ~ 0 + type + (1 | author_name) + (1 | project),
+  data=sentiment_frame,
+  REML=FALSE)
+
+```
+
+Prepare for the Model 1.1b table later in the file.
+
+```{r clean-up-model-1.1b2-output}
+
+# convert Model 1.1b2 output to dataframe
+coefficients_and_se = data.frame(
+  summary(fixed_types_emotion)$coefficients)
+
+# get comparison names as rownames
+row_names = gsub("author_group", "", 
+                 gsub("type", "", row.names(coefficients_and_se)))
+
+# convert model estimates to a dataframe
+means = coefficients_and_se$Estimate
+names(means) = row_names
+
+# convert standard error to dataframe
+se = coefficients_and_se$Std..Error
+names(se) = row_names
+
+# compute t-statistics and p-values for desired contrasts
+contrasts = c("issue_post-issue_reply", # issues: posts vs. replies
+              "pr_post-pr_reply",       # PRs: posts vs. replies
+              "issue_post-pr_post",     # posts: issues vs. PRs
+              "issue_reply-pr_reply")   # replies: issues vs. PRs
+types_tests = compute_t_statistics(
+  means, se,
+  contrasts)
+types_tests[, "p_value"] = compute_p_value_from_t_stats(types_tests$t_stats)
+
+```
+
+##### Model 1.1b.3: Does sentiment vary significantly across community memberships and contribution types?
+
+Finally, let's look at the interaction between membership and contribution.
+
+```{r model-emotion-by-type-and-author}
+
+# does emotion differ by the interaction between contribution and authorship group?
+community_contribution_emotion = lmer(
+  compound_emotion ~ 0 + type:author_group + (1 | author_name) + (1 | project),
+  data=sentiment_frame,
+  REML=FALSE)
+
+```
+
+Prepare for the Model 1.1b table later in the file.
+
+```{r clean-up-model-1.1b3-output}
+
+# convert Model 1.1b3 output to dataframe
+coefficients_and_se = data.frame(
+    summary(community_contribution_emotion)$coefficients)
 
 # get comparison names as rownames
 row_names = gsub("author_group", "", gsub("type", "", row.names(coefficients_and_se)))
@@ -306,89 +419,6 @@ se = coefficients_and_se$Std..Error
 names(se) = row_names
 
 # compute t-statistics and p-values for desired contrasts
-contrasts = c("member-nonmember")
-author_groups_tests = compute_t_statistics(
-    means, se,
-    contrasts)
-author_groups_tests[, "p_value"] = compute_p_value_from_t_stats(
-    author_groups_tests$t_stats)
-
-```
-
-##### Model 1.1b.2: Does sentiment vary significantly across contribution types?
-
-```{r model-emotion-by-type}
-
-# do tickets and comments materially differ in emotion?
-fixed_types_emotion = lmer(
-    compound_emotion ~ 0 + type + (1 | author_name) + (1 | project),
-    data=sentiment_frame,
-    REML=FALSE)
-
-```
-
-```{r clean-up-model-1.1b2-output}
-
-coefficients_and_se = data.frame(
-    summary(fixed_types_emotion)$coefficients)
-# Clean up row.names
-row_names = gsub("author_group", "", gsub("type", "", row.names(coefficients_and_se)))
-
-means = coefficients_and_se$Estimate
-names(means) = row_names
-
-se = coefficients_and_se$Std..Error
-names(se) = row_names
-
-contrasts = c("issue_post-issue_reply", # issues: posts vs. replies
-              "pr_post-pr_reply",       # PRs: posts vs. replies
-              "issue_post-pr_post",     # posts: issues vs. PRs
-              "issue_reply-pr_reply") # replies: issues vs. PRs
-
-types_tests = compute_t_statistics(
-    means, se,
-    contrasts)
-
-types_tests[, "p_value"] = compute_p_value_from_t_stats(types_tests$t_stats)
-
-```
-
-
-```{r combine_tests_author_groups_types}
-author_groups_tests["contrast"] = row.names(author_groups_tests)
-types_tests["contrast"] = row.names(types_tests)
-all_tests = merge(author_groups_tests, types_tests, all=TRUE, sort=FALSE)
-all_tests["model"] = "main terms"
-```
-
-##### Second, now test the interactions between types and author groups
-
-```{r nelle_model-emotion-by-type-and-author}
-nelle_creators_v_commenters_emotion = lmer(
-    compound_emotion ~ 0 + type:author_group + (1 | author_name) + (1 | project),
-    data=sentiment_frame,
-    REML=TRUE)
-```
-
-
-```{r nelle_compute_weltch_t_test_by_hand}
-# Extract all the information we need for the Weltch t test from our linear
-# mixed effect model.
-# We need the means of each group, the standard error and the number of
-# samples in each group we are studying.
-
-coefficients_and_se = data.frame(
-    summary(nelle_creators_v_commenters_emotion)$coefficients)
-# Clean up row.names
-row_names = gsub("author_group", "", gsub("type", "", row.names(coefficients_and_se)))
-
-means = coefficients_and_se$Estimate
-names(means) = row_names
-
-se = coefficients_and_se$Std..Error
-names(se) = row_names
-
-# specify all contrasts with member vs. nonmember comparisons
 contrasts = c(
     "issue_post:member-issue_post:nonmember",     # contribution static (issue posts); membership varies (members v. nonmembers)
     "issue_reply:member-issue_reply:nonmember",   # contribution static (issue replies); membership varies (members v. nonmembers)
@@ -402,25 +432,20 @@ contrasts = c(
     "issue_post:nonmember-pr_post:nonmember",     # contribution varies (issue posts vs. PR posts); membership static (nonmembers)
     "issue_reply:member-pr_reply:member",         # contribution varies (issue replies vs. PR replies); membership static (members)
     "issue_reply:nonmember-pr_reply:nonmember")   # contribution varies (issue replies vs. PR replies); membership static (nonmembers)
-
 types_author_groups_tests = compute_t_statistics(
     means, se,
     contrasts)
-```
-
-```{r get_pvalue}
-
 types_author_groups_tests[, "p_value"] = compute_p_value_from_t_stats(
     types_author_groups_tests$"t_stats")
+
 ```
 
 ```{r combine_tests_types_author_groups_interactions}
-types_author_groups_tests["contrast"] = row.names(types_author_groups_tests)
-types_author_groups_tests["model"] = "2W: Types x Author Groups"
-all_tests = merge(all_tests, types_author_groups_tests, all=TRUE, sort=FALSE)
+
+
 ```
 
-#### Model 1.1b : Do different kinds of user contributions differ in emotion by projects?
+#### Model 1.1c : Do different kinds of user contributions differ in emotion by projects?
 
 Now adding projects into the mix to understand how the previous analysis
 varies across projects.
@@ -430,7 +455,7 @@ varies across projects.
 creators_v_commenters_emotion_by_project = lmer(compound_emotion ~ 0 + project:type:author_group  +
                                                (1 | author_name),
                                                 data = sentiment_frame,
-                                                REML = TRUE)
+                                                REML = FALSE)
 
 ```
 
@@ -577,21 +602,27 @@ project_types_author_group_tests[, "p_value"] = compute_p_value_from_t_stats(
 ```
 
 ```{r combine_all_tests}
+
+# specify main terms
+author_groups_tests["contrast"] = row.names(author_groups_tests)
+types_tests["contrast"] = row.names(types_tests)
+all_tests = merge(author_groups_tests, types_tests, all=TRUE, sort=FALSE)
+all_tests["model"] = "Main Terms"
+
+# specify 2-way interactions
+types_author_groups_tests["contrast"] = row.names(types_author_groups_tests)
+types_author_groups_tests["model"] = "2W: Types x Author Groups"
+all_tests = merge(all_tests, types_author_groups_tests, all=TRUE, sort=FALSE)
+
+# specify 3-way interactions
 project_types_author_group_tests["contrast"] = row.names(project_types_author_group_tests)
 project_types_author_group_tests["model"] = "3W: Types x Author Groups x Project"
-
 all_tests = merge(all_tests, project_types_author_group_tests, all=TRUE,
 		  sort=FALSE)
 ```
 
-
-
-These results are quite different from our results conducted over a smaller
-dataset last year. One potential reason is that these effects may be
-time-dependent. Our next model explores this possibility by adding a time term.
-
-
 #### All results, corrected for the whole set of tests
+
 ```{r model1_whole_set}
 
 row.names(all_tests) = all_tests$contrast
@@ -725,7 +756,7 @@ formula = (
 		       (1 | author_name))
 creators_v_commenters_emotion_by_project_time = lmer(formula,
                                                      data = sentiment_frame,
-                                                     REML=TRUE)
+                                                     REML=FALSE)
 ```
 
 ```{r model-emotion-by-type-author-project-time_clean_up}
