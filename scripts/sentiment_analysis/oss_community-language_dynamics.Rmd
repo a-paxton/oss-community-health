@@ -252,7 +252,7 @@ community versus a nonmember of the community and by their different kinds of
 possible contributions (i.e., a posted pull request, a reply to a pull request,
 a posted issue, or a reply to an issue).
 
-#### Model 1.1a: As a linear mixed-effects model
+#### Model 1.1a: Overall effects with linear mixed-effects models
 
 This model presents the analyses in a way that is typical of psychological
 analyses. We predict the changes in emotion by community membership and 
@@ -284,10 +284,17 @@ This makes intepreting models with factors that include more than two levels
 incredibly difficult, because the intercept is essentially an interaction term
 among all reference levels of all factors.
 
-As a result, we turn to the biostatistics approach of multiple pairwise 
-*t*-tests (corrected for comparisons) to better understand the effects.
+As a result, we turn to the biostatistics approach of multiple *t*-tests 
+(corrected for comparisons) of the model estimates to better understand the 
+effects.
 
-#### Model 1.1b: As a series of pairwise *t*-tests
+#### Model 1.1b: In-depth investigation through *t*-tests of model estimates
+
+First, we build a series of linear mixed-effects models with one term included
+in each model (either main term or interaction term). We then use the estimates
+from those models to perform *t*-tests to investigate how different levels of
+the effects differ from one another (and not just from the model-level 
+intercept).
 
 Projects here are random effects, but the rest of the model is the same as 
 before. This allows us to do pairwise testing of main and interaction terms,
@@ -308,7 +315,7 @@ fixed_creators_v_commenters_emotion = lmer(
 
 ```
 
-Prepare for the Model 1.1b table later in the file.
+Run *t*-tests among levels and prepare for the Model 1.1b table later.
 
 ```{r clean-up-model-1.1b1-output}
 
@@ -353,7 +360,7 @@ fixed_types_emotion = lmer(
 
 ```
 
-Prepare for the Model 1.1b table later in the file.
+Run *t*-tests among levels and prepare for the Model 1.1b table later.
 
 ```{r clean-up-model-1.1b2-output}
 
@@ -389,7 +396,7 @@ types_tests[, "p_value"] = compute_p_value_from_t_stats(types_tests$t_stats)
 
 Finally, let's look at the interaction between membership and contribution.
 
-```{r model-emotion-by-type-and-author}
+```{r model-emotion-by-type-and-author-interaction-only}
 
 # does emotion differ by the interaction between contribution and authorship group?
 community_contribution_emotion = lmer(
@@ -399,7 +406,7 @@ community_contribution_emotion = lmer(
 
 ```
 
-Prepare for the Model 1.1b table later in the file.
+Run *t*-tests among levels and prepare for the Model 1.1b table later.
 
 ```{r clean-up-model-1.1b3-output}
 
@@ -440,168 +447,177 @@ types_author_groups_tests[, "p_value"] = compute_p_value_from_t_stats(
 
 ```
 
-```{r combine_tests_types_author_groups_interactions}
-
-
-```
-
-#### Model 1.1c : Do different kinds of user contributions differ in emotion by projects?
+##### Model 1.1b.4 : Do different kinds of user contributions differ in emotion by projects?
 
 Now adding projects into the mix to understand how the previous analysis
 varies across projects.
 
 ```{r model-emotion-by-type-and-author-and-project}
+
 # do tickets and comments materially differ in emotion by projects?
-creators_v_commenters_emotion_by_project = lmer(compound_emotion ~ 0 + project:type:author_group  +
-                                               (1 | author_name),
-                                                data = sentiment_frame,
-                                                REML = FALSE)
+creators_v_commenters_emotion_by_project = lmer(
+  compound_emotion ~ 0 + project:type:author_group + (1 | author_name),
+  data = sentiment_frame,
+  REML = FALSE)
 
 ```
 
-```{r model-emotion-by-type-and-author-and-project_clean_up}
+Run *t*-tests among levels and prepare for the Model 1.1b table later.
+
+```{r clean-up-model-1.1c-output}
+
+# convert Model 1.1c output to dataframe
 coefficients_and_se = data.frame(
     summary(creators_v_commenters_emotion_by_project)$coefficients)
-# Clean up row.names
-row_names = gsub(
-    "project", "", gsub(
-	"author_group", "", gsub("type", "", row.names(coefficients_and_se))))
 
-# The names scikit-learn, scikit-image and sphinx-gallery are going to cause
-# problem, as they are not valid R nmames.
-# Replace the "-" with a "." in those names
+# get comparison names as rownames
 row_names = gsub(
-    "scikit-", "scikit.", gsub(
-	"sphinx-", "sphinx.", row_names))
+  "project", "", gsub(
+    "author_group", "", gsub(
+      "type", "", row.names(coefficients_and_se))))
 
+# replace hyphens in project names with periods
+row_names = gsub(
+  "scikit-", "scikit.", gsub(
+    "sphinx-", "sphinx.", row_names))
+
+# convert model estimates to a dataframe
 means = coefficients_and_se$Estimate
 names(means) = row_names
 
+# convert standard error to dataframe
 se = coefficients_and_se$Std..Error
 names(se) = row_names
 
+# compute t-statistics and p-values for desired contrasts
+# (note: ordering of contrasts within each project is identical to Model 1.1b.3)
 contrasts = c(
-    # scikit-learn
-    "scikit.learn:issue_post:member-scikit.learn:issue_post:nonmember", 
-    "scikit.learn:issue_reply:member-scikit.learn:issue_reply:nonmember",
-    "scikit.learn:pr_post:member-scikit.learn:pr_post:nonmember",       
-    "scikit.learn:pr_reply:member-scikit.learn:pr_reply:nonmember",     
-    "scikit.learn:issue_post:member-scikit.learn:issue_reply:member",
-    "scikit.learn:issue_post:nonmember-scikit.learn:issue_reply:nonmember",
-    "scikit.learn:pr_post:member-scikit.learn:pr_reply:member",     
-    "scikit.learn:pr_post:nonmember-scikit.learn:pr_reply:nonmember",    
-    "scikit.learn:issue_post:member-scikit.learn:pr_post:member",   
-    "scikit.learn:issue_post:nonmember-scikit.learn:pr_post:nonmember",    
-    "scikit.learn:issue_reply:member-scikit.learn:pr_reply:member",  
-    "scikit.learn:issue_reply:nonmember-scikit.learn:pr_reply:nonmember",
-    
-    # scikit-image
-    "scikit.image:issue_post:member-scikit.image:issue_post:nonmember", 
-    "scikit.image:issue_reply:member-scikit.image:issue_reply:nonmember",
-    "scikit.image:pr_post:member-scikit.image:pr_post:nonmember",       
-    "scikit.image:pr_reply:member-scikit.image:pr_reply:nonmember",     
-    "scikit.image:issue_post:member-scikit.image:issue_reply:member",
-    "scikit.image:issue_post:nonmember-scikit.image:issue_reply:nonmember",
-    "scikit.image:pr_post:member-scikit.image:pr_reply:member",     
-    "scikit.image:pr_post:nonmember-scikit.image:pr_reply:nonmember",    
-    "scikit.image:issue_post:member-scikit.image:pr_post:member",   
-    "scikit.image:issue_post:nonmember-scikit.image:pr_post:nonmember",    
-    "scikit.image:issue_reply:member-scikit.image:pr_reply:member",  
-    "scikit.image:issue_reply:nonmember-scikit.image:pr_reply:nonmember",
-
-    # Matplotlib
-    "matplotlib:issue_post:member-matplotlib:issue_post:nonmember", 
-    "matplotlib:issue_reply:member-matplotlib:issue_reply:nonmember",
-    "matplotlib:pr_post:member-matplotlib:pr_post:nonmember",       
-    "matplotlib:pr_reply:member-matplotlib:pr_reply:nonmember",     
-    "matplotlib:issue_post:member-matplotlib:issue_reply:member",
-    "matplotlib:issue_post:nonmember-matplotlib:issue_reply:nonmember",
-    "matplotlib:pr_post:member-matplotlib:pr_reply:member",     
-    "matplotlib:pr_post:nonmember-matplotlib:pr_reply:nonmember",    
-    "matplotlib:issue_post:member-matplotlib:pr_post:member",   
-    "matplotlib:issue_post:nonmember-matplotlib:pr_post:nonmember",    
-    "matplotlib:issue_reply:member-matplotlib:pr_reply:member",  
-    "matplotlib:issue_reply:nonmember-matplotlib:pr_reply:nonmember",
-
-    # mayavi
-    "mayavi:issue_post:member-mayavi:issue_post:nonmember", 
-    "mayavi:issue_reply:member-mayavi:issue_reply:nonmember",
-    "mayavi:pr_post:member-mayavi:pr_post:nonmember",       
-    "mayavi:pr_reply:member-mayavi:pr_reply:nonmember",     
-    "mayavi:issue_post:member-mayavi:issue_reply:member",
-    "mayavi:issue_post:nonmember-mayavi:issue_reply:nonmember",
-    "mayavi:pr_post:member-mayavi:pr_reply:member",     
-    "mayavi:pr_post:nonmember-mayavi:pr_reply:nonmember",    
-    "mayavi:issue_post:member-mayavi:pr_post:member",   
-    "mayavi:issue_post:nonmember-mayavi:pr_post:nonmember",    
-    "mayavi:issue_reply:member-mayavi:pr_reply:member",  
-    "mayavi:issue_reply:nonmember-mayavi:pr_reply:nonmember",
-
-    # Pandas
-    "pandas:issue_post:member-pandas:issue_post:nonmember", 
-    "pandas:issue_reply:member-pandas:issue_reply:nonmember",
-    "pandas:pr_post:member-pandas:pr_post:nonmember",       
-    "pandas:pr_reply:member-pandas:pr_reply:nonmember",     
-    "pandas:issue_post:member-pandas:issue_reply:member",
-    "pandas:issue_post:nonmember-pandas:issue_reply:nonmember",
-    "pandas:pr_post:member-pandas:pr_reply:member",     
-    "pandas:pr_post:nonmember-pandas:pr_reply:nonmember",    
-    "pandas:issue_post:member-pandas:pr_post:member",   
-    "pandas:issue_post:nonmember-pandas:pr_post:nonmember",    
-    "pandas:issue_reply:member-pandas:pr_reply:member",  
-    "pandas:issue_reply:nonmember-pandas:pr_reply:nonmember",
-
-    # Scipy
-    "scipy:issue_post:member-scipy:issue_post:nonmember", 
-    "scipy:issue_reply:member-scipy:issue_reply:nonmember",
-    "scipy:pr_post:member-scipy:pr_post:nonmember",       
-    "scipy:pr_reply:member-scipy:pr_reply:nonmember",     
-    "scipy:issue_post:member-scipy:issue_reply:member",
-    "scipy:issue_post:nonmember-scipy:issue_reply:nonmember",
-    "scipy:pr_post:member-scipy:pr_reply:member",     
-    "scipy:pr_post:nonmember-scipy:pr_reply:nonmember",    
-    "scipy:issue_post:member-scipy:pr_post:member",   
-    "scipy:issue_post:nonmember-scipy:pr_post:nonmember",    
-    "scipy:issue_reply:member-scipy:pr_reply:member",  
-    "scipy:issue_reply:nonmember-scipy:pr_reply:nonmember",
-
-    # Numpy
-    "numpy:issue_post:member-numpy:issue_post:nonmember", 
-    "numpy:issue_reply:member-numpy:issue_reply:nonmember",
-    "numpy:pr_post:member-numpy:pr_post:nonmember",       
-    "numpy:pr_reply:member-numpy:pr_reply:nonmember",     
-    "numpy:issue_post:member-numpy:issue_reply:member",
-    "numpy:issue_post:nonmember-numpy:issue_reply:nonmember",
-    "numpy:pr_post:member-numpy:pr_reply:member",     
-    "numpy:pr_post:nonmember-numpy:pr_reply:nonmember",    
-    "numpy:issue_post:member-numpy:pr_post:member",   
-    "numpy:issue_post:nonmember-numpy:pr_post:nonmember",    
-    "numpy:issue_reply:member-numpy:pr_reply:member",  
-    "numpy:issue_reply:nonmember-numpy:pr_reply:nonmember",
-
-    # Sphinx-gallery
-    "sphinx.gallery:issue_post:member-sphinx.gallery:issue_post:nonmember", 
-    "sphinx.gallery:issue_reply:member-sphinx.gallery:issue_reply:nonmember",
-    "sphinx.gallery:pr_post:member-sphinx.gallery:pr_post:nonmember",       
-    "sphinx.gallery:pr_reply:member-sphinx.gallery:pr_reply:nonmember",     
-    "sphinx.gallery:issue_post:member-sphinx.gallery:issue_reply:member",
-    "sphinx.gallery:issue_post:nonmember-sphinx.gallery:issue_reply:nonmember",
-    "sphinx.gallery:pr_post:member-sphinx.gallery:pr_reply:member",     
-    "sphinx.gallery:pr_post:nonmember-sphinx.gallery:pr_reply:nonmember",    
-    "sphinx.gallery:issue_post:member-sphinx.gallery:pr_post:member",   
-    "sphinx.gallery:issue_post:nonmember-sphinx.gallery:pr_post:nonmember",    
-    "sphinx.gallery:issue_reply:member-sphinx.gallery:pr_reply:member",  
-    "sphinx.gallery:issue_reply:nonmember-sphinx.gallery:pr_reply:nonmember"
-    )
-
+  
+  # scikit-learn
+  "scikit.learn:issue_post:member-scikit.learn:issue_post:nonmember",   
+  "scikit.learn:issue_reply:member-scikit.learn:issue_reply:nonmember",
+  "scikit.learn:pr_post:member-scikit.learn:pr_post:nonmember",
+  "scikit.learn:pr_reply:member-scikit.learn:pr_reply:nonmember",
+  "scikit.learn:issue_post:member-scikit.learn:issue_reply:member",
+  "scikit.learn:issue_post:nonmember-scikit.learn:issue_reply:nonmember",
+  "scikit.learn:pr_post:member-scikit.learn:pr_reply:member",
+  "scikit.learn:pr_post:nonmember-scikit.learn:pr_reply:nonmember",
+  "scikit.learn:issue_post:member-scikit.learn:pr_post:member",
+  "scikit.learn:issue_post:nonmember-scikit.learn:pr_post:nonmember",    
+  "scikit.learn:issue_reply:member-scikit.learn:pr_reply:member",  
+  "scikit.learn:issue_reply:nonmember-scikit.learn:pr_reply:nonmember",
+  
+  # scikit-image
+  "scikit.image:issue_post:member-scikit.image:issue_post:nonmember", 
+  "scikit.image:issue_reply:member-scikit.image:issue_reply:nonmember",
+  "scikit.image:pr_post:member-scikit.image:pr_post:nonmember",       
+  "scikit.image:pr_reply:member-scikit.image:pr_reply:nonmember",     
+  "scikit.image:issue_post:member-scikit.image:issue_reply:member",
+  "scikit.image:issue_post:nonmember-scikit.image:issue_reply:nonmember",
+  "scikit.image:pr_post:member-scikit.image:pr_reply:member",     
+  "scikit.image:pr_post:nonmember-scikit.image:pr_reply:nonmember",    
+  "scikit.image:issue_post:member-scikit.image:pr_post:member",   
+  "scikit.image:issue_post:nonmember-scikit.image:pr_post:nonmember",    
+  "scikit.image:issue_reply:member-scikit.image:pr_reply:member",  
+  "scikit.image:issue_reply:nonmember-scikit.image:pr_reply:nonmember",
+  
+  # matplotlib
+  "matplotlib:issue_post:member-matplotlib:issue_post:nonmember", 
+  "matplotlib:issue_reply:member-matplotlib:issue_reply:nonmember",
+  "matplotlib:pr_post:member-matplotlib:pr_post:nonmember",       
+  "matplotlib:pr_reply:member-matplotlib:pr_reply:nonmember",     
+  "matplotlib:issue_post:member-matplotlib:issue_reply:member",
+  "matplotlib:issue_post:nonmember-matplotlib:issue_reply:nonmember",
+  "matplotlib:pr_post:member-matplotlib:pr_reply:member",     
+  "matplotlib:pr_post:nonmember-matplotlib:pr_reply:nonmember",    
+  "matplotlib:issue_post:member-matplotlib:pr_post:member",   
+  "matplotlib:issue_post:nonmember-matplotlib:pr_post:nonmember",    
+  "matplotlib:issue_reply:member-matplotlib:pr_reply:member",  
+  "matplotlib:issue_reply:nonmember-matplotlib:pr_reply:nonmember",
+  
+  # mayavi
+  "mayavi:issue_post:member-mayavi:issue_post:nonmember", 
+  "mayavi:issue_reply:member-mayavi:issue_reply:nonmember",
+  "mayavi:pr_post:member-mayavi:pr_post:nonmember",       
+  "mayavi:pr_reply:member-mayavi:pr_reply:nonmember",     
+  "mayavi:issue_post:member-mayavi:issue_reply:member",
+  "mayavi:issue_post:nonmember-mayavi:issue_reply:nonmember",
+  "mayavi:pr_post:member-mayavi:pr_reply:member",     
+  "mayavi:pr_post:nonmember-mayavi:pr_reply:nonmember",    
+  "mayavi:issue_post:member-mayavi:pr_post:member",   
+  "mayavi:issue_post:nonmember-mayavi:pr_post:nonmember",    
+  "mayavi:issue_reply:member-mayavi:pr_reply:member",  
+  "mayavi:issue_reply:nonmember-mayavi:pr_reply:nonmember",
+  
+  # pandas
+  "pandas:issue_post:member-pandas:issue_post:nonmember", 
+  "pandas:issue_reply:member-pandas:issue_reply:nonmember",
+  "pandas:pr_post:member-pandas:pr_post:nonmember",       
+  "pandas:pr_reply:member-pandas:pr_reply:nonmember",     
+  "pandas:issue_post:member-pandas:issue_reply:member",
+  "pandas:issue_post:nonmember-pandas:issue_reply:nonmember",
+  "pandas:pr_post:member-pandas:pr_reply:member",     
+  "pandas:pr_post:nonmember-pandas:pr_reply:nonmember",    
+  "pandas:issue_post:member-pandas:pr_post:member",   
+  "pandas:issue_post:nonmember-pandas:pr_post:nonmember",    
+  "pandas:issue_reply:member-pandas:pr_reply:member",  
+  "pandas:issue_reply:nonmember-pandas:pr_reply:nonmember",
+  
+  # scipy
+  "scipy:issue_post:member-scipy:issue_post:nonmember", 
+  "scipy:issue_reply:member-scipy:issue_reply:nonmember",
+  "scipy:pr_post:member-scipy:pr_post:nonmember",       
+  "scipy:pr_reply:member-scipy:pr_reply:nonmember",     
+  "scipy:issue_post:member-scipy:issue_reply:member",
+  "scipy:issue_post:nonmember-scipy:issue_reply:nonmember",
+  "scipy:pr_post:member-scipy:pr_reply:member",     
+  "scipy:pr_post:nonmember-scipy:pr_reply:nonmember",    
+  "scipy:issue_post:member-scipy:pr_post:member",   
+  "scipy:issue_post:nonmember-scipy:pr_post:nonmember",    
+  "scipy:issue_reply:member-scipy:pr_reply:member",  
+  "scipy:issue_reply:nonmember-scipy:pr_reply:nonmember",
+  
+  # numpy
+  "numpy:issue_post:member-numpy:issue_post:nonmember", 
+  "numpy:issue_reply:member-numpy:issue_reply:nonmember",
+  "numpy:pr_post:member-numpy:pr_post:nonmember",       
+  "numpy:pr_reply:member-numpy:pr_reply:nonmember",     
+  "numpy:issue_post:member-numpy:issue_reply:member",
+  "numpy:issue_post:nonmember-numpy:issue_reply:nonmember",
+  "numpy:pr_post:member-numpy:pr_reply:member",     
+  "numpy:pr_post:nonmember-numpy:pr_reply:nonmember",    
+  "numpy:issue_post:member-numpy:pr_post:member",   
+  "numpy:issue_post:nonmember-numpy:pr_post:nonmember",    
+  "numpy:issue_reply:member-numpy:pr_reply:member",  
+  "numpy:issue_reply:nonmember-numpy:pr_reply:nonmember",
+  
+  # sphinx-gallery
+  "sphinx.gallery:issue_post:member-sphinx.gallery:issue_post:nonmember", 
+  "sphinx.gallery:issue_reply:member-sphinx.gallery:issue_reply:nonmember",
+  "sphinx.gallery:pr_post:member-sphinx.gallery:pr_post:nonmember",       
+  "sphinx.gallery:pr_reply:member-sphinx.gallery:pr_reply:nonmember",     
+  "sphinx.gallery:issue_post:member-sphinx.gallery:issue_reply:member",
+  "sphinx.gallery:issue_post:nonmember-sphinx.gallery:issue_reply:nonmember",
+  "sphinx.gallery:pr_post:member-sphinx.gallery:pr_reply:member",     
+  "sphinx.gallery:pr_post:nonmember-sphinx.gallery:pr_reply:nonmember",    
+  "sphinx.gallery:issue_post:member-sphinx.gallery:pr_post:member",   
+  "sphinx.gallery:issue_post:nonmember-sphinx.gallery:pr_post:nonmember",    
+  "sphinx.gallery:issue_reply:member-sphinx.gallery:pr_reply:member",  
+  "sphinx.gallery:issue_reply:nonmember-sphinx.gallery:pr_reply:nonmember"
+)
 project_types_author_group_tests = compute_t_statistics(
-    means, se,
-    contrasts)
+  means, se,
+  contrasts)
 project_types_author_group_tests[, "p_value"] = compute_p_value_from_t_stats(
-    project_types_author_group_tests$t_stats) 
+  project_types_author_group_tests$t_stats) 
+
 ```
 
-```{r combine_all_tests}
+#### Model 1.1b: Overall results
+
+Now we bring together all analyses from Model 1.1b.
+
+```{r output-model1.1b-results-table}
 
 # specify main terms
 author_groups_tests["contrast"] = row.names(author_groups_tests)
@@ -619,20 +635,24 @@ project_types_author_group_tests["contrast"] = row.names(project_types_author_gr
 project_types_author_group_tests["model"] = "3W: Types x Author Groups x Project"
 all_tests = merge(all_tests, project_types_author_group_tests, all=TRUE,
 		  sort=FALSE)
+
 ```
 
-#### All results, corrected for the whole set of tests
+Let's correct all tests at once for multiple comparisons.
 
-```{r model1_whole_set}
+```{r corect-and-display-all-model-1.1b-tests}
 
+# specify all contrasts
 row.names(all_tests) = all_tests$contrast
 all_tests = subset(all_tests, select=-c(contrast))
-# Reorder the columns for readibility
+
+# print the table (reordering columns for readibility)
 all_tests = all_tests[c("model", "t_stats", "p_value")]
 pander_clean_anova(all_tests, rename_columns=FALSE)
+
 ```
 
-#### Plots
+Finally, let's plot these effects.
 
 ```{r plot-model-emotion-by-type-and-membership, echo=FALSE, include=FALSE, eval=TRUE}
 
@@ -722,47 +742,97 @@ ggsave(plot = sentiment_plot_by_project,
 ### Model 1.2: Do tickets and comments materially differ in emotion over time?
 
 ```{r splines_options}
-# Number of splines basis to use.
+
+# specify number of splines basis to use
 degrees_of_freedom = 4
+
 ```
 
-In this model, we explore whether there are time ns in the
-observations from model1.1. First, let's look at the splines basis functions,
+In this model, we explore whether there are time-based splines in the
+observations from Model 1.1. First, let's look at the splines basis functions,
 and which time points they span by default.
 
-```{r plot_splines}
-# Here, let's just plot the splines basis, to see what they look like.
-# ALEX FIXME
-basis = splines::ns(unique(sentiment_frame$date, df=degrees_of_freedom))
+```{r plot_splines, eval=TRUE, include=FALSE, echo=FALSE}
+
+# here, let's just plot the splines basis, to see what they look like
+basis = splines::ns(sort(unique(sentiment_frame$date)), 
+                    df=degrees_of_freedom)
+
+# convert it into a dataframe for easier plotting
+basis_df = as.data.frame(basis) %>%
+  #tibble::rownames_to_column(var = 't') %>%
+  dplyr::rename(df1 = `1`,
+                df2 = `2`,
+                df3 = `3`,
+                df4 = `4`)
+
+# # this would be ggplot-compatible, but ggplot is getting fussy
+# # (will come back to it later)
+# basis_df = as.data.frame(basis) %>%
+#   tibble::rownames_to_column(var = 't') %>%
+#   tidyr::gather(key = df, value = num, -t)
+
+# plot it with base R plotting
+jpeg('../../figures/sentiment_analysis/ossc-sentiment_basis_functions.jpg',
+     width=2,height=2,units="in",res=500,
+     pointsize=4)
+par(
+  mar      = c(5, 5, 2, 2),
+  xaxs     = "i",
+  yaxs     = "i",
+  cex.axis = 1,
+  cex.lab  = 1,
+  cex.title = 1
+)
+matplot(basis_df, type = "l", pch = 1, col = 1:4,
+        main = "Sentiment basis functions",
+        xlab = "Time",
+        ylab = "Sentiment") # plot
+legend("topleft", legend = 1:4, lty = 1:4, col = 1:4)
+dev.off()
+
 ```
 
-Now, let us use these splines model to model the time variation of the 3 way
+![**Figure**. Basis functions for sentiment.](../../figures/sentiment_analysis/ossc-sentiment_basis_functions.jpg)
+
+Now, let us use these splines model to model the time variation of the 3-way
 interaction terms. We model the intercept for the three way interaction
-separately from the splines: this allows us to only look at changes over time,
+separately from the splines: This allows us to only look at changes over time
 and not changes in intercept.
 
-Note that we cannot use too many degrees of freedom, as nx-gallery spans a
-shorter time period than over project. Any spline basis function that covers
+Note that we cannot use too many degrees of freedom, as sphinx-gallery spans a
+shorter time period than other projects. Any spline basis function that covers
 only the 2012 to 2015 cannot be estimated on sphinx-gallery.
 
-```{r model-emotion-by-type-author-project-time}
+``` {r silently-reload-functions, eval=TRUE, include=FALSE, echo=FALSE}
 library(splines)
-# do tickets and comments materially differ in emotion over time?
-formula = (
-    compound_emotion ~ 0 +
-		       project:type:author_group +
-		       project:type:author_group:ns(date,
-						    df=degrees_of_freedom) +
-		       (1 | author_name))
-creators_v_commenters_emotion_by_project_time = lmer(formula,
-                                                     data = sentiment_frame,
-                                                     REML=FALSE)
+source("utils/ossc-libraries_and_functions.r")
 ```
 
-```{r model-emotion-by-type-author-project-time_clean_up}
+```{r model-emotion-by-type-author-project-time}
+
+# do tickets and comments materially differ in emotion over time?
+formula = (
+  compound_emotion ~ 0 + project:type:author_group + 
+    project:type:author_group:ns(date, df=degrees_of_freedom) +
+    (1 | author_name))
+
+creators_v_commenters_emotion_by_project_time = lmer(
+  formula,
+  data = sentiment_frame,
+  REML=FALSE)
+
+```
+
+We'll do another table to display all results.
+
+```{r clean-up-model-1.2-output}
+
+# convert Model 1.2 output to dataframe
 coefficients_and_se = data.frame(
     summary(creators_v_commenters_emotion_by_project_time)$coefficients)
-# Clean up row.names
+
+# get comparison names as rownames
 row_names = gsub(
     "project", "", gsub(
 	"author_group", "", gsub("type", "", row.names(coefficients_and_se))))
@@ -771,51 +841,44 @@ row_names = gsub(
 row_names = gsub(
     "ns(date, df = degrees_of_freedom)", "coef", row_names, fixed=TRUE)
 
-# The names scikit-learn, scikit-image and sphinx-gallery are going to cause
-# problem, as they are not valid R nmames.
-# Replace the "-" with a "." in those names
+# replace hyphens in project names with periods
 row_names = gsub(
     "scikit-", "scikit.", gsub(
 	"sphinx-", "sphinx.", row_names))
 
+# convert model estimates to a dataframe
 means = coefficients_and_se$Estimate
 names(means) = row_names
 
+# convert standard error to dataframe
 se = coefficients_and_se$Std..Error
 names(se) = row_names
-```
 
-```{r automatically_generate_contrasts}
-
-# We're interested in looking at the coefficients of the splines.
+# we're interested in looking at the coefficients of the splines.
 time_contrasts = c(
     gsub("member", "member:coef1", contrasts),
     gsub("member", "member:coef2", contrasts),
     gsub("member", "member:coef3", contrasts),
     gsub("member", "member:coef4", contrasts))
 
+# compute statistics over specified contrast areas
 project_type_author_group_time_tests = compute_t_statistics(
     means, se, time_contrasts)
 project_type_author_group_time_tests[, "p_value"] = compute_p_value_from_t_stats(
     project_type_author_group_time_tests$t_stats)
+
 ```
 
-```{r display_significant_results}
-source("utils/ossc-libraries_and_functions.r")
+Because we have so many tests, we'll only display the ones that are significant
+(after adjusting for multiple comparisons).
+
+```{r silently-display-significant-results, eval=TRUE, include=FALSE, echo=TRUE}
+
+# print out the significant results
 pander_clean_anova(project_type_author_group_time_tests, rename_columns=FALSE,
 		   display_only_significant=TRUE)
+
 ```
-
-
-Interestingly, we see much more volatility here in the emotion dynamics
-of community members relative to the community nonmembers over time, even
-when we collapse across all projects.
-
-Perhaps more interestingly, we see a difference in the affect dynamics
-only in the last year: Members' tickets are becoming more positive, while
-nonmembers' tickets are becoming more negative.
-
-We'll need to do an analysis to follow up on this.
 
 ```{r plot-model-emotion-by-contribution-and-membership-aggregated, include=FALSE, echo=FALSE, eval=TRUE}
 
@@ -868,7 +931,6 @@ ggsave(plot = sentiment_contribution_membership_time_plot,
 ![**Figure**. Sentiment over time by contribution type (ticket vs. comment) and community membership at the time of posting (member vs. nonmember).](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-aggregated-knitr.jpg)
 
 ```{r plot-model-emotion-by-contribution-and-membership-and-time-by-project, include=FALSE, echo=FALSE, eval=TRUE}
-
 
 sentiment_contribution_member_time_by_project_plot = ggplot(data=sentiment_frame,
                                                             aes(x=date,
@@ -1001,7 +1063,8 @@ ggsave(plot = grateful_plot,
 ```{r gratitude-predictors-time, eval = TRUE}
 
 # do users tend to express appreciation and gratitude differently by group and content?
-creators_v_commenters_gratitude_time = lmer(log(grateful_count + 1) ~ project + (author_group + type) * ns(date, df=degrees_of_freedom) +
+creators_v_commenters_gratitude_time = lmer(log(grateful_count + 1) ~ project + 
+                                              (author_group + type) * ns(date, df=degrees_of_freedom) +
                                                (1 | author_name),
                                              data=sentiment_frame)
                                              #family=poisson)
