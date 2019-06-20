@@ -25,7 +25,7 @@ To run this from scratch, you will need the following files:
 
 **Date last modified**: 30 May 2019
 
-```{r silent-preparations, echo=FALSE, include=FALSE}
+```{r silent-preparations, include=FALSE}
 library(knitr)
 knitr::opts_chunk$set(cache=TRUE, autodep=TRUE, cache.lazy=FALSE)
 ```
@@ -151,7 +151,7 @@ comments_frame = comments_frame %>% ungroup() %>%
 Now that our data have been largely cleaned, let's take a look at some basic
 patterns.
 
-```{r user-stats, include=FALSE, echo=FALSE, eval=TRUE}
+```{r user-stats, include=FALSE, eval=TRUE}
 
 # get unique values
 unique_commenters = as.character(unique(comments_frame$author_name))
@@ -160,7 +160,7 @@ unique_users = as.character(unique(append(unique_commenters, unique_ticketers)))
 
 ```
 
-```{r activity-stats, include=FALSE, echo=TRUE, eval=TRUE}
+```{r activity-stats, echo=FALSE, eval=TRUE}
 
 # get counts of ticket activity per project
 ticket_counts = tickets_frame %>% ungroup() %>%
@@ -270,7 +270,7 @@ creators_v_commenters_emotion_by_project = lmer(compound_emotion ~ type * author
 
 ```
 
-```{r print-model-emotion-by-type-and-author, eval=TRUE, include=FALSE, echo=TRUE}
+```{r print-model-emotion-by-type-and-author, eval=TRUE, echo=FALSE}
 
 # print results
 pander_lme(creators_v_commenters_emotion_by_project)
@@ -654,7 +654,7 @@ pander_clean_anova(all_tests, rename_columns=FALSE)
 
 Finally, let's plot these effects.
 
-```{r plot-model-emotion-by-type-and-membership, echo=FALSE, include=FALSE, eval=TRUE}
+```{r plot-model-emotion-by-type-and-membership, echo=FALSE, eval=TRUE}
 
 # aggregate sentiment over all projects
 sentiment_plot_aggregated = ggplot(data=sentiment_frame,
@@ -695,7 +695,7 @@ ggsave(plot = sentiment_plot_aggregated,
 
 ![**Figure**. Sentiment by contribution type (ticket vs. comment) and community membership at the time of posting (member vs. nonmember).](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution-aggregated-knitr.jpg)
 
-```{r plot-model-emotion-by-type-and-membership-and-project, echo=FALSE, include=FALSE, eval=TRUE}
+```{r plot-model-emotion-by-type-and-membership-and-project, echo=FALSE, eval=TRUE}
 
 # separate across each project
 sentiment_plot_by_project = ggplot(data=sentiment_frame,
@@ -752,7 +752,7 @@ In this model, we explore whether there are time-based splines in the
 observations from Model 1.1. First, let's look at the splines basis functions,
 and which time points they span by default.
 
-```{r plot_splines, eval=TRUE, include=FALSE, echo=FALSE}
+```{r plot_splines, eval=TRUE, include=FALSE}
 
 # here, let's just plot the splines basis, to see what they look like
 basis = splines::ns(sort(unique(sentiment_frame$date)), 
@@ -804,7 +804,7 @@ Note that we cannot use too many degrees of freedom, as sphinx-gallery spans a
 shorter time period than other projects. Any spline basis function that covers
 only the 2012 to 2015 cannot be estimated on sphinx-gallery.
 
-``` {r silently-reload-functions, eval=TRUE, include=FALSE, echo=FALSE}
+``` {r silently-reload-functions, eval=TRUE, include=FALSE}
 library(splines)
 source("utils/ossc-libraries_and_functions.r")
 ```
@@ -872,7 +872,7 @@ project_type_author_group_time_tests[, "p_value"] = compute_p_value_from_t_stats
 Because we have so many tests, we'll only display the ones that are significant
 (after adjusting for multiple comparisons).
 
-```{r silently-display-significant-results, eval=TRUE, include=FALSE, echo=TRUE}
+```{r silently-display-significant-results, eval=TRUE, echo=FALSE}
 
 # print out the significant results
 pander_clean_anova(project_type_author_group_time_tests, rename_columns=FALSE,
@@ -880,7 +880,7 @@ pander_clean_anova(project_type_author_group_time_tests, rename_columns=FALSE,
 
 ```
 
-```{r plot-model-emotion-by-contribution-and-membership-aggregated, include=FALSE, echo=FALSE, eval=TRUE}
+```{r plot-model-emotion-by-contribution-and-membership-aggregated, include=FALSE, eval=TRUE}
 
 sentiment_contribution_membership_time_plot = ggplot(data=sentiment_frame,
                                                      aes(x=date,
@@ -930,7 +930,7 @@ ggsave(plot = sentiment_contribution_membership_time_plot,
 
 ![**Figure**. Sentiment over time by contribution type (ticket vs. comment) and community membership at the time of posting (member vs. nonmember).](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-aggregated-knitr.jpg)
 
-```{r plot-model-emotion-by-contribution-and-membership-and-time-by-project, include=FALSE, echo=FALSE, eval=TRUE}
+```{r plot-model-emotion-by-contribution-and-membership-and-time-by-project, include=FALSE, eval=TRUE}
 
 sentiment_contribution_member_time_by_project_plot = ggplot(data=sentiment_frame,
                                                             aes(x=date,
@@ -992,7 +992,7 @@ ggsave(plot = sentiment_contribution_member_time_by_project_plot,
 First, let's take a look at a summary table of expressions of gratitude by
 membership status and contribution type.
 
-```{r gratitude-summary-stats, eval=TRUE, include=FALSE, echo=TRUE}
+```{r gratitude-summary-stats, eval=TRUE, echo=TRUE}
 
 # create a summary table of gratitude by type and author association
 gratitude_summary_stats = sentiment_frame %>% ungroup() %>%
@@ -1017,7 +1017,7 @@ pander_lme(creators_v_commenters_gratitude_by_project)
 
 ```
 
-```{r plot-gratitude-predictors-by-project, include=FALSE, echo=FALSE, eval=TRUE}
+```{r plot-gratitude-predictors-by-project, include=FALSE, eval=TRUE}
 grateful_plot = ggplot(data=sentiment_frame,
                        aes(colour=type,
                            y=grateful_count,
@@ -1334,7 +1334,7 @@ summary(retention_predictors)
 
 ```
 
-```{r plot-predicting-retention-aggregated, echo=FALSE, include=FALSE, eval=TRUE}
+```{r plot-predicting-retention-aggregated, include=FALSE, eval=TRUE}
 
 # create the plot of newcomer retention across all projects
 retention_plot_aggregated = ggplot(data=retention_frame,

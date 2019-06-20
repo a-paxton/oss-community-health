@@ -148,6 +148,25 @@ patterns.
 
 
 
+---------------------------------------------------
+    project       unique_tickets   unique_comments 
+---------------- ---------------- -----------------
+   matplotlib         12394             60723      
+
+     mayavi            735              2036       
+
+     numpy            10287             55892      
+
+     pandas           23676            128420      
+
+  scikit-image         3299             20179      
+
+  scikit-learn        12283            100203      
+
+     scipy             7456             40973      
+
+ sphinx-gallery        418              2754       
+---------------------------------------------------
 
 Our dataset includes 8 unique projects with a
 total of 70548 unique tickets, with a
@@ -280,6 +299,16 @@ creators_v_commenters_emotion_by_project = lmer(compound_emotion ~ type * author
 ```
 
 
+|                  &nbsp;                   | Estimate | Std..Error |   df   | t.value |   p    | p_adj  | sig |
+|:-----------------------------------------:|:--------:|:----------:|:------:|:-------:|:------:|:------:|:---:|
+|              **(Intercept)**              | 0.09079  |  0.01055   | 10.78  |  8.608  | 0.0001 | 0.0001 | *** |
+|            **typeissue_reply**            | 0.08345  |  0.003682  | 468768 |  22.66  | 0.0001 | 0.0001 | *** |
+|              **typepr_post**              | 0.03653  |  0.004417  | 469916 |  8.268  | 0.0001 | 0.0001 | *** |
+|             **typepr_reply**              |  0.1295  |  0.003661  | 470489 |  35.38  | 0.0001 | 0.0001 | *** |
+|         **author_groupnonmember**         | 0.02478  |  0.005381  | 292117 |  4.604  | 0.0001 | 0.0001 | *** |
+| **typeissue_reply:author_groupnonmember** | -0.0013  |  0.00529   | 468471 | -0.2458 |  0.81  |  0.81  |     |
+|   **typepr_post:author_groupnonmember**   | 0.03051  |  0.006757  | 418644 |  4.515  | 0.0001 | 0.0001 | *** |
+|  **typepr_reply:author_groupnonmember**   | -0.02656 |  0.005604  | 324140 | -4.739  | 0.0001 | 0.0001 | *** |
 
 While we see significant differences in the model, interpreting the results is
 difficult because of the way that `lmer` handles factor comparisons. All 
@@ -863,6 +892,64 @@ Because we have so many tests, we'll only display the ones that are significant
 (after adjusting for multiple comparisons).
 
 
+|                                        &nbsp;                                        | t_stats | p_value | p_adj  | sig |
+|:------------------------------------------------------------------------------------:|:-------:|:-------:|:------:|:---:|
+|       **scikit.learn:pr_post:member:coef1-scikit.learn:pr_reply:member:coef1**       | -3.329  |  0.001  |  0.01  |  *  |
+|      **scikit.learn:issue_post:member:coef1-scikit.learn:pr_post:member:coef1**      |  3.055  |  0.002  | 0.019  |  *  |
+|   **scikit.learn:issue_post:nonmember:coef1-scikit.learn:pr_post:nonmember:coef1**   |  2.761  |  0.006  | 0.042  |  *  |
+|    **matplotlib:issue_reply:member:coef1-matplotlib:issue_reply:nonmember:coef1**    |  2.958  |  0.003  | 0.025  |  *  |
+|       **matplotlib:issue_reply:member:coef1-matplotlib:pr_reply:member:coef1**       |  3.654  | 0.0003  | 0.003  | **  |
+|            **scipy:issue_reply:member:coef1-scipy:pr_reply:member:coef1**            |  3.086  |  0.002  | 0.018  |  *  |
+|      **scikit.learn:pr_post:member:coef2-scikit.learn:pr_post:nonmember:coef2**      | -5.376  | 0.0001  | 0.0001 | *** |
+|    **scikit.learn:issue_post:member:coef2-scikit.learn:issue_reply:member:coef2**    |  3.273  |  0.001  | 0.011  |  *  |
+| **scikit.learn:issue_post:nonmember:coef2-scikit.learn:issue_reply:nonmember:coef2** |  4.062  | 0.0001  | 0.001  | **  |
+|       **scikit.learn:pr_post:member:coef2-scikit.learn:pr_reply:member:coef2**       |  7.304  | 0.0001  | 0.0001 | *** |
+|    **scikit.learn:pr_post:nonmember:coef2-scikit.learn:pr_reply:nonmember:coef2**    |  13.01  | 0.0001  | 0.0001 | *** |
+|   **scikit.learn:issue_post:nonmember:coef2-scikit.learn:pr_post:nonmember:coef2**   | -5.431  | 0.0001  | 0.0001 | *** |
+|     **scikit.learn:issue_reply:member:coef2-scikit.learn:pr_reply:member:coef2**     |  3.025  |  0.002  | 0.021  |  *  |
+|    **matplotlib:issue_reply:member:coef2-matplotlib:issue_reply:nonmember:coef2**    |  2.746  |  0.006  | 0.042  |  *  |
+|   **matplotlib:issue_post:nonmember:coef2-matplotlib:issue_reply:nonmember:coef2**   |  5.094  | 0.0001  | 0.0001 | *** |
+|         **matplotlib:pr_post:member:coef2-matplotlib:pr_reply:member:coef2**         |  10.17  | 0.0001  | 0.0001 | *** |
+|      **matplotlib:pr_post:nonmember:coef2-matplotlib:pr_reply:nonmember:coef2**      |  4.243  | 0.0001  | 0.0004 | *** |
+|        **matplotlib:issue_post:member:coef2-matplotlib:pr_post:member:coef2**        | -4.205  | 0.0001  | 0.0004 | *** |
+|       **matplotlib:issue_reply:member:coef2-matplotlib:pr_reply:member:coef2**       |  2.829  |  0.005  | 0.035  |  *  |
+|          **pandas:issue_post:member:coef2-pandas:issue_reply:member:coef2**          |  4.155  | 0.0001  |   0    | *** |
+|            **scipy:issue_reply:member:coef2-scipy:pr_reply:member:coef2**            |  3.307  |  0.001  |  0.01  |  *  |
+|        **numpy:issue_post:nonmember:coef2-numpy:issue_reply:nonmember:coef2**        |  2.755  |  0.006  | 0.042  |  *  |
+|              **numpy:pr_post:member:coef2-numpy:pr_reply:member:coef2**              |  -2.89  |  0.004  |  0.03  |  *  |
+|          **numpy:issue_post:nonmember:coef2-numpy:pr_post:nonmember:coef2**          |  3.757  | 0.0002  | 0.002  | **  |
+|     **matplotlib:issue_post:member:coef3-matplotlib:issue_post:nonmember:coef3**     | -2.902  |  0.004  | 0.029  |  *  |
+|    **matplotlib:issue_reply:member:coef3-matplotlib:issue_reply:nonmember:coef3**    |  3.067  |  0.002  | 0.019  |  *  |
+|        **matplotlib:pr_post:member:coef3-matplotlib:pr_post:nonmember:coef3**        |  2.72   |  0.006  | 0.045  |  *  |
+|   **matplotlib:issue_post:nonmember:coef3-matplotlib:issue_reply:nonmember:coef3**   |  4.464  | 0.0001  | 0.0002 | *** |
+|         **matplotlib:pr_post:member:coef3-matplotlib:pr_reply:member:coef3**         |  8.268  | 0.0001  | 0.0001 | *** |
+|      **matplotlib:pr_post:nonmember:coef3-matplotlib:pr_reply:nonmember:coef3**      |  3.248  |  0.001  | 0.011  |  *  |
+|        **matplotlib:issue_post:member:coef3-matplotlib:pr_post:member:coef3**        | -5.262  | 0.0001  | 0.0001 | *** |
+|            **scipy:issue_reply:member:coef3-scipy:pr_reply:member:coef3**            |  3.125  |  0.002  | 0.016  |  *  |
+|   **scikit.learn:issue_post:member:coef4-scikit.learn:issue_post:nonmember:coef4**   | -5.024  | 0.0001  | 0.0001 | *** |
+|  **scikit.learn:issue_reply:member:coef4-scikit.learn:issue_reply:nonmember:coef4**  | -3.234  |  0.001  | 0.012  |  *  |
+|      **scikit.learn:pr_post:member:coef4-scikit.learn:pr_post:nonmember:coef4**      | -6.936  | 0.0001  | 0.0001 | *** |
+| **scikit.learn:issue_post:nonmember:coef4-scikit.learn:issue_reply:nonmember:coef4** |  3.422  |  0.001  | 0.008  | **  |
+|    **scikit.learn:pr_post:nonmember:coef4-scikit.learn:pr_reply:nonmember:coef4**    |  5.237  | 0.0001  | 0.0001 | *** |
+|     **scikit.learn:issue_reply:member:coef4-scikit.learn:pr_reply:member:coef4**     |  2.906  |  0.004  | 0.029  |  *  |
+|       **scikit.image:pr_post:member:coef4-scikit.image:pr_reply:member:coef4**       |  5.936  | 0.0001  | 0.0001 | *** |
+|    **scikit.image:pr_post:nonmember:coef4-scikit.image:pr_reply:nonmember:coef4**    |  2.748  |  0.006  | 0.042  |  *  |
+|     **scikit.image:issue_reply:member:coef4-scikit.image:pr_reply:member:coef4**     |  3.419  |  0.001  | 0.008  | **  |
+|      **matplotlib:issue_post:member:coef4-matplotlib:issue_reply:member:coef4**      |  4.275  | 0.0001  | 0.0003 | *** |
+|   **matplotlib:issue_post:nonmember:coef4-matplotlib:issue_reply:nonmember:coef4**   |  8.476  | 0.0001  | 0.0001 | *** |
+|         **matplotlib:pr_post:member:coef4-matplotlib:pr_reply:member:coef4**         |  17.91  | 0.0001  | 0.0001 | *** |
+|      **matplotlib:pr_post:nonmember:coef4-matplotlib:pr_reply:nonmember:coef4**      |  8.745  | 0.0001  | 0.0001 | *** |
+|        **matplotlib:issue_post:member:coef4-matplotlib:pr_post:member:coef4**        | -3.333  |  0.001  |  0.01  |  *  |
+|       **matplotlib:issue_reply:member:coef4-matplotlib:pr_reply:member:coef4**       |  3.295  |  0.001  |  0.01  |  *  |
+|        **pandas:issue_reply:member:coef4-pandas:issue_reply:nonmember:coef4**        |  5.477  | 0.0001  | 0.0001 | *** |
+|           **pandas:pr_reply:member:coef4-pandas:pr_reply:nonmember:coef4**           |  7.431  | 0.0001  | 0.0001 | *** |
+|       **pandas:issue_post:nonmember:coef4-pandas:issue_reply:nonmember:coef4**       |  3.349  |  0.001  |  0.01  |  *  |
+|          **pandas:pr_post:nonmember:coef4-pandas:pr_reply:nonmember:coef4**          |  4.341  | 0.0001  | 0.0003 | *** |
+|        **pandas:issue_reply:nonmember:coef4-pandas:pr_reply:nonmember:coef4**        |  3.897  | 0.0001  | 0.001  | **  |
+|            **scipy:issue_reply:member:coef4-scipy:pr_reply:member:coef4**            |  3.131  |  0.002  | 0.016  |  *  |
+|              **numpy:pr_post:member:coef4-numpy:pr_reply:member:coef4**              |  8.91   | 0.0001  | 0.0001 | *** |
+|           **numpy:pr_post:nonmember:coef4-numpy:pr_reply:nonmember:coef4**           |  3.816  | 0.0001  | 0.002  | **  |
+|             **numpy:issue_post:member:coef4-numpy:pr_post:member:coef4**             | -3.331  |  0.001  |  0.01  |  *  |
 
 
 
@@ -877,6 +964,86 @@ First, let's take a look at a summary table of expressions of gratitude by
 membership status and contribution type.
 
 
+```r
+# create a summary table of gratitude by type and author association
+gratitude_summary_stats = sentiment_frame %>% ungroup() %>%
+  group_by(author_group, type, grateful_count) %>%
+  summarise(n = n())
+pander(gratitude_summary_stats)
+```
+
+
+------------------------------------------------------
+ author_group      type       grateful_count     n    
+-------------- ------------- ---------------- --------
+    member      issue_post          0          14604  
+
+    member      issue_post          1           288   
+
+    member      issue_post          2            18   
+
+    member      issue_post          3            3    
+
+    member      issue_reply         0          121402 
+
+    member      issue_reply         1           7739  
+
+    member      issue_reply         2           225   
+
+    member      issue_reply         3            14   
+
+    member        pr_post           0          23338  
+
+    member        pr_post           1           1534  
+
+    member        pr_post           2           286   
+
+    member        pr_post           3            4    
+
+    member       pr_reply           0          173656 
+
+    member       pr_reply           1          28416  
+
+    member       pr_reply           2           605   
+
+    member       pr_reply           3            34   
+
+    member       pr_reply           4            2    
+
+  nonmember     issue_post          0          16354  
+
+  nonmember     issue_post          1           2011  
+
+  nonmember     issue_post          2           134   
+
+  nonmember     issue_post          3            5    
+
+  nonmember     issue_reply         0          33274  
+
+  nonmember     issue_reply         1           7171  
+
+  nonmember     issue_reply         2           585   
+
+  nonmember     issue_reply         3            37   
+
+  nonmember     issue_reply         4            1    
+
+  nonmember       pr_post           0          10596  
+
+  nonmember       pr_post           1           607   
+
+  nonmember       pr_post           2           747   
+
+  nonmember       pr_post           3            19   
+
+  nonmember      pr_reply           0          30819  
+
+  nonmember      pr_reply           1           6853  
+
+  nonmember      pr_reply           2           314   
+
+  nonmember      pr_reply           3            33   
+------------------------------------------------------
 
 Now that we have a better idea of how the underlying data look, let's go ahead
 and build our model.
