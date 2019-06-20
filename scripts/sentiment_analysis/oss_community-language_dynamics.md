@@ -148,25 +148,16 @@ patterns.
 
 
 
----------------------------------------------------
-    project       unique_tickets   unique_comments 
----------------- ---------------- -----------------
-   matplotlib         12394             60723      
-
-     mayavi            735              2036       
-
-     numpy            10287             55892      
-
-     pandas           23676            128420      
-
-  scikit-image         3299             20179      
-
-  scikit-learn        12283            100203      
-
-     scipy             7456             40973      
-
- sphinx-gallery        418              2754       
----------------------------------------------------
+|    project     | unique_tickets | unique_comments |
+|:--------------:|:--------------:|:---------------:|
+|   matplotlib   |     12394      |      60723      |
+|     mayavi     |      735       |      2036       |
+|     numpy      |     10287      |      55892      |
+|     pandas     |     23676      |     128420      |
+|  scikit-image  |      3299      |      20179      |
+|  scikit-learn  |     12283      |     100203      |
+|     scipy      |      7456      |      40973      |
+| sphinx-gallery |      418       |      2754       |
 
 Our dataset includes 8 unique projects with a
 total of 70548 unique tickets, with a
@@ -969,81 +960,47 @@ membership status and contribution type.
 gratitude_summary_stats = sentiment_frame %>% ungroup() %>%
   group_by(author_group, type, grateful_count) %>%
   summarise(n = n())
-pander(gratitude_summary_stats)
+pander(gratitude_summary_stats, style = 'rmarkdown')
 ```
 
 
-------------------------------------------------------
- author_group      type       grateful_count     n    
--------------- ------------- ---------------- --------
-    member      issue_post          0          14604  
 
-    member      issue_post          1           288   
-
-    member      issue_post          2            18   
-
-    member      issue_post          3            3    
-
-    member      issue_reply         0          121402 
-
-    member      issue_reply         1           7739  
-
-    member      issue_reply         2           225   
-
-    member      issue_reply         3            14   
-
-    member        pr_post           0          23338  
-
-    member        pr_post           1           1534  
-
-    member        pr_post           2           286   
-
-    member        pr_post           3            4    
-
-    member       pr_reply           0          173656 
-
-    member       pr_reply           1          28416  
-
-    member       pr_reply           2           605   
-
-    member       pr_reply           3            34   
-
-    member       pr_reply           4            2    
-
-  nonmember     issue_post          0          16354  
-
-  nonmember     issue_post          1           2011  
-
-  nonmember     issue_post          2           134   
-
-  nonmember     issue_post          3            5    
-
-  nonmember     issue_reply         0          33274  
-
-  nonmember     issue_reply         1           7171  
-
-  nonmember     issue_reply         2           585   
-
-  nonmember     issue_reply         3            37   
-
-  nonmember     issue_reply         4            1    
-
-  nonmember       pr_post           0          10596  
-
-  nonmember       pr_post           1           607   
-
-  nonmember       pr_post           2           747   
-
-  nonmember       pr_post           3            19   
-
-  nonmember      pr_reply           0          30819  
-
-  nonmember      pr_reply           1           6853  
-
-  nonmember      pr_reply           2           314   
-
-  nonmember      pr_reply           3            33   
-------------------------------------------------------
+| author_group |    type     | grateful_count |   n    |
+|:------------:|:-----------:|:--------------:|:------:|
+|    member    | issue_post  |       0        | 14604  |
+|    member    | issue_post  |       1        |  288   |
+|    member    | issue_post  |       2        |   18   |
+|    member    | issue_post  |       3        |   3    |
+|    member    | issue_reply |       0        | 121402 |
+|    member    | issue_reply |       1        |  7739  |
+|    member    | issue_reply |       2        |  225   |
+|    member    | issue_reply |       3        |   14   |
+|    member    |   pr_post   |       0        | 23338  |
+|    member    |   pr_post   |       1        |  1534  |
+|    member    |   pr_post   |       2        |  286   |
+|    member    |   pr_post   |       3        |   4    |
+|    member    |  pr_reply   |       0        | 173656 |
+|    member    |  pr_reply   |       1        | 28416  |
+|    member    |  pr_reply   |       2        |  605   |
+|    member    |  pr_reply   |       3        |   34   |
+|    member    |  pr_reply   |       4        |   2    |
+|  nonmember   | issue_post  |       0        | 16354  |
+|  nonmember   | issue_post  |       1        |  2011  |
+|  nonmember   | issue_post  |       2        |  134   |
+|  nonmember   | issue_post  |       3        |   5    |
+|  nonmember   | issue_reply |       0        | 33274  |
+|  nonmember   | issue_reply |       1        |  7171  |
+|  nonmember   | issue_reply |       2        |  585   |
+|  nonmember   | issue_reply |       3        |   37   |
+|  nonmember   | issue_reply |       4        |   1    |
+|  nonmember   |   pr_post   |       0        | 10596  |
+|  nonmember   |   pr_post   |       1        |  607   |
+|  nonmember   |   pr_post   |       2        |  747   |
+|  nonmember   |   pr_post   |       3        |   19   |
+|  nonmember   |  pr_reply   |       0        | 30819  |
+|  nonmember   |  pr_reply   |       1        |  6853  |
+|  nonmember   |  pr_reply   |       2        |  314   |
+|  nonmember   |  pr_reply   |       3        |   33   |
 
 Now that we have a better idea of how the underlying data look, let's go ahead
 and build our model.

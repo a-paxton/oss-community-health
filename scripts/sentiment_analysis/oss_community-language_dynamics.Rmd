@@ -181,7 +181,7 @@ contribution_counts = dplyr::full_join(ticket_counts, comment_counts,
                                         by='project')
 
 # print the table and then clean up a bit
-pander(contribution_counts)
+pander(contribution_counts, style = 'rmarkdown')
 rm(ticket_counts, comment_counts)
 
 ```
@@ -998,7 +998,7 @@ membership status and contribution type.
 gratitude_summary_stats = sentiment_frame %>% ungroup() %>%
   group_by(author_group, type, grateful_count) %>%
   summarise(n = n())
-pander(gratitude_summary_stats)
+pander(gratitude_summary_stats, style = 'rmarkdown')
 
 ```
 
