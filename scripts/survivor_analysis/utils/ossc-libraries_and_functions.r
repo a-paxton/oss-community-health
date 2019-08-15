@@ -78,9 +78,9 @@ pander_clean_anova = function(model, rename_columns=TRUE,
   model$sig[model$p_adj < .01] = '**'
   model$sig[model$p_adj < .001] = '***'
   if(display_only_significant){
-    return(pander(model[model$p_adj < 0.05, ], , split.table=Inf, style="rmarkdown"))
+    pander(model[model$p_adj < 0.05, ], , split.table=Inf, style="rmarkdown")
   }else{
-      return(pander(model, , split.table = Inf, style = 'rmarkdown'))
+    pander(model, , split.table = Inf, style = 'rmarkdown')
   }
 }
 
