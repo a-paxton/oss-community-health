@@ -754,9 +754,12 @@ and which time points they span by default.
 
 ```{r plot_splines, eval=TRUE, include=FALSE}
 
+percentiles = c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7,  0.8, 0.9)
+knots = quantile(min(sentiment_frame$date):max(sentiment_frame$date), percentiles)
+
 # here, let's just plot the splines basis, to see what they look like
 basis = splines::ns(sort(unique(sentiment_frame$date)), 
-                    df=degrees_of_freedom)
+                    knots=knots)
 
 # convert it into a dataframe for easier plotting
 basis_df = as.data.frame(basis) %>%
@@ -764,7 +767,14 @@ basis_df = as.data.frame(basis) %>%
   dplyr::rename(df1 = `1`,
                 df2 = `2`,
                 df3 = `3`,
-                df4 = `4`)
+                df4 = `4`,
+		df5 = `5`,
+		df6 = `6`,
+		df7 = `7`,
+		df8 = `8`,
+		df9 = `9`,
+		df10 = `10`
+		)
 
 # # this would be ggplot-compatible, but ggplot is getting fussy
 # # (will come back to it later)
@@ -784,11 +794,12 @@ par(
   cex.lab  = 1,
   cex.title = 1
 )
-matplot(basis_df, type = "l", pch = 1, col = 1:4,
+matplot(basis_df, type = "l", pch = 1, col = 1:10,
+	lty = 1:10,
         main = "Sentiment basis functions",
         xlab = "Time",
-        ylab = "Sentiment") # plot
-legend("topleft", legend = 1:4, lty = 1:4, col = 1:4)
+        ylab = "Sentiment")  # plot
+legend("topleft", legend = 1:10, lty = 1:10, col = 1:10)
 dev.off()
 
 ```
@@ -804,7 +815,7 @@ Note that we cannot use too many degrees of freedom, as sphinx-gallery spans a
 shorter time period than other projects. Any spline basis function that covers
 only the 2012 to 2015 cannot be estimated on sphinx-gallery.
 
-``` {r silently-reload-functions, eval=TRUE, include=FALSE}
+```{r silently-reload-functions, eval=TRUE, include=FALSE}
 library(splines)
 source("utils/ossc-libraries_and_functions.r")
 ```
@@ -818,43 +829,58 @@ source("utils/ossc-libraries_and_functions.r")
 # from the dataframe: (1) the dates; (2) the groups. We also need to provide
 # to the function the value corresponding to the group of interest. The rest
 # is just a normal spline, so we refer
-group_date_ns = function(date, group, value, degrees_of_freedom=4){
+group_date_ns = function(date, group, value, knots=NULL, degrees_of_freedom=NULL){
+    # Estimate the number of degrees of freedom we're assigning to this
+    # spline
+    range = max(sentiment_frame$date[group == value]) - min(sentiment_frame$date[group == value])
+    degrees_of_freedom = floor(range / 365)
+
     # Create the basis of the right size, but with 0 everywhere
     basis = 0 * ns(date, df=degrees_of_freedom)
+
     # Now, for the correct group, create the splines that span across the
     # dates of the group. This means the basis should have 0 everywhere except
     # on the dates spanning this group.
-    basis[group == value,] = ns(date[group == value], df=degrees_of_freedom)
+    basis[group == value,] = ns(date[group == value], knots=knots,
+				df=degrees_of_freedom)
     return(basis)
 }
 
-
+degrees_of_freedom = NULL
+knots = NULL
 # do tickets and comments materially differ in emotion over time?
 formula = (
   compound_emotion ~ 0 + project:type:author_group + 
   type:author_group:group_date_ns(
-    date, project, "matplotlib", degrees_of_freedom=degrees_of_freedom) +
+    date, project, "matplotlib",
+    knots=knots, degrees_of_freedom=degrees_of_freedom) +
   type:author_group:group_date_ns(
-    date, project, "mayavi", degrees_of_freedom=degrees_of_freedom) +
+    date, project, "mayavi",
+    knots=knots, degrees_of_freedom=degrees_of_freedom) +
   type:author_group:group_date_ns(
-    date, project, "numpy", degrees_of_freedom=degrees_of_freedom) +
+    date, project, "numpy",
+    knots=knots, degrees_of_freedom=degrees_of_freedom) +
   type:author_group:group_date_ns(
-    date, project, "pandas", degrees_of_freedom=degrees_of_freedom) +
+    date, project, "pandas",
+    knots=knots, degrees_of_freedom=degrees_of_freedom) +
   type:author_group:group_date_ns(
-    date, project, "scikit-image", degrees_of_freedom=degrees_of_freedom) +
+    date, project, "scikit-image",
+    knots=knots, degrees_of_freedom=degrees_of_freedom) +
   type:author_group:group_date_ns(
-    date, project, "scikit-learn", degrees_of_freedom=degrees_of_freedom) +
+    date, project, "scikit-learn",
+    knots=knots, degrees_of_freedom=degrees_of_freedom) +
   type:author_group:group_date_ns(
-    date, project, "scipy", degrees_of_freedom=degrees_of_freedom) +
+    date, project, "scipy",
+    knots=knots, degrees_of_freedom=degrees_of_freedom) +
   type:author_group:group_date_ns(
-    date, project, "sphinx-gallery", degrees_of_freedom=degrees_of_freedom) +
+    date, project, "sphinx-gallery",
+    knots=knots, degrees_of_freedom=degrees_of_freedom) +
   (1 | author_name))
 
 creators_v_commenters_emotion_by_project_time = lmer(
   formula,
   data = sentiment_frame,
   REML=FALSE)
-
 ```
 
 We'll do another table to display all results.
@@ -873,7 +899,7 @@ row_names = gsub(
 row_names = gsub(
     "group_date_ns(date, , \"", "", row_names, fixed=TRUE)
 row_names = gsub(
-    "\", degrees_of_freedom = degrees_of_freedom)", ":coef", row_names, fixed=TRUE)
+    "\", knots = knots, degrees_of_freedom = degrees_of_freedom)", ":coef", row_names, fixed=TRUE)
 
 
 # replace hyphens in project names with periods
@@ -1018,13 +1044,29 @@ time_contrasts = c(
 	       function(x) paste(x, ":coef3", sep=""))),
     unlist(
 	lapply(gsub("-", ":coef4-", partial_time_contrasts),
-	       function(x) paste(x, ":coef4", sep=""))))
+	       function(x) paste(x, ":coef4", sep=""))),
+    unlist(
+	lapply(gsub("-", ":coef5-", partial_time_contrasts),
+	       function(x) paste(x, ":coef5", sep=""))),
+    unlist(
+	lapply(gsub("-", ":coef6-", partial_time_contrasts),
+	       function(x) paste(x, ":coef6", sep=""))),
+    unlist(
+	lapply(gsub("-", ":coef7-", partial_time_contrasts),
+	       function(x) paste(x, ":coef7", sep=""))),
+    unlist(
+	lapply(gsub("-", ":coef8-", partial_time_contrasts),
+	       function(x) paste(x, ":coef8", sep="")))
+    )
 
 # compute statistics over specified contrast areas
 project_type_author_group_time_tests = compute_t_statistics(
     means, se, time_contrasts)
 project_type_author_group_time_tests[, "p_value"] = compute_p_value_from_t_stats(
     project_type_author_group_time_tests$t_stats)
+# Filter out all NAs, which correspond to contrasts that don't exist
+project_type_author_group_time_tests = project_type_author_group_time_tests[
+    !is.na(project_type_author_group_time_tests$p_value), ]
 ```
 
 Because we have so many tests, we'll only display the ones that are significant
