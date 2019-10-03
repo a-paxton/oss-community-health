@@ -13,17 +13,17 @@ This R markdown provides the data preparation for our forthcoming manuscript
 To run this from scratch, you will need the following files:
 
 * `../../data/analysis_data/sentiment_frame_tickets-for_r.csv`: Contains cleaned
-  **tickets**-related data and derived variables from scraped GitHub data.
+**tickets**-related data and derived variables from scraped GitHub data.
 * `../../data/analysis_data/sentiment_frame_comments-for_r.csv`: Contains
-  cleaned **comments**-related data and derived variables from scraped GitHub
-  data.
+cleaned **comments**-related data and derived variables from scraped GitHub
+data.
 * `./utils/ossc-libraries_and_functions.r`: Loads in necessary libraries and
-  creates new functions for our analyses.
+creates new functions for our analyses.
 
 **Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux
 (University of California, Berkeley)
 
-**Date last modified**: 30 May 2019
+**Date last modified**: 25 September 2019
 
 ```{r silent-preparations, include=FALSE}
 library(knitr)
@@ -44,7 +44,7 @@ source('./utils/ossc-libraries_and_functions.r')
 
 # load data
 tickets_frame = read.table('../../data/analysis_data/dataset_upto2019/sentiment_frame_tickets-for_r.csv',
-                          sep = ',', header=TRUE, fill=TRUE, stringsAsFactors = FALSE)
+                           sep = ',', header=TRUE, fill=TRUE, stringsAsFactors = FALSE)
 comments_frame = read.table('../../data/analysis_data/dataset_upto2019/sentiment_frame_comments-for_r.csv',
                             sep = ',', header=TRUE, fill=TRUE, stringsAsFactors = FALSE)
 
@@ -138,7 +138,7 @@ comments_frame = comments_frame %>% ungroup() %>%
                  type_family,
                  ticket_family),
             as.factor) %>%
-
+  
   # drop old columns
   dplyr::select(-ends_with('_at')) 
 
@@ -178,7 +178,7 @@ comment_counts = comments_frame %>% ungroup() %>%
 
 # bind the two
 contribution_counts = dplyr::full_join(ticket_counts, comment_counts,
-                                        by='project')
+                                       by='project')
 
 # print the table and then clean up a bit
 pander(contribution_counts, style = 'rmarkdown')
@@ -412,7 +412,7 @@ Run *t*-tests among levels and prepare for the Model 1.1b table later.
 
 # convert Model 1.1b3 output to dataframe
 coefficients_and_se = data.frame(
-    summary(community_contribution_emotion)$coefficients)
+  summary(community_contribution_emotion)$coefficients)
 
 # get comparison names as rownames
 row_names = gsub("author_group", "", gsub("type", "", row.names(coefficients_and_se)))
@@ -427,23 +427,23 @@ names(se) = row_names
 
 # compute t-statistics and p-values for desired contrasts
 contrasts = c(
-    "issue_post:member-issue_post:nonmember",     # contribution static (issue posts); membership varies (members v. nonmembers)
-    "issue_reply:member-issue_reply:nonmember",   # contribution static (issue replies); membership varies (members v. nonmembers)
-    "pr_post:member-pr_post:nonmember",           # contribution static (PR posts); membership varies (members v. nonmembers)
-    "pr_reply:member-pr_reply:nonmember",         # contribution static (PR replies); membership varies (members v. nonmembers)
-    "issue_post:member-issue_reply:member",       # contribution varies (issue posts vs. issue replies); membership static (members)
-    "issue_post:nonmember-issue_reply:nonmember", # contribution varies (issue posts vs. issue replies); membership static (nonmembers)
-    "pr_post:member-pr_reply:member",             # contribution varies (PR posts vs. PR replies); membership static (members)
-    "pr_post:nonmember-pr_reply:nonmember",       # contribution varies (PR posts vs. PR replies); membership static (nonmembers)
-    "issue_post:member-pr_post:member",           # contribution varies (issue posts vs. PR posts); membership static (members)
-    "issue_post:nonmember-pr_post:nonmember",     # contribution varies (issue posts vs. PR posts); membership static (nonmembers)
-    "issue_reply:member-pr_reply:member",         # contribution varies (issue replies vs. PR replies); membership static (members)
-    "issue_reply:nonmember-pr_reply:nonmember")   # contribution varies (issue replies vs. PR replies); membership static (nonmembers)
+  "issue_post:member-issue_post:nonmember",     # contribution static (issue posts); membership varies (members v. nonmembers)
+  "issue_reply:member-issue_reply:nonmember",   # contribution static (issue replies); membership varies (members v. nonmembers)
+  "pr_post:member-pr_post:nonmember",           # contribution static (PR posts); membership varies (members v. nonmembers)
+  "pr_reply:member-pr_reply:nonmember",         # contribution static (PR replies); membership varies (members v. nonmembers)
+  "issue_post:member-issue_reply:member",       # contribution varies (issue posts vs. issue replies); membership static (members)
+  "issue_post:nonmember-issue_reply:nonmember", # contribution varies (issue posts vs. issue replies); membership static (nonmembers)
+  "pr_post:member-pr_reply:member",             # contribution varies (PR posts vs. PR replies); membership static (members)
+  "pr_post:nonmember-pr_reply:nonmember",       # contribution varies (PR posts vs. PR replies); membership static (nonmembers)
+  "issue_post:member-pr_post:member",           # contribution varies (issue posts vs. PR posts); membership static (members)
+  "issue_post:nonmember-pr_post:nonmember",     # contribution varies (issue posts vs. PR posts); membership static (nonmembers)
+  "issue_reply:member-pr_reply:member",         # contribution varies (issue replies vs. PR replies); membership static (members)
+  "issue_reply:nonmember-pr_reply:nonmember")   # contribution varies (issue replies vs. PR replies); membership static (nonmembers)
 types_author_groups_tests = compute_t_statistics(
-    means, se,
-    contrasts)
+  means, se,
+  contrasts)
 types_author_groups_tests[, "p_value"] = compute_p_value_from_t_stats(
-    types_author_groups_tests$"t_stats")
+  types_author_groups_tests$"t_stats")
 
 ```
 
@@ -468,7 +468,7 @@ Run *t*-tests among levels and prepare for the Model 1.1b table later.
 
 # convert Model 1.1c output to dataframe
 coefficients_and_se = data.frame(
-    summary(creators_v_commenters_emotion_by_project)$coefficients)
+  summary(creators_v_commenters_emotion_by_project)$coefficients)
 
 # get comparison names as rownames
 row_names = gsub(
@@ -634,7 +634,7 @@ all_tests = merge(all_tests, types_author_groups_tests, all=TRUE, sort=FALSE)
 project_types_author_group_tests["contrast"] = row.names(project_types_author_group_tests)
 project_types_author_group_tests["model"] = "3W: Types x Author Groups x Project"
 all_tests = merge(all_tests, project_types_author_group_tests, all=TRUE,
-		  sort=FALSE)
+                  sort=FALSE)
 
 ```
 
@@ -768,13 +768,13 @@ basis_df = as.data.frame(basis) %>%
                 df2 = `2`,
                 df3 = `3`,
                 df4 = `4`,
-		df5 = `5`,
-		df6 = `6`,
-		df7 = `7`,
-		df8 = `8`,
-		df9 = `9`,
-		df10 = `10`
-		)
+                df5 = `5`,
+                df6 = `6`,
+                df7 = `7`,
+                df8 = `8`,
+                df9 = `9`,
+                df10 = `10`
+  )
 
 # # this would be ggplot-compatible, but ggplot is getting fussy
 # # (will come back to it later)
@@ -795,7 +795,7 @@ par(
   cex.title = 1
 )
 matplot(basis_df, type = "l", pch = 1, col = 1:10,
-	lty = 1:10,
+        lty = 1:10,
         main = "Sentiment basis functions",
         xlab = "Time",
         ylab = "Sentiment")  # plot
@@ -823,59 +823,37 @@ source("utils/ossc-libraries_and_functions.r")
 ```{r model-emotion-by-type-author-project-time}
 
 # do tickets and comments materially differ in emotion over time?
-
-# Because we need splines that span independantly from one another the dates
-# of projects, we need to create a function that takes two variable vectors
-# from the dataframe: (1) the dates; (2) the groups. We also need to provide
-# to the function the value corresponding to the group of interest. The rest
-# is just a normal spline, so we refer
-group_date_ns = function(date, group, value, knots=NULL, degrees_of_freedom=NULL){
-    # Estimate the number of degrees of freedom we're assigning to this
-    # spline
-    range = max(sentiment_frame$date[group == value]) - min(sentiment_frame$date[group == value])
-    degrees_of_freedom = floor(range / 365)
-
-    # Create the basis of the right size, but with 0 everywhere
-    basis = 0 * ns(date, df=degrees_of_freedom)
-
-    # Now, for the correct group, create the splines that span across the
-    # dates of the group. This means the basis should have 0 everywhere except
-    # on the dates spanning this group.
-    basis[group == value,] = ns(date[group == value], knots=knots,
-				df=degrees_of_freedom)
-    return(basis)
-}
-
 degrees_of_freedom = NULL
 knots = NULL
+
 # do tickets and comments materially differ in emotion over time?
 formula = (
   compound_emotion ~ 0 + project:type:author_group + 
-  type:author_group:group_date_ns(
-    date, project, "matplotlib",
-    knots=knots, degrees_of_freedom=degrees_of_freedom) +
-  type:author_group:group_date_ns(
-    date, project, "mayavi",
-    knots=knots, degrees_of_freedom=degrees_of_freedom) +
-  type:author_group:group_date_ns(
-    date, project, "numpy",
-    knots=knots, degrees_of_freedom=degrees_of_freedom) +
-  type:author_group:group_date_ns(
-    date, project, "pandas",
-    knots=knots, degrees_of_freedom=degrees_of_freedom) +
-  type:author_group:group_date_ns(
-    date, project, "scikit-image",
-    knots=knots, degrees_of_freedom=degrees_of_freedom) +
-  type:author_group:group_date_ns(
-    date, project, "scikit-learn",
-    knots=knots, degrees_of_freedom=degrees_of_freedom) +
-  type:author_group:group_date_ns(
-    date, project, "scipy",
-    knots=knots, degrees_of_freedom=degrees_of_freedom) +
-  type:author_group:group_date_ns(
-    date, project, "sphinx-gallery",
-    knots=knots, degrees_of_freedom=degrees_of_freedom) +
-  (1 | author_name))
+    type:author_group:group_date_ns(
+      date, project, "matplotlib",
+      knots=knots, degrees_of_freedom=degrees_of_freedom) +
+    type:author_group:group_date_ns(
+      date, project, "mayavi",
+      knots=knots, degrees_of_freedom=degrees_of_freedom) +
+    type:author_group:group_date_ns(
+      date, project, "numpy",
+      knots=knots, degrees_of_freedom=degrees_of_freedom) +
+    type:author_group:group_date_ns(
+      date, project, "pandas",
+      knots=knots, degrees_of_freedom=degrees_of_freedom) +
+    type:author_group:group_date_ns(
+      date, project, "scikit-image",
+      knots=knots, degrees_of_freedom=degrees_of_freedom) +
+    type:author_group:group_date_ns(
+      date, project, "scikit-learn",
+      knots=knots, degrees_of_freedom=degrees_of_freedom) +
+    type:author_group:group_date_ns(
+      date, project, "scipy",
+      knots=knots, degrees_of_freedom=degrees_of_freedom) +
+    type:author_group:group_date_ns(
+      date, project, "sphinx-gallery",
+      knots=knots, degrees_of_freedom=degrees_of_freedom) +
+    (1 | author_name))
 
 creators_v_commenters_emotion_by_project_time = lmer(
   formula,
@@ -888,24 +866,24 @@ We'll do another table to display all results.
 ```{r clean-up-model-1.2-output}
 # convert Model 1.2 output to dataframe
 coefficients_and_se = data.frame(
-    summary(creators_v_commenters_emotion_by_project_time)$coefficients)
+  summary(creators_v_commenters_emotion_by_project_time)$coefficients)
 
 # get comparison names as rownames
 row_names = gsub(
-    "project", "", gsub(
-	"author_group", "", gsub("type", "", row.names(coefficients_and_se))))
+  "project", "", gsub(
+    "author_group", "", gsub("type", "", row.names(coefficients_and_se))))
 
 # Now deal with the very annoying splines coefficient row.names
 row_names = gsub(
-    "group_date_ns(date, , \"", "", row_names, fixed=TRUE)
+  "group_date_ns(date, , \"", "", row_names, fixed=TRUE)
 row_names = gsub(
-    "\", knots = knots, degrees_of_freedom = degrees_of_freedom)", ":coef", row_names, fixed=TRUE)
+  "\", knots = knots, degrees_of_freedom = degrees_of_freedom)", ":coef", row_names, fixed=TRUE)
 
 
 # replace hyphens in project names with periods
 row_names = gsub(
-    "scikit-", "scikit.", gsub(
-	"sphinx-", "sphinx.", row_names))
+  "scikit-", "scikit.", gsub(
+    "sphinx-", "sphinx.", row_names))
 
 
 # convert model estimates to a dataframe
@@ -945,7 +923,7 @@ partial_time_contrasts = c(
   "issue_post:nonmember:scikit.image-pr_post:nonmember:scikit.image",    
   "issue_reply:member:scikit.image-pr_reply:member:scikit.image",  
   "issue_reply:nonmember:scikit.image-pr_reply:nonmember:scikit.image",
- 
+  
   # matplotlib
   "issue_post:member:matplotlib-issue_post:nonmember:matplotlib",   
   "issue_reply:member:matplotlib-issue_reply:nonmember:matplotlib",
@@ -973,7 +951,7 @@ partial_time_contrasts = c(
   "issue_post:nonmember:mayavi-pr_post:nonmember:mayavi",    
   "issue_reply:member:mayavi-pr_reply:member:mayavi",  
   "issue_reply:nonmember:mayavi-pr_reply:nonmember:mayavi",
- 
+  
   # pandas
   "issue_post:member:pandas-issue_post:nonmember:pandas",   
   "issue_reply:member:pandas-issue_reply:nonmember:pandas",
@@ -987,7 +965,7 @@ partial_time_contrasts = c(
   "issue_post:nonmember:pandas-pr_post:nonmember:pandas",    
   "issue_reply:member:pandas-pr_reply:member:pandas",  
   "issue_reply:nonmember:pandas-pr_reply:nonmember:pandas",
-
+  
   # scipy
   "issue_post:member:scipy-issue_post:nonmember:scipy",   
   "issue_reply:member:scipy-issue_reply:nonmember:scipy",
@@ -1001,7 +979,7 @@ partial_time_contrasts = c(
   "issue_post:nonmember:scipy-pr_post:nonmember:scipy",    
   "issue_reply:member:scipy-pr_reply:member:scipy",  
   "issue_reply:nonmember:scipy-pr_reply:nonmember:scipy",
- 
+  
   # numpy
   "issue_post:member:numpy-issue_post:nonmember:numpy",   
   "issue_reply:member:numpy-issue_reply:nonmember:numpy",
@@ -1015,7 +993,7 @@ partial_time_contrasts = c(
   "issue_post:nonmember:numpy-pr_post:nonmember:numpy",    
   "issue_reply:member:numpy-pr_reply:member:numpy",  
   "issue_reply:nonmember:numpy-pr_reply:nonmember:numpy",
- 
+  
   # sphinx-gallery
   "issue_post:member:sphinx.gallery-issue_post:nonmember:sphinx.gallery",   
   "issue_reply:member:sphinx.gallery-issue_reply:nonmember:sphinx.gallery",
@@ -1029,44 +1007,44 @@ partial_time_contrasts = c(
   "issue_post:nonmember:sphinx.gallery-pr_post:nonmember:sphinx.gallery",    
   "issue_reply:member:sphinx.gallery-pr_reply:member:sphinx.gallery",  
   "issue_reply:nonmember:sphinx.gallery-pr_reply:nonmember:sphinx.gallery"
-  )
+)
 
 
 time_contrasts = c(
-    unlist(
-	lapply(gsub("-", ":coef1-", partial_time_contrasts),
-	       function(x) paste(x, ":coef1", sep=""))),
-    unlist(
-	lapply(gsub("-", ":coef2-", partial_time_contrasts),
-	       function(x) paste(x, ":coef2", sep=""))),
-    unlist(
-	lapply(gsub("-", ":coef3-", partial_time_contrasts),
-	       function(x) paste(x, ":coef3", sep=""))),
-    unlist(
-	lapply(gsub("-", ":coef4-", partial_time_contrasts),
-	       function(x) paste(x, ":coef4", sep=""))),
-    unlist(
-	lapply(gsub("-", ":coef5-", partial_time_contrasts),
-	       function(x) paste(x, ":coef5", sep=""))),
-    unlist(
-	lapply(gsub("-", ":coef6-", partial_time_contrasts),
-	       function(x) paste(x, ":coef6", sep=""))),
-    unlist(
-	lapply(gsub("-", ":coef7-", partial_time_contrasts),
-	       function(x) paste(x, ":coef7", sep=""))),
-    unlist(
-	lapply(gsub("-", ":coef8-", partial_time_contrasts),
-	       function(x) paste(x, ":coef8", sep="")))
-    )
+  unlist(
+    lapply(gsub("-", ":coef1-", partial_time_contrasts),
+           function(x) paste(x, ":coef1", sep=""))),
+  unlist(
+    lapply(gsub("-", ":coef2-", partial_time_contrasts),
+           function(x) paste(x, ":coef2", sep=""))),
+  unlist(
+    lapply(gsub("-", ":coef3-", partial_time_contrasts),
+           function(x) paste(x, ":coef3", sep=""))),
+  unlist(
+    lapply(gsub("-", ":coef4-", partial_time_contrasts),
+           function(x) paste(x, ":coef4", sep=""))),
+  unlist(
+    lapply(gsub("-", ":coef5-", partial_time_contrasts),
+           function(x) paste(x, ":coef5", sep=""))),
+  unlist(
+    lapply(gsub("-", ":coef6-", partial_time_contrasts),
+           function(x) paste(x, ":coef6", sep=""))),
+  unlist(
+    lapply(gsub("-", ":coef7-", partial_time_contrasts),
+           function(x) paste(x, ":coef7", sep=""))),
+  unlist(
+    lapply(gsub("-", ":coef8-", partial_time_contrasts),
+           function(x) paste(x, ":coef8", sep="")))
+)
 
 # compute statistics over specified contrast areas
 project_type_author_group_time_tests = compute_t_statistics(
-    means, se, time_contrasts)
+  means, se, time_contrasts)
 project_type_author_group_time_tests[, "p_value"] = compute_p_value_from_t_stats(
-    project_type_author_group_time_tests$t_stats)
+  project_type_author_group_time_tests$t_stats)
 # Filter out all NAs, which correspond to contrasts that don't exist
 project_type_author_group_time_tests = project_type_author_group_time_tests[
-    !is.na(project_type_author_group_time_tests$p_value), ]
+  !is.na(project_type_author_group_time_tests$p_value), ]
 ```
 
 Because we have so many tests, we'll only display the ones that are significant
@@ -1076,7 +1054,7 @@ Because we have so many tests, we'll only display the ones that are significant
 
 # print out the significant results
 pander_clean_anova(project_type_author_group_time_tests, rename_columns=FALSE,
-		   display_only_significant=TRUE)
+                   display_only_significant=TRUE)
 
 ```
 
@@ -1091,7 +1069,7 @@ sentiment_contribution_membership_time_plot = ggplot(data=sentiment_frame,
              labeller = labeller(
                ticket_family = c(issue = "Issue", pr = "PR"),
                author_group = c(member="Member", nonmember="Nonmember"))
-             ) +
+  ) +
   ggtitle('Message sentiment by contribution\nand community membership over time') +
   ylab('Sentiment score') +
   scale_x_continuous(name = 'Date',
@@ -1209,8 +1187,8 @@ and build our model.
 
 # do users tend to express appreciation and gratitude differently by group and content?
 creators_v_commenters_gratitude_by_project = lmer(log(grateful_count + 1) ~ project * author_group * type +
-                                          (1 | author_name),
-                                        data=sentiment_frame)
+                                                    (1 | author_name),
+                                                  data=sentiment_frame)
 
 # print results
 pander_lme(creators_v_commenters_gratitude_by_project)
@@ -1270,8 +1248,8 @@ rather than focusing in on the project-specific variability.
 
 # do users tend to express appreciation and gratitude differently by group and content?
 retrying_model_1.3 = lmer(log(grateful_count + 1) ~ author_group * type +
-                                          (1 | project),
-                                        data=sentiment_frame)
+                            (1 | project),
+                          data=sentiment_frame)
 
 ```
 
@@ -1417,7 +1395,7 @@ Run *t*-tests among levels and prepare for the Model 1.1b table later.
 
 # convert Model 1.1b3 output to dataframe
 coefficients_and_se = data.frame(
-    summary(community_contribution_gratitude)$coefficients)
+  summary(community_contribution_gratitude)$coefficients)
 
 # get comparison names as rownames
 row_names = gsub("author_group", "", gsub("type", "", row.names(coefficients_and_se)))
@@ -1432,23 +1410,23 @@ names(se) = row_names
 
 # compute t-statistics and p-values for desired contrasts
 contrasts = c(
-    "issue_post:member-issue_post:nonmember",     # contribution static (issue posts); membership varies (members v. nonmembers)
-    "issue_reply:member-issue_reply:nonmember",   # contribution static (issue replies); membership varies (members v. nonmembers)
-    "pr_post:member-pr_post:nonmember",           # contribution static (PR posts); membership varies (members v. nonmembers)
-    "pr_reply:member-pr_reply:nonmember",         # contribution static (PR replies); membership varies (members v. nonmembers)
-    "issue_post:member-issue_reply:member",       # contribution varies (issue posts vs. issue replies); membership static (members)
-    "issue_post:nonmember-issue_reply:nonmember", # contribution varies (issue posts vs. issue replies); membership static (nonmembers)
-    "pr_post:member-pr_reply:member",             # contribution varies (PR posts vs. PR replies); membership static (members)
-    "pr_post:nonmember-pr_reply:nonmember",       # contribution varies (PR posts vs. PR replies); membership static (nonmembers)
-    "issue_post:member-pr_post:member",           # contribution varies (issue posts vs. PR posts); membership static (members)
-    "issue_post:nonmember-pr_post:nonmember",     # contribution varies (issue posts vs. PR posts); membership static (nonmembers)
-    "issue_reply:member-pr_reply:member",         # contribution varies (issue replies vs. PR replies); membership static (members)
-    "issue_reply:nonmember-pr_reply:nonmember")   # contribution varies (issue replies vs. PR replies); membership static (nonmembers)
+  "issue_post:member-issue_post:nonmember",     # contribution static (issue posts); membership varies (members v. nonmembers)
+  "issue_reply:member-issue_reply:nonmember",   # contribution static (issue replies); membership varies (members v. nonmembers)
+  "pr_post:member-pr_post:nonmember",           # contribution static (PR posts); membership varies (members v. nonmembers)
+  "pr_reply:member-pr_reply:nonmember",         # contribution static (PR replies); membership varies (members v. nonmembers)
+  "issue_post:member-issue_reply:member",       # contribution varies (issue posts vs. issue replies); membership static (members)
+  "issue_post:nonmember-issue_reply:nonmember", # contribution varies (issue posts vs. issue replies); membership static (nonmembers)
+  "pr_post:member-pr_reply:member",             # contribution varies (PR posts vs. PR replies); membership static (members)
+  "pr_post:nonmember-pr_reply:nonmember",       # contribution varies (PR posts vs. PR replies); membership static (nonmembers)
+  "issue_post:member-pr_post:member",           # contribution varies (issue posts vs. PR posts); membership static (members)
+  "issue_post:nonmember-pr_post:nonmember",     # contribution varies (issue posts vs. PR posts); membership static (nonmembers)
+  "issue_reply:member-pr_reply:member",         # contribution varies (issue replies vs. PR replies); membership static (members)
+  "issue_reply:nonmember-pr_reply:nonmember")   # contribution varies (issue replies vs. PR replies); membership static (nonmembers)
 types_author_groups_tests = compute_t_statistics(
-    means, se,
-    contrasts)
+  means, se,
+  contrasts)
 types_author_groups_tests[, "p_value"] = compute_p_value_from_t_stats(
-    types_author_groups_tests$"t_stats")
+  types_author_groups_tests$"t_stats")
 
 ```
 
@@ -1472,7 +1450,7 @@ Run *t*-tests among levels and prepare for the Model 1.1b table later.
 
 # convert Model 1.1c output to dataframe
 coefficients_and_se = data.frame(
-    summary(creators_v_commenters_gratitude_by_project)$coefficients)
+  summary(creators_v_commenters_gratitude_by_project)$coefficients)
 
 # get comparison names as rownames
 row_names = gsub(
@@ -1496,7 +1474,7 @@ names(se) = row_names
 # compute t-statistics and p-values for desired contrasts
 # (note: ordering of contrasts within each project is identical to Model 1.3b.3)
 contrasts = c(
-
+  
   # scikit-learn
   "scikit.learn:issue_post:member-scikit.learn:issue_post:nonmember",
   "scikit.learn:issue_reply:member-scikit.learn:issue_reply:nonmember",
@@ -1510,7 +1488,7 @@ contrasts = c(
   "scikit.learn:issue_post:nonmember-scikit.learn:pr_post:nonmember",
   "scikit.learn:issue_reply:member-scikit.learn:pr_reply:member",
   "scikit.learn:issue_reply:nonmember-scikit.learn:pr_reply:nonmember",
-
+  
   # scikit-image
   "scikit.image:issue_post:member-scikit.image:issue_post:nonmember",
   "scikit.image:issue_reply:member-scikit.image:issue_reply:nonmember",
@@ -1524,7 +1502,7 @@ contrasts = c(
   "scikit.image:issue_post:nonmember-scikit.image:pr_post:nonmember",
   "scikit.image:issue_reply:member-scikit.image:pr_reply:member",
   "scikit.image:issue_reply:nonmember-scikit.image:pr_reply:nonmember",
-
+  
   # matplotlib
   "matplotlib:issue_post:member-matplotlib:issue_post:nonmember",
   "matplotlib:issue_reply:member-matplotlib:issue_reply:nonmember",
@@ -1538,7 +1516,7 @@ contrasts = c(
   "matplotlib:issue_post:nonmember-matplotlib:pr_post:nonmember",
   "matplotlib:issue_reply:member-matplotlib:pr_reply:member",
   "matplotlib:issue_reply:nonmember-matplotlib:pr_reply:nonmember",
-
+  
   # mayavi
   "mayavi:issue_post:member-mayavi:issue_post:nonmember",
   "mayavi:issue_reply:member-mayavi:issue_reply:nonmember",
@@ -1552,7 +1530,7 @@ contrasts = c(
   "mayavi:issue_post:nonmember-mayavi:pr_post:nonmember",
   "mayavi:issue_reply:member-mayavi:pr_reply:member",
   "mayavi:issue_reply:nonmember-mayavi:pr_reply:nonmember",
-
+  
   # pandas
   "pandas:issue_post:member-pandas:issue_post:nonmember",
   "pandas:issue_reply:member-pandas:issue_reply:nonmember",
@@ -1566,7 +1544,7 @@ contrasts = c(
   "pandas:issue_post:nonmember-pandas:pr_post:nonmember",
   "pandas:issue_reply:member-pandas:pr_reply:member",
   "pandas:issue_reply:nonmember-pandas:pr_reply:nonmember",
-
+  
   # scipy
   "scipy:issue_post:member-scipy:issue_post:nonmember",
   "scipy:issue_reply:member-scipy:issue_reply:nonmember",
@@ -1580,7 +1558,7 @@ contrasts = c(
   "scipy:issue_post:nonmember-scipy:pr_post:nonmember",
   "scipy:issue_reply:member-scipy:pr_reply:member",
   "scipy:issue_reply:nonmember-scipy:pr_reply:nonmember",
-
+  
   # numpy
   "numpy:issue_post:member-numpy:issue_post:nonmember",
   "numpy:issue_reply:member-numpy:issue_reply:nonmember",
@@ -1594,7 +1572,7 @@ contrasts = c(
   "numpy:issue_post:nonmember-numpy:pr_post:nonmember",
   "numpy:issue_reply:member-numpy:pr_reply:member",
   "numpy:issue_reply:nonmember-numpy:pr_reply:nonmember",
-
+  
   # sphinx-gallery
   "sphinx.gallery:issue_post:member-sphinx.gallery:issue_post:nonmember",
   "sphinx.gallery:issue_reply:member-sphinx.gallery:issue_reply:nonmember",
@@ -1638,7 +1616,7 @@ all_tests = merge(all_tests, types_author_groups_tests, all=TRUE, sort=FALSE)
 project_types_author_group_tests["contrast"] = row.names(project_types_author_group_tests)
 project_types_author_group_tests["model"] = "3W: Types x Author Groups x Project"
 all_tests = merge(all_tests, project_types_author_group_tests, all=TRUE,
-		  sort=FALSE)
+                  sort=FALSE)
 
 ```
 
@@ -1658,16 +1636,14 @@ pander_clean_anova(all_tests, rename_columns=FALSE)
 
 ### Model 1.4: Do tickets and comments materially differ in gratitude over time?
 
-**Note**: Having difficulty getting this to converge.
-
 ```{r gratitude-predictors-time, eval = TRUE}
 
 # do users tend to express appreciation and gratitude differently by group and content?
 creators_v_commenters_gratitude_time = lmer(log(grateful_count + 1) ~ project + 
                                               (author_group + type) * ns(date, df=degrees_of_freedom) +
-                                               (1 | author_name),
-                                             data=sentiment_frame)
-                                             #family=poisson)
+                                              (1 | author_name),
+                                            data=sentiment_frame)
+#family=poisson)
 
 # print results
 pander_lme(creators_v_commenters_gratitude_time)
@@ -1750,9 +1726,9 @@ gratitude_time_nonmember_plot = ggplot(data=nonmember_frame,
 
 # create another nonmember plot just for the legend
 gratitude_time_nonmember_legend = ggplot(data=nonmember_frame,
-                                       aes(x=date,
-                                           y=grateful_count,
-                                           colour=type)) +
+                                         aes(x=date,
+                                             y=grateful_count,
+                                             colour=type)) +
   stat_smooth() +
   # stat_summary(alpha=0.5, size=.1) +
   facet_grid(cols = vars(ticket_family),
@@ -1793,7 +1769,7 @@ ggsave(filename = '../../figures/sentiment_analysis/ossc-gratitude_membership_co
        units = "in", height = 13, width = 6,
        grid.arrange(
          top=grid::textGrob("Gratitude by contribution\nand community membership",
-                      gp=grid::gpar(fontsize=14)),
+                            gp=grid::gpar(fontsize=14)),
          gratitude_time_member_plot,
          gratitude_time_nonmember_plot,
          bottom=gratitude_master_legend,
@@ -1806,7 +1782,7 @@ ggsave(filename = '../../figures/sentiment_analysis/ossc-gratitude_membership_co
        dpi = 150, height = 13, width = 6,
        grid.arrange(
          top=grid::textGrob("Gratitude by contribution\nand community membership",
-                      gp=grid::gpar(fontsize=14)),
+                            gp=grid::gpar(fontsize=14)),
          gratitude_time_member_plot,
          gratitude_time_nonmember_plot,
          bottom=gratitude_master_legend,
@@ -1839,9 +1815,9 @@ aggregated_comments = comments_frame %>% ungroup() %>%
   
   # convert author group to numeric
   mutate(author_group_numeric = dplyr::if_else(author_group=='member',
-                                                          1,
-                                                          0)) %>%
-
+                                               1,
+                                               0)) %>%
+  
   # create metrics for each unique ticket in each project
   dplyr::group_by(project, ticket_id) %>%
   dplyr::summarise(number_of_comments = n(),
@@ -1929,10 +1905,15 @@ retention_predictors = glm(retained_newcomer ~ 0 + ticket_family_numeric * (proj
                            data=retention_frame,
                            family=binomial)
 
+```
+
+```{r predicting-retention-print, echo=FALSE}
+
 # print it
-summary(retention_predictors)
+pander(summary(retention_predictors))
 
 ```
+
 
 ```{r plot-predicting-retention-aggregated, include=FALSE, eval=TRUE}
 
@@ -2020,9 +2001,9 @@ Ideas:
 
 * Do comments, generally, get more friendly or more hostile over time?
 * Does the emotional valence of a contributor's first ticket predict whether
-  they'll come back to make a second one?
+they'll come back to make a second one?
 * Are requesters more or less polite?
 * Does friendliness bring people back?
 * Does the number and intensity of negative and positive comments on a
-  first-time contributor's ticket change whether they come back to make another
-  ticket?
+first-time contributor's ticket change whether they come back to make another
+ticket?

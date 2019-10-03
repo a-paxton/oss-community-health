@@ -37,18 +37,44 @@ pacman::p_load(required_packages, character.only=TRUE)
 #### Prevent scientific notation ####
 options(scipen=999)
 
+#### Read in external functions ####
+
 # read in pander_lme
 pander_lme_url = "https://raw.githubusercontent.com/a-paxton/stats-tools/2a1bf715097bbcc966ab612af3a9e0b14408d4ff/pander_lme.R"
 pander_lme_file = getURL(pander_lme_url, ssl.verifypeer = FALSE)
 eval(parse(text = pander_lme_file))
 
+#### Create new functions ####
+
+# compute p-values from t-statistics (typical in psychology)
 compute_p_value_from_t_stats = function(t_stats){
-  # From Alex -- this is the norm in Psychology, and should be more
-  # conservative than trying to estimate the number of degrees of freedoms
-  # using Welch-Sattherwaite equation.
   p_values = 2*(1-pnorm(abs(t_stats)))
 }
 
+# Because we need splines that span independently from one another the dates
+# of projects, we need to create a function that takes two variable vectors
+# from the dataframe: (1) the dates; (2) the groups. We also need to provide
+# to the function the value corresponding to the group of interest. The rest
+# is just a normal spline.
+group_date_ns = function(date, group, value, knots=NULL, degrees_of_freedom=NULL){
+  
+  # Estimate the number of degrees of freedom we're assigning to this spline
+  range = max(sentiment_frame$date[group == value]) - min(sentiment_frame$date[group == value])
+  degrees_of_freedom = floor(range / 365)
+  
+  # Create the basis of the right size, but with 0 everywhere
+  basis = 0 * splines::ns(date, df=degrees_of_freedom)
+  
+  # Now, for the correct group, create the splines that span across the
+  # dates of the group. This means the basis should have 0 everywhere except
+  # on the dates spanning this group.
+  basis[group == value,] = splines::ns(date[group == value], 
+                                       knots=knots,
+                                       df=degrees_of_freedom)
+  return(basis)
+}
+
+# display cleaned ANOVA output
 pander_clean_anova = function(model, rename_columns=TRUE,
                               pval_correction_method="BH",
 			      display_only_significant=FALSE){
