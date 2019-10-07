@@ -42,6 +42,17 @@ temp_commits['project'] = project
 temp_comments, temp_tickets = annotate.annotate_logs(temp_comments,
                                                      temp_tickets)
 
+# Drop the comments and tickets we don't need.
+if "include_in_2019_data" in temp_comments.columns:
+    temp_comments = temp_comments[temp_comments["include_in_2019_data"]]
+
+if "include_in_2019_data" in temp_tickets.columns:
+    temp_tickets = temp_tickets[temp_tickets["include_in_2019_data"]]
+
+if "include_in_2019_data" in temp_commits.columns:
+    temp_commits = temp_commits[temp_commits["include_in_2019_data"]]
+
+
 # drop columns we don't need
 temp_comments = temp_comments.drop(
     columns=['node_id', 'updated_at', 'author_id'])

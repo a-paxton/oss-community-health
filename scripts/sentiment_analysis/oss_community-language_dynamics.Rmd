@@ -43,16 +43,41 @@ rm(list=ls())
 source('./utils/ossc-libraries_and_functions.r')
 
 # load data
-tickets_frame = read.table('../../data/analysis_data/dataset_upto2019/sentiment_frame_tickets-for_r.csv',
-                           sep = ',', header=TRUE, fill=TRUE, stringsAsFactors = FALSE)
-comments_frame = read.table('../../data/analysis_data/dataset_upto2019/sentiment_frame_comments-for_r.csv',
-                            sep = ',', header=TRUE, fill=TRUE, stringsAsFactors = FALSE)
+tickets_frame = read.csv('../../data/analysis_data/dataset_scip/sentiment_frame_tickets-for_r.tsv',
+                          sep = '\t', stringsAsFactors=FALSE)
+
+comments_frame = read.csv('../../data/analysis_data/dataset_scip/sentiment_frame_comments-for_r.tsv',
+                          sep = '\t', stringsAsFactors=FALSE)
 
 ticket_frame_preserve = tickets_frame
 tickets_frame = ticket_frame_preserve
 comment_frame_preserve = comments_frame
 comments_frame = comment_frame_preserve
 
+```
+
+```{r data_loading_checks}
+# Sometimes, R fails to load the CSV file properly and truncates it. This cell
+# does a basic check on the size of the data to make sure we have the correct
+# number of rows and colums.
+if(all(dim(tickets_frame) != c(90117, 36))){
+    stop("Problem with the ticket frame. Not the right size!!")
+}
+
+if(all(dim(comments_frame) != c(524062, 29))){
+    stop("Problem with the ticket frame. Not the right size!!")
+}
+
+
+
+```
+
+
+```{r choosing_dataset}
+# We are now going to select the dataset we'll be working on.
+which_dataset = "original"
+tickets_frame = tickets_frame[tickets_frame$scip_dataset == which_dataset, ]
+comments_frame = comments_frame[comments_frame$scip_dataset == which_dataset, ]
 ```
 
 ***
@@ -75,7 +100,7 @@ tickets_frame = tickets_frame %>% ungroup() %>%
   dplyr::rename(open_time = open_duration) %>%
   mutate(date = as.numeric(as.Date(created_at))) %>%
   mutate(type_family = 'post') %>%
-  
+ 
   # figure out author associations
   mutate(total_tickets = num_PR_created + num_issue_created) %>%
   mutate(author_group = dplyr::if_else(total_tickets < 5,
@@ -113,7 +138,7 @@ comments_frame = comments_frame %>% ungroup() %>%
   dplyr::filter(bot_flag == "False") %>%
   dplyr::select(-bot_flag) %>%
   dplyr::filter(!type == "") %>%
-  
+   
   # read creation date properly and add contribution type
   mutate(date = as.numeric(as.Date(created_at))) %>%
   mutate(type_family = 'reply') %>%
@@ -640,7 +665,7 @@ all_tests = merge(all_tests, project_types_author_group_tests, all=TRUE,
 
 Let's correct all tests at once for multiple comparisons.
 
-```{r corect-and-display-all-model-1.1b-tests}
+```{r correct-and-display-all-model-1.1b-tests}
 
 # specify all contrasts
 row.names(all_tests) = all_tests$contrast

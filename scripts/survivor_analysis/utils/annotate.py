@@ -6,6 +6,7 @@ from nltk.tokenize import RegexpTokenizer
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import re
 
+
 def annotate_logs(comments, tickets):
     """
     Annotates comments and tickets with additional information:
