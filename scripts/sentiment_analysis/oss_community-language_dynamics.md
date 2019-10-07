@@ -23,7 +23,7 @@ creates new functions for our analyses.
 **Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux
 (CNRS)
 
-**Date last compiled**:  2019-10-07 10:51:23
+**Date last compiled**:  2019-10-07 18:22:11
 
 
 
@@ -95,25 +95,7 @@ tickets_frame = tickets_frame %>% ungroup() %>%
   dplyr::rename(open_time = open_duration) %>%
   mutate(date = as.numeric(as.Date(created_at))) %>%
   mutate(type_family = 'post') %>%
-<<<<<<< HEAD
  
-=======
-
-  # Mutate those columns. Seems to think it's dealing with strings…
-  mutate(num_PR_created=as.integer(num_PR_created)) %>%
-  mutate(num_issue_created=as.integer(num_issue_created)) %>%
-  mutate(id=as.integer(id)) %>%
-  mutate(ticket_id=as.integer(ticket_id)) %>%
-  mutate(automatic_grateful_count=as.integer(automatic_grateful_count)) %>% 
-  mutate(code_blocks=as.numeric(code_blocks)) %>% 
-  mutate(negative_emotion=as.numeric(negative_emotion)) %>%
-  mutate(positive_emotion=as.numeric(positive_emotion)) %>%
-  mutate(compound_emotion=as.numeric(compound_emotion)) %>%
-  mutate(neutral_emotion=as.numeric(neutral_emotion)) %>%
-  mutate(grateful_count=as.integer(grateful_count)) %>%
-  mutate(ticket_author_last_comment_ticket=as.integer(ticket_author_last_comment_ticket)) %>%
-
->>>>>>> 629583ef511ff8ac02a2f60ec275b0992898795f
   # figure out author associations
   mutate(total_tickets = num_PR_created + num_issue_created) %>%
   mutate(author_group = dplyr::if_else(total_tickets < 5,
@@ -150,21 +132,7 @@ comments_frame = comments_frame %>% ungroup() %>%
   dplyr::filter(bot_flag == "False") %>%
   dplyr::select(-bot_flag) %>%
   dplyr::filter(!type == "") %>%
-<<<<<<< HEAD
    
-=======
-  
-  # Mutate columns
-  mutate(id=as.integer(id)) %>%
-  mutate(ticket_id=as.integer(ticket_id)) %>%
-  mutate(automatic_grateful_count=as.integer(automatic_grateful_count)) %>%
-  mutate(code_blocks=as.numeric(code_blocks)) %>% 
-  mutate(negative_emotion=as.numeric(negative_emotion)) %>%
-  mutate(positive_emotion=as.numeric(positive_emotion)) %>%
-  mutate(compound_emotion=as.numeric(compound_emotion)) %>%
-  mutate(neutral_emotion=as.numeric(neutral_emotion)) %>%
-  
->>>>>>> 629583ef511ff8ac02a2f60ec275b0992898795f
   # read creation date properly and add contribution type
   mutate(date = as.numeric(as.Date(created_at))) %>%
   mutate(type_family = 'reply') %>%
@@ -221,11 +189,7 @@ mean of 8583.875 tickets per project.
 
 On these tickets, the dataset includes
 439024 unique comments, with
-<<<<<<< HEAD
-54878 average comments per project.
-=======
 5.4878\times 10^{4} average comments per project.
->>>>>>> 629583ef511ff8ac02a2f60ec275b0992898795f
 
 In total, we have 15560 unique commenters,
 14147 unique ticket-creators, and
@@ -352,22 +316,14 @@ creators_v_commenters_emotion_by_project = lmer(compound_emotion ~ type * author
 
 |                  &nbsp;                   | Estimate  | Std..Error |   df   | t.value |   p    | p_adj  | sig |
 |:-----------------------------------------:|:---------:|:----------:|:------:|:-------:|:------:|:------:|:---:|
-<<<<<<< HEAD
 |              **(Intercept)**              |  0.07149  |  0.009515  | 11.46  |  7.513  | 0.0001 | 0.0001 | *** |
-=======
-|              **(Intercept)**              |  0.07149  |  0.009517  | 11.46  |  7.513  | 0.0001 | 0.0001 | *** |
->>>>>>> 629583ef511ff8ac02a2f60ec275b0992898795f
 |            **typeissue_reply**            |  0.09652  |  0.003701  | 495665 |  26.08  | 0.0001 | 0.0001 | *** |
 |              **typepr_post**              | -0.002956 |  0.004442  | 496774 | -0.6655 |  0.51  |  0.58  |     |
 |             **typepr_reply**              |  0.1388   |  0.003687  | 497463 |  37.65  | 0.0001 | 0.0001 | *** |
 |         **author_groupnonmember**         | 0.009269  |  0.005382  | 307538 |  1.722  | 0.085  | 0.113  |     |
 | **typeissue_reply:author_groupnonmember** |  0.01909  |  0.005288  | 491934 |  3.61   | 0.0003 |   0    | *** |
 |   **typepr_post:author_groupnonmember**   |  0.02457  |  0.006811  | 446590 |  3.607  | 0.0003 |   0    | *** |
-<<<<<<< HEAD
 |  **typepr_reply:author_groupnonmember**   | -0.003124 |  0.005593  | 349946 | -0.5585 |  0.58  |  0.58  |     |
-=======
-|  **typepr_reply:author_groupnonmember**   | -0.003124 |  0.005593  | 349946 | -0.5586 |  0.58  |  0.58  |     |
->>>>>>> 629583ef511ff8ac02a2f60ec275b0992898795f
 
 While we see significant differences in the model, interpreting the results is
 difficult because of the way that `lmer` handles factor comparisons. All 
@@ -739,17 +695,10 @@ pander_clean_anova(all_tests, rename_columns=FALSE)
 |                                    &nbsp;                                    |                model                | t_stats  | p_value | p_adj  | sig |
 |:----------------------------------------------------------------------------:|:-----------------------------------:|:--------:|:-------:|:------:|:---:|
 |                             **member-nonmember**                             |             Main Terms              | -0.09303 |  0.93   |  0.94  |     |
-<<<<<<< HEAD
 |                          **issue_post-issue_reply**                          |             Main Terms              |  -8.829  | 0.0001  | 0.0001 | *** |
 |                             **pr_post-pr_reply**                             |             Main Terms              |  -11.45  | 0.0001  | 0.0001 | *** |
 |                            **issue_post-pr_post**                            |             Main Terms              | -0.6208  |  0.54   |  0.64  |     |
 |                           **issue_reply-pr_reply**                           |             Main Terms              |  -3.33   |  0.001  | 0.002  | **  |
-=======
-|                          **issue_post-issue_reply**                          |             Main Terms              |  -8.828  | 0.0001  | 0.0001 | *** |
-|                             **pr_post-pr_reply**                             |             Main Terms              |  -11.45  | 0.0001  | 0.0001 | *** |
-|                            **issue_post-pr_post**                            |             Main Terms              | -0.6207  |  0.54   |  0.64  |     |
-|                           **issue_reply-pr_reply**                           |             Main Terms              |  -3.329  |  0.001  | 0.002  | **  |
->>>>>>> 629583ef511ff8ac02a2f60ec275b0992898795f
 |                  **issue_post:member-issue_post:nonmember**                  |      2W: Types x Author Groups      | -0.7101  |  0.48   |  0.59  |     |
 |                 **issue_reply:member-issue_reply:nonmember**                 |      2W: Types x Author Groups      |  -2.284  |  0.022  |  0.04  |  *  |
 |                     **pr_post:member-pr_post:nonmember**                     |      2W: Types x Author Groups      |  -2.579  |  0.01   | 0.018  |  *  |
@@ -1336,20 +1285,12 @@ retrying_model_1.3 = lmer(log(grateful_count + 1) ~ author_group * type +
 
 |                  &nbsp;                   | Estimate  | Std..Error |   df   | t.value |   p    | p_adj  | sig |
 |:-----------------------------------------:|:---------:|:----------:|:------:|:-------:|:------:|:------:|:---:|
-<<<<<<< HEAD
 |              **(Intercept)**              |  0.01942  |  0.008113  | 7.545  |  2.394  | 0.045  | 0.052  |  .  |
-=======
-|              **(Intercept)**              |  0.01942  |  0.008113  | 7.526  |  2.394  | 0.046  | 0.052  |  .  |
->>>>>>> 629583ef511ff8ac02a2f60ec275b0992898795f
 |         **author_groupnonmember**         |  0.05539  |   0.0025   | 507686 |  22.16  | 0.0001 | 0.0001 | *** |
 |            **typeissue_reply**            |  0.02959  |  0.001947  | 507681 |  15.2   | 0.0001 | 0.0001 | *** |
 |              **typepr_post**              | -0.003142 |  0.002332  | 507683 | -1.348  | 0.178  | 0.178  |     |
 |             **typepr_reply**              |  0.08472  |  0.00192   | 507686 |  44.12  | 0.0001 | 0.0001 | *** |
-<<<<<<< HEAD
 | **author_groupnonmember:typeissue_reply** |  0.03474  |  0.002772  | 507681 |  12.53  | 0.0001 | 0.0001 | *** |
-=======
-| **author_groupnonmember:typeissue_reply** |  0.03474  |  0.002772  | 507680 |  12.53  | 0.0001 | 0.0001 | *** |
->>>>>>> 629583ef511ff8ac02a2f60ec275b0992898795f
 |   **author_groupnonmember:typepr_post**   | -0.04586  |  0.003541  | 507687 | -12.95  | 0.0001 | 0.0001 | *** |
 |  **author_groupnonmember:typepr_reply**   | -0.01989  |  0.002779  | 507687 | -7.157  | 0.0001 | 0.0001 | *** |
 
@@ -1721,19 +1662,11 @@ pander_clean_anova(all_tests, rename_columns=FALSE)
 
 |                                    &nbsp;                                    |                model                | t_stats  | p_value | p_adj  | sig |
 |:----------------------------------------------------------------------------:|:-----------------------------------:|:--------:|:-------:|:------:|:---:|
-<<<<<<< HEAD
 |                             **member-nonmember**                             |             Main Terms              |  -4.341  | 0.0001  | 0.0001 | *** |
 |                          **issue_post-issue_reply**                          |             Main Terms              |  -1.622  |  0.105  | 0.132  |     |
 |                             **pr_post-pr_reply**                             |             Main Terms              |  -6.924  | 0.0001  | 0.0001 | *** |
 |                            **issue_post-pr_post**                            |             Main Terms              |  2.336   |  0.02   | 0.026  |  *  |
 |                           **issue_reply-pr_reply**                           |             Main Terms              |  -2.965  |  0.003  | 0.004  | **  |
-=======
-|                             **member-nonmember**                             |             Main Terms              |  -4.34   | 0.0001  | 0.0001 | *** |
-|                          **issue_post-issue_reply**                          |             Main Terms              |  -1.621  |  0.105  | 0.132  |     |
-|                             **pr_post-pr_reply**                             |             Main Terms              |  -6.921  | 0.0001  | 0.0001 | *** |
-|                            **issue_post-pr_post**                            |             Main Terms              |  2.335   |  0.02   | 0.026  |  *  |
-|                           **issue_reply-pr_reply**                           |             Main Terms              |  -2.964  |  0.003  | 0.004  | **  |
->>>>>>> 629583ef511ff8ac02a2f60ec275b0992898795f
 |                  **issue_post:member-issue_post:nonmember**                  |      2W: Types x Author Groups      |  -5.171  | 0.0001  | 0.0001 | *** |
 |                 **issue_reply:member-issue_reply:nonmember**                 |      2W: Types x Author Groups      |  -8.597  | 0.0001  | 0.0001 | *** |
 |                     **pr_post:member-pr_post:nonmember**                     |      2W: Types x Author Groups      | -0.8896  |  0.37   |  0.43  |     |
@@ -1862,11 +1795,7 @@ pander_lme(creators_v_commenters_gratitude_time)
 
 |                           &nbsp;                            |  Estimate  | Std..Error |   df   | t.value |   p    | p_adj  | sig |
 |:-----------------------------------------------------------:|:----------:|:----------:|:------:|:-------:|:------:|:------:|:---:|
-<<<<<<< HEAD
 |                       **(Intercept)**                       |  0.06311   |  0.004417  | 262968 |  14.29  | 0.0001 | 0.0001 | *** |
-=======
-|                       **(Intercept)**                       |  0.06311   |  0.004417  | 262967 |  14.29  | 0.0001 | 0.0001 | *** |
->>>>>>> 629583ef511ff8ac02a2f60ec275b0992898795f
 |                      **projectmayavi**                      |   0.0493   |  0.007211  | 113994 |  6.837  | 0.0001 | 0.0001 | *** |
 |                      **projectnumpy**                       | -0.006947  |  0.002306  | 238782 | -3.013  | 0.003  | 0.004  | **  |
 |                      **projectpandas**                      | -0.004654  |  0.00231   | 136210 | -2.014  | 0.044  | 0.058  |  .  |
@@ -1874,11 +1803,7 @@ pander_lme(creators_v_commenters_gratitude_time)
 |                   **projectscikit-learn**                   | -0.009497  |  0.002443  | 133013 | -3.887  | 0.0001 | 0.0002 | *** |
 |                      **projectscipy**                       |  0.008664  |  0.002434  | 238851 |  3.56   | 0.0004 | 0.001  | **  |
 |                  **projectsphinx-gallery**                  |  -0.01512  |  0.004912  | 494933 | -3.078  | 0.002  | 0.004  | **  |
-<<<<<<< HEAD
 |                  **author_groupnonmember**                  |  0.03562   |  0.002859  | 284677 |  12.46  | 0.0001 | 0.0001 | *** |
-=======
-|                  **author_groupnonmember**                  |  0.03562   |  0.002859  | 284676 |  12.46  | 0.0001 | 0.0001 | *** |
->>>>>>> 629583ef511ff8ac02a2f60ec275b0992898795f
 |                     **typeissue_reply**                     |  0.04683   |  0.003655  | 507421 |  12.81  | 0.0001 | 0.0001 | *** |
 |                       **typepr_post**                       | -0.0005321 |  0.004644  | 506461 | -0.1146 |  0.91  |  0.91  |     |
 |                      **typepr_reply**                       |  0.07087   |  0.003709  | 505050 |  19.11  | 0.0001 | 0.0001 | *** |
@@ -2023,11 +1948,7 @@ retention_predictors = glm(retained_newcomer ~ 0 + ticket_family_numeric * (proj
 
                       **projectpandas**                            0.2543     
 
-<<<<<<< HEAD
                    **projectscikit-image**                        -0.06415    
-=======
-                   **projectscikit-image**                        -0.06416    
->>>>>>> 629583ef511ff8ac02a2f60ec275b0992898795f
 
                    **projectscikit-learn**                        -0.08375    
 
@@ -2214,11 +2135,7 @@ Table: Table continues below
 
                       **projectnumpy**                           0.00000001132    
 
-<<<<<<< HEAD
                       **projectpandas**                            0.00002359     
-=======
-                      **projectpandas**                            0.0000236      
->>>>>>> 629583ef511ff8ac02a2f60ec275b0992898795f
 
                    **projectscikit-image**                           0.5809       
 
@@ -2228,11 +2145,7 @@ Table: Table continues below
 
                   **projectsphinx-gallery**                         0.02631       
 
-<<<<<<< HEAD
                         **open_time**                              0.0007752      
-=======
-                        **open_time**                              0.0007753      
->>>>>>> 629583ef511ff8ac02a2f60ec275b0992898795f
 
                  **comment_sentiment_mean**                        0.00007606     
 
