@@ -21,9 +21,9 @@ data.
 creates new functions for our analyses.
 
 **Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux
-(University of California, Berkeley)
+(CNRS)
 
-**Date last modified**: 25 September 2019
+**Date last compiled**:  `r Sys.time()`
 
 ```{r silent-preparations, include=FALSE}
 library(knitr)
