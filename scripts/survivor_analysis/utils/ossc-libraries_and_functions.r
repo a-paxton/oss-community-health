@@ -70,6 +70,7 @@ group_date_ns = function(date, group, value, knots=NULL, degrees_of_freedom=NULL
   # on the dates spanning this group.
   basis[group == value,] = splines::ns(date[group == value], 
                                        knots=knots,
+				       intercept=TRUE,
                                        df=degrees_of_freedom)
   return(basis)
 }

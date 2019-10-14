@@ -784,7 +784,7 @@ knots = quantile(min(sentiment_frame$date):max(sentiment_frame$date), percentile
 
 # here, let's just plot the splines basis, to see what they look like
 basis = splines::ns(sort(unique(sentiment_frame$date)), 
-                    knots=knots)
+                    knots=knots, intercept=TRUE)
 
 # convert it into a dataframe for easier plotting
 basis_df = as.data.frame(basis) %>%
@@ -853,7 +853,7 @@ knots = NULL
 
 # do tickets and comments materially differ in emotion over time?
 formula = (
-  compound_emotion ~ 0 + project:type:author_group + 
+  compound_emotion ~ 0 +
     type:author_group:group_date_ns(
       date, project, "matplotlib",
       knots=knots, degrees_of_freedom=degrees_of_freedom) +
@@ -898,7 +898,7 @@ row_names = gsub(
   "project", "", gsub(
     "author_group", "", gsub("type", "", row.names(coefficients_and_se))))
 
-# Now deal with the very annoying splines coefficient row.names
+# Now deal with the very annoying splines coefficient ff    row.names
 row_names = gsub(
   "group_date_ns(date, , \"", "", row_names, fixed=TRUE)
 row_names = gsub(
@@ -1062,11 +1062,14 @@ time_contrasts = c(
            function(x) paste(x, ":coef8", sep="")))
 )
 
+# should aid with interpretation
+time_contrasts = sort(time_contrasts)
 # compute statistics over specified contrast areas
 project_type_author_group_time_tests = compute_t_statistics(
   means, se, time_contrasts)
 project_type_author_group_time_tests[, "p_value"] = compute_p_value_from_t_stats(
   project_type_author_group_time_tests$t_stats)
+
 # Filter out all NAs, which correspond to contrasts that don't exist
 project_type_author_group_time_tests = project_type_author_group_time_tests[
   !is.na(project_type_author_group_time_tests$p_value), ]
@@ -1074,6 +1077,7 @@ project_type_author_group_time_tests = project_type_author_group_time_tests[
 
 Because we have so many tests, we'll only display the ones that are significant
 (after adjusting for multiple comparisons).
+
 
 ```{r silently-display-significant-results, eval=TRUE, echo=FALSE}
 
