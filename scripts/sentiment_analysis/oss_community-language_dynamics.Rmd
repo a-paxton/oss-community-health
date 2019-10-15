@@ -19,6 +19,8 @@ cleaned **comments**-related data and derived variables from scraped GitHub
 data.
 * `./utils/ossc-libraries_and_functions.r`: Loads in necessary libraries and
 creates new functions for our analyses.
+* `./utils/data-loading.R`: loads functions related to data loading and
+  preprocessing.
 
 **Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux
 (CNRS)
@@ -41,139 +43,20 @@ rm(list=ls())
 
 # load libraries and add new functions
 source('./utils/ossc-libraries_and_functions.r')
-
-# load data
-tickets_frame = read.csv('../../data/analysis_data/dataset_scip/sentiment_frame_tickets-for_r.tsv',
-                          sep = '\t', stringsAsFactors=FALSE)
-
-comments_frame = read.csv('../../data/analysis_data/dataset_scip/sentiment_frame_comments-for_r.tsv',
-                          sep = '\t', stringsAsFactors=FALSE)
-
-ticket_frame_preserve = tickets_frame
-tickets_frame = ticket_frame_preserve
-comment_frame_preserve = comments_frame
-comments_frame = comment_frame_preserve
-
+source("./utils/data-loading.R")
 ```
-
-```{r data_loading_checks}
-# Sometimes, R fails to load the CSV file properly and truncates it. This cell
-# does a basic check on the size of the data to make sure we have the correct
-# number of rows and colums.
-if(all(dim(tickets_frame) != c(90117, 36))){
-    stop("Problem with the ticket frame. Not the right size!!")
-}
-
-if(all(dim(comments_frame) != c(524062, 29))){
-    stop("Problem with the ticket frame. Not the right size!!")
-}
-
-
-
-```
-
 
 ```{r choosing_dataset}
 # We are now going to select the dataset we'll be working on.
-which_dataset = "original"
-tickets_frame = tickets_frame[tickets_frame$scip_dataset == which_dataset, ]
-comments_frame = comments_frame[comments_frame$scip_dataset == which_dataset, ]
+library(dplyr)
+tickets_frame = loading_tickets_data(dataset="original")
+comments_frame = loading_comments_data(dataset="original")
 ```
 
-***
-
-## Clean up dataframes
-
-Here, we run a number of cleanup stages to ensure that we have the data we need
-(and in the right format) for our models.
-
-```{r clean-tickets}
-
-# fix tickets dataframe
-tickets_frame = tickets_frame %>% ungroup() %>%
-  
-  # filter out bots
-  dplyr::filter(bot_flag == "False") %>%
-  dplyr::select(-bot_flag) %>%
-  
-  # get time in seconds, read creation date properly, and specify contribution type
-  dplyr::rename(open_time = open_duration) %>%
-  mutate(date = as.numeric(as.Date(created_at))) %>%
-  mutate(type_family = 'post') %>%
- 
-  # figure out author associations
-  mutate(total_tickets = num_PR_created + num_issue_created) %>%
-  mutate(author_group = dplyr::if_else(total_tickets < 5,
-                                       'nonmember',
-                                       'member')) %>%
-  
-  # rename variables associated with type of ticket and type of contribution
-  dplyr::rename(ticket_family = type) %>%
-  mutate(ticket_family = recode(ticket_family, pull_request = "pr")) %>%
-  mutate(type = paste0(ticket_family,'_',type_family)) %>%
-  
-  # convert to factors (as needed) for proper modeling
-  mutate_at(vars(first_ticket),
-            as.logical) %>%
-  mutate_at(vars(project,
-                 author_name,
-                 author_group,
-                 author_association,
-                 type,
-                 type_family,
-                 ticket_family),
-            as.factor) %>%
-  
-  # drop old columns
-  dplyr::select(-ends_with('_at'))
-
-```
-
-```{r fix-comments}
-
-# fix comments dataframe
-comments_frame = comments_frame %>% ungroup() %>%
-  
-  # filter out bots and comments on tickets that have been filtered out (due to modification date)
-  dplyr::filter(bot_flag == "False") %>%
-  dplyr::select(-bot_flag) %>%
-  dplyr::filter(!type == "") %>%
-   
-  # read creation date properly and add contribution type
-  mutate(date = as.numeric(as.Date(created_at))) %>%
-  mutate(type_family = 'reply') %>%
-  
-  # figure out author associations
-  mutate(total_tickets = num_PR_created + num_issue_created) %>%
-  mutate(author_group = dplyr::if_else(total_tickets < 5,
-                                       'nonmember',
-                                       'member')) %>%
-  
-  # rename variables associated with type of ticket and type of contribution
-  dplyr::rename(ticket_family = type) %>%
-  mutate(ticket_family = recode(ticket_family, pull_request = "pr")) %>%
-  mutate(type = paste0(ticket_family,'_',type_family)) %>%
-  
-  # convert to factors (as needed) for proper modeling
-  mutate_at(vars(project,
-                 author_name,
-                 author_group,
-                 author_association,
-                 type,
-                 type_family,
-                 ticket_family),
-            as.factor) %>%
-  
-  # drop old columns
-  dplyr::select(-ends_with('_at')) 
-
-```
-
-***
 
 ## Basic summary stats
 
-Now that our data have been largely cleaned, let's take a look at some basic
+The data has been largely cleaned. Let's take a look at some basic
 patterns.
 
 ```{r user-stats, include=FALSE, eval=TRUE}
@@ -234,38 +117,11 @@ In total, we have `r length(unique_commenters)` unique commenters,
 ### Data preparation
 
 Before we can run Model Series 1, we need to combine `tickets_frame` and
-`comments_frame` into a single dataframe.
+`comments_frame` into a single dataframe. We do this using the
+`combine_tickets_and_comments` function, `defined in utils/data-loading.R`
 
 ```{r prepare-data-for-sentiment-analysis}
-
-# merge tickets and comments into a single frame
-sentiment_frame = tickets_frame %>%
-  dplyr::bind_rows(., comments_frame) %>%
-  
-  # keep only select variables
-  dplyr::select(project,
-                date,
-                contains('author'),
-                first_ticket,
-                contains('num_'),
-                contains('ticket'),
-                contains('type'),
-                contains('grateful_count'),
-                contains('emotion'),
-                contains('open_'),
-                -contains('ticket_author_')) %>%
-  
-  # convert to factors (as needed) for proper modeling
-  mutate_at(vars(first_ticket),
-            as.logical) %>%
-  mutate_at(vars(project,
-                 author_name,
-                 author_group,
-                 author_association,
-                 type,
-                 type_family,
-                 ticket_family),
-            as.factor)
+sentiment_frame = combine_tickets_and_comments(tickets_frame, comments_frame)
 
 ```
 
@@ -764,152 +620,24 @@ ggsave(plot = sentiment_plot_by_project,
 
 ![**Figure**. Sentiment by contribution type (ticket vs. comment) and community membership at the time of posting (member vs. nonmember) for each project.](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution-by_project-knitr.jpg)
 
-### Model 1.2: Do tickets and comments materially differ in emotion over time?
+#### Model 1.2b: More plots, this time using means and std estimated from model-fit
 
-```{r splines_options}
+Here, we are going to test whether projects differ from the mean.
 
-# specify number of splines basis to use
-degrees_of_freedom = 4
-
-```
-
-In this model, we explore whether there are time-based splines in the
-observations from Model 1.1. First, let's look at the splines basis functions,
-and which time points they span by default.
-
-```{r plot_splines, eval=TRUE, include=FALSE}
-
-percentiles = c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7,  0.8, 0.9)
-knots = quantile(min(sentiment_frame$date):max(sentiment_frame$date), percentiles)
-
-# here, let's just plot the splines basis, to see what they look like
-basis = splines::ns(sort(unique(sentiment_frame$date)), 
-                    knots=knots, intercept=TRUE)
-
-# convert it into a dataframe for easier plotting
-basis_df = as.data.frame(basis) %>%
-  #tibble::rownames_to_column(var = 't') %>%
-  dplyr::rename(df1 = `1`,
-                df2 = `2`,
-                df3 = `3`,
-                df4 = `4`,
-                df5 = `5`,
-                df6 = `6`,
-                df7 = `7`,
-                df8 = `8`,
-                df9 = `9`,
-                df10 = `10`
-  )
-
-# # this would be ggplot-compatible, but ggplot is getting fussy
-# # (will come back to it later)
-# basis_df = as.data.frame(basis) %>%
-#   tibble::rownames_to_column(var = 't') %>%
-#   tidyr::gather(key = df, value = num, -t)
-
-# plot it with base R plotting
-jpeg('../../figures/sentiment_analysis/ossc-sentiment_basis_functions.jpg',
-     width=2,height=2,units="in",res=500,
-     pointsize=4)
-par(
-  mar      = c(5, 5, 2, 2),
-  xaxs     = "i",
-  yaxs     = "i",
-  cex.axis = 1,
-  cex.lab  = 1,
-  cex.title = 1
-)
-matplot(basis_df, type = "l", pch = 1, col = 1:10,
-        lty = 1:10,
-        main = "Sentiment basis functions",
-        xlab = "Time",
-        ylab = "Sentiment")  # plot
-legend("topleft", legend = 1:10, lty = 1:10, col = 1:10)
-dev.off()
-
-```
-
-![**Figure**. Basis functions for sentiment.](../../figures/sentiment_analysis/ossc-sentiment_basis_functions.jpg)
-
-Now, let us use these splines model to model the time variation of the 3-way
-interaction terms. We model the intercept for the three way interaction
-separately from the splines: This allows us to only look at changes over time
-and not changes in intercept.
-
-Note that we cannot use too many degrees of freedom, as sphinx-gallery spans a
-shorter time period than other projects. Any spline basis function that covers
-only the 2012 to 2015 cannot be estimated on sphinx-gallery.
-
-```{r silently-reload-functions, eval=TRUE, include=FALSE}
-library(splines)
-source("utils/ossc-libraries_and_functions.r")
-```
-
-```{r model-emotion-by-type-author-project-time}
-
-# do tickets and comments materially differ in emotion over time?
-degrees_of_freedom = NULL
-knots = NULL
-
-# do tickets and comments materially differ in emotion over time?
-formula = (
-  compound_emotion ~ 0 +
-    type:author_group:group_date_ns(
-      date, project, "matplotlib",
-      knots=knots, degrees_of_freedom=degrees_of_freedom) +
-    type:author_group:group_date_ns(
-      date, project, "mayavi",
-      knots=knots, degrees_of_freedom=degrees_of_freedom) +
-    type:author_group:group_date_ns(
-      date, project, "numpy",
-      knots=knots, degrees_of_freedom=degrees_of_freedom) +
-    type:author_group:group_date_ns(
-      date, project, "pandas",
-      knots=knots, degrees_of_freedom=degrees_of_freedom) +
-    type:author_group:group_date_ns(
-      date, project, "scikit-image",
-      knots=knots, degrees_of_freedom=degrees_of_freedom) +
-    type:author_group:group_date_ns(
-      date, project, "scikit-learn",
-      knots=knots, degrees_of_freedom=degrees_of_freedom) +
-    type:author_group:group_date_ns(
-      date, project, "scipy",
-      knots=knots, degrees_of_freedom=degrees_of_freedom) +
-    type:author_group:group_date_ns(
-      date, project, "sphinx-gallery",
-      knots=knots, degrees_of_freedom=degrees_of_freedom) +
-    (1 | author_name))
-
-creators_v_commenters_emotion_by_project_time = lmer(
-  formula,
-  data = sentiment_frame,
-  REML=FALSE)
-```
-
-We'll do another table to display all results.
-
-```{r clean-up-model-1.2-output}
-# convert Model 1.2 output to dataframe
+```{r eval=TRUE, echo=TRUE}
 coefficients_and_se = data.frame(
-  summary(creators_v_commenters_emotion_by_project_time)$coefficients)
+  summary(creators_v_commenters_emotion_by_project)$coefficients)
 
 # get comparison names as rownames
 row_names = gsub(
   "project", "", gsub(
-    "author_group", "", gsub("type", "", row.names(coefficients_and_se))))
-
-# Now deal with the very annoying splines coefficient ff    row.names
-row_names = gsub(
-  "group_date_ns(date, , \"", "", row_names, fixed=TRUE)
-row_names = gsub(
-  "\", knots = knots, degrees_of_freedom = degrees_of_freedom)", ":coef", row_names, fixed=TRUE)
-
+    "author_group", "", gsub(
+      "type", "", row.names(coefficients_and_se))))
 
 # replace hyphens in project names with periods
 row_names = gsub(
   "scikit-", "scikit.", gsub(
     "sphinx-", "sphinx.", row_names))
-
 
 # convert model estimates to a dataframe
 means = coefficients_and_se$Estimate
@@ -918,281 +646,210 @@ names(means) = row_names
 # convert standard error to dataframe
 se = coefficients_and_se$Std..Error
 names(se) = row_names
-
-# we're interested in looking at the coefficients of the splines.
-partial_time_contrasts = c(
-  # scikit-learn
-  "issue_post:member:scikit.learn-issue_post:nonmember:scikit.learn",   
-  "issue_reply:member:scikit.learn-issue_reply:nonmember:scikit.learn",
-  "pr_post:member:scikit.learn-pr_post:nonmember:scikit.learn",
-  "pr_reply:member:scikit.learn-pr_reply:nonmember:scikit.learn",
-  "issue_post:member:scikit.learn-issue_reply:member:scikit.learn",
-  "issue_post:nonmember:scikit.learn-issue_reply:nonmember:scikit.learn",
-  "pr_post:member:scikit.learn-pr_reply:member:scikit.learn",
-  "pr_post:nonmember:scikit.learn-pr_reply:nonmember:scikit.learn",
-  "issue_post:member:scikit.learn-pr_post:member:scikit.learn",
-  "issue_post:nonmember:scikit.learn-pr_post:nonmember:scikit.learn",    
-  "issue_reply:member:scikit.learn-pr_reply:member:scikit.learn",  
-  "issue_reply:nonmember:scikit.learn-pr_reply:nonmember:scikit.learn",
-  
-  # scikit-image
-  "issue_post:member:scikit.image-issue_post:nonmember:scikit.image",   
-  "issue_reply:member:scikit.image-issue_reply:nonmember:scikit.image",
-  "pr_post:member:scikit.image-pr_post:nonmember:scikit.image",
-  "pr_reply:member:scikit.image-pr_reply:nonmember:scikit.image",
-  "issue_post:member:scikit.image-issue_reply:member:scikit.image",
-  "issue_post:nonmember:scikit.image-issue_reply:nonmember:scikit.image",
-  "pr_post:member:scikit.image-pr_reply:member:scikit.image",
-  "pr_post:nonmember:scikit.image-pr_reply:nonmember:scikit.image",
-  "issue_post:member:scikit.image-pr_post:member:scikit.image",
-  "issue_post:nonmember:scikit.image-pr_post:nonmember:scikit.image",    
-  "issue_reply:member:scikit.image-pr_reply:member:scikit.image",  
-  "issue_reply:nonmember:scikit.image-pr_reply:nonmember:scikit.image",
-  
-  # matplotlib
-  "issue_post:member:matplotlib-issue_post:nonmember:matplotlib",   
-  "issue_reply:member:matplotlib-issue_reply:nonmember:matplotlib",
-  "pr_post:member:matplotlib-pr_post:nonmember:matplotlib",
-  "pr_reply:member:matplotlib-pr_reply:nonmember:matplotlib",
-  "issue_post:member:matplotlib-issue_reply:member:matplotlib",
-  "issue_post:nonmember:matplotlib-issue_reply:nonmember:matplotlib",
-  "pr_post:member:matplotlib-pr_reply:member:matplotlib",
-  "pr_post:nonmember:matplotlib-pr_reply:nonmember:matplotlib",
-  "issue_post:member:matplotlib-pr_post:member:matplotlib",
-  "issue_post:nonmember:matplotlib-pr_post:nonmember:matplotlib",    
-  "issue_reply:member:matplotlib-pr_reply:member:matplotlib",  
-  "issue_reply:nonmember:matplotlib-pr_reply:nonmember:matplotlib",
-  
-  # mayavi
-  "issue_post:member:mayavi-issue_post:nonmember:mayavi",   
-  "issue_reply:member:mayavi-issue_reply:nonmember:mayavi",
-  "pr_post:member:mayavi-pr_post:nonmember:mayavi",
-  "pr_reply:member:mayavi-pr_reply:nonmember:mayavi",
-  "issue_post:member:mayavi-issue_reply:member:mayavi",
-  "issue_post:nonmember:mayavi-issue_reply:nonmember:mayavi",
-  "pr_post:member:mayavi-pr_reply:member:mayavi",
-  "pr_post:nonmember:mayavi-pr_reply:nonmember:mayavi",
-  "issue_post:member:mayavi-pr_post:member:mayavi",
-  "issue_post:nonmember:mayavi-pr_post:nonmember:mayavi",    
-  "issue_reply:member:mayavi-pr_reply:member:mayavi",  
-  "issue_reply:nonmember:mayavi-pr_reply:nonmember:mayavi",
-  
-  # pandas
-  "issue_post:member:pandas-issue_post:nonmember:pandas",   
-  "issue_reply:member:pandas-issue_reply:nonmember:pandas",
-  "pr_post:member:pandas-pr_post:nonmember:pandas",
-  "pr_reply:member:pandas-pr_reply:nonmember:pandas",
-  "issue_post:member:pandas-issue_reply:member:pandas",
-  "issue_post:nonmember:pandas-issue_reply:nonmember:pandas",
-  "pr_post:member:pandas-pr_reply:member:pandas",
-  "pr_post:nonmember:pandas-pr_reply:nonmember:pandas",
-  "issue_post:member:pandas-pr_post:member:pandas",
-  "issue_post:nonmember:pandas-pr_post:nonmember:pandas",    
-  "issue_reply:member:pandas-pr_reply:member:pandas",  
-  "issue_reply:nonmember:pandas-pr_reply:nonmember:pandas",
-  
-  # scipy
-  "issue_post:member:scipy-issue_post:nonmember:scipy",   
-  "issue_reply:member:scipy-issue_reply:nonmember:scipy",
-  "pr_post:member:scipy-pr_post:nonmember:scipy",
-  "pr_reply:member:scipy-pr_reply:nonmember:scipy",
-  "issue_post:member:scipy-issue_reply:member:scipy",
-  "issue_post:nonmember:scipy-issue_reply:nonmember:scipy",
-  "pr_post:member:scipy-pr_reply:member:scipy",
-  "pr_post:nonmember:scipy-pr_reply:nonmember:scipy",
-  "issue_post:member:scipy-pr_post:member:scipy",
-  "issue_post:nonmember:scipy-pr_post:nonmember:scipy",    
-  "issue_reply:member:scipy-pr_reply:member:scipy",  
-  "issue_reply:nonmember:scipy-pr_reply:nonmember:scipy",
-  
-  # numpy
-  "issue_post:member:numpy-issue_post:nonmember:numpy",   
-  "issue_reply:member:numpy-issue_reply:nonmember:numpy",
-  "pr_post:member:numpy-pr_post:nonmember:numpy",
-  "pr_reply:member:numpy-pr_reply:nonmember:numpy",
-  "issue_post:member:numpy-issue_reply:member:numpy",
-  "issue_post:nonmember:numpy-issue_reply:nonmember:numpy",
-  "pr_post:member:numpy-pr_reply:member:numpy",
-  "pr_post:nonmember:numpy-pr_reply:nonmember:numpy",
-  "issue_post:member:numpy-pr_post:member:numpy",
-  "issue_post:nonmember:numpy-pr_post:nonmember:numpy",    
-  "issue_reply:member:numpy-pr_reply:member:numpy",  
-  "issue_reply:nonmember:numpy-pr_reply:nonmember:numpy",
-  
-  # sphinx-gallery
-  "issue_post:member:sphinx.gallery-issue_post:nonmember:sphinx.gallery",   
-  "issue_reply:member:sphinx.gallery-issue_reply:nonmember:sphinx.gallery",
-  "pr_post:member:sphinx.gallery-pr_post:nonmember:sphinx.gallery",
-  "pr_reply:member:sphinx.gallery-pr_reply:nonmember:sphinx.gallery",
-  "issue_post:member:sphinx.gallery-issue_reply:member:sphinx.gallery",
-  "issue_post:nonmember:sphinx.gallery-issue_reply:nonmember:sphinx.gallery",
-  "pr_post:member:sphinx.gallery-pr_reply:member:sphinx.gallery",
-  "pr_post:nonmember:sphinx.gallery-pr_reply:nonmember:sphinx.gallery",
-  "issue_post:member:sphinx.gallery-pr_post:member:sphinx.gallery",
-  "issue_post:nonmember:sphinx.gallery-pr_post:nonmember:sphinx.gallery",    
-  "issue_reply:member:sphinx.gallery-pr_reply:member:sphinx.gallery",  
-  "issue_reply:nonmember:sphinx.gallery-pr_reply:nonmember:sphinx.gallery"
-)
-
-
-time_contrasts = c(
-  unlist(
-    lapply(gsub("-", ":coef1-", partial_time_contrasts),
-           function(x) paste(x, ":coef1", sep=""))),
-  unlist(
-    lapply(gsub("-", ":coef2-", partial_time_contrasts),
-           function(x) paste(x, ":coef2", sep=""))),
-  unlist(
-    lapply(gsub("-", ":coef3-", partial_time_contrasts),
-           function(x) paste(x, ":coef3", sep=""))),
-  unlist(
-    lapply(gsub("-", ":coef4-", partial_time_contrasts),
-           function(x) paste(x, ":coef4", sep=""))),
-  unlist(
-    lapply(gsub("-", ":coef5-", partial_time_contrasts),
-           function(x) paste(x, ":coef5", sep=""))),
-  unlist(
-    lapply(gsub("-", ":coef6-", partial_time_contrasts),
-           function(x) paste(x, ":coef6", sep=""))),
-  unlist(
-    lapply(gsub("-", ":coef7-", partial_time_contrasts),
-           function(x) paste(x, ":coef7", sep=""))),
-  unlist(
-    lapply(gsub("-", ":coef8-", partial_time_contrasts),
-           function(x) paste(x, ":coef8", sep="")))
-)
-
-# should aid with interpretation
-time_contrasts = sort(time_contrasts)
-# compute statistics over specified contrast areas
-project_type_author_group_time_tests = compute_t_statistics(
-  means, se, time_contrasts)
-project_type_author_group_time_tests[, "p_value"] = compute_p_value_from_t_stats(
-  project_type_author_group_time_tests$t_stats)
-
-# Filter out all NAs, which correspond to contrasts that don't exist
-project_type_author_group_time_tests = project_type_author_group_time_tests[
-  !is.na(project_type_author_group_time_tests$p_value), ]
 ```
 
-Because we have so many tests, we'll only display the ones that are significant
-(after adjusting for multiple comparisons).
-
-
-```{r silently-display-significant-results, eval=TRUE, echo=FALSE}
-
-# print out the significant results
-pander_clean_anova(project_type_author_group_time_tests, rename_columns=FALSE,
-                   display_only_significant=TRUE)
-
+```{r}
+projects = c("Matplotlib", "Mayavi", "numpy", "pandas",
+	     "scikit-image", "scikit-learn", "scipy", "sphinx-gallery")
 ```
 
-```{r plot-model-emotion-by-contribution-and-membership-aggregated, include=FALSE, eval=TRUE}
+```{r plot_pr_post_members, fig.width=8}
+group_of_interest = "pr_post:member"
+rows_to_plot = grep(group_of_interest, names(means))
 
-sentiment_contribution_membership_time_plot = ggplot(data=sentiment_frame,
-                                                     aes(x=date,
-                                                         y=compound_emotion,
-                                                         colour=type)) +
-  stat_smooth() +
-  facet_grid(cols = c(vars(ticket_family),vars(author_group)),
-             labeller = labeller(
-               ticket_family = c(issue = "Issue", pr = "PR"),
-               author_group = c(member="Member", nonmember="Nonmember"))
-  ) +
-  ggtitle('Message sentiment by contribution\nand community membership over time') +
-  ylab('Sentiment score') +
-  scale_x_continuous(name = 'Date',
-                     breaks = c(as.numeric(as.Date("2010-01-01")),
-                                as.numeric(as.Date("2012-01-01")),
-                                as.numeric(as.Date("2014-01-01")),
-                                as.numeric(as.Date("2016-01-01")),
-                                as.numeric(as.Date("2018-01-01"))),
-                     labels = c("2010", "2012",
-                                "2014", "2016",
-                                "2018")) +
-  labs(color='Contribution type') +
-  scale_color_manual(labels = c("Issue: Post",
-                                "Issue: Reply",
-                                "PR: Post",
-                                "PR: Reply"), 
-                     values = c("#e66101", # issue: post (darker)
-                                "#fdb863", # issue: reply (lighter)
-                                "#5e3c99", # PR: post (darker)
-                                "#b2abd2")) # PR: reply (lighter)
-
-# plot a full-size version
-ggsave(plot = sentiment_contribution_membership_time_plot,
-       height = 4,
-       width = 10,
-       filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-aggregated.jpg')
-
-# plot a smaller one for knitr
-ggsave(plot = sentiment_contribution_membership_time_plot,
-       height = 4,
-       width = 10,
-       dpi = 150,
-       filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-aggregated-knitr.jpg')
-
+bar_centers = barplot(means[rows_to_plot], names.arg=projects,
+		      main=group_of_interest,    
+		      cex.names=0.8)
+arrows(bar_centers,
+       means[rows_to_plot] - se[rows_to_plot] ** 2, 
+       bar_centers,
+       means[rows_to_plot] + se[rows_to_plot] ** 2,
+       angle=90,
+       code=3)
 ```
 
-![**Figure**. Sentiment over time by contribution type (ticket vs. comment) and community membership at the time of posting (member vs. nonmember).](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-aggregated-knitr.jpg)
+```{r plot_pr_post_nonmembers, fig.width=8}
+group_of_interest = "pr_post:nonmember"
+rows_to_plot = grep(group_of_interest, names(means))
 
-```{r plot-model-emotion-by-contribution-and-membership-and-time-by-project, include=FALSE, eval=TRUE}
+bar_centers = barplot(means[rows_to_plot], names.arg=projects,
+		      main=group_of_interest,
+		      cex.names=0.8)
 
-sentiment_contribution_member_time_by_project_plot = ggplot(data=sentiment_frame,
-                                                            aes(x=date,
-                                                                y=compound_emotion,
-                                                                colour=type)) +
-  # geom_smooth(method=lm, formula=y ~ bs(x, df=8)) +
-  stat_smooth()+
-  facet_grid(cols = c(vars(ticket_family),
-                      vars(author_group)),
-             rows = vars(project),
-             labeller = labeller(
-               ticket_family = c(issue = "Issue", 
-                                 pr = "PR"),
-               author_group = c(member="Member",
-                                nonmember="Nonmember"))) +
-  theme(legend.position = "bottom") +
-  ggtitle('Message sentiment by contribution\nand community membership') +
-  ylab('Sentiment score') +
-  scale_x_continuous(name = 'Date',
-                     breaks = c(as.numeric(as.Date("2010-01-01")),
-                                as.numeric(as.Date("2012-01-01")),
-                                as.numeric(as.Date("2014-01-01")),
-                                as.numeric(as.Date("2016-01-01")),
-                                as.numeric(as.Date("2018-01-01"))),
-                     labels = c("2010",
-                                "2012",
-                                "2014",
-                                "2016",
-                                "2018")) +
-  labs(color='Contribution type') +
-  scale_color_manual(labels = c("Issue: Post",
-                                "Issue: Reply",
-                                "PR: Post",
-                                "PR: Reply"),
-                     values = c("#e66101", # issue: post (darker)
-                                "#fdb863", # issue: reply (lighter)
-                                "#5e3c99", # PR: post (darker)
-                                "#b2abd2")) # PR: reply (lighter) 
-
-# save full version
-ggsave(plot = sentiment_contribution_member_time_by_project_plot,
-       height = 12,
-       width = 10,
-       filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-by_project.jpg')
-
-# save smaller version for knitr
-ggsave(plot = sentiment_contribution_member_time_by_project_plot,
-       height = 12,
-       width = 10,
-       dpi = 150,
-       filename = '../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-by_project-knitr.jpg')
-
-
+arrows(bar_centers,
+       means[rows_to_plot] - se[rows_to_plot] ** 2, 
+       bar_centers,
+       means[rows_to_plot] + se[rows_to_plot] ** 2,
+       angle=90,
+       code=3)
 ```
-![**Figure**. Sentiment over time by contribution type (ticket vs. comment) and community membership  at the time of posting (member vs. nonmember) by project.](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-by_project-knitr.jpg)
+
+
+```{r plot_issue_post_members, fig.width=8}
+group_of_interest = "issue_post:member"
+rows_to_plot = grep(group_of_interest, names(means))
+
+bar_centers = barplot(means[rows_to_plot], names.arg=projects,
+		      main=group_of_interest,
+		      cex.names=0.8
+		      )
+arrows(bar_centers,
+       means[rows_to_plot] - se[rows_to_plot] ** 2, 
+       bar_centers,
+       means[rows_to_plot] + se[rows_to_plot] ** 2,
+       angle=90,
+       code=3)
+```
+
+```{r plot_issue_post_nonmembers, fig.width=8}
+group_of_interest = "issue_post:nonmember"
+rows_to_plot = grep(group_of_interest, names(means))
+
+bar_centers = barplot(means[rows_to_plot], names.arg=projects,
+		      main=group_of_interest,
+		      cex.names=0.8
+		      )
+arrows(bar_centers,
+       means[rows_to_plot] - se[rows_to_plot] ** 2, 
+       bar_centers,
+       means[rows_to_plot] + se[rows_to_plot] ** 2,
+       angle=90,
+       code=3)
+```
+
+
+```{r plot_pr_reply_members, fig.width=8}
+group_of_interest = "pr_reply:member"
+rows_to_plot = grep(group_of_interest, names(means))
+
+bar_centers = barplot(means[rows_to_plot], names.arg=projects,
+		      main=group_of_interest,
+		      cex.names=0.8)
+arrows(bar_centers,
+       means[rows_to_plot] - se[rows_to_plot] ** 2, 
+       bar_centers,
+       means[rows_to_plot] + se[rows_to_plot] ** 2,
+       angle=90,
+       code=3)
+```
+
+```{r plot_pr_reply_nonmembers, fig.width=8}
+group_of_interest = "pr_reply:nonmember"
+rows_to_plot = grep(group_of_interest, names(means))
+
+bar_centers = barplot(means[rows_to_plot], names.arg=projects,
+		      main=group_of_interest,
+		      cex.names=0.8)
+arrows(bar_centers,
+       means[rows_to_plot] - se[rows_to_plot] ** 2, 
+       bar_centers,
+       means[rows_to_plot] + se[rows_to_plot] ** 2,
+       angle=90,
+       code=3)
+```
+
+
+```{r plot_issue_reply_members, fig.width=8}
+group_of_interest = "issue_reply:member"
+rows_to_plot = grep(group_of_interest, names(means))
+
+bar_centers = barplot(means[rows_to_plot], names.arg=projects,
+		      main=group_of_interest,
+		      cex.names=0.8)
+arrows(bar_centers,
+       means[rows_to_plot] - se[rows_to_plot] ** 2, 
+       bar_centers,
+       means[rows_to_plot] + se[rows_to_plot] ** 2,
+       angle=90,
+       code=3)
+```
+
+```{r plot_issue_reply_nonmembers, fig.width=8}
+group_of_interest = "issue_reply:nonmember"
+rows_to_plot = grep(group_of_interest, names(means))
+
+bar_centers = barplot(means[rows_to_plot], names.arg=projects,
+		      main=group_of_interest,
+		      cex.names=0.8)
+arrows(bar_centers,
+       means[rows_to_plot] - se[rows_to_plot] ** 2, 
+       bar_centers,
+       means[rows_to_plot] + se[rows_to_plot] ** 2,
+       angle=90,
+       code=3)
+```
+
+### Model 1.1c Do projects differ in emotion between one another?
+
+One versus all minus one type of approach.
+
+```{r compound_emotion_all_vs_one}
+all_project_tests = NA
+all_projects = unique(sentiment_frame$project)
+
+# We're going to fit the model for each projects, and concatenate the results
+# in a dataframe. Then, we'll apply multiple correction and display the
+# results
+for(project in all_projects){
+    sentiment_frame$test_group = sentiment_frame$project == project
+    one_versus_all_emotion = lmer(
+	compound_emotion ~ 0 + type:author_group:test_group + (1|author_name),
+	data=sentiment_frame,
+	REML=FALSE)
+
+    # Clean up mode
+    coefficients_and_se = data.frame(
+	summary(one_versus_all_emotion)$coefficients)
+    row_names = gsub(
+	"author_group", "", 
+	    gsub("type", "",
+		gsub("project", "", row.names(coefficients_and_se))))
+
+    means = coefficients_and_se$Estimate
+    names(means) = row_names
+    se = coefficients_and_se$Std..Error
+    names(se) = row_names
+
+    contrasts = c(
+	"issue_post:member:test_groupTRUE-issue_post:member:test_groupFALSE",
+	"pr_post:member:test_groupTRUE-pr_post:member:test_groupFALSE",
+	"issue_reply:member:test_groupTRUE-issue_reply:member:test_groupFALSE",
+	"pr_reply:member:test_groupTRUE-pr_reply:member:test_groupFALSE",
+	"issue_post:nonmember:test_groupTRUE-issue_post:nonmember:test_groupFALSE",
+	"pr_post:nonmember:test_groupTRUE-pr_post:nonmember:test_groupFALSE",
+	"issue_reply:nonmember:test_groupTRUE-issue_reply:nonmember:test_groupFALSE",
+	"pr_reply:nonmember:test_groupTRUE-pr_reply:nonmember:test_groupFALSE"
+	)
+
+    one_versus_all_emotion_tests = compute_t_statistics(
+	means, se,
+	contrasts)
+    one_versus_all_emotion_tests[, "p_value"] = compute_p_value_from_t_stats(
+	one_versus_all_emotion_tests$t_stats)
+
+    # Add unique identifier based on the project of interest in the table.
+    row.names(one_versus_all_emotion_tests) = gsub(
+	"test_group", project,
+	row.names(one_versus_all_emotion_tests))
+
+    if(is.null(dim(all_project_tests))){
+	all_project_tests = one_versus_all_emotion_tests
+    }else{
+	all_project_tests = rbind(
+	    all_project_tests, one_versus_all_emotion_tests)
+    }
+}
+```
+
+Now apply multiple correction and display the results of the analysis.
+
+```{r one_versus_all_display_results}
+pander_clean_anova(all_project_tests, rename_columns=FALSE)
+```
+
+### Model 1.2 time-course analysis
+
+The time-course analysis has been moved in a separate file.
 
 ### Model 1.3: Do tickets and comments materially differ in gratitude?
 
@@ -1663,168 +1320,7 @@ pander_clean_anova(all_tests, rename_columns=FALSE)
 
 ```
 
-### Model 1.4: Do tickets and comments materially differ in gratitude over time?
-
-```{r gratitude-predictors-time, eval = TRUE}
-
-# do users tend to express appreciation and gratitude differently by group and content?
-creators_v_commenters_gratitude_time = lmer(log(grateful_count + 1) ~ project + 
-                                              (author_group + type) * ns(date, df=degrees_of_freedom) +
-                                              (1 | author_name),
-                                            data=sentiment_frame)
-#family=poisson)
-
-# print results
-pander_lme(creators_v_commenters_gratitude_time)
-
-```
-
-```{r plot-gratitude-predictors-time, echo=FALSE, eval=TRUE}
-
-# split by membership type
-member_frame = sentiment_frame %>% filter(author_group == 'member')
-nonmember_frame = sentiment_frame %>% filter(author_group == 'nonmember')
-
-# membership plot
-gratitude_time_member_plot = ggplot(data=member_frame,
-                                    aes(x=date,
-                                        y=grateful_count,
-                                        colour=type)) +
-  stat_smooth() +
-  # stat_summary(alpha=0.5, size=.1) +
-  facet_grid(cols = vars(ticket_family),
-             rows = vars(project)) +
-  coord_cartesian(ylim=c(0,1.0)) +
-  theme(legend.position = "none") +
-  ggtitle('For members') +
-  ylab('Mean expressions of gratitude') +
-  scale_x_continuous(name = 'Date',
-                     breaks = c(as.numeric(as.Date("2010-01-01")),
-                                as.numeric(as.Date("2012-01-01")),
-                                as.numeric(as.Date("2014-01-01")),
-                                as.numeric(as.Date("2016-01-01")),
-                                as.numeric(as.Date("2018-01-01"))),
-                     labels = c("2010",
-                                "2012",
-                                "2014",
-                                "2016",
-                                "2018")) +
-  labs(color='Contribution type') +
-  scale_color_manual(labels = c("Issue: Post",
-                                "Issue: Reply",
-                                "PR: Post",
-                                "PR: Reply"),
-                     values = c("#e66101", # issue: post (darker)
-                                "#fdb863", # issue: reply (lighter)
-                                "#5e3c99", # PR: post (darker)
-                                "#b2abd2")) # PR: reply (lighter)
-
-# nonmembership plot
-gratitude_time_nonmember_plot = ggplot(data=nonmember_frame,
-                                       aes(x=date,
-                                           y=grateful_count,
-                                           colour=type)) +
-  stat_smooth() +
-  # stat_summary(alpha=0.5, size=.1) +
-  facet_grid(cols = vars(ticket_family),
-             rows = vars(project)) +
-  coord_cartesian(ylim=c(0,1.0)) +
-  theme(legend.position = "none") +
-  ggtitle('For members') +
-  ylab('Mean expressions of gratitude') +
-  scale_x_continuous(name = 'Date',
-                     breaks = c(as.numeric(as.Date("2010-01-01")),
-                                as.numeric(as.Date("2012-01-01")),
-                                as.numeric(as.Date("2014-01-01")),
-                                as.numeric(as.Date("2016-01-01")),
-                                as.numeric(as.Date("2018-01-01"))),
-                     labels = c("2010",
-                                "2012",
-                                "2014",
-                                "2016",
-                                "2018")) +
-  labs(color='Contribution type') +
-  scale_color_manual(labels = c("Issue: Post",
-                                "Issue: Reply",
-                                "PR: Post",
-                                "PR: Reply"),
-                     values = c("#e66101", # issue: post (darker)
-                                "#fdb863", # issue: reply (lighter)
-                                "#5e3c99", # PR: post (darker)
-                                "#b2abd2")) # PR: reply (lighter)
-
-# create another nonmember plot just for the legend
-gratitude_time_nonmember_legend = ggplot(data=nonmember_frame,
-                                         aes(x=date,
-                                             y=grateful_count,
-                                             colour=type)) +
-  stat_smooth() +
-  # stat_summary(alpha=0.5, size=.1) +
-  facet_grid(cols = vars(ticket_family),
-             rows = vars(project)) +
-  coord_cartesian(ylim=c(0,1.0)) +
-  theme(legend.position = "none") +
-  ggtitle('For members') +
-  ylab('Mean expressions of gratitude') +
-  scale_x_continuous(name = 'Date',
-                     breaks = c(as.numeric(as.Date("2010-01-01")),
-                                as.numeric(as.Date("2012-01-01")),
-                                as.numeric(as.Date("2014-01-01")),
-                                as.numeric(as.Date("2016-01-01")),
-                                as.numeric(as.Date("2018-01-01"))),
-                     labels = c("2010",
-                                "2012",
-                                "2014",
-                                "2016",
-                                "2018")) +
-  labs(color='Contribution type') +
-  scale_color_manual(labels = c("Issue: Post",
-                                "Issue: Reply",
-                                "PR: Post",
-                                "PR: Reply"),
-                     values = c("#e66101", # issue: post (darker)
-                                "#fdb863", # issue: reply (lighter)
-                                "#5e3c99", # PR: post (darker)
-                                "#b2abd2")) # PR: reply (lighter)
-
-# create a master legend
-gratitude_master_legend = gtable_filter(ggplot_gtable(
-  ggplot_build(gratitude_time_nonmember_legend +
-                 theme(legend.position="bottom"))),
-  "guide-box")
-
-# save full version
-ggsave(filename = '../../figures/sentiment_analysis/ossc-gratitude_membership_contribution_time.jpg',
-       units = "in", height = 13, width = 6,
-       grid.arrange(
-         top=grid::textGrob("Gratitude by contribution\nand community membership",
-                            gp=grid::gpar(fontsize=14)),
-         gratitude_time_member_plot,
-         gratitude_time_nonmember_plot,
-         bottom=gratitude_master_legend,
-         ncol = 1,
-         nrow = 2
-       ))
-
-# save smaller version for knitr
-ggsave(filename = '../../figures/sentiment_analysis/ossc-gratitude_membership_contribution_time-knitr.jpg',
-       dpi = 150, height = 13, width = 6,
-       grid.arrange(
-         top=grid::textGrob("Gratitude by contribution\nand community membership",
-                            gp=grid::gpar(fontsize=14)),
-         gratitude_time_member_plot,
-         gratitude_time_nonmember_plot,
-         bottom=gratitude_master_legend,
-         ncol = 1,
-         nrow = 2
-       ))
-
-```
-
-![**Figure**. Expressions of gratitude over time by contribution type (ticket vs. comment) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-gratitude_membership_contribution_time-knitr.jpg)
-
 ## Model Series 2: Retention
-
 Our second set of models investigates what aspects of the response to a 
 newcomer's first contribution might predict their likelihood to come back
 to contribute a second time.
@@ -1862,6 +1358,8 @@ aggregated_comments = comments_frame %>% ungroup() %>%
 
 After we've summarized the comment threads, we next join those metrics with the
 tickets dataframe in preparation for our models.
+
+
 
 ```{r prep-for-retention-analysis}
 
@@ -1916,7 +1414,6 @@ retention_frame = tickets_frame %>%
                  ticket_family_numeric,
                  retained_newcomer),
             as.factor)
-
 ```
 
 ### Model 2.1: How does a community's response to newcomers predict the newcomer's decision to return?

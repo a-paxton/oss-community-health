@@ -1,0 +1,281 @@
+---
+title: "Communication dynamics in OSS communities"
+output:
+  html_document:
+    keep_md: yes
+    number_sections: yes
+    toc: true
+---
+
+This R markdown provides the data preparation for our forthcoming manuscript
+(Paxton, Varoquaux, Geiger, & Holdgraf, *in preparation*).
+
+To run this from scratch, you will need the following files:
+
+* `../../data/analysis_data/sentiment_frame_tickets-for_r.csv`: Contains cleaned
+**tickets**-related data and derived variables from scraped GitHub data.
+* `../../data/analysis_data/sentiment_frame_comments-for_r.csv`: Contains
+cleaned **comments**-related data and derived variables from scraped GitHub
+data.
+* `./utils/ossc-libraries_and_functions.r`: Loads in necessary libraries and
+creates new functions for our analyses.
+
+**Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux
+(CNRS)
+
+**Date last compiled**:  `r Sys.time()`
+
+```{r silent-preparations, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(cache=TRUE, autodep=TRUE, cache.lazy=FALSE)
+```
+
+***
+
+# Preliminaries
+
+```{r prelim, warning = FALSE, error = FALSE, message = FALSE}
+
+# clear everything
+rm(list=ls())
+
+# load libraries and add new functions
+source('./utils/ossc-libraries_and_functions.r')
+source("./utils/data-loading.R")
+
+
+```
+```{r choosing_dataset}
+# We are now going to select the dataset we'll be working on.
+library(dplyr)
+tickets_frame = loading_tickets_data(dataset="original")
+comments_frame = loading_comments_data(dataset="original")
+```
+
+## Basic summary stats
+
+Now that our data have been largely cleaned, let's take a look at some basic
+patterns.
+
+```{r user-stats, include=FALSE, eval=TRUE}
+
+# get unique values
+unique_commenters = as.character(unique(comments_frame$author_name))
+unique_ticketers = as.character(unique(tickets_frame$author_name))
+unique_users = as.character(unique(append(unique_commenters, unique_ticketers)))
+
+```
+
+```{r activity-stats, echo=FALSE, eval=TRUE}
+
+# get counts of ticket activity per project
+ticket_counts = tickets_frame %>% ungroup() %>%
+  dplyr::select(project, id) %>%
+  distinct() %>%
+  group_by(project) %>%
+  summarize(unique_tickets = n())
+
+# get counts of comment activity per project
+comment_counts = comments_frame %>% ungroup() %>%
+  dplyr::select(project, id, ticket_id) %>%
+  distinct() %>%
+  group_by(project) %>%
+  summarize(unique_comments = n())
+
+# bind the two
+contribution_counts = dplyr::full_join(ticket_counts, comment_counts,
+                                       by='project')
+
+# print the table and then clean up a bit
+pander(contribution_counts, style = 'rmarkdown')
+rm(ticket_counts, comment_counts)
+
+```
+
+Our dataset includes `r dim(contribution_counts)[1]` unique projects with a
+total of `r sum(contribution_counts$unique_tickets)` unique tickets, with a
+mean of `r mean(contribution_counts$unique_tickets)` tickets per project.
+
+On these tickets, the dataset includes
+`r sum(contribution_counts$unique_comments)` unique comments, with
+`r mean(contribution_counts$unique_comments)` average comments per project.
+
+In total, we have `r length(unique_commenters)` unique commenters,
+`r length(unique_ticketers)` unique ticket-creators, and
+`r length(unique_users)` overall unique users.
+
+***
+
+# Data analysis
+
+***
+
+### Data preparation
+
+Before we can run Model Series 1, we need to combine `tickets_frame` and
+`comments_frame` into a single dataframe. We do this using the
+`combine_tickets_and_comments` function, `defined in utils/data-loading.R`
+
+```{r prepare-data-for-sentiment-analysis}
+sentiment_frame = combine_tickets_and_comments(tickets_frame, comments_frame)
+
+```
+
+
+### Model 1.2: Do tickets and comments materially differ in emotion over time?
+
+Here, we are estimating the sentiment score per project, type of submission,
+and membership for every year we have. It is a similar model to model 1.1b,
+except the data is binned by year.
+
+```{r sentiment_modeling_per_year}
+sentiment_frame$year = as.factor(sentiment_frame$year)
+timecourse_compound_emotion = lmer(
+    compound_emotion ~ 0 + project:type:author_group:year + (1 | author_name),
+    data=sentiment_frame,
+    REML=FALSE)
+```
+
+
+
+```{r clean-up_model-1:2c-output}
+coefficients_and_se = data.frame(
+    summary(timecourse_compound_emotion)$coefficients)
+
+row_names = gsub(
+    "project", "", gsub(
+	"author_group", "", gsub(
+	    "type", "", row.names(coefficients_and_se))))
+
+row_names = gsub(
+    "year", "", row_names)
+
+# replace hyphens in project names with periods
+row_names = gsub(
+  "scikit-", "scikit.", gsub(
+    "sphinx-", "sphinx.", row_names))
+
+# convert model estimates to a dataframe
+means = coefficients_and_se$Estimate
+names(means) = row_names
+
+# convert standard error to dataframe
+se = coefficients_and_se$Std..Error
+names(se) = row_names
+```
+
+
+#### Model 1.2: Visualizing the data.
+
+Ok, so I don't really want to do any statistical tests yet here. I'm going to
+visualize the timecourse coefficients here.
+
+
+```{r plot_timecourse_compound_sentiment}
+source("utils/visualization.R")
+
+plot_timecourse("numpy", means)
+plot_timecourse("scipy", means)
+plot_timecourse("mayavi", means)
+plot_timecourse("matplotlib", means)
+plot_timecourse("scikit.learn", means)
+plot_timecourse("scikit.image", means)
+plot_timecourse("sphinx.gallery", means)
+```
+
+#### Model 1.2 Do project differ from one another across time.
+
+The following is going to be a bit painful in terms of fitting the model...
+
+```{r compound-emotion-all-vs-one-timecourse}
+
+all_project_tests = NA
+all_projects = unique(sentiment_frame$project)
+
+# We're going to fit the model for each projects, and concatenate the results
+# in a dataframe. Then, we'll apply multiple correction and display the
+# results
+for(project in all_projects){
+    sentiment_frame$test_group = sentiment_frame$project == project
+    one_versus_all_emotion = lmer(
+	compound_emotion ~ 0 + type:author_group:test_group:year + (1|author_name),
+	data=sentiment_frame,
+	REML=FALSE)
+
+    # Clean up mode
+    coefficients_and_se = data.frame(
+	summary(one_versus_all_emotion)$coefficients)
+    row_names = gsub(
+	"author_group", "", 
+	    gsub("type", "",
+		gsub("project", "", row.names(coefficients_and_se))))
+
+    means = coefficients_and_se$Estimate
+    names(means) = row_names
+    se = coefficients_and_se$Std..Error
+    names(se) = row_names
+
+    template_contrasts = c(
+	"issue_post:member:test_groupTRUE-issue_post:member:test_groupFALSE",
+	"pr_post:member:test_groupTRUE-pr_post:member:test_groupFALSE",
+	"issue_reply:member:test_groupTRUE-issue_reply:member:test_groupFALSE",
+	"pr_reply:member:test_groupTRUE-pr_reply:member:test_groupFALSE",
+	"issue_post:nonmember:test_groupTRUE-issue_post:nonmember:test_groupFALSE",
+	"pr_post:nonmember:test_groupTRUE-pr_post:nonmember:test_groupFALSE",
+	"issue_reply:nonmember:test_groupTRUE-issue_reply:nonmember:test_groupFALSE",
+	"pr_reply:nonmember:test_groupTRUE-pr_reply:nonmember:test_groupFALSE"
+	)
+
+    # Now, extend this to all years.
+    contrasts = c(
+	unlist(
+	    lapply(gsub("-", ":year2009", template_contrasts),
+		function(x) paste(x, ":year2009", sep=""))),
+	unlist(
+	    lapply(gsub("-", ":year2010", template_contrasts),
+		function(x) paste(x, ":year2010", sep=""))),
+	unlist(
+	    lapply(gsub("-", ":year2011", template_contrasts),
+		function(x) paste(x, ":year2011", sep=""))),
+	unlist(
+	    lapply(gsub("-", ":year2012", template_contrasts),
+		function(x) paste(x, ":year2012", sep=""))),
+	unlist(
+	    lapply(gsub("-", ":year2013", template_contrasts),
+		function(x) paste(x, ":year2013", sep=""))),
+	unlist(
+	    lapply(gsub("-", ":year2014", template_contrasts),
+		function(x) paste(x, ":year2014", sep=""))),
+	unlist(
+	    lapply(gsub("-", ":year2015", template_contrasts),
+		function(x) paste(x, ":year2015", sep=""))),
+	unlist(
+	    lapply(gsub("-", ":year2016", template_contrasts),
+		function(x) paste(x, ":year2016", sep=""))),
+	unlist(
+	    lapply(gsub("-", ":year2017", template_contrasts),
+		function(x) paste(x, ":year2017", sep=""))),
+	unlist(
+	    lapply(gsub("-", ":year2018", template_contrasts),
+		function(x) paste(x, ":year2018", sep=""))))
+
+
+    one_versus_all_emotion_tests = compute_t_statistics(
+	means, se,
+	contrasts)
+    one_versus_all_emotion_tests[, "p_value"] = compute_p_value_from_t_stats(
+	one_versus_all_emotion_tests$t_stats)
+
+    # Add unique identifier based on the project of interest in the table.
+    row.names(one_versus_all_emotion_tests) = gsub(
+	"test_group", project,
+	row.names(one_versus_all_emotion_tests))
+
+    if(is.null(dim(all_project_tests))){
+	all_project_tests = one_versus_all_emotion_tests
+    }else{
+	all_project_tests = rbind(
+	    all_project_tests, one_versus_all_emotion_tests)
+    }
+}
+```

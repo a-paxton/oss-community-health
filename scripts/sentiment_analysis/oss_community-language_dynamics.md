@@ -19,11 +19,13 @@ cleaned **comments**-related data and derived variables from scraped GitHub
 data.
 * `./utils/ossc-libraries_and_functions.r`: Loads in necessary libraries and
 creates new functions for our analyses.
+* `./utils/data-loading.R`: loads functions related to data loading and
+  preprocessing.
 
 **Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux
 (CNRS)
 
-**Date last compiled**:  2019-10-14 13:54:23
+**Date last compiled**:  2019-10-15 16:17:10
 
 
 
@@ -38,135 +40,21 @@ rm(list=ls())
 
 # load libraries and add new functions
 source('./utils/ossc-libraries_and_functions.r')
-
-# load data
-tickets_frame = read.csv('../../data/analysis_data/dataset_scip/sentiment_frame_tickets-for_r.tsv',
-                          sep = '\t', stringsAsFactors=FALSE)
-
-comments_frame = read.csv('../../data/analysis_data/dataset_scip/sentiment_frame_comments-for_r.tsv',
-                          sep = '\t', stringsAsFactors=FALSE)
-
-ticket_frame_preserve = tickets_frame
-tickets_frame = ticket_frame_preserve
-comment_frame_preserve = comments_frame
-comments_frame = comment_frame_preserve
+source("./utils/data-loading.R")
 ```
-
-
-```r
-# Sometimes, R fails to load the CSV file properly and truncates it. This cell
-# does a basic check on the size of the data to make sure we have the correct
-# number of rows and colums.
-if(all(dim(tickets_frame) != c(90117, 36))){
-    stop("Problem with the ticket frame. Not the right size!!")
-}
-
-if(all(dim(comments_frame) != c(524062, 29))){
-    stop("Problem with the ticket frame. Not the right size!!")
-}
-```
-
 
 
 ```r
 # We are now going to select the dataset we'll be working on.
-which_dataset = "original"
-tickets_frame = tickets_frame[tickets_frame$scip_dataset == which_dataset, ]
-comments_frame = comments_frame[comments_frame$scip_dataset == which_dataset, ]
+library(dplyr)
+tickets_frame = loading_tickets_data(dataset="original")
+comments_frame = loading_comments_data(dataset="original")
 ```
 
-***
-
-## Clean up dataframes
-
-Here, we run a number of cleanup stages to ensure that we have the data we need
-(and in the right format) for our models.
-
-
-```r
-# fix tickets dataframe
-tickets_frame = tickets_frame %>% ungroup() %>%
-  
-  # filter out bots
-  dplyr::filter(bot_flag == "False") %>%
-  dplyr::select(-bot_flag) %>%
-  
-  # get time in seconds, read creation date properly, and specify contribution type
-  dplyr::rename(open_time = open_duration) %>%
-  mutate(date = as.numeric(as.Date(created_at))) %>%
-  mutate(type_family = 'post') %>%
- 
-  # figure out author associations
-  mutate(total_tickets = num_PR_created + num_issue_created) %>%
-  mutate(author_group = dplyr::if_else(total_tickets < 5,
-                                       'nonmember',
-                                       'member')) %>%
-  
-  # rename variables associated with type of ticket and type of contribution
-  dplyr::rename(ticket_family = type) %>%
-  mutate(ticket_family = recode(ticket_family, pull_request = "pr")) %>%
-  mutate(type = paste0(ticket_family,'_',type_family)) %>%
-  
-  # convert to factors (as needed) for proper modeling
-  mutate_at(vars(first_ticket),
-            as.logical) %>%
-  mutate_at(vars(project,
-                 author_name,
-                 author_group,
-                 author_association,
-                 type,
-                 type_family,
-                 ticket_family),
-            as.factor) %>%
-  
-  # drop old columns
-  dplyr::select(-ends_with('_at'))
-```
-
-
-```r
-# fix comments dataframe
-comments_frame = comments_frame %>% ungroup() %>%
-  
-  # filter out bots and comments on tickets that have been filtered out (due to modification date)
-  dplyr::filter(bot_flag == "False") %>%
-  dplyr::select(-bot_flag) %>%
-  dplyr::filter(!type == "") %>%
-   
-  # read creation date properly and add contribution type
-  mutate(date = as.numeric(as.Date(created_at))) %>%
-  mutate(type_family = 'reply') %>%
-  
-  # figure out author associations
-  mutate(total_tickets = num_PR_created + num_issue_created) %>%
-  mutate(author_group = dplyr::if_else(total_tickets < 5,
-                                       'nonmember',
-                                       'member')) %>%
-  
-  # rename variables associated with type of ticket and type of contribution
-  dplyr::rename(ticket_family = type) %>%
-  mutate(ticket_family = recode(ticket_family, pull_request = "pr")) %>%
-  mutate(type = paste0(ticket_family,'_',type_family)) %>%
-  
-  # convert to factors (as needed) for proper modeling
-  mutate_at(vars(project,
-                 author_name,
-                 author_group,
-                 author_association,
-                 type,
-                 type_family,
-                 ticket_family),
-            as.factor) %>%
-  
-  # drop old columns
-  dplyr::select(-ends_with('_at')) 
-```
-
-***
 
 ## Basic summary stats
 
-Now that our data have been largely cleaned, let's take a look at some basic
+The data has been largely cleaned. Let's take a look at some basic
 patterns.
 
 
@@ -189,7 +77,7 @@ mean of 8583.875 tickets per project.
 
 On these tickets, the dataset includes
 439024 unique comments, with
-5.4878\times 10^{4} average comments per project.
+54878 average comments per project.
 
 In total, we have 15560 unique commenters,
 14147 unique ticket-creators, and
@@ -206,38 +94,12 @@ In total, we have 15560 unique commenters,
 ### Data preparation
 
 Before we can run Model Series 1, we need to combine `tickets_frame` and
-`comments_frame` into a single dataframe.
+`comments_frame` into a single dataframe. We do this using the
+`combine_tickets_and_comments` function, `defined in utils/data-loading.R`
 
 
 ```r
-# merge tickets and comments into a single frame
-sentiment_frame = tickets_frame %>%
-  dplyr::bind_rows(., comments_frame) %>%
-  
-  # keep only select variables
-  dplyr::select(project,
-                date,
-                contains('author'),
-                first_ticket,
-                contains('num_'),
-                contains('ticket'),
-                contains('type'),
-                contains('grateful_count'),
-                contains('emotion'),
-                contains('open_'),
-                -contains('ticket_author_')) %>%
-  
-  # convert to factors (as needed) for proper modeling
-  mutate_at(vars(first_ticket),
-            as.logical) %>%
-  mutate_at(vars(project,
-                 author_name,
-                 author_group,
-                 author_association,
-                 type,
-                 type_family,
-                 ticket_family),
-            as.factor)
+sentiment_frame = combine_tickets_and_comments(tickets_frame, comments_frame)
 ```
 
 ```
@@ -818,107 +680,25 @@ Finally, let's plot these effects.
 
 ![**Figure**. Sentiment by contribution type (ticket vs. comment) and community membership at the time of posting (member vs. nonmember) for each project.](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution-by_project-knitr.jpg)
 
-### Model 1.2: Do tickets and comments materially differ in emotion over time?
+#### Model 1.2b: More plots, this time using means and std estimated from model-fit
+
+Here, we are going to test whether projects differ from the mean.
 
 
 ```r
-# specify number of splines basis to use
-degrees_of_freedom = 4
-```
-
-In this model, we explore whether there are time-based splines in the
-observations from Model 1.1. First, let's look at the splines basis functions,
-and which time points they span by default.
-
-
-
-![**Figure**. Basis functions for sentiment.](../../figures/sentiment_analysis/ossc-sentiment_basis_functions.jpg)
-
-Now, let us use these splines model to model the time variation of the 3-way
-interaction terms. We model the intercept for the three way interaction
-separately from the splines: This allows us to only look at changes over time
-and not changes in intercept.
-
-Note that we cannot use too many degrees of freedom, as sphinx-gallery spans a
-shorter time period than other projects. Any spline basis function that covers
-only the 2012 to 2015 cannot be estimated on sphinx-gallery.
-
-
-
-
-```r
-# do tickets and comments materially differ in emotion over time?
-degrees_of_freedom = NULL
-knots = NULL
-
-# do tickets and comments materially differ in emotion over time?
-formula = (
-  compound_emotion ~ 0 +
-    type:author_group:group_date_ns(
-      date, project, "matplotlib",
-      knots=knots, degrees_of_freedom=degrees_of_freedom) +
-    type:author_group:group_date_ns(
-      date, project, "mayavi",
-      knots=knots, degrees_of_freedom=degrees_of_freedom) +
-    type:author_group:group_date_ns(
-      date, project, "numpy",
-      knots=knots, degrees_of_freedom=degrees_of_freedom) +
-    type:author_group:group_date_ns(
-      date, project, "pandas",
-      knots=knots, degrees_of_freedom=degrees_of_freedom) +
-    type:author_group:group_date_ns(
-      date, project, "scikit-image",
-      knots=knots, degrees_of_freedom=degrees_of_freedom) +
-    type:author_group:group_date_ns(
-      date, project, "scikit-learn",
-      knots=knots, degrees_of_freedom=degrees_of_freedom) +
-    type:author_group:group_date_ns(
-      date, project, "scipy",
-      knots=knots, degrees_of_freedom=degrees_of_freedom) +
-    type:author_group:group_date_ns(
-      date, project, "sphinx-gallery",
-      knots=knots, degrees_of_freedom=degrees_of_freedom) +
-    (1 | author_name))
-
-creators_v_commenters_emotion_by_project_time = lmer(
-  formula,
-  data = sentiment_frame,
-  REML=FALSE)
-```
-
-```
-## Warning: Some predictor variables are on very different scales: consider
-## rescaling
-
-## Warning: Some predictor variables are on very different scales: consider
-## rescaling
-```
-
-We'll do another table to display all results.
-
-
-```r
-# convert Model 1.2 output to dataframe
 coefficients_and_se = data.frame(
-  summary(creators_v_commenters_emotion_by_project_time)$coefficients)
+  summary(creators_v_commenters_emotion_by_project)$coefficients)
 
 # get comparison names as rownames
 row_names = gsub(
   "project", "", gsub(
-    "author_group", "", gsub("type", "", row.names(coefficients_and_se))))
-
-# Now deal with the very annoying splines coefficient ff    row.names
-row_names = gsub(
-  "group_date_ns(date, , \"", "", row_names, fixed=TRUE)
-row_names = gsub(
-  "\", knots = knots, degrees_of_freedom = degrees_of_freedom)", ":coef", row_names, fixed=TRUE)
-
+    "author_group", "", gsub(
+      "type", "", row.names(coefficients_and_se))))
 
 # replace hyphens in project names with periods
 row_names = gsub(
   "scikit-", "scikit.", gsub(
     "sphinx-", "sphinx.", row_names))
-
 
 # convert model estimates to a dataframe
 means = coefficients_and_se$Estimate
@@ -927,279 +707,362 @@ names(means) = row_names
 # convert standard error to dataframe
 se = coefficients_and_se$Std..Error
 names(se) = row_names
-
-# we're interested in looking at the coefficients of the splines.
-partial_time_contrasts = c(
-  # scikit-learn
-  "issue_post:member:scikit.learn-issue_post:nonmember:scikit.learn",   
-  "issue_reply:member:scikit.learn-issue_reply:nonmember:scikit.learn",
-  "pr_post:member:scikit.learn-pr_post:nonmember:scikit.learn",
-  "pr_reply:member:scikit.learn-pr_reply:nonmember:scikit.learn",
-  "issue_post:member:scikit.learn-issue_reply:member:scikit.learn",
-  "issue_post:nonmember:scikit.learn-issue_reply:nonmember:scikit.learn",
-  "pr_post:member:scikit.learn-pr_reply:member:scikit.learn",
-  "pr_post:nonmember:scikit.learn-pr_reply:nonmember:scikit.learn",
-  "issue_post:member:scikit.learn-pr_post:member:scikit.learn",
-  "issue_post:nonmember:scikit.learn-pr_post:nonmember:scikit.learn",    
-  "issue_reply:member:scikit.learn-pr_reply:member:scikit.learn",  
-  "issue_reply:nonmember:scikit.learn-pr_reply:nonmember:scikit.learn",
-  
-  # scikit-image
-  "issue_post:member:scikit.image-issue_post:nonmember:scikit.image",   
-  "issue_reply:member:scikit.image-issue_reply:nonmember:scikit.image",
-  "pr_post:member:scikit.image-pr_post:nonmember:scikit.image",
-  "pr_reply:member:scikit.image-pr_reply:nonmember:scikit.image",
-  "issue_post:member:scikit.image-issue_reply:member:scikit.image",
-  "issue_post:nonmember:scikit.image-issue_reply:nonmember:scikit.image",
-  "pr_post:member:scikit.image-pr_reply:member:scikit.image",
-  "pr_post:nonmember:scikit.image-pr_reply:nonmember:scikit.image",
-  "issue_post:member:scikit.image-pr_post:member:scikit.image",
-  "issue_post:nonmember:scikit.image-pr_post:nonmember:scikit.image",    
-  "issue_reply:member:scikit.image-pr_reply:member:scikit.image",  
-  "issue_reply:nonmember:scikit.image-pr_reply:nonmember:scikit.image",
-  
-  # matplotlib
-  "issue_post:member:matplotlib-issue_post:nonmember:matplotlib",   
-  "issue_reply:member:matplotlib-issue_reply:nonmember:matplotlib",
-  "pr_post:member:matplotlib-pr_post:nonmember:matplotlib",
-  "pr_reply:member:matplotlib-pr_reply:nonmember:matplotlib",
-  "issue_post:member:matplotlib-issue_reply:member:matplotlib",
-  "issue_post:nonmember:matplotlib-issue_reply:nonmember:matplotlib",
-  "pr_post:member:matplotlib-pr_reply:member:matplotlib",
-  "pr_post:nonmember:matplotlib-pr_reply:nonmember:matplotlib",
-  "issue_post:member:matplotlib-pr_post:member:matplotlib",
-  "issue_post:nonmember:matplotlib-pr_post:nonmember:matplotlib",    
-  "issue_reply:member:matplotlib-pr_reply:member:matplotlib",  
-  "issue_reply:nonmember:matplotlib-pr_reply:nonmember:matplotlib",
-  
-  # mayavi
-  "issue_post:member:mayavi-issue_post:nonmember:mayavi",   
-  "issue_reply:member:mayavi-issue_reply:nonmember:mayavi",
-  "pr_post:member:mayavi-pr_post:nonmember:mayavi",
-  "pr_reply:member:mayavi-pr_reply:nonmember:mayavi",
-  "issue_post:member:mayavi-issue_reply:member:mayavi",
-  "issue_post:nonmember:mayavi-issue_reply:nonmember:mayavi",
-  "pr_post:member:mayavi-pr_reply:member:mayavi",
-  "pr_post:nonmember:mayavi-pr_reply:nonmember:mayavi",
-  "issue_post:member:mayavi-pr_post:member:mayavi",
-  "issue_post:nonmember:mayavi-pr_post:nonmember:mayavi",    
-  "issue_reply:member:mayavi-pr_reply:member:mayavi",  
-  "issue_reply:nonmember:mayavi-pr_reply:nonmember:mayavi",
-  
-  # pandas
-  "issue_post:member:pandas-issue_post:nonmember:pandas",   
-  "issue_reply:member:pandas-issue_reply:nonmember:pandas",
-  "pr_post:member:pandas-pr_post:nonmember:pandas",
-  "pr_reply:member:pandas-pr_reply:nonmember:pandas",
-  "issue_post:member:pandas-issue_reply:member:pandas",
-  "issue_post:nonmember:pandas-issue_reply:nonmember:pandas",
-  "pr_post:member:pandas-pr_reply:member:pandas",
-  "pr_post:nonmember:pandas-pr_reply:nonmember:pandas",
-  "issue_post:member:pandas-pr_post:member:pandas",
-  "issue_post:nonmember:pandas-pr_post:nonmember:pandas",    
-  "issue_reply:member:pandas-pr_reply:member:pandas",  
-  "issue_reply:nonmember:pandas-pr_reply:nonmember:pandas",
-  
-  # scipy
-  "issue_post:member:scipy-issue_post:nonmember:scipy",   
-  "issue_reply:member:scipy-issue_reply:nonmember:scipy",
-  "pr_post:member:scipy-pr_post:nonmember:scipy",
-  "pr_reply:member:scipy-pr_reply:nonmember:scipy",
-  "issue_post:member:scipy-issue_reply:member:scipy",
-  "issue_post:nonmember:scipy-issue_reply:nonmember:scipy",
-  "pr_post:member:scipy-pr_reply:member:scipy",
-  "pr_post:nonmember:scipy-pr_reply:nonmember:scipy",
-  "issue_post:member:scipy-pr_post:member:scipy",
-  "issue_post:nonmember:scipy-pr_post:nonmember:scipy",    
-  "issue_reply:member:scipy-pr_reply:member:scipy",  
-  "issue_reply:nonmember:scipy-pr_reply:nonmember:scipy",
-  
-  # numpy
-  "issue_post:member:numpy-issue_post:nonmember:numpy",   
-  "issue_reply:member:numpy-issue_reply:nonmember:numpy",
-  "pr_post:member:numpy-pr_post:nonmember:numpy",
-  "pr_reply:member:numpy-pr_reply:nonmember:numpy",
-  "issue_post:member:numpy-issue_reply:member:numpy",
-  "issue_post:nonmember:numpy-issue_reply:nonmember:numpy",
-  "pr_post:member:numpy-pr_reply:member:numpy",
-  "pr_post:nonmember:numpy-pr_reply:nonmember:numpy",
-  "issue_post:member:numpy-pr_post:member:numpy",
-  "issue_post:nonmember:numpy-pr_post:nonmember:numpy",    
-  "issue_reply:member:numpy-pr_reply:member:numpy",  
-  "issue_reply:nonmember:numpy-pr_reply:nonmember:numpy",
-  
-  # sphinx-gallery
-  "issue_post:member:sphinx.gallery-issue_post:nonmember:sphinx.gallery",   
-  "issue_reply:member:sphinx.gallery-issue_reply:nonmember:sphinx.gallery",
-  "pr_post:member:sphinx.gallery-pr_post:nonmember:sphinx.gallery",
-  "pr_reply:member:sphinx.gallery-pr_reply:nonmember:sphinx.gallery",
-  "issue_post:member:sphinx.gallery-issue_reply:member:sphinx.gallery",
-  "issue_post:nonmember:sphinx.gallery-issue_reply:nonmember:sphinx.gallery",
-  "pr_post:member:sphinx.gallery-pr_reply:member:sphinx.gallery",
-  "pr_post:nonmember:sphinx.gallery-pr_reply:nonmember:sphinx.gallery",
-  "issue_post:member:sphinx.gallery-pr_post:member:sphinx.gallery",
-  "issue_post:nonmember:sphinx.gallery-pr_post:nonmember:sphinx.gallery",    
-  "issue_reply:member:sphinx.gallery-pr_reply:member:sphinx.gallery",  
-  "issue_reply:nonmember:sphinx.gallery-pr_reply:nonmember:sphinx.gallery"
-)
-
-
-time_contrasts = c(
-  unlist(
-    lapply(gsub("-", ":coef1-", partial_time_contrasts),
-           function(x) paste(x, ":coef1", sep=""))),
-  unlist(
-    lapply(gsub("-", ":coef2-", partial_time_contrasts),
-           function(x) paste(x, ":coef2", sep=""))),
-  unlist(
-    lapply(gsub("-", ":coef3-", partial_time_contrasts),
-           function(x) paste(x, ":coef3", sep=""))),
-  unlist(
-    lapply(gsub("-", ":coef4-", partial_time_contrasts),
-           function(x) paste(x, ":coef4", sep=""))),
-  unlist(
-    lapply(gsub("-", ":coef5-", partial_time_contrasts),
-           function(x) paste(x, ":coef5", sep=""))),
-  unlist(
-    lapply(gsub("-", ":coef6-", partial_time_contrasts),
-           function(x) paste(x, ":coef6", sep=""))),
-  unlist(
-    lapply(gsub("-", ":coef7-", partial_time_contrasts),
-           function(x) paste(x, ":coef7", sep=""))),
-  unlist(
-    lapply(gsub("-", ":coef8-", partial_time_contrasts),
-           function(x) paste(x, ":coef8", sep="")))
-)
-
-# should aid with interpretation
-time_contrasts = sort(time_contrasts)
-# compute statistics over specified contrast areas
-project_type_author_group_time_tests = compute_t_statistics(
-  means, se, time_contrasts)
-project_type_author_group_time_tests[, "p_value"] = compute_p_value_from_t_stats(
-  project_type_author_group_time_tests$t_stats)
-
-# Filter out all NAs, which correspond to contrasts that don't exist
-project_type_author_group_time_tests = project_type_author_group_time_tests[
-  !is.na(project_type_author_group_time_tests$p_value), ]
 ```
 
-Because we have so many tests, we'll only display the ones that are significant
-(after adjusting for multiple comparisons).
+
+```r
+projects = c("Matplotlib", "Mayavi", "numpy", "pandas",
+	     "scikit-image", "scikit-learn", "scipy", "sphinx-gallery")
+```
+
+
+```r
+group_of_interest = "pr_post:member"
+rows_to_plot = grep(group_of_interest, names(means))
+
+bar_centers = barplot(means[rows_to_plot], names.arg=projects,
+		      main=group_of_interest,    
+		      cex.names=0.8)
+arrows(bar_centers,
+       means[rows_to_plot] - se[rows_to_plot] ** 2, 
+       bar_centers,
+       means[rows_to_plot] + se[rows_to_plot] ** 2,
+       angle=90,
+       code=3)
+```
+
+![](oss_community-language_dynamics_files/figure-html/plot_pr_post_members-1.png)<!-- -->
+
+
+```r
+group_of_interest = "pr_post:nonmember"
+rows_to_plot = grep(group_of_interest, names(means))
+
+bar_centers = barplot(means[rows_to_plot], names.arg=projects,
+		      main=group_of_interest,
+		      cex.names=0.8)
+
+arrows(bar_centers,
+       means[rows_to_plot] - se[rows_to_plot] ** 2, 
+       bar_centers,
+       means[rows_to_plot] + se[rows_to_plot] ** 2,
+       angle=90,
+       code=3)
+```
+
+![](oss_community-language_dynamics_files/figure-html/plot_pr_post_nonmembers-1.png)<!-- -->
 
 
 
-|                                          &nbsp;                                          | t_stats | p_value | p_adj | sig |
-|:----------------------------------------------------------------------------------------:|:-------:|:-------:|:-----:|:---:|
-|       **issue_post:member:matplotlib:coef1-issue_post:nonmember:matplotlib:coef1**       | -3.526  |  4e-04  | 0.006 | **  |
-|        **issue_post:member:matplotlib:coef1-issue_reply:member:matplotlib:coef1**        | -5.864  |  1e-04  | 1e-04 | *** |
-|          **issue_post:member:matplotlib:coef1-pr_post:member:matplotlib:coef1**          | -4.926  |  1e-04  | 1e-04 | *** |
-|        **issue_post:member:matplotlib:coef6-issue_reply:member:matplotlib:coef6**        | -3.184  |  0.002  | 0.016 |  *  |
-|           **issue_post:member:mayavi:coef4-issue_post:nonmember:mayavi:coef4**           |  2.783  |  0.005  | 0.038 |  *  |
-|             **issue_post:member:numpy:coef4-issue_reply:member:numpy:coef4**             | -3.093  |  0.002  | 0.018 |  *  |
-|            **issue_post:member:pandas:coef2-issue_reply:member:pandas:coef2**            | -3.448  |  0.001  | 0.007 | **  |
-|            **issue_post:member:pandas:coef6-issue_reply:member:pandas:coef6**            |  2.761  |  0.006  | 0.04  |  *  |
-|            **issue_post:member:pandas:coef7-issue_reply:member:pandas:coef7**            | -7.219  |  1e-04  | 1e-04 | *** |
-|     **issue_post:member:scikit.learn:coef2-issue_post:nonmember:scikit.learn:coef2**     |  -2.75  |  0.006  | 0.041 |  *  |
-|      **issue_post:member:scikit.learn:coef2-issue_reply:member:scikit.learn:coef2**      | -2.962  |  0.003  | 0.025 |  *  |
-|      **issue_post:member:scikit.learn:coef7-issue_reply:member:scikit.learn:coef7**      | -4.766  |  1e-04  | 1e-04 | *** |
-|        **issue_post:member:scikit.learn:coef7-pr_post:member:scikit.learn:coef7**        | -2.934  |  0.003  | 0.026 |  *  |
-|        **issue_post:member:scikit.learn:coef8-pr_post:member:scikit.learn:coef8**        |  2.788  |  0.005  | 0.038 |  *  |
-|     **issue_post:nonmember:matplotlib:coef4-issue_reply:nonmember:matplotlib:coef4**     | -3.219  |  0.001  | 0.014 |  *  |
-|     **issue_post:nonmember:matplotlib:coef6-issue_reply:nonmember:matplotlib:coef6**     | -5.478  |  1e-04  | 1e-04 | *** |
-|          **issue_post:nonmember:numpy:coef3-issue_reply:nonmember:numpy:coef3**          | -3.297  |  0.001  | 0.011 |  *  |
-|          **issue_post:nonmember:numpy:coef4-issue_reply:nonmember:numpy:coef4**          |  -2.97  |  0.003  | 0.025 |  *  |
-|         **issue_post:nonmember:pandas:coef2-issue_reply:nonmember:pandas:coef2**         | -5.015  |  1e-04  | 1e-04 | *** |
-|         **issue_post:nonmember:pandas:coef3-issue_reply:nonmember:pandas:coef3**         | -3.127  |  0.002  | 0.018 |  *  |
-|           **issue_post:nonmember:pandas:coef5-pr_post:nonmember:pandas:coef5**           |  2.741  |  0.006  | 0.042 |  *  |
-|           **issue_post:nonmember:pandas:coef6-pr_post:nonmember:pandas:coef6**           | -4.627  |  1e-04  | 1e-04 | *** |
-|         **issue_post:nonmember:pandas:coef7-issue_reply:nonmember:pandas:coef7**         | -3.373  |  0.001  | 0.008 | **  |
-|           **issue_post:nonmember:pandas:coef8-pr_post:nonmember:pandas:coef8**           |  4.378  |  1e-04  | 3e-04 | *** |
-|   **issue_post:nonmember:scikit.image:coef5-issue_reply:nonmember:scikit.image:coef5**   | -2.803  |  0.005  | 0.037 |  *  |
-|     **issue_post:nonmember:scikit.image:coef5-pr_post:nonmember:scikit.image:coef5**     | -4.155  |  1e-04  | 0.001 | **  |
-|     **issue_post:nonmember:scikit.image:coef6-pr_post:nonmember:scikit.image:coef6**     | -3.088  |  0.002  | 0.018 |  *  |
-|   **issue_post:nonmember:scikit.learn:coef1-issue_reply:nonmember:scikit.learn:coef1**   | -3.574  |  4e-04  | 0.005 | **  |
-|     **issue_post:nonmember:scikit.learn:coef1-pr_post:nonmember:scikit.learn:coef1**     | -3.323  |  0.001  | 0.01  |  *  |
-|   **issue_post:nonmember:scikit.learn:coef3-issue_reply:nonmember:scikit.learn:coef3**   | -3.403  |  0.001  | 0.008 | **  |
-|   **issue_post:nonmember:scikit.learn:coef5-issue_reply:nonmember:scikit.learn:coef5**   |  -3.06  |  0.002  | 0.02  |  *  |
-|          **issue_post:nonmember:scipy:coef2-issue_reply:nonmember:scipy:coef2**          | -2.817  |  0.005  | 0.036 |  *  |
-|          **issue_post:nonmember:scipy:coef3-issue_reply:nonmember:scipy:coef3**          | -3.117  |  0.002  | 0.018 |  *  |
-|            **issue_post:nonmember:scipy:coef3-pr_post:nonmember:scipy:coef3**            | -3.136  |  0.002  | 0.018 |  *  |
-| **issue_post:nonmember:sphinx.gallery:coef3-issue_reply:nonmember:sphinx.gallery:coef3** | -3.431  |  0.001  | 0.007 | **  |
-|   **issue_post:nonmember:sphinx.gallery:coef3-pr_post:nonmember:sphinx.gallery:coef3**   | -2.872  |  0.004  | 0.031 |  *  |
-|         **issue_reply:member:matplotlib:coef2-pr_reply:member:matplotlib:coef2**         | -3.434  |  0.001  | 0.007 | **  |
-|      **issue_reply:member:matplotlib:coef5-issue_reply:nonmember:matplotlib:coef5**      |  3.129  |  0.002  | 0.018 |  *  |
-|      **issue_reply:member:matplotlib:coef6-issue_reply:nonmember:matplotlib:coef6**      | -2.811  |  0.005  | 0.036 |  *  |
-|         **issue_reply:member:matplotlib:coef6-pr_reply:member:matplotlib:coef6**         | -4.405  |  1e-04  | 2e-04 | *** |
-|      **issue_reply:member:matplotlib:coef7-issue_reply:nonmember:matplotlib:coef7**      |  2.708  |  0.007  | 0.045 |  *  |
-|         **issue_reply:member:matplotlib:coef7-pr_reply:member:matplotlib:coef7**         |  4.873  |  1e-04  | 1e-04 | *** |
-|              **issue_reply:member:numpy:coef2-pr_reply:member:numpy:coef2**              | -3.596  |  3e-04  | 0.004 | **  |
-|              **issue_reply:member:numpy:coef4-pr_reply:member:numpy:coef4**              | -5.513  |  1e-04  | 1e-04 | *** |
-|              **issue_reply:member:numpy:coef5-pr_reply:member:numpy:coef5**              | -3.567  |  4e-04  | 0.005 | **  |
-|          **issue_reply:member:pandas:coef1-issue_reply:nonmember:pandas:coef1**          | -3.126  |  0.002  | 0.018 |  *  |
-|          **issue_reply:member:pandas:coef2-issue_reply:nonmember:pandas:coef2**          | -2.952  |  0.003  | 0.026 |  *  |
-|             **issue_reply:member:pandas:coef3-pr_reply:member:pandas:coef3**             | -4.897  |  1e-04  | 1e-04 | *** |
-|             **issue_reply:member:pandas:coef7-pr_reply:member:pandas:coef7**             | -3.915  |  1e-04  | 0.002 | **  |
-|             **issue_reply:member:pandas:coef8-pr_reply:member:pandas:coef8**             |   5.3   |  1e-04  | 1e-04 | *** |
-|       **issue_reply:member:scikit.learn:coef2-pr_reply:member:scikit.learn:coef2**       | -4.619  |  1e-04  | 1e-04 | *** |
-|       **issue_reply:member:scikit.learn:coef3-pr_reply:member:scikit.learn:coef3**       | -3.838  |  1e-04  | 0.002 | **  |
-|              **issue_reply:member:scipy:coef3-pr_reply:member:scipy:coef3**              | -5.445  |  1e-04  | 1e-04 | *** |
-|          **issue_reply:nonmember:pandas:coef2-pr_reply:nonmember:pandas:coef2**          |  2.876  |  0.004  | 0.031 |  *  |
-|          **issue_reply:nonmember:pandas:coef4-pr_reply:nonmember:pandas:coef4**          |  2.849  |  0.004  | 0.033 |  *  |
-|          **issue_reply:nonmember:pandas:coef8-pr_reply:nonmember:pandas:coef8**          |  3.429  |  0.001  | 0.007 | **  |
-|    **issue_reply:nonmember:scikit.learn:coef2-pr_reply:nonmember:scikit.learn:coef2**    | -3.097  |  0.002  | 0.018 |  *  |
-|           **pr_post:member:matplotlib:coef2-pr_reply:member:matplotlib:coef2**           | -4.527  |  1e-04  | 2e-04 | *** |
-|           **pr_post:member:matplotlib:coef4-pr_reply:member:matplotlib:coef4**           | -2.678  |  0.007  | 0.049 |  *  |
-|           **pr_post:member:matplotlib:coef6-pr_reply:member:matplotlib:coef6**           | -8.841  |  1e-04  | 1e-04 | *** |
-|                **pr_post:member:numpy:coef1-pr_reply:member:numpy:coef1**                | -2.937  |  0.003  | 0.026 |  *  |
-|                **pr_post:member:numpy:coef2-pr_reply:member:numpy:coef2**                | -4.434  |  1e-04  | 2e-04 | *** |
-|                **pr_post:member:numpy:coef3-pr_reply:member:numpy:coef3**                | -4.102  |  1e-04  | 0.001 | **  |
-|                **pr_post:member:numpy:coef4-pr_reply:member:numpy:coef4**                |  -4.47  |  1e-04  | 2e-04 | *** |
-|                **pr_post:member:numpy:coef5-pr_reply:member:numpy:coef5**                | -2.803  |  0.005  | 0.037 |  *  |
-|                **pr_post:member:numpy:coef7-pr_reply:member:numpy:coef7**                | -4.714  |  1e-04  | 1e-04 | *** |
-|               **pr_post:member:pandas:coef2-pr_reply:member:pandas:coef2**               | -5.896  |  1e-04  | 1e-04 | *** |
-|               **pr_post:member:pandas:coef3-pr_reply:member:pandas:coef3**               | -5.854  |  1e-04  | 1e-04 | *** |
-|               **pr_post:member:pandas:coef4-pr_reply:member:pandas:coef4**               | -4.518  |  1e-04  | 2e-04 | *** |
-|               **pr_post:member:pandas:coef5-pr_reply:member:pandas:coef5**               | -4.355  |  1e-04  | 3e-04 | *** |
-|              **pr_post:member:pandas:coef6-pr_post:nonmember:pandas:coef6**              | -3.954  |  1e-04  | 0.001 | **  |
-|               **pr_post:member:pandas:coef7-pr_reply:member:pandas:coef7**               |  -5.72  |  1e-04  | 1e-04 | *** |
-|              **pr_post:member:pandas:coef8-pr_post:nonmember:pandas:coef8**              |  2.948  |  0.003  | 0.026 |  *  |
-|         **pr_post:member:scikit.image:coef2-pr_reply:member:scikit.image:coef2**         | -3.929  |  1e-04  | 0.002 | **  |
-|        **pr_post:member:scikit.image:coef4-pr_post:nonmember:scikit.image:coef4**        | -3.602  |  3e-04  | 0.004 | **  |
-|         **pr_post:member:scikit.image:coef4-pr_reply:member:scikit.image:coef4**         | -3.092  |  0.002  | 0.018 |  *  |
-|        **pr_post:member:scikit.image:coef6-pr_post:nonmember:scikit.image:coef6**        | -3.723  |  2e-04  | 0.003 | **  |
-|         **pr_post:member:scikit.image:coef6-pr_reply:member:scikit.image:coef6**         | -4.133  |  1e-04  | 0.001 | **  |
-|         **pr_post:member:scikit.learn:coef1-pr_reply:member:scikit.learn:coef1**         | -3.104  |  0.002  | 0.018 |  *  |
-|         **pr_post:member:scikit.learn:coef3-pr_reply:member:scikit.learn:coef3**         | -4.269  |  1e-04  | 4e-04 | *** |
-|         **pr_post:member:scikit.learn:coef5-pr_reply:member:scikit.learn:coef5**         | -2.996  |  0.003  | 0.024 |  *  |
-|         **pr_post:member:scikit.learn:coef6-pr_reply:member:scikit.learn:coef6**         | -2.943  |  0.003  | 0.026 |  *  |
-|         **pr_post:member:scikit.learn:coef8-pr_reply:member:scikit.learn:coef8**         | -3.773  |  2e-04  | 0.002 | **  |
-|                **pr_post:member:scipy:coef1-pr_reply:member:scipy:coef1**                | -2.968  |  0.003  | 0.025 |  *  |
-|                **pr_post:member:scipy:coef2-pr_reply:member:scipy:coef2**                | -5.008  |  1e-04  | 1e-04 | *** |
-|                **pr_post:member:scipy:coef3-pr_reply:member:scipy:coef3**                | -3.721  |  2e-04  | 0.003 | **  |
-|                **pr_post:member:scipy:coef4-pr_reply:member:scipy:coef4**                | -4.087  |  1e-04  | 0.001 | **  |
-|                **pr_post:member:scipy:coef6-pr_reply:member:scipy:coef6**                | -4.883  |  1e-04  | 1e-04 | *** |
-|        **pr_post:nonmember:matplotlib:coef6-pr_reply:nonmember:matplotlib:coef6**        | -4.539  |  1e-04  | 2e-04 | *** |
-|             **pr_post:nonmember:numpy:coef2-pr_reply:nonmember:numpy:coef2**             | -3.047  |  0.002  | 0.02  |  *  |
-|             **pr_post:nonmember:numpy:coef5-pr_reply:nonmember:numpy:coef5**             | -3.383  |  0.001  | 0.008 | **  |
-|             **pr_post:nonmember:numpy:coef7-pr_reply:nonmember:numpy:coef7**             | -3.745  |  2e-04  | 0.003 | **  |
-|            **pr_post:nonmember:pandas:coef2-pr_reply:nonmember:pandas:coef2**            | -3.004  |  0.003  | 0.023 |  *  |
-|            **pr_post:nonmember:pandas:coef5-pr_reply:nonmember:pandas:coef5**            | -4.406  |  1e-04  | 2e-04 | *** |
-|            **pr_post:nonmember:pandas:coef6-pr_reply:nonmember:pandas:coef6**            |  3.434  |  0.001  | 0.007 | **  |
-|      **pr_post:nonmember:scikit.learn:coef2-pr_reply:nonmember:scikit.learn:coef2**      | -3.872  |  1e-04  | 0.002 | **  |
-|      **pr_post:nonmember:scikit.learn:coef6-pr_reply:nonmember:scikit.learn:coef6**      | -4.267  |  1e-04  | 4e-04 | *** |
-|      **pr_post:nonmember:scikit.learn:coef7-pr_reply:nonmember:scikit.learn:coef7**      | -4.937  |  1e-04  | 1e-04 | *** |
-|             **pr_post:nonmember:scipy:coef2-pr_reply:nonmember:scipy:coef2**             | -3.154  |  0.002  | 0.017 |  *  |
-|             **pr_post:nonmember:scipy:coef4-pr_reply:nonmember:scipy:coef4**             | -2.768  |  0.006  | 0.039 |  *  |
-|             **pr_post:nonmember:scipy:coef6-pr_reply:nonmember:scipy:coef6**             |  -5.95  |  1e-04  | 1e-04 | *** |
-|       **pr_reply:member:scikit.learn:coef6-pr_reply:nonmember:scikit.learn:coef6**       | -2.724  |  0.006  | 0.043 |  *  |
+```r
+group_of_interest = "issue_post:member"
+rows_to_plot = grep(group_of_interest, names(means))
+
+bar_centers = barplot(means[rows_to_plot], names.arg=projects,
+		      main=group_of_interest,
+		      cex.names=0.8
+		      )
+arrows(bar_centers,
+       means[rows_to_plot] - se[rows_to_plot] ** 2, 
+       bar_centers,
+       means[rows_to_plot] + se[rows_to_plot] ** 2,
+       angle=90,
+       code=3)
+```
+
+![](oss_community-language_dynamics_files/figure-html/plot_issue_post_members-1.png)<!-- -->
+
+
+```r
+group_of_interest = "issue_post:nonmember"
+rows_to_plot = grep(group_of_interest, names(means))
+
+bar_centers = barplot(means[rows_to_plot], names.arg=projects,
+		      main=group_of_interest,
+		      cex.names=0.8
+		      )
+arrows(bar_centers,
+       means[rows_to_plot] - se[rows_to_plot] ** 2, 
+       bar_centers,
+       means[rows_to_plot] + se[rows_to_plot] ** 2,
+       angle=90,
+       code=3)
+```
+
+![](oss_community-language_dynamics_files/figure-html/plot_issue_post_nonmembers-1.png)<!-- -->
 
 
 
-![**Figure**. Sentiment over time by contribution type (ticket vs. comment) and community membership at the time of posting (member vs. nonmember).](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-aggregated-knitr.jpg)
+```r
+group_of_interest = "pr_reply:member"
+rows_to_plot = grep(group_of_interest, names(means))
+
+bar_centers = barplot(means[rows_to_plot], names.arg=projects,
+		      main=group_of_interest,
+		      cex.names=0.8)
+arrows(bar_centers,
+       means[rows_to_plot] - se[rows_to_plot] ** 2, 
+       bar_centers,
+       means[rows_to_plot] + se[rows_to_plot] ** 2,
+       angle=90,
+       code=3)
+```
+
+```
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
+
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
+
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
+
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
+
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
+```
+
+![](oss_community-language_dynamics_files/figure-html/plot_pr_reply_members-1.png)<!-- -->
 
 
-![**Figure**. Sentiment over time by contribution type (ticket vs. comment) and community membership  at the time of posting (member vs. nonmember) by project.](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution_time-by_project-knitr.jpg)
+```r
+group_of_interest = "pr_reply:nonmember"
+rows_to_plot = grep(group_of_interest, names(means))
+
+bar_centers = barplot(means[rows_to_plot], names.arg=projects,
+		      main=group_of_interest,
+		      cex.names=0.8)
+arrows(bar_centers,
+       means[rows_to_plot] - se[rows_to_plot] ** 2, 
+       bar_centers,
+       means[rows_to_plot] + se[rows_to_plot] ** 2,
+       angle=90,
+       code=3)
+```
+
+```
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
+
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
+```
+
+![](oss_community-language_dynamics_files/figure-html/plot_pr_reply_nonmembers-1.png)<!-- -->
+
+
+
+```r
+group_of_interest = "issue_reply:member"
+rows_to_plot = grep(group_of_interest, names(means))
+
+bar_centers = barplot(means[rows_to_plot], names.arg=projects,
+		      main=group_of_interest,
+		      cex.names=0.8)
+arrows(bar_centers,
+       means[rows_to_plot] - se[rows_to_plot] ** 2, 
+       bar_centers,
+       means[rows_to_plot] + se[rows_to_plot] ** 2,
+       angle=90,
+       code=3)
+```
+
+```
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
+
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
+
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
+
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
+
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
+```
+
+![](oss_community-language_dynamics_files/figure-html/plot_issue_reply_members-1.png)<!-- -->
+
+
+```r
+group_of_interest = "issue_reply:nonmember"
+rows_to_plot = grep(group_of_interest, names(means))
+
+bar_centers = barplot(means[rows_to_plot], names.arg=projects,
+		      main=group_of_interest,
+		      cex.names=0.8)
+arrows(bar_centers,
+       means[rows_to_plot] - se[rows_to_plot] ** 2, 
+       bar_centers,
+       means[rows_to_plot] + se[rows_to_plot] ** 2,
+       angle=90,
+       code=3)
+```
+
+```
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
+
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
+
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
+
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
+```
+
+![](oss_community-language_dynamics_files/figure-html/plot_issue_reply_nonmembers-1.png)<!-- -->
+
+### Model 1.1c Do projects differ in emotion between one another?
+
+One versus all minus one type of approach.
+
+
+```r
+all_project_tests = NA
+all_projects = unique(sentiment_frame$project)
+
+# We're going to fit the model for each projects, and concatenate the results
+# in a dataframe. Then, we'll apply multiple correction and display the
+# results
+for(project in all_projects){
+    sentiment_frame$test_group = sentiment_frame$project == project
+    one_versus_all_emotion = lmer(
+	compound_emotion ~ 0 + type:author_group:test_group + (1|author_name),
+	data=sentiment_frame,
+	REML=FALSE)
+
+    # Clean up mode
+    coefficients_and_se = data.frame(
+	summary(one_versus_all_emotion)$coefficients)
+    row_names = gsub(
+	"author_group", "", 
+	    gsub("type", "",
+		gsub("project", "", row.names(coefficients_and_se))))
+
+    means = coefficients_and_se$Estimate
+    names(means) = row_names
+    se = coefficients_and_se$Std..Error
+    names(se) = row_names
+
+    contrasts = c(
+	"issue_post:member:test_groupTRUE-issue_post:member:test_groupFALSE",
+	"pr_post:member:test_groupTRUE-pr_post:member:test_groupFALSE",
+	"issue_reply:member:test_groupTRUE-issue_reply:member:test_groupFALSE",
+	"pr_reply:member:test_groupTRUE-pr_reply:member:test_groupFALSE",
+	"issue_post:nonmember:test_groupTRUE-issue_post:nonmember:test_groupFALSE",
+	"pr_post:nonmember:test_groupTRUE-pr_post:nonmember:test_groupFALSE",
+	"issue_reply:nonmember:test_groupTRUE-issue_reply:nonmember:test_groupFALSE",
+	"pr_reply:nonmember:test_groupTRUE-pr_reply:nonmember:test_groupFALSE"
+	)
+
+    one_versus_all_emotion_tests = compute_t_statistics(
+	means, se,
+	contrasts)
+    one_versus_all_emotion_tests[, "p_value"] = compute_p_value_from_t_stats(
+	one_versus_all_emotion_tests$t_stats)
+
+    # Add unique identifier based on the project of interest in the table.
+    row.names(one_versus_all_emotion_tests) = gsub(
+	"test_group", project,
+	row.names(one_versus_all_emotion_tests))
+
+    if(is.null(dim(all_project_tests))){
+	all_project_tests = one_versus_all_emotion_tests
+    }else{
+	all_project_tests = rbind(
+	    all_project_tests, one_versus_all_emotion_tests)
+    }
+}
+```
+
+Now apply multiple correction and display the results of the analysis.
+
+
+```r
+pander_clean_anova(all_project_tests, rename_columns=FALSE)
+```
+
+
+
+|                                         &nbsp;                                         | t_stats  | p_value | p_adj  | sig |
+|:--------------------------------------------------------------------------------------:|:--------:|:-------:|:------:|:---:|
+|              **issue_post:member:numpyTRUE-issue_post:member:numpyFALSE**              |  -4.762  | 0.0001  | 0.0001 | *** |
+|                 **pr_post:member:numpyTRUE-pr_post:member:numpyFALSE**                 |  -2.573  |  0.01   | 0.025  |  *  |
+|             **issue_reply:member:numpyTRUE-issue_reply:member:numpyFALSE**             |  -5.293  | 0.0001  | 0.0001 | *** |
+|                **pr_reply:member:numpyTRUE-pr_reply:member:numpyFALSE**                |  0.219   |  0.83   |  0.88  |     |
+|           **issue_post:nonmember:numpyTRUE-issue_post:nonmember:numpyFALSE**           |  -6.615  | 0.0001  | 0.0001 | *** |
+|              **pr_post:nonmember:numpyTRUE-pr_post:nonmember:numpyFALSE**              |  -4.597  | 0.0001  | 0.0001 | *** |
+|          **issue_reply:nonmember:numpyTRUE-issue_reply:nonmember:numpyFALSE**          |  -5.683  | 0.0001  | 0.0001 | *** |
+|             **pr_reply:nonmember:numpyTRUE-pr_reply:nonmember:numpyFALSE**             |  -1.11   |  0.27   |  0.38  |     |
+|       **issue_post:member:scikit-learnTRUE-issue_post:member:scikit-learnFALSE**       | -0.01398 |  0.99   |  0.99  |     |
+|          **pr_post:member:scikit-learnTRUE-pr_post:member:scikit-learnFALSE**          |  3.399   |  0.001  | 0.002  | **  |
+|      **issue_reply:member:scikit-learnTRUE-issue_reply:member:scikit-learnFALSE**      |  0.5696  |  0.57   |  0.69  |     |
+|         **pr_reply:member:scikit-learnTRUE-pr_reply:member:scikit-learnFALSE**         |  1.548   |  0.122  | 0.205  |     |
+|    **issue_post:nonmember:scikit-learnTRUE-issue_post:nonmember:scikit-learnFALSE**    |  0.7041  |  0.48   |  0.63  |     |
+|       **pr_post:nonmember:scikit-learnTRUE-pr_post:nonmember:scikit-learnFALSE**       | -0.5552  |  0.58   |  0.69  |     |
+|   **issue_reply:nonmember:scikit-learnTRUE-issue_reply:nonmember:scikit-learnFALSE**   |  1.382   |  0.167  |  0.26  |     |
+|      **pr_reply:nonmember:scikit-learnTRUE-pr_reply:nonmember:scikit-learnFALSE**      |  2.235   |  0.025  | 0.052  |  .  |
+|              **issue_post:member:scipyTRUE-issue_post:member:scipyFALSE**              |  -3.122  |  0.002  | 0.005  | **  |
+|                 **pr_post:member:scipyTRUE-pr_post:member:scipyFALSE**                 | -0.5708  |  0.57   |  0.69  |     |
+|             **issue_reply:member:scipyTRUE-issue_reply:member:scipyFALSE**             |  -0.189  |  0.85   |  0.89  |     |
+|                **pr_reply:member:scipyTRUE-pr_reply:member:scipyFALSE**                |  5.345   | 0.0001  | 0.0001 | *** |
+|           **issue_post:nonmember:scipyTRUE-issue_post:nonmember:scipyFALSE**           | -0.2549  |   0.8   |  0.87  |     |
+|              **pr_post:nonmember:scipyTRUE-pr_post:nonmember:scipyFALSE**              |  1.554   |  0.12   | 0.205  |     |
+|          **issue_reply:nonmember:scipyTRUE-issue_reply:nonmember:scipyFALSE**          |  3.279   |  0.001  | 0.003  | **  |
+|             **pr_reply:nonmember:scipyTRUE-pr_reply:nonmember:scipyFALSE**             |   5.89   | 0.0001  | 0.0001 | *** |
+|             **issue_post:member:mayaviTRUE-issue_post:member:mayaviFALSE**             |  -2.025  |  0.043  | 0.078  |  .  |
+|                **pr_post:member:mayaviTRUE-pr_post:member:mayaviFALSE**                |  -2.453  |  0.014  | 0.032  |  *  |
+|            **issue_reply:member:mayaviTRUE-issue_reply:member:mayaviFALSE**            |   -2.5   |  0.012  |  0.03  |  *  |
+|               **pr_reply:member:mayaviTRUE-pr_reply:member:mayaviFALSE**               |  -3.296  |  0.001  | 0.003  | **  |
+|          **issue_post:nonmember:mayaviTRUE-issue_post:nonmember:mayaviFALSE**          | -0.9832  |  0.33   |  0.45  |     |
+|             **pr_post:nonmember:mayaviTRUE-pr_post:nonmember:mayaviFALSE**             |  -2.18   |  0.029  | 0.058  |  .  |
+|         **issue_reply:nonmember:mayaviTRUE-issue_reply:nonmember:mayaviFALSE**         |  -3.533  | 0.0004  | 0.002  | **  |
+|            **pr_reply:nonmember:mayaviTRUE-pr_reply:nonmember:mayaviFALSE**            | -0.5364  |  0.59   |  0.69  |     |
+|     **issue_post:member:sphinx-galleryTRUE-issue_post:member:sphinx-galleryFALSE**     | 0.02178  |  0.98   |  0.99  |     |
+|        **pr_post:member:sphinx-galleryTRUE-pr_post:member:sphinx-galleryFALSE**        |  0.5591  |  0.58   |  0.69  |     |
+|    **issue_reply:member:sphinx-galleryTRUE-issue_reply:member:sphinx-galleryFALSE**    |  4.143   | 0.0001  | 0.0002 | *** |
+|       **pr_reply:member:sphinx-galleryTRUE-pr_reply:member:sphinx-galleryFALSE**       | -0.03669 |  0.97   |  0.99  |     |
+|  **issue_post:nonmember:sphinx-galleryTRUE-issue_post:nonmember:sphinx-galleryFALSE**  | -0.8765  |  0.38   |  0.51  |     |
+|     **pr_post:nonmember:sphinx-galleryTRUE-pr_post:nonmember:sphinx-galleryFALSE**     |  1.721   |  0.085  | 0.152  |     |
+| **issue_reply:nonmember:sphinx-galleryTRUE-issue_reply:nonmember:sphinx-galleryFALSE** |  2.095   |  0.036  |  0.07  |  .  |
+|    **pr_reply:nonmember:sphinx-galleryTRUE-pr_reply:nonmember:sphinx-galleryFALSE**    | -0.3261  |  0.74   |  0.82  |     |
+|         **issue_post:member:matplotlibTRUE-issue_post:member:matplotlibFALSE**         | -0.3677  |  0.71   |  0.81  |     |
+|            **pr_post:member:matplotlibTRUE-pr_post:member:matplotlibFALSE**            |  0.963   |  0.34   |  0.46  |     |
+|        **issue_reply:member:matplotlibTRUE-issue_reply:member:matplotlibFALSE**        |  -1.243  |  0.214  |  0.32  |     |
+|           **pr_reply:member:matplotlibTRUE-pr_reply:member:matplotlibFALSE**           |  -4.548  | 0.0001  | 0.0001 | *** |
+|      **issue_post:nonmember:matplotlibTRUE-issue_post:nonmember:matplotlibFALSE**      |  0.3518  |  0.72   |  0.81  |     |
+|         **pr_post:nonmember:matplotlibTRUE-pr_post:nonmember:matplotlibFALSE**         |  -1.513  |  0.13   | 0.214  |     |
+|     **issue_reply:nonmember:matplotlibTRUE-issue_reply:nonmember:matplotlibFALSE**     |  -3.286  |  0.001  | 0.003  | **  |
+|        **pr_reply:nonmember:matplotlibTRUE-pr_reply:nonmember:matplotlibFALSE**        |  -2.074  |  0.038  | 0.072  |  .  |
+|       **issue_post:member:scikit-imageTRUE-issue_post:member:scikit-imageFALSE**       |  -2.323  |  0.02   | 0.043  |  *  |
+|          **pr_post:member:scikit-imageTRUE-pr_post:member:scikit-imageFALSE**          |  2.636   |  0.008  | 0.022  |  *  |
+|      **issue_reply:member:scikit-imageTRUE-issue_reply:member:scikit-imageFALSE**      |  2.359   |  0.018  |  0.04  |  *  |
+|         **pr_reply:member:scikit-imageTRUE-pr_reply:member:scikit-imageFALSE**         |  3.601   | 0.0003  | 0.001  | **  |
+|    **issue_post:nonmember:scikit-imageTRUE-issue_post:nonmember:scikit-imageFALSE**    |  -1.11   |  0.27   |  0.38  |     |
+|       **pr_post:nonmember:scikit-imageTRUE-pr_post:nonmember:scikit-imageFALSE**       |  9.303   | 0.0001  | 0.0001 | *** |
+|   **issue_reply:nonmember:scikit-imageTRUE-issue_reply:nonmember:scikit-imageFALSE**   |   1.38   |  0.168  |  0.26  |     |
+|      **pr_reply:nonmember:scikit-imageTRUE-pr_reply:nonmember:scikit-imageFALSE**      |  5.701   | 0.0001  | 0.0001 | *** |
+|             **issue_post:member:pandasTRUE-issue_post:member:pandasFALSE**             |   4.74   | 0.0001  | 0.0001 | *** |
+|                **pr_post:member:pandasTRUE-pr_post:member:pandasFALSE**                |  -3.146  |  0.002  | 0.005  | **  |
+|            **issue_reply:member:pandasTRUE-issue_reply:member:pandasFALSE**            |  1.491   |  0.136  | 0.218  |     |
+|               **pr_reply:member:pandasTRUE-pr_reply:member:pandasFALSE**               |  -2.64   |  0.008  | 0.022  |  *  |
+|          **issue_post:nonmember:pandasTRUE-issue_post:nonmember:pandasFALSE**          |  4.907   | 0.0001  | 0.0001 | *** |
+|             **pr_post:nonmember:pandasTRUE-pr_post:nonmember:pandasFALSE**             | -0.6625  |  0.51   |  0.65  |     |
+|         **issue_reply:nonmember:pandasTRUE-issue_reply:nonmember:pandasFALSE**         |  3.448   |  0.001  | 0.002  | **  |
+|            **pr_reply:nonmember:pandasTRUE-pr_reply:nonmember:pandasFALSE**            |  -7.581  | 0.0001  | 0.0001 | *** |
+
+### Model 1.2 time-course analysis
+
+The time-course analysis has been moved in a separate file.
 
 ### Model 1.3: Do tickets and comments materially differ in gratitude?
 
@@ -1736,172 +1599,123 @@ pander_clean_anova(all_tests, rename_columns=FALSE)
 
 
 
-|                                    &nbsp;                                    |                model                | t_stats  | p_value | p_adj | sig |
-|:----------------------------------------------------------------------------:|:-----------------------------------:|:--------:|:-------:|:-----:|:---:|
-|                             **member-nonmember**                             |             Main Terms              |  -4.34   |  1e-04  | 1e-04 | *** |
-|                          **issue_post-issue_reply**                          |             Main Terms              |  -1.621  |  0.105  | 0.132 |     |
-|                             **pr_post-pr_reply**                             |             Main Terms              |  -6.921  |  1e-04  | 1e-04 | *** |
-|                            **issue_post-pr_post**                            |             Main Terms              |  2.335   |  0.02   | 0.026 |  *  |
-|                           **issue_reply-pr_reply**                           |             Main Terms              |  -2.964  |  0.003  | 0.004 | **  |
-|                  **issue_post:member-issue_post:nonmember**                  |      2W: Types x Author Groups      |  -5.171  |  1e-04  | 1e-04 | *** |
-|                 **issue_reply:member-issue_reply:nonmember**                 |      2W: Types x Author Groups      |  -8.597  |  1e-04  | 1e-04 | *** |
-|                     **pr_post:member-pr_post:nonmember**                     |      2W: Types x Author Groups      | -0.8896  |  0.37   | 0.43  |     |
-|                    **pr_reply:member-pr_reply:nonmember**                    |      2W: Types x Author Groups      |  -3.385  |  0.001  | 0.001 | **  |
-|                   **issue_post:member-issue_reply:member**                   |      2W: Types x Author Groups      |  -2.791  |  0.005  | 0.008 | **  |
-|                **issue_post:nonmember-issue_reply:nonmember**                |      2W: Types x Author Groups      |  -6.07   |  1e-04  | 1e-04 | *** |
-|                      **pr_post:member-pr_reply:member**                      |      2W: Types x Author Groups      |  -8.35   |  1e-04  | 1e-04 | *** |
-|                   **pr_post:nonmember-pr_reply:nonmember**                   |      2W: Types x Author Groups      |  -10.66  |  1e-04  | 1e-04 | *** |
-|                     **issue_post:member-pr_post:member**                     |      2W: Types x Author Groups      |  0.2943  |  0.77   | 0.82  |     |
-|                  **issue_post:nonmember-pr_post:nonmember**                  |      2W: Types x Author Groups      |  4.558   |  1e-04  | 1e-04 | *** |
-|                    **issue_reply:member-pr_reply:member**                    |      2W: Types x Author Groups      |  -5.278  |  1e-04  | 1e-04 | *** |
-|                 **issue_reply:nonmember-pr_reply:nonmember**                 |      2W: Types x Author Groups      | -0.04773 |  0.96   | 0.97  |     |
-|     **scikit.learn:issue_post:member-scikit.learn:issue_post:nonmember**     | 3W: Types x Author Groups x Project |  -14.53  |  1e-04  | 1e-04 | *** |
-|    **scikit.learn:issue_reply:member-scikit.learn:issue_reply:nonmember**    | 3W: Types x Author Groups x Project |  -28.26  |  1e-04  | 1e-04 | *** |
-|        **scikit.learn:pr_post:member-scikit.learn:pr_post:nonmember**        | 3W: Types x Author Groups x Project |  -1.384  |  0.166  | 0.202 |     |
-|       **scikit.learn:pr_reply:member-scikit.learn:pr_reply:nonmember**       | 3W: Types x Author Groups x Project |  -10.17  |  1e-04  | 1e-04 | *** |
-|      **scikit.learn:issue_post:member-scikit.learn:issue_reply:member**      | 3W: Types x Author Groups x Project |  -9.094  |  1e-04  | 1e-04 | *** |
-|   **scikit.learn:issue_post:nonmember-scikit.learn:issue_reply:nonmember**   | 3W: Types x Author Groups x Project |  -5.885  |  1e-04  | 1e-04 | *** |
-|         **scikit.learn:pr_post:member-scikit.learn:pr_reply:member**         | 3W: Types x Author Groups x Project |  -22.48  |  1e-04  | 1e-04 | *** |
-|      **scikit.learn:pr_post:nonmember-scikit.learn:pr_reply:nonmember**      | 3W: Types x Author Groups x Project |  -22.24  |  1e-04  | 1e-04 | *** |
-|        **scikit.learn:issue_post:member-scikit.learn:pr_post:member**        | 3W: Types x Author Groups x Project |  -1.151  |  0.25   | 0.29  |     |
-|     **scikit.learn:issue_post:nonmember-scikit.learn:pr_post:nonmember**     | 3W: Types x Author Groups x Project |  13.09   |  1e-04  | 1e-04 | *** |
-|       **scikit.learn:issue_reply:member-scikit.learn:pr_reply:member**       | 3W: Types x Author Groups x Project |  -30.71  |  1e-04  | 1e-04 | *** |
-|    **scikit.learn:issue_reply:nonmember-scikit.learn:pr_reply:nonmember**    | 3W: Types x Author Groups x Project | -0.06998 |  0.94   | 0.96  |     |
-|     **scikit.image:issue_post:member-scikit.image:issue_post:nonmember**     | 3W: Types x Author Groups x Project |  -5.764  |  1e-04  | 1e-04 | *** |
-|    **scikit.image:issue_reply:member-scikit.image:issue_reply:nonmember**    | 3W: Types x Author Groups x Project |  -10.21  |  1e-04  | 1e-04 | *** |
-|        **scikit.image:pr_post:member-scikit.image:pr_post:nonmember**        | 3W: Types x Author Groups x Project |  -1.35   |  0.177  | 0.213 |     |
-|       **scikit.image:pr_reply:member-scikit.image:pr_reply:nonmember**       | 3W: Types x Author Groups x Project |  -11.27  |  1e-04  | 1e-04 | *** |
-|      **scikit.image:issue_post:member-scikit.image:issue_reply:member**      | 3W: Types x Author Groups x Project |  -5.824  |  1e-04  | 1e-04 | *** |
-|   **scikit.image:issue_post:nonmember-scikit.image:issue_reply:nonmember**   | 3W: Types x Author Groups x Project |  -4.37   |  1e-04  | 1e-04 | *** |
-|         **scikit.image:pr_post:member-scikit.image:pr_reply:member**         | 3W: Types x Author Groups x Project |  -18.71  |  1e-04  | 1e-04 | *** |
-|      **scikit.image:pr_post:nonmember-scikit.image:pr_reply:nonmember**      | 3W: Types x Author Groups x Project |  -15.96  |  1e-04  | 1e-04 | *** |
-|        **scikit.image:issue_post:member-scikit.image:pr_post:member**        | 3W: Types x Author Groups x Project |  -0.245  |  0.81   | 0.84  |     |
-|     **scikit.image:issue_post:nonmember-scikit.image:pr_post:nonmember**     | 3W: Types x Author Groups x Project |   4.68   |  1e-04  | 1e-04 | *** |
-|       **scikit.image:issue_reply:member-scikit.image:pr_reply:member**       | 3W: Types x Author Groups x Project |  -16.7   |  1e-04  | 1e-04 | *** |
-|    **scikit.image:issue_reply:nonmember-scikit.image:pr_reply:nonmember**    | 3W: Types x Author Groups x Project |  -7.533  |  1e-04  | 1e-04 | *** |
-|       **matplotlib:issue_post:member-matplotlib:issue_post:nonmember**       | 3W: Types x Author Groups x Project |  -5.063  |  1e-04  | 1e-04 | *** |
-|      **matplotlib:issue_reply:member-matplotlib:issue_reply:nonmember**      | 3W: Types x Author Groups x Project |  -34.87  |  1e-04  | 1e-04 | *** |
-|          **matplotlib:pr_post:member-matplotlib:pr_post:nonmember**          | 3W: Types x Author Groups x Project |  -1.511  |  0.131  | 0.162 |     |
-|         **matplotlib:pr_reply:member-matplotlib:pr_reply:nonmember**         | 3W: Types x Author Groups x Project |  -17.14  |  1e-04  | 1e-04 | *** |
-|        **matplotlib:issue_post:member-matplotlib:issue_reply:member**        | 3W: Types x Author Groups x Project | -0.2652  |  0.79   | 0.84  |     |
-|     **matplotlib:issue_post:nonmember-matplotlib:issue_reply:nonmember**     | 3W: Types x Author Groups x Project |   -15    |  1e-04  | 1e-04 | *** |
-|           **matplotlib:pr_post:member-matplotlib:pr_reply:member**           | 3W: Types x Author Groups x Project |  -16.78  |  1e-04  | 1e-04 | *** |
-|        **matplotlib:pr_post:nonmember-matplotlib:pr_reply:nonmember**        | 3W: Types x Author Groups x Project |  -16.78  |  1e-04  | 1e-04 | *** |
-|          **matplotlib:issue_post:member-matplotlib:pr_post:member**          | 3W: Types x Author Groups x Project |  3.494   |    0    | 0.001 | **  |
-|       **matplotlib:issue_post:nonmember-matplotlib:pr_post:nonmember**       | 3W: Types x Author Groups x Project |  6.711   |  1e-04  | 1e-04 | *** |
-|         **matplotlib:issue_reply:member-matplotlib:pr_reply:member**         | 3W: Types x Author Groups x Project |  -16.05  |  1e-04  | 1e-04 | *** |
-|      **matplotlib:issue_reply:nonmember-matplotlib:pr_reply:nonmember**      | 3W: Types x Author Groups x Project |  2.634   |  0.008  | 0.012 |  *  |
-|           **mayavi:issue_post:member-mayavi:issue_post:nonmember**           | 3W: Types x Author Groups x Project |  -5.676  |  1e-04  | 1e-04 | *** |
-|          **mayavi:issue_reply:member-mayavi:issue_reply:nonmember**          | 3W: Types x Author Groups x Project |  -6.561  |  1e-04  | 1e-04 | *** |
-|              **mayavi:pr_post:member-mayavi:pr_post:nonmember**              | 3W: Types x Author Groups x Project | 0.01372  |  0.99   | 0.99  |     |
-|             **mayavi:pr_reply:member-mayavi:pr_reply:nonmember**             | 3W: Types x Author Groups x Project |  5.344   |  1e-04  | 1e-04 | *** |
-|            **mayavi:issue_post:member-mayavi:issue_reply:member**            | 3W: Types x Author Groups x Project |  -3.327  |  0.001  | 0.001 | **  |
-|         **mayavi:issue_post:nonmember-mayavi:issue_reply:nonmember**         | 3W: Types x Author Groups x Project | -0.6657  |  0.51   | 0.56  |     |
-|               **mayavi:pr_post:member-mayavi:pr_reply:member**               | 3W: Types x Author Groups x Project |  -10.89  |  1e-04  | 1e-04 | *** |
-|            **mayavi:pr_post:nonmember-mayavi:pr_reply:nonmember**            | 3W: Types x Author Groups x Project |  -3.758  |  2e-04  | 3e-04 | *** |
-|              **mayavi:issue_post:member-mayavi:pr_post:member**              | 3W: Types x Author Groups x Project |  -0.828  |  0.41   | 0.46  |     |
-|           **mayavi:issue_post:nonmember-mayavi:pr_post:nonmember**           | 3W: Types x Author Groups x Project |  4.919   |  1e-04  | 1e-04 | *** |
-|             **mayavi:issue_reply:member-mayavi:pr_reply:member**             | 3W: Types x Author Groups x Project |  -10.43  |  1e-04  | 1e-04 | *** |
-|          **mayavi:issue_reply:nonmember-mayavi:pr_reply:nonmember**          | 3W: Types x Author Groups x Project |  1.928   |  0.054  | 0.07  |  .  |
-|           **pandas:issue_post:member-pandas:issue_post:nonmember**           | 3W: Types x Author Groups x Project |  -11.14  |  1e-04  | 1e-04 | *** |
-|          **pandas:issue_reply:member-pandas:issue_reply:nonmember**          | 3W: Types x Author Groups x Project |  -44.34  |  1e-04  | 1e-04 | *** |
-|              **pandas:pr_post:member-pandas:pr_post:nonmember**              | 3W: Types x Author Groups x Project |  -2.736  |  0.006  | 0.009 | **  |
-|             **pandas:pr_reply:member-pandas:pr_reply:nonmember**             | 3W: Types x Author Groups x Project |  -21.1   |  1e-04  | 1e-04 | *** |
-|            **pandas:issue_post:member-pandas:issue_reply:member**            | 3W: Types x Author Groups x Project |  -11.42  |  1e-04  | 1e-04 | *** |
-|         **pandas:issue_post:nonmember-pandas:issue_reply:nonmember**         | 3W: Types x Author Groups x Project |  -24.59  |  1e-04  | 1e-04 | *** |
-|               **pandas:pr_post:member-pandas:pr_reply:member**               | 3W: Types x Author Groups x Project |  -34.08  |  1e-04  | 1e-04 | *** |
-|            **pandas:pr_post:nonmember-pandas:pr_reply:nonmember**            | 3W: Types x Author Groups x Project |  -28.34  |  1e-04  | 1e-04 | *** |
-|              **pandas:issue_post:member-pandas:pr_post:member**              | 3W: Types x Author Groups x Project |  1.214   |  0.225  | 0.26  |     |
-|           **pandas:issue_post:nonmember-pandas:pr_post:nonmember**           | 3W: Types x Author Groups x Project |   7.08   |  1e-04  | 1e-04 | *** |
-|             **pandas:issue_reply:member-pandas:pr_reply:member**             | 3W: Types x Author Groups x Project |  -42.2   |  1e-04  | 1e-04 | *** |
-|          **pandas:issue_reply:nonmember-pandas:pr_reply:nonmember**          | 3W: Types x Author Groups x Project |  -2.93   |  0.003  | 0.005 | **  |
-|            **scipy:issue_post:member-scipy:issue_post:nonmember**            | 3W: Types x Author Groups x Project |  -7.369  |  1e-04  | 1e-04 | *** |
-|           **scipy:issue_reply:member-scipy:issue_reply:nonmember**           | 3W: Types x Author Groups x Project |  -23.39  |  1e-04  | 1e-04 | *** |
-|               **scipy:pr_post:member-scipy:pr_post:nonmember**               | 3W: Types x Author Groups x Project |  -2.303  |  0.021  | 0.028 |  *  |
-|              **scipy:pr_reply:member-scipy:pr_reply:nonmember**              | 3W: Types x Author Groups x Project |  -3.462  |    0    | 0.001 | **  |
-|             **scipy:issue_post:member-scipy:issue_reply:member**             | 3W: Types x Author Groups x Project |  -4.591  |  1e-04  | 1e-04 | *** |
-|          **scipy:issue_post:nonmember-scipy:issue_reply:nonmember**          | 3W: Types x Author Groups x Project |  -9.837  |  1e-04  | 1e-04 | *** |
-|                **scipy:pr_post:member-scipy:pr_reply:member**                | 3W: Types x Author Groups x Project |  -24.8   |  1e-04  | 1e-04 | *** |
-|             **scipy:pr_post:nonmember-scipy:pr_reply:nonmember**             | 3W: Types x Author Groups x Project |  -16.08  |  1e-04  | 1e-04 | *** |
-|               **scipy:issue_post:member-scipy:pr_post:member**               | 3W: Types x Author Groups x Project | -0.3404  |  0.73   | 0.79  |     |
-|            **scipy:issue_post:nonmember-scipy:pr_post:nonmember**            | 3W: Types x Author Groups x Project |   6.3    |  1e-04  | 1e-04 | *** |
-|              **scipy:issue_reply:member-scipy:pr_reply:member**              | 3W: Types x Author Groups x Project |  -30.52  |  1e-04  | 1e-04 | *** |
-|           **scipy:issue_reply:nonmember-scipy:pr_reply:nonmember**           | 3W: Types x Author Groups x Project | -0.1306  |   0.9   | 0.92  |     |
-|            **numpy:issue_post:member-numpy:issue_post:nonmember**            | 3W: Types x Author Groups x Project |  -5.816  |  1e-04  | 1e-04 | *** |
-|           **numpy:issue_reply:member-numpy:issue_reply:nonmember**           | 3W: Types x Author Groups x Project |  -31.55  |  1e-04  | 1e-04 | *** |
-|               **numpy:pr_post:member-numpy:pr_post:nonmember**               | 3W: Types x Author Groups x Project |  -1.043  |   0.3   | 0.34  |     |
-|              **numpy:pr_reply:member-numpy:pr_reply:nonmember**              | 3W: Types x Author Groups x Project |  -4.952  |  1e-04  | 1e-04 | *** |
-|             **numpy:issue_post:member-numpy:issue_reply:member**             | 3W: Types x Author Groups x Project |  -2.63   |  0.008  | 0.012 |  *  |
-|          **numpy:issue_post:nonmember-numpy:issue_reply:nonmember**          | 3W: Types x Author Groups x Project |  -14.07  |  1e-04  | 1e-04 | *** |
-|                **numpy:pr_post:member-numpy:pr_reply:member**                | 3W: Types x Author Groups x Project |  -23.84  |  1e-04  | 1e-04 | *** |
-|             **numpy:pr_post:nonmember-numpy:pr_reply:nonmember**             | 3W: Types x Author Groups x Project |  -15.33  |  1e-04  | 1e-04 | *** |
-|               **numpy:issue_post:member-numpy:pr_post:member**               | 3W: Types x Author Groups x Project |  1.746   |  0.081  | 0.103 |     |
-|            **numpy:issue_post:nonmember-numpy:pr_post:nonmember**            | 3W: Types x Author Groups x Project |  5.941   |  1e-04  | 1e-04 | *** |
-|              **numpy:issue_reply:member-numpy:pr_reply:member**              | 3W: Types x Author Groups x Project |  -32.27  |  1e-04  | 1e-04 | *** |
-|           **numpy:issue_reply:nonmember-numpy:pr_reply:nonmember**           | 3W: Types x Author Groups x Project |  3.737   |  2e-04  | 3e-04 | *** |
-|   **sphinx.gallery:issue_post:member-sphinx.gallery:issue_post:nonmember**   | 3W: Types x Author Groups x Project |  -1.779  |  0.075  | 0.096 |  .  |
-|  **sphinx.gallery:issue_reply:member-sphinx.gallery:issue_reply:nonmember**  | 3W: Types x Author Groups x Project |  -6.106  |  1e-04  | 1e-04 | *** |
-|      **sphinx.gallery:pr_post:member-sphinx.gallery:pr_post:nonmember**      | 3W: Types x Author Groups x Project | -0.7359  |  0.46   | 0.52  |     |
-|     **sphinx.gallery:pr_reply:member-sphinx.gallery:pr_reply:nonmember**     | 3W: Types x Author Groups x Project | -0.1834  |  0.85   | 0.89  |     |
-|    **sphinx.gallery:issue_post:member-sphinx.gallery:issue_reply:member**    | 3W: Types x Author Groups x Project | -0.5917  |  0.55   | 0.61  |     |
-| **sphinx.gallery:issue_post:nonmember-sphinx.gallery:issue_reply:nonmember** | 3W: Types x Author Groups x Project |  -2.005  |  0.045  | 0.059 |  .  |
-|       **sphinx.gallery:pr_post:member-sphinx.gallery:pr_reply:member**       | 3W: Types x Author Groups x Project |  -3.954  |  1e-04  | 1e-04 | *** |
-|    **sphinx.gallery:pr_post:nonmember-sphinx.gallery:pr_reply:nonmember**    | 3W: Types x Author Groups x Project |  -1.466  |  0.143  | 0.175 |     |
-|      **sphinx.gallery:issue_post:member-sphinx.gallery:pr_post:member**      | 3W: Types x Author Groups x Project |  0.5129  |  0.61   | 0.66  |     |
-|   **sphinx.gallery:issue_post:nonmember-sphinx.gallery:pr_post:nonmember**   | 3W: Types x Author Groups x Project |  1.229   |  0.219  | 0.26  |     |
-|     **sphinx.gallery:issue_reply:member-sphinx.gallery:pr_reply:member**     | 3W: Types x Author Groups x Project |  -4.463  |  1e-04  | 1e-04 | *** |
-|  **sphinx.gallery:issue_reply:nonmember-sphinx.gallery:pr_reply:nonmember**  | 3W: Types x Author Groups x Project |  2.553   |  0.011  | 0.015 |  *  |
-
-### Model 1.4: Do tickets and comments materially differ in gratitude over time?
-
-
-```r
-# do users tend to express appreciation and gratitude differently by group and content?
-creators_v_commenters_gratitude_time = lmer(log(grateful_count + 1) ~ project + 
-                                              (author_group + type) * ns(date, df=degrees_of_freedom) +
-                                              (1 | author_name),
-                                            data=sentiment_frame)
-#family=poisson)
-
-# print results
-pander_lme(creators_v_commenters_gratitude_time)
-```
-
-
-
-|                           &nbsp;                            |  Estimate  | Std..Error |   df   | t.value |   p    | p_adj  | sig |
-|:-----------------------------------------------------------:|:----------:|:----------:|:------:|:-------:|:------:|:------:|:---:|
-|                       **(Intercept)**                       |  0.06311   |  0.004417  | 262967 |  14.29  | 0.0001 | 0.0001 | *** |
-|                      **projectmayavi**                      |   0.0493   |  0.007211  | 113994 |  6.837  | 0.0001 | 0.0001 | *** |
-|                      **projectnumpy**                       | -0.006947  |  0.002306  | 238782 | -3.013  | 0.003  | 0.004  | **  |
-|                      **projectpandas**                      | -0.004654  |  0.00231   | 136210 | -2.014  | 0.044  | 0.058  |  .  |
-|                   **projectscikit-image**                   | -0.007032  |  0.003318  | 251358 | -2.119  | 0.034  | 0.048  |  *  |
-|                   **projectscikit-learn**                   | -0.009497  |  0.002443  | 133013 | -3.887  | 0.0001 | 0.0002 | *** |
-|                      **projectscipy**                       |  0.008664  |  0.002434  | 238851 |  3.56   | 0.0004 | 0.001  | **  |
-|                  **projectsphinx-gallery**                  |  -0.01512  |  0.004912  | 494933 | -3.078  | 0.002  | 0.004  | **  |
-|                  **author_groupnonmember**                  |  0.03562   |  0.002859  | 284676 |  12.46  | 0.0001 | 0.0001 | *** |
-|                     **typeissue_reply**                     |  0.04683   |  0.003655  | 507421 |  12.81  | 0.0001 | 0.0001 | *** |
-|                       **typepr_post**                       | -0.0005321 |  0.004644  | 506461 | -0.1146 |  0.91  |  0.91  |     |
-|                      **typepr_reply**                       |  0.07087   |  0.003709  | 505050 |  19.11  | 0.0001 | 0.0001 | *** |
-|            **ns(date, df = degrees_of_freedom)**            |  -0.00268  |  0.006917  | 498412 | -0.3874 |  0.7   |  0.74  |     |
-| **author_groupnonmember:ns(date, df = degrees_of_freedom)** |  -0.03261  |  0.005326  | 154656 | -6.123  | 0.0001 | 0.0001 | *** |
-|    **typeissue_reply:ns(date, df = degrees_of_freedom)**    |  0.01302   |  0.006913  | 502013 |  1.883  |  0.06  | 0.072  |  .  |
-|      **typepr_post:ns(date, df = degrees_of_freedom)**      |  0.008921  |  0.008709  | 501510 |  1.024  |  0.31  |  0.35  |     |
-|     **typepr_reply:ns(date, df = degrees_of_freedom)**      |  0.06017   |  0.007013  | 496479 |  8.58   | 0.0001 | 0.0001 | *** |
-
-
-```
-## `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'
-## `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'
-## `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'
-## `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'
-## `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'
-```
-
-![**Figure**. Expressions of gratitude over time by contribution type (ticket vs. comment) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-gratitude_membership_contribution_time-knitr.jpg)
+|                                    &nbsp;                                    |                model                | t_stats  | p_value | p_adj  | sig |
+|:----------------------------------------------------------------------------:|:-----------------------------------:|:--------:|:-------:|:------:|:---:|
+|                             **member-nonmember**                             |             Main Terms              |  -4.34   | 0.0001  | 0.0001 | *** |
+|                          **issue_post-issue_reply**                          |             Main Terms              |  -1.621  |  0.105  | 0.132  |     |
+|                             **pr_post-pr_reply**                             |             Main Terms              |  -6.921  | 0.0001  | 0.0001 | *** |
+|                            **issue_post-pr_post**                            |             Main Terms              |  2.335   |  0.02   | 0.026  |  *  |
+|                           **issue_reply-pr_reply**                           |             Main Terms              |  -2.964  |  0.003  | 0.004  | **  |
+|                  **issue_post:member-issue_post:nonmember**                  |      2W: Types x Author Groups      |  -5.171  | 0.0001  | 0.0001 | *** |
+|                 **issue_reply:member-issue_reply:nonmember**                 |      2W: Types x Author Groups      |  -8.597  | 0.0001  | 0.0001 | *** |
+|                     **pr_post:member-pr_post:nonmember**                     |      2W: Types x Author Groups      | -0.8896  |  0.37   |  0.43  |     |
+|                    **pr_reply:member-pr_reply:nonmember**                    |      2W: Types x Author Groups      |  -3.385  |  0.001  | 0.001  | **  |
+|                   **issue_post:member-issue_reply:member**                   |      2W: Types x Author Groups      |  -2.791  |  0.005  | 0.008  | **  |
+|                **issue_post:nonmember-issue_reply:nonmember**                |      2W: Types x Author Groups      |  -6.07   | 0.0001  | 0.0001 | *** |
+|                      **pr_post:member-pr_reply:member**                      |      2W: Types x Author Groups      |  -8.35   | 0.0001  | 0.0001 | *** |
+|                   **pr_post:nonmember-pr_reply:nonmember**                   |      2W: Types x Author Groups      |  -10.66  | 0.0001  | 0.0001 | *** |
+|                     **issue_post:member-pr_post:member**                     |      2W: Types x Author Groups      |  0.2943  |  0.77   |  0.82  |     |
+|                  **issue_post:nonmember-pr_post:nonmember**                  |      2W: Types x Author Groups      |  4.558   | 0.0001  | 0.0001 | *** |
+|                    **issue_reply:member-pr_reply:member**                    |      2W: Types x Author Groups      |  -5.278  | 0.0001  | 0.0001 | *** |
+|                 **issue_reply:nonmember-pr_reply:nonmember**                 |      2W: Types x Author Groups      | -0.04773 |  0.96   |  0.97  |     |
+|     **scikit.learn:issue_post:member-scikit.learn:issue_post:nonmember**     | 3W: Types x Author Groups x Project |  -14.53  | 0.0001  | 0.0001 | *** |
+|    **scikit.learn:issue_reply:member-scikit.learn:issue_reply:nonmember**    | 3W: Types x Author Groups x Project |  -28.26  | 0.0001  | 0.0001 | *** |
+|        **scikit.learn:pr_post:member-scikit.learn:pr_post:nonmember**        | 3W: Types x Author Groups x Project |  -1.384  |  0.166  | 0.202  |     |
+|       **scikit.learn:pr_reply:member-scikit.learn:pr_reply:nonmember**       | 3W: Types x Author Groups x Project |  -10.17  | 0.0001  | 0.0001 | *** |
+|      **scikit.learn:issue_post:member-scikit.learn:issue_reply:member**      | 3W: Types x Author Groups x Project |  -9.094  | 0.0001  | 0.0001 | *** |
+|   **scikit.learn:issue_post:nonmember-scikit.learn:issue_reply:nonmember**   | 3W: Types x Author Groups x Project |  -5.885  | 0.0001  | 0.0001 | *** |
+|         **scikit.learn:pr_post:member-scikit.learn:pr_reply:member**         | 3W: Types x Author Groups x Project |  -22.48  | 0.0001  | 0.0001 | *** |
+|      **scikit.learn:pr_post:nonmember-scikit.learn:pr_reply:nonmember**      | 3W: Types x Author Groups x Project |  -22.24  | 0.0001  | 0.0001 | *** |
+|        **scikit.learn:issue_post:member-scikit.learn:pr_post:member**        | 3W: Types x Author Groups x Project |  -1.151  |  0.25   |  0.29  |     |
+|     **scikit.learn:issue_post:nonmember-scikit.learn:pr_post:nonmember**     | 3W: Types x Author Groups x Project |  13.09   | 0.0001  | 0.0001 | *** |
+|       **scikit.learn:issue_reply:member-scikit.learn:pr_reply:member**       | 3W: Types x Author Groups x Project |  -30.71  | 0.0001  | 0.0001 | *** |
+|    **scikit.learn:issue_reply:nonmember-scikit.learn:pr_reply:nonmember**    | 3W: Types x Author Groups x Project | -0.06998 |  0.94   |  0.96  |     |
+|     **scikit.image:issue_post:member-scikit.image:issue_post:nonmember**     | 3W: Types x Author Groups x Project |  -5.764  | 0.0001  | 0.0001 | *** |
+|    **scikit.image:issue_reply:member-scikit.image:issue_reply:nonmember**    | 3W: Types x Author Groups x Project |  -10.21  | 0.0001  | 0.0001 | *** |
+|        **scikit.image:pr_post:member-scikit.image:pr_post:nonmember**        | 3W: Types x Author Groups x Project |  -1.35   |  0.177  | 0.213  |     |
+|       **scikit.image:pr_reply:member-scikit.image:pr_reply:nonmember**       | 3W: Types x Author Groups x Project |  -11.27  | 0.0001  | 0.0001 | *** |
+|      **scikit.image:issue_post:member-scikit.image:issue_reply:member**      | 3W: Types x Author Groups x Project |  -5.824  | 0.0001  | 0.0001 | *** |
+|   **scikit.image:issue_post:nonmember-scikit.image:issue_reply:nonmember**   | 3W: Types x Author Groups x Project |  -4.37   | 0.0001  | 0.0001 | *** |
+|         **scikit.image:pr_post:member-scikit.image:pr_reply:member**         | 3W: Types x Author Groups x Project |  -18.71  | 0.0001  | 0.0001 | *** |
+|      **scikit.image:pr_post:nonmember-scikit.image:pr_reply:nonmember**      | 3W: Types x Author Groups x Project |  -15.96  | 0.0001  | 0.0001 | *** |
+|        **scikit.image:issue_post:member-scikit.image:pr_post:member**        | 3W: Types x Author Groups x Project |  -0.245  |  0.81   |  0.84  |     |
+|     **scikit.image:issue_post:nonmember-scikit.image:pr_post:nonmember**     | 3W: Types x Author Groups x Project |   4.68   | 0.0001  | 0.0001 | *** |
+|       **scikit.image:issue_reply:member-scikit.image:pr_reply:member**       | 3W: Types x Author Groups x Project |  -16.7   | 0.0001  | 0.0001 | *** |
+|    **scikit.image:issue_reply:nonmember-scikit.image:pr_reply:nonmember**    | 3W: Types x Author Groups x Project |  -7.533  | 0.0001  | 0.0001 | *** |
+|       **matplotlib:issue_post:member-matplotlib:issue_post:nonmember**       | 3W: Types x Author Groups x Project |  -5.063  | 0.0001  | 0.0001 | *** |
+|      **matplotlib:issue_reply:member-matplotlib:issue_reply:nonmember**      | 3W: Types x Author Groups x Project |  -34.87  | 0.0001  | 0.0001 | *** |
+|          **matplotlib:pr_post:member-matplotlib:pr_post:nonmember**          | 3W: Types x Author Groups x Project |  -1.511  |  0.131  | 0.162  |     |
+|         **matplotlib:pr_reply:member-matplotlib:pr_reply:nonmember**         | 3W: Types x Author Groups x Project |  -17.14  | 0.0001  | 0.0001 | *** |
+|        **matplotlib:issue_post:member-matplotlib:issue_reply:member**        | 3W: Types x Author Groups x Project | -0.2652  |  0.79   |  0.84  |     |
+|     **matplotlib:issue_post:nonmember-matplotlib:issue_reply:nonmember**     | 3W: Types x Author Groups x Project |   -15    | 0.0001  | 0.0001 | *** |
+|           **matplotlib:pr_post:member-matplotlib:pr_reply:member**           | 3W: Types x Author Groups x Project |  -16.78  | 0.0001  | 0.0001 | *** |
+|        **matplotlib:pr_post:nonmember-matplotlib:pr_reply:nonmember**        | 3W: Types x Author Groups x Project |  -16.78  | 0.0001  | 0.0001 | *** |
+|          **matplotlib:issue_post:member-matplotlib:pr_post:member**          | 3W: Types x Author Groups x Project |  3.494   |    0    | 0.001  | **  |
+|       **matplotlib:issue_post:nonmember-matplotlib:pr_post:nonmember**       | 3W: Types x Author Groups x Project |  6.711   | 0.0001  | 0.0001 | *** |
+|         **matplotlib:issue_reply:member-matplotlib:pr_reply:member**         | 3W: Types x Author Groups x Project |  -16.05  | 0.0001  | 0.0001 | *** |
+|      **matplotlib:issue_reply:nonmember-matplotlib:pr_reply:nonmember**      | 3W: Types x Author Groups x Project |  2.634   |  0.008  | 0.012  |  *  |
+|           **mayavi:issue_post:member-mayavi:issue_post:nonmember**           | 3W: Types x Author Groups x Project |  -5.676  | 0.0001  | 0.0001 | *** |
+|          **mayavi:issue_reply:member-mayavi:issue_reply:nonmember**          | 3W: Types x Author Groups x Project |  -6.561  | 0.0001  | 0.0001 | *** |
+|              **mayavi:pr_post:member-mayavi:pr_post:nonmember**              | 3W: Types x Author Groups x Project | 0.01372  |  0.99   |  0.99  |     |
+|             **mayavi:pr_reply:member-mayavi:pr_reply:nonmember**             | 3W: Types x Author Groups x Project |  5.344   | 0.0001  | 0.0001 | *** |
+|            **mayavi:issue_post:member-mayavi:issue_reply:member**            | 3W: Types x Author Groups x Project |  -3.327  |  0.001  | 0.001  | **  |
+|         **mayavi:issue_post:nonmember-mayavi:issue_reply:nonmember**         | 3W: Types x Author Groups x Project | -0.6657  |  0.51   |  0.56  |     |
+|               **mayavi:pr_post:member-mayavi:pr_reply:member**               | 3W: Types x Author Groups x Project |  -10.89  | 0.0001  | 0.0001 | *** |
+|            **mayavi:pr_post:nonmember-mayavi:pr_reply:nonmember**            | 3W: Types x Author Groups x Project |  -3.758  | 0.0002  | 0.0003 | *** |
+|              **mayavi:issue_post:member-mayavi:pr_post:member**              | 3W: Types x Author Groups x Project |  -0.828  |  0.41   |  0.46  |     |
+|           **mayavi:issue_post:nonmember-mayavi:pr_post:nonmember**           | 3W: Types x Author Groups x Project |  4.919   | 0.0001  | 0.0001 | *** |
+|             **mayavi:issue_reply:member-mayavi:pr_reply:member**             | 3W: Types x Author Groups x Project |  -10.43  | 0.0001  | 0.0001 | *** |
+|          **mayavi:issue_reply:nonmember-mayavi:pr_reply:nonmember**          | 3W: Types x Author Groups x Project |  1.928   |  0.054  |  0.07  |  .  |
+|           **pandas:issue_post:member-pandas:issue_post:nonmember**           | 3W: Types x Author Groups x Project |  -11.14  | 0.0001  | 0.0001 | *** |
+|          **pandas:issue_reply:member-pandas:issue_reply:nonmember**          | 3W: Types x Author Groups x Project |  -44.34  | 0.0001  | 0.0001 | *** |
+|              **pandas:pr_post:member-pandas:pr_post:nonmember**              | 3W: Types x Author Groups x Project |  -2.736  |  0.006  | 0.009  | **  |
+|             **pandas:pr_reply:member-pandas:pr_reply:nonmember**             | 3W: Types x Author Groups x Project |  -21.1   | 0.0001  | 0.0001 | *** |
+|            **pandas:issue_post:member-pandas:issue_reply:member**            | 3W: Types x Author Groups x Project |  -11.42  | 0.0001  | 0.0001 | *** |
+|         **pandas:issue_post:nonmember-pandas:issue_reply:nonmember**         | 3W: Types x Author Groups x Project |  -24.59  | 0.0001  | 0.0001 | *** |
+|               **pandas:pr_post:member-pandas:pr_reply:member**               | 3W: Types x Author Groups x Project |  -34.08  | 0.0001  | 0.0001 | *** |
+|            **pandas:pr_post:nonmember-pandas:pr_reply:nonmember**            | 3W: Types x Author Groups x Project |  -28.34  | 0.0001  | 0.0001 | *** |
+|              **pandas:issue_post:member-pandas:pr_post:member**              | 3W: Types x Author Groups x Project |  1.214   |  0.225  |  0.26  |     |
+|           **pandas:issue_post:nonmember-pandas:pr_post:nonmember**           | 3W: Types x Author Groups x Project |   7.08   | 0.0001  | 0.0001 | *** |
+|             **pandas:issue_reply:member-pandas:pr_reply:member**             | 3W: Types x Author Groups x Project |  -42.2   | 0.0001  | 0.0001 | *** |
+|          **pandas:issue_reply:nonmember-pandas:pr_reply:nonmember**          | 3W: Types x Author Groups x Project |  -2.93   |  0.003  | 0.005  | **  |
+|            **scipy:issue_post:member-scipy:issue_post:nonmember**            | 3W: Types x Author Groups x Project |  -7.369  | 0.0001  | 0.0001 | *** |
+|           **scipy:issue_reply:member-scipy:issue_reply:nonmember**           | 3W: Types x Author Groups x Project |  -23.39  | 0.0001  | 0.0001 | *** |
+|               **scipy:pr_post:member-scipy:pr_post:nonmember**               | 3W: Types x Author Groups x Project |  -2.303  |  0.021  | 0.028  |  *  |
+|              **scipy:pr_reply:member-scipy:pr_reply:nonmember**              | 3W: Types x Author Groups x Project |  -3.462  |    0    | 0.001  | **  |
+|             **scipy:issue_post:member-scipy:issue_reply:member**             | 3W: Types x Author Groups x Project |  -4.591  | 0.0001  | 0.0001 | *** |
+|          **scipy:issue_post:nonmember-scipy:issue_reply:nonmember**          | 3W: Types x Author Groups x Project |  -9.837  | 0.0001  | 0.0001 | *** |
+|                **scipy:pr_post:member-scipy:pr_reply:member**                | 3W: Types x Author Groups x Project |  -24.8   | 0.0001  | 0.0001 | *** |
+|             **scipy:pr_post:nonmember-scipy:pr_reply:nonmember**             | 3W: Types x Author Groups x Project |  -16.08  | 0.0001  | 0.0001 | *** |
+|               **scipy:issue_post:member-scipy:pr_post:member**               | 3W: Types x Author Groups x Project | -0.3404  |  0.73   |  0.79  |     |
+|            **scipy:issue_post:nonmember-scipy:pr_post:nonmember**            | 3W: Types x Author Groups x Project |   6.3    | 0.0001  | 0.0001 | *** |
+|              **scipy:issue_reply:member-scipy:pr_reply:member**              | 3W: Types x Author Groups x Project |  -30.52  | 0.0001  | 0.0001 | *** |
+|           **scipy:issue_reply:nonmember-scipy:pr_reply:nonmember**           | 3W: Types x Author Groups x Project | -0.1306  |   0.9   |  0.92  |     |
+|            **numpy:issue_post:member-numpy:issue_post:nonmember**            | 3W: Types x Author Groups x Project |  -5.816  | 0.0001  | 0.0001 | *** |
+|           **numpy:issue_reply:member-numpy:issue_reply:nonmember**           | 3W: Types x Author Groups x Project |  -31.55  | 0.0001  | 0.0001 | *** |
+|               **numpy:pr_post:member-numpy:pr_post:nonmember**               | 3W: Types x Author Groups x Project |  -1.043  |   0.3   |  0.34  |     |
+|              **numpy:pr_reply:member-numpy:pr_reply:nonmember**              | 3W: Types x Author Groups x Project |  -4.952  | 0.0001  | 0.0001 | *** |
+|             **numpy:issue_post:member-numpy:issue_reply:member**             | 3W: Types x Author Groups x Project |  -2.63   |  0.008  | 0.012  |  *  |
+|          **numpy:issue_post:nonmember-numpy:issue_reply:nonmember**          | 3W: Types x Author Groups x Project |  -14.07  | 0.0001  | 0.0001 | *** |
+|                **numpy:pr_post:member-numpy:pr_reply:member**                | 3W: Types x Author Groups x Project |  -23.84  | 0.0001  | 0.0001 | *** |
+|             **numpy:pr_post:nonmember-numpy:pr_reply:nonmember**             | 3W: Types x Author Groups x Project |  -15.33  | 0.0001  | 0.0001 | *** |
+|               **numpy:issue_post:member-numpy:pr_post:member**               | 3W: Types x Author Groups x Project |  1.746   |  0.081  | 0.103  |     |
+|            **numpy:issue_post:nonmember-numpy:pr_post:nonmember**            | 3W: Types x Author Groups x Project |  5.941   | 0.0001  | 0.0001 | *** |
+|              **numpy:issue_reply:member-numpy:pr_reply:member**              | 3W: Types x Author Groups x Project |  -32.27  | 0.0001  | 0.0001 | *** |
+|           **numpy:issue_reply:nonmember-numpy:pr_reply:nonmember**           | 3W: Types x Author Groups x Project |  3.737   | 0.0002  | 0.0003 | *** |
+|   **sphinx.gallery:issue_post:member-sphinx.gallery:issue_post:nonmember**   | 3W: Types x Author Groups x Project |  -1.779  |  0.075  | 0.096  |  .  |
+|  **sphinx.gallery:issue_reply:member-sphinx.gallery:issue_reply:nonmember**  | 3W: Types x Author Groups x Project |  -6.106  | 0.0001  | 0.0001 | *** |
+|      **sphinx.gallery:pr_post:member-sphinx.gallery:pr_post:nonmember**      | 3W: Types x Author Groups x Project | -0.7359  |  0.46   |  0.52  |     |
+|     **sphinx.gallery:pr_reply:member-sphinx.gallery:pr_reply:nonmember**     | 3W: Types x Author Groups x Project | -0.1834  |  0.85   |  0.89  |     |
+|    **sphinx.gallery:issue_post:member-sphinx.gallery:issue_reply:member**    | 3W: Types x Author Groups x Project | -0.5917  |  0.55   |  0.61  |     |
+| **sphinx.gallery:issue_post:nonmember-sphinx.gallery:issue_reply:nonmember** | 3W: Types x Author Groups x Project |  -2.005  |  0.045  | 0.059  |  .  |
+|       **sphinx.gallery:pr_post:member-sphinx.gallery:pr_reply:member**       | 3W: Types x Author Groups x Project |  -3.954  | 0.0001  | 0.0001 | *** |
+|    **sphinx.gallery:pr_post:nonmember-sphinx.gallery:pr_reply:nonmember**    | 3W: Types x Author Groups x Project |  -1.466  |  0.143  | 0.175  |     |
+|      **sphinx.gallery:issue_post:member-sphinx.gallery:pr_post:member**      | 3W: Types x Author Groups x Project |  0.5129  |  0.61   |  0.66  |     |
+|   **sphinx.gallery:issue_post:nonmember-sphinx.gallery:pr_post:nonmember**   | 3W: Types x Author Groups x Project |  1.229   |  0.219  |  0.26  |     |
+|     **sphinx.gallery:issue_reply:member-sphinx.gallery:pr_reply:member**     | 3W: Types x Author Groups x Project |  -4.463  | 0.0001  | 0.0001 | *** |
+|  **sphinx.gallery:issue_reply:nonmember-sphinx.gallery:pr_reply:nonmember**  | 3W: Types x Author Groups x Project |  2.553   |  0.011  | 0.015  |  *  |
 
 ## Model Series 2: Retention
-
 Our second set of models investigates what aspects of the response to a 
 newcomer's first contribution might predict their likelihood to come back
 to contribute a second time.
@@ -1938,6 +1752,8 @@ aggregated_comments = comments_frame %>% ungroup() %>%
 
 After we've summarized the comment threads, we next join those metrics with the
 tickets dataframe in preparation for our models.
+
+
 
 
 ```r
