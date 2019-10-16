@@ -229,34 +229,34 @@ for(project in all_projects){
     # Now, extend this to all years.
     contrasts = c(
 	unlist(
-	    lapply(gsub("-", ":year2009", template_contrasts),
+	    lapply(gsub("-", ":year2009-", template_contrasts),
 		function(x) paste(x, ":year2009", sep=""))),
 	unlist(
-	    lapply(gsub("-", ":year2010", template_contrasts),
+	    lapply(gsub("-", ":year2010-", template_contrasts),
 		function(x) paste(x, ":year2010", sep=""))),
 	unlist(
-	    lapply(gsub("-", ":year2011", template_contrasts),
+	    lapply(gsub("-", ":year2011-", template_contrasts),
 		function(x) paste(x, ":year2011", sep=""))),
 	unlist(
-	    lapply(gsub("-", ":year2012", template_contrasts),
+	    lapply(gsub("-", ":year2012-", template_contrasts),
 		function(x) paste(x, ":year2012", sep=""))),
 	unlist(
-	    lapply(gsub("-", ":year2013", template_contrasts),
+	    lapply(gsub("-", ":year2013-", template_contrasts),
 		function(x) paste(x, ":year2013", sep=""))),
 	unlist(
-	    lapply(gsub("-", ":year2014", template_contrasts),
+	    lapply(gsub("-", ":year2014-", template_contrasts),
 		function(x) paste(x, ":year2014", sep=""))),
 	unlist(
-	    lapply(gsub("-", ":year2015", template_contrasts),
+	    lapply(gsub("-", ":year2015-", template_contrasts),
 		function(x) paste(x, ":year2015", sep=""))),
 	unlist(
-	    lapply(gsub("-", ":year2016", template_contrasts),
+	    lapply(gsub("-", ":year2016-", template_contrasts),
 		function(x) paste(x, ":year2016", sep=""))),
 	unlist(
-	    lapply(gsub("-", ":year2017", template_contrasts),
+	    lapply(gsub("-", ":year2017-", template_contrasts),
 		function(x) paste(x, ":year2017", sep=""))),
 	unlist(
-	    lapply(gsub("-", ":year2018", template_contrasts),
+	    lapply(gsub("-", ":year2018-", template_contrasts),
 		function(x) paste(x, ":year2018", sep=""))))
 
 
@@ -279,3 +279,10 @@ for(project in all_projects){
     }
 }
 ```
+
+```{r}
+all_project_tests = all_project_tests[!is.na(all_project_tests[, "p_value"]), ]
+pander_clean_anova(all_project_tests, rename_columns=FALSE,
+		   display_only_significant=TRUE)
+```
+
