@@ -47,10 +47,12 @@ source("./utils/data-loading.R")
 ```
 
 ```{r choosing_dataset}
+
 # We are now going to select the dataset we'll be working on.
 library(dplyr)
 tickets_frame = loading_tickets_data(dataset="original")
 comments_frame = loading_comments_data(dataset="original")
+
 ```
 
 
