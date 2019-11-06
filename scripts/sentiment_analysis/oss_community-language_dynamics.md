@@ -25,7 +25,7 @@ creates new functions for our analyses.
 **Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux
 (CNRS)
 
-**Date last compiled**:  2019-10-15 16:17:10
+**Date last compiled**:  2019-10-28 11:48:39
 
 
 
@@ -77,7 +77,7 @@ mean of 8583.875 tickets per project.
 
 On these tickets, the dataset includes
 439024 unique comments, with
-54878 average comments per project.
+5.4878\times 10^{4} average comments per project.
 
 In total, we have 15560 unique commenters,
 14147 unique ticket-creators, and
@@ -149,6 +149,9 @@ sentiment_frame = combine_tickets_and_comments(tickets_frame, comments_frame)
 ## Warning in bind_rows_(x, .id): binding character and factor vector,
 ## coercing into character vector
 ```
+
+
+
 
 ### Model 1.1: Do different kinds of user contributions materially differ in emotion?
 
@@ -253,6 +256,14 @@ author_groups_tests[, "p_value"] = compute_p_value_from_t_stats(
   author_groups_tests$t_stats)
 ```
 
+
+```r
+dir.create("results/models", showWarnings=FALSE)
+write.table(coefficients_and_se,
+	    file="results/models/model-1.1b1.tsv",
+	    sep="\t")
+```
+
 ##### Model 1.1b.2: Does sentiment vary significantly across contribution types?
 
 Now, look at whether there are differences in sentiment between contribution
@@ -297,6 +308,14 @@ types_tests = compute_t_statistics(
   contrasts)
 types_tests[, "p_value"] = compute_p_value_from_t_stats(types_tests$t_stats)
 ```
+
+
+```r
+write.table(coefficients_and_se,
+	    file="results/models/model-1.1b2.tsv",
+	    sep="\t")
+```
+
 
 ##### Model 1.1b.3: Does sentiment vary significantly across community memberships and contribution types?
 
@@ -671,6 +690,9 @@ pander_clean_anova(all_tests, rename_columns=FALSE)
 |  **sphinx.gallery:issue_reply:nonmember-sphinx.gallery:pr_reply:nonmember**  | 3W: Types x Author Groups x Project |  1.033   |   0.3   |  0.39  |     |
 
 Finally, let's plot these effects.
+
+
+
 
 
 

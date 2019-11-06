@@ -110,7 +110,15 @@ Before we can run Model Series 1, we need to combine `tickets_frame` and
 
 ```{r prepare-data-for-sentiment-analysis}
 sentiment_frame = combine_tickets_and_comments(tickets_frame, comments_frame)
+```
 
+```{r save-sentiment-frame, echo=FALSE}
+# For plotting purposes
+
+dir.create(file.path("results", "data"), showWarnings=FALSE)
+write.table(sentiment_frame,
+	    file="results/data/sentiment_frame_2019.tsv",
+	    sep="\t")
 ```
 
 ### Model 1.1: Do different kinds of user contributions materially differ in emotion?

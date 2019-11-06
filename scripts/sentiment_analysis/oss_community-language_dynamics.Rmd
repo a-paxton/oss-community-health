@@ -124,8 +124,17 @@ Before we can run Model Series 1, we need to combine `tickets_frame` and
 
 ```{r prepare-data-for-sentiment-analysis}
 sentiment_frame = combine_tickets_and_comments(tickets_frame, comments_frame)
-
 ```
+
+```{r save-sentiment-frame, echo=FALSE}
+# For plotting purposes
+
+dir.create("results/data", showWarnings=FALSE)
+write.table(sentiment_frame,
+	    file="results/data/sentiment_frame_original.tsv",
+	    sep="\t")
+```
+
 
 ### Model 1.1: Do different kinds of user contributions materially differ in emotion?
 
@@ -225,6 +234,13 @@ author_groups_tests = compute_t_statistics(
   contrasts)
 author_groups_tests[, "p_value"] = compute_p_value_from_t_stats(
   author_groups_tests$t_stats)
+```
+
+```{r saving_results-model-1.1b1}
+dir.create("results/models", showWarnings=FALSE)
+write.table(coefficients_and_se,
+	    file="results/models/model-1.1b1.tsv",
+	    sep="\t")
 
 ```
 
@@ -274,6 +290,13 @@ types_tests = compute_t_statistics(
 types_tests[, "p_value"] = compute_p_value_from_t_stats(types_tests$t_stats)
 
 ```
+
+```{r saving_results-model-1.1b2}
+write.table(coefficients_and_se,
+	    file="results/models/model-1.1b2.tsv",
+	    sep="\t")
+```
+
 
 ##### Model 1.1b.3: Does sentiment vary significantly across community memberships and contribution types?
 
@@ -536,6 +559,32 @@ pander_clean_anova(all_tests, rename_columns=FALSE)
 ```
 
 Finally, let's plot these effects.
+
+
+```{r plot-model-emotion-by-type, echo=FALSE, eval=TRUE}
+# aggregate sentiment over all projects
+sentiment_plot_aggregated = ggplot(data=sentiment_frame,
+                                   aes(x=type,
+                                       y=compound_emotion,
+                                       colour=type)) +
+  stat_summary(fun.y=mean, geom="point", size=2) +
+  stat_summary(fun.data = mean_se, geom = "errorbar") +
+  #coord_cartesian(ylim=c(0,.5)) +
+  facet_grid(cols=vars(ticket_family)) +
+  ggtitle('Message sentiment by contribution\nand community membership') +
+  ylab('Sentiment score') +
+  xlab('Community membership') +
+  labs(color='Contribution type') +
+  scale_color_manual(labels = c("Issue: Post",
+                                "Issue: Reply",
+                                "PR: Post",
+                                "PR: Reply"),
+                     values = c("#e66101", # issue: post (darker)
+                                "#fdb863", # issue: reply (lighter)
+                                "#5e3c99", # PR: post (darker)
+                                "#b2abd2")) # PR: reply (lighter)
+
+```
 
 ```{r plot-model-emotion-by-type-and-membership, echo=FALSE, eval=TRUE}
 
