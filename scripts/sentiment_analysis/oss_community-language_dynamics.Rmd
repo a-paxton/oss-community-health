@@ -129,7 +129,7 @@ sentiment_frame = combine_tickets_and_comments(tickets_frame, comments_frame)
 ```{r save-sentiment-frame, echo=FALSE}
 # For plotting purposes
 
-dir.create("results/data", showWarnings=FALSE)
+dir.create("results/data", showWarnings=FALSE, recursive=TRUE)
 write.table(sentiment_frame,
 	    file="results/data/sentiment_frame_original.tsv",
 	    sep="\t")
