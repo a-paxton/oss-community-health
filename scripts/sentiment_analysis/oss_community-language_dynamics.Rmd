@@ -558,6 +558,11 @@ pander_clean_anova(all_tests, rename_columns=FALSE)
 
 ```
 
+```{r emotion_write_all_results}
+all_tests$p_val_adjusted = p.adjust(all_tests$p_value, method="BH")
+write.table(all_tests, file="results/models/model-1.1b_final_pvalues.tsv")
+```
+
 Finally, let's plot these effects.
 
 
@@ -1370,6 +1375,12 @@ all_tests = all_tests[c("model", "t_stats", "p_value")]
 pander_clean_anova(all_tests, rename_columns=FALSE)
 
 ```
+
+```{r gratitude_write_all_results}
+all_tests$p_val_adjusted = p.adjust(all_tests$p_value, method="BH")
+write.table(all_tests, file="results/models/model-1.3b_final_pvalues.tsv")
+```
+
 
 ## Model Series 2: Retention
 Our second set of models investigates what aspects of the response to a 
