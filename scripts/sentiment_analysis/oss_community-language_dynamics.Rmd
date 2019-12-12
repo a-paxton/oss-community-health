@@ -1480,29 +1480,6 @@ retention_frame = tickets_frame %>%
 
 ### Model 2.1: How does a community's response to newcomers predict the newcomer's decision to return?
 
-```{r predicting-retention}
-
-# what predicts continuing retention?
-retention_predictors = glm(retained_newcomer ~ 0 + ticket_family_numeric * (project +
-                                                                              open_time +
-                                                                              comment_sentiment_mean + 
-                                                                              comment_sentiment_max_negative + 
-                                                                              comment_grateful_cumulative +
-                                                                              number_of_comments +
-                                                                              comment_member_ratio),
-                           data=retention_frame,
-                           family=binomial)
-
-```
-
-```{r predicting-retention-print, echo=FALSE}
-
-# print it
-pander(summary(retention_predictors))
-
-```
-
-
 ```{r plot-predicting-retention-aggregated, include=FALSE, eval=TRUE}
 
 # create the plot of newcomer retention across all projects
@@ -1580,12 +1557,6 @@ ggsave(plot = retention_plot_by_project,
 ```
 
 ![**Figure**. Whether a first-time ticket creator will open a second ticket by commenters' expressions of gratitude and responsiveness.](../../figures/sentiment_analysis/ossc-retention_emotion-by_project-knitr.jpg)
-
-***
-
-## Model 2.2 Univariate tests for newcomer retension
-
-Is retention affected by contribution type?
 
 ```{r retention_contribution_type}
 retention_predictors = glm(retained_newcomer ~ 0 + ticket_family,
@@ -1699,6 +1670,8 @@ retention_tests = merge(retention_tests, retention_tests_continuous, all=TRUE,
 pander_clean_anova(retention_tests[c("model", "stat", "p_value")],
 		   rename_columns=FALSE)
 ```
+
+***
 
 # Future directions
 
