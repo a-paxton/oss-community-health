@@ -1408,7 +1408,7 @@ aggregated_comments = comments_frame %>% ungroup() %>%
   # create metrics for each unique ticket in each project
   dplyr::group_by(project, ticket_id) %>%
   dplyr::summarise(number_of_comments = n(),
-                   comment_sentiment_mean = mean(compound_emotion, na.rm=TRUE),
+                   comment_grateful_cummulative = mean(compound_emotion, na.rm=TRUE),
                    comment_sentiment_variance = var(compound_emotion),
                    comment_sentiment_max_negative = max(negative_emotion),
                    comment_sentiment_max_positive = max(positive_emotion),
@@ -1485,7 +1485,7 @@ retention_frame = tickets_frame %>%
 # what predicts continuing retention?
 retention_predictors = glm(retained_newcomer ~ 0 + ticket_family_numeric * (project +
                                                                               open_time +
-                                                                              comment_sentiment_mean + 
+                                                                              comment_grateful_cummulative + 
                                                                               comment_sentiment_max_negative + 
                                                                               comment_grateful_cumulative +
                                                                               number_of_comments +
@@ -1509,7 +1509,7 @@ pander(summary(retention_predictors))
 retention_plot_aggregated = ggplot(data=retention_frame,
                                    aes(x=open_time/(60*60*24),
                                        color=comment_member_ratio,
-                                       y=comment_sentiment_mean)) +
+                                       y=comment_grateful_cummulative)) +
   geom_jitter(alpha=0.3, size=.1) +
   facet_grid(cols = c(vars(ticket_family),
                       vars(retained_newcomer)),
@@ -1546,7 +1546,7 @@ ggsave(plot = retention_plot_aggregated,
 retention_plot_by_project = ggplot(data=retention_frame,
                                    aes(x=open_time/(60*60*24),
                                        color=comment_member_ratio,
-                                       y=comment_sentiment_mean)) +
+                                       y=comment_grateful_cummulative)) +
   geom_jitter(alpha=0.3, size=.1) +
   facet_grid(rows = vars(project),
              cols = c(vars(ticket_family),
@@ -1582,6 +1582,123 @@ ggsave(plot = retention_plot_by_project,
 ![**Figure**. Whether a first-time ticket creator will open a second ticket by commenters' expressions of gratitude and responsiveness.](../../figures/sentiment_analysis/ossc-retention_emotion-by_project-knitr.jpg)
 
 ***
+
+## Model 2.2 Univariate tests for newcomer retension
+
+Is retention affected by contribution type?
+
+```{r retention_contribution_type}
+retention_predictors = glm(retained_newcomer ~ 0 + ticket_family,
+			   data=retention_frame, family=binomial)
+coefficients_and_se = data.frame(
+  summary(retention_predictors)$coefficients)
+
+# get comparison names as rownames
+row_names = gsub("ticket_family", "", row.names(coefficients_and_se))
+# convert model estimates to a dataframe
+means = coefficients_and_se$Estimate
+names(means) = row_names
+
+# convert standard error to dataframe
+se = coefficients_and_se$Std..Error
+names(se) = row_names
+
+# compute t-statistics and p-values for desired contrasts
+contrasts = c("pr-issue")
+retention_tests = compute_t_statistics(
+  means, se,
+  contrasts)
+retention_tests[, "p_value"] = compute_p_value_from_t_stats(
+  retention_tests$t_stats)
+```
+
+```{r retention_open_time}
+retention_predictor = glm(retained_newcomer ~ open_time,
+			  data=retention_frame, family=binomial)
+retention_tests_continuous = as.data.frame(summary(
+    retention_predictor)$coefficients)
+retention_tests_continuous[, "row_names"] = row.names(
+    retention_tests_continuous)
+
+retention_predictor = glm(retained_newcomer ~ comment_grateful_cumulative,
+			  data=retention_frame, family=binomial)
+retention_grateful =  as.data.frame(summary(retention_predictor)$coefficients)
+retention_grateful[, "row_names"] = row.names(
+    retention_grateful)
+retention_tests_continuous = merge(
+    retention_tests_continuous,
+    retention_grateful, all=TRUE, sort=FALSE)
+
+retention_predictor = glm(retained_newcomer ~ comment_sentiment_max_negative,
+			  data=retention_frame, family=binomial)
+retention_comment_sentiment_max_negative = as.data.frame(
+    summary(retention_predictor)$coefficients)
+retention_comment_sentiment_max_negative[, "row_names"] = row.names(
+    retention_comment_sentiment_max_negative)
+retention_tests_continuous = merge(
+    retention_tests_continuous,
+    retention_comment_sentiment_max_negative,
+    all=TRUE, sort=FALSE)
+
+
+retention_predictor = glm(retained_newcomer ~ number_of_comments,
+			  data=retention_frame, family=binomial)
+retention_number_of_comment = as.data.frame(
+    summary(retention_predictor)$coefficients)
+retention_number_of_comment[, "row_names"] = row.names(
+    retention_number_of_comment)
+retention_tests_continuous = merge(
+    retention_tests_continuous,
+    retention_number_of_comment,
+    all=TRUE, sort=FALSE)
+
+retention_predictor = glm(retained_newcomer ~ comment_member_ratio,
+			  data=retention_frame, family=binomial)
+retention_comment_member_ratio = as.data.frame(
+    summary(retention_predictor)$coefficients)
+retention_comment_member_ratio[, "row_names"] = row.names(
+    retention_comment_member_ratio)
+retention_tests_continuous = merge(
+    retention_tests_continuous,
+    retention_comment_member_ratio,
+    all=TRUE, sort=FALSE)
+
+
+retention_predictor = glm(retained_newcomer ~ comment_grateful_cummulative,
+			  data=retention_frame, family=binomial)
+retention_comment_grateful_cummulative = as.data.frame(
+    summary(retention_predictor)$coefficients)
+retention_comment_grateful_cummulative[, "row_names"] = row.names(
+    retention_comment_grateful_cummulative)
+retention_tests_continuous = merge(
+    retention_tests_continuous,
+    retention_comment_grateful_cummulative,
+    all=TRUE, sort=FALSE)
+
+```
+
+
+```{r cleaning_up_table}
+mask = retention_tests_continuous$row_names != "(Intercept)"
+retention_tests_continuous = retention_tests_continuous[mask, ]
+row.names(retention_tests_continuous) = retention_tests_continuous[,
+    "row_names"] 
+
+columns_of_interest = c("z value", "Pr(>|z|)")
+retention_tests_continuous = retention_tests_continuous[, columns_of_interest]
+retention_tests_continuous["model"] = row.names(retention_tests_continuous)
+colnames(retention_tests_continuous) = c("stat", "p_value", "model")
+retention_tests["model"] = row.names(retention_tests)
+colnames(retention_tests) = c("stat", "p_value", "model")
+
+retention_tests = merge(retention_tests, retention_tests_continuous, all=TRUE,
+			sort=FALSE)
+```
+
+```{r display_model2_results}
+pander_clean_anova(retention_tests[c("model", "stat", "p_value")],
+		   rename_columns=FALSE)
+```
 
 # Future directions
 

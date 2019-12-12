@@ -25,7 +25,7 @@ creates new functions for our analyses.
 **Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux
 (CNRS)
 
-**Date last compiled**:  2019-12-11 14:49:38
+**Date last compiled**:  2019-12-12 09:48:38
 
 
 
@@ -77,7 +77,7 @@ mean of 8583.875 tickets per project.
 
 On these tickets, the dataset includes
 437321 unique comments, with
-5.4665125\times 10^{4} average comments per project.
+54665.125 average comments per project.
 
 In total, we have 15559 unique commenters,
 14147 unique ticket-creators, and
@@ -1782,7 +1782,7 @@ aggregated_comments = comments_frame %>% ungroup() %>%
   # create metrics for each unique ticket in each project
   dplyr::group_by(project, ticket_id) %>%
   dplyr::summarise(number_of_comments = n(),
-                   comment_sentiment_mean = mean(compound_emotion, na.rm=TRUE),
+                   comment_grateful_cummulative = mean(compound_emotion, na.rm=TRUE),
                    comment_sentiment_variance = var(compound_emotion),
                    comment_sentiment_max_negative = max(negative_emotion),
                    comment_sentiment_max_positive = max(positive_emotion),
@@ -1856,9 +1856,9 @@ retention_frame = tickets_frame %>%
 
 ```r
 # what predicts continuing retention?
-retention_predictors = glm(retained_newcomer ~ 0 + ticket_family_numeric * (0 + project +
+retention_predictors = glm(retained_newcomer ~ 0 + ticket_family_numeric * (project +
                                                                               open_time +
-                                                                              comment_sentiment_mean + 
+                                                                              comment_grateful_cummulative + 
                                                                               comment_sentiment_max_negative + 
                                                                               comment_grateful_cumulative +
                                                                               number_of_comments +
@@ -1868,128 +1868,128 @@ retention_predictors = glm(retained_newcomer ~ 0 + ticket_family_numeric * (0 + 
 ```
 
 
--------------------------------------------------------------------------
-                           &nbsp;                              Estimate  
-------------------------------------------------------------- -----------
-                **ticket_family_numeric-0.5**                   -0.6291  
+------------------------------------------------------------------------------
+                           &nbsp;                                 Estimate    
+------------------------------------------------------------- ----------------
+                **ticket_family_numeric-0.5**                     -0.6291     
 
-                **ticket_family_numeric0.5**                    0.4355   
+                **ticket_family_numeric0.5**                       0.4355     
 
-                      **projectmayavi**                         -0.3196  
+                      **projectmayavi**                           -0.3196     
 
-                      **projectnumpy**                          -0.4292  
+                      **projectnumpy**                            -0.4292     
 
-                      **projectpandas**                         0.2537   
+                      **projectpandas**                            0.2537     
 
-                   **projectscikit-image**                     -0.06476  
+                   **projectscikit-image**                        -0.06476    
 
-                   **projectscikit-learn**                     -0.08473  
+                   **projectscikit-learn**                        -0.08473    
 
-                      **projectscipy**                          -0.4463  
+                      **projectscipy**                            -0.4463     
 
-                  **projectsphinx-gallery**                     0.6876   
+                  **projectsphinx-gallery**                        0.6876     
 
-                        **open_time**                          1.548e-09 
+                        **open_time**                          0.000000001548 
 
-                 **comment_sentiment_mean**                     0.3465   
+              **comment_grateful_cummulative**                     0.3465     
 
-             **comment_sentiment_max_negative**                 -0.3331  
+             **comment_sentiment_max_negative**                   -0.3331     
 
-               **comment_grateful_cumulative**                 -0.08103  
+               **comment_grateful_cumulative**                    -0.08103    
 
-                   **number_of_comments**                       0.01956  
+                   **number_of_comments**                         0.01956     
 
-                  **comment_member_ratio**                      -0.3595  
+                  **comment_member_ratio**                        -0.3595     
 
-         **ticket_family_numeric0.5:projectmayavi**            -0.09276  
+         **ticket_family_numeric0.5:projectmayavi**               -0.09276    
 
-          **ticket_family_numeric0.5:projectnumpy**              0.44    
+          **ticket_family_numeric0.5:projectnumpy**                 0.44      
 
-         **ticket_family_numeric0.5:projectpandas**             -0.2715  
+         **ticket_family_numeric0.5:projectpandas**               -0.2715     
 
-      **ticket_family_numeric0.5:projectscikit-image**          0.2848   
+      **ticket_family_numeric0.5:projectscikit-image**             0.2848     
 
-      **ticket_family_numeric0.5:projectscikit-learn**          0.1801   
+      **ticket_family_numeric0.5:projectscikit-learn**             0.1801     
 
-          **ticket_family_numeric0.5:projectscipy**             0.5915   
+          **ticket_family_numeric0.5:projectscipy**                0.5915     
 
-     **ticket_family_numeric0.5:projectsphinx-gallery**        -0.01746  
+     **ticket_family_numeric0.5:projectsphinx-gallery**           -0.01746    
 
-           **ticket_family_numeric0.5:open_time**              -1.07e-08 
+           **ticket_family_numeric0.5:open_time**              -0.0000000107  
 
-     **ticket_family_numeric0.5:comment_sentiment_mean**        0.01523  
+  **ticket_family_numeric0.5:comment_grateful_cummulative**       0.01523     
 
- **ticket_family_numeric0.5:comment_sentiment_max_negative**     0.467   
+ **ticket_family_numeric0.5:comment_sentiment_max_negative**       0.467      
 
-  **ticket_family_numeric0.5:comment_grateful_cumulative**     -0.001571 
+  **ticket_family_numeric0.5:comment_grateful_cumulative**       -0.001571    
 
-       **ticket_family_numeric0.5:number_of_comments**         0.008633  
+       **ticket_family_numeric0.5:number_of_comments**            0.008633    
 
-      **ticket_family_numeric0.5:comment_member_ratio**         -0.8376  
--------------------------------------------------------------------------
+      **ticket_family_numeric0.5:comment_member_ratio**           -0.8376     
+------------------------------------------------------------------------------
 
 Table: Table continues below
 
  
---------------------------------------------------------------------------
-                           &nbsp;                              Std. Error 
-------------------------------------------------------------- ------------
-                **ticket_family_numeric-0.5**                   0.08577   
+-------------------------------------------------------------------------------
+                           &nbsp;                                Std. Error    
+------------------------------------------------------------- -----------------
+                **ticket_family_numeric-0.5**                      0.08577     
 
-                **ticket_family_numeric0.5**                     0.1346   
+                **ticket_family_numeric0.5**                       0.1346      
 
-                      **projectmayavi**                          0.1639   
+                      **projectmayavi**                            0.1639      
 
-                      **projectnumpy**                           0.0753   
+                      **projectnumpy**                             0.0753      
 
-                      **projectpandas**                         0.06013   
+                      **projectpandas**                            0.06013     
 
-                   **projectscikit-image**                       0.1162   
+                   **projectscikit-image**                         0.1162      
 
-                   **projectscikit-learn**                      0.06944   
+                   **projectscikit-learn**                         0.06944     
 
-                      **projectscipy**                          0.07989   
+                      **projectscipy**                             0.07989     
 
-                  **projectsphinx-gallery**                      0.3103   
+                  **projectsphinx-gallery**                        0.3103      
 
-                        **open_time**                          5.019e-10  
+                        **open_time**                          0.0000000005019 
 
-                 **comment_sentiment_mean**                     0.08741   
+              **comment_grateful_cummulative**                     0.08741     
 
-             **comment_sentiment_max_negative**                  0.204    
+             **comment_sentiment_max_negative**                     0.204      
 
-               **comment_grateful_cumulative**                   0.0228   
+               **comment_grateful_cumulative**                     0.0228      
 
-                   **number_of_comments**                       0.004063  
+                   **number_of_comments**                         0.004063     
 
-                  **comment_member_ratio**                      0.08201   
+                  **comment_member_ratio**                         0.08201     
 
-         **ticket_family_numeric0.5:projectmayavi**              0.4264   
+         **ticket_family_numeric0.5:projectmayavi**                0.4264      
 
-          **ticket_family_numeric0.5:projectnumpy**              0.1353   
+          **ticket_family_numeric0.5:projectnumpy**                0.1353      
 
-         **ticket_family_numeric0.5:projectpandas**              0.1153   
+         **ticket_family_numeric0.5:projectpandas**                0.1153      
 
-      **ticket_family_numeric0.5:projectscikit-image**           0.1919   
+      **ticket_family_numeric0.5:projectscikit-image**             0.1919      
 
-      **ticket_family_numeric0.5:projectscikit-learn**           0.1198   
+      **ticket_family_numeric0.5:projectscikit-learn**             0.1198      
 
-          **ticket_family_numeric0.5:projectscipy**               0.14    
+          **ticket_family_numeric0.5:projectscipy**                 0.14       
 
-     **ticket_family_numeric0.5:projectsphinx-gallery**          0.6241   
+     **ticket_family_numeric0.5:projectsphinx-gallery**            0.6241      
 
-           **ticket_family_numeric0.5:open_time**              1.826e-09  
+           **ticket_family_numeric0.5:open_time**              0.000000001826  
 
-     **ticket_family_numeric0.5:comment_sentiment_mean**         0.1833   
+  **ticket_family_numeric0.5:comment_grateful_cummulative**        0.1833      
 
- **ticket_family_numeric0.5:comment_sentiment_max_negative**     0.3316   
+ **ticket_family_numeric0.5:comment_sentiment_max_negative**       0.3316      
 
-  **ticket_family_numeric0.5:comment_grateful_cumulative**      0.03229   
+  **ticket_family_numeric0.5:comment_grateful_cumulative**         0.03229     
 
-       **ticket_family_numeric0.5:number_of_comments**          0.006222  
+       **ticket_family_numeric0.5:number_of_comments**            0.006222     
 
-      **ticket_family_numeric0.5:comment_member_ratio**          0.1535   
---------------------------------------------------------------------------
+      **ticket_family_numeric0.5:comment_member_ratio**            0.1535      
+-------------------------------------------------------------------------------
 
 Table: Table continues below
 
@@ -2017,7 +2017,7 @@ Table: Table continues below
 
                         **open_time**                           3.084   
 
-                 **comment_sentiment_mean**                     3.964   
+              **comment_grateful_cummulative**                  3.964   
 
              **comment_sentiment_max_negative**                 -1.633  
 
@@ -2043,7 +2043,7 @@ Table: Table continues below
 
            **ticket_family_numeric0.5:open_time**               -5.86   
 
-     **ticket_family_numeric0.5:comment_sentiment_mean**        0.0831  
+  **ticket_family_numeric0.5:comment_grateful_cummulative**     0.0831  
 
  **ticket_family_numeric0.5:comment_sentiment_max_negative**    1.408   
 
@@ -2057,65 +2057,65 @@ Table: Table continues below
 Table: Table continues below
 
  
--------------------------------------------------------------------------
-                           &nbsp;                              Pr(>|z|)  
-------------------------------------------------------------- -----------
-                **ticket_family_numeric-0.5**                  2.211e-13 
+----------------------------------------------------------------------------------
+                           &nbsp;                                   Pr(>|z|)      
+------------------------------------------------------------- --------------------
+                **ticket_family_numeric-0.5**                  0.0000000000002211 
 
-                **ticket_family_numeric0.5**                   0.001212  
+                **ticket_family_numeric0.5**                        0.001212      
 
-                      **projectmayavi**                         0.05119  
+                      **projectmayavi**                             0.05119       
 
-                      **projectnumpy**                         1.202e-08 
+                      **projectnumpy**                           0.00000001202    
 
-                      **projectpandas**                        2.452e-05 
+                      **projectpandas**                            0.00002452     
 
-                   **projectscikit-image**                      0.5773   
+                   **projectscikit-image**                           0.5773       
 
-                   **projectscikit-learn**                      0.2224   
+                   **projectscikit-learn**                           0.2224       
 
-                      **projectscipy**                         2.321e-08 
+                      **projectscipy**                           0.00000002321    
 
-                  **projectsphinx-gallery**                     0.02671  
+                  **projectsphinx-gallery**                         0.02671       
 
-                        **open_time**                          0.002039  
+                        **open_time**                               0.002039      
 
-                 **comment_sentiment_mean**                    7.37e-05  
+              **comment_grateful_cummulative**                     0.0000737      
 
-             **comment_sentiment_max_negative**                 0.1025   
+             **comment_sentiment_max_negative**                      0.1025       
 
-               **comment_grateful_cumulative**                 0.000379  
+               **comment_grateful_cumulative**                      0.000379      
 
-                   **number_of_comments**                      1.483e-06 
+                   **number_of_comments**                         0.000001483     
 
-                  **comment_member_ratio**                     1.166e-05 
+                  **comment_member_ratio**                         0.00001166     
 
-         **ticket_family_numeric0.5:projectmayavi**             0.8278   
+         **ticket_family_numeric0.5:projectmayavi**                  0.8278       
 
-          **ticket_family_numeric0.5:projectnumpy**            0.001144  
+          **ticket_family_numeric0.5:projectnumpy**                 0.001144      
 
-         **ticket_family_numeric0.5:projectpandas**             0.01856  
+         **ticket_family_numeric0.5:projectpandas**                 0.01856       
 
-      **ticket_family_numeric0.5:projectscikit-image**          0.1378   
+      **ticket_family_numeric0.5:projectscikit-image**               0.1378       
 
-      **ticket_family_numeric0.5:projectscikit-learn**          0.1328   
+      **ticket_family_numeric0.5:projectscikit-learn**               0.1328       
 
-          **ticket_family_numeric0.5:projectscipy**            2.384e-05 
+          **ticket_family_numeric0.5:projectscipy**                0.00002384     
 
-     **ticket_family_numeric0.5:projectsphinx-gallery**         0.9777   
+     **ticket_family_numeric0.5:projectsphinx-gallery**              0.9777       
 
-           **ticket_family_numeric0.5:open_time**              4.641e-09 
+           **ticket_family_numeric0.5:open_time**                0.000000004641   
 
-     **ticket_family_numeric0.5:comment_sentiment_mean**        0.9338   
+  **ticket_family_numeric0.5:comment_grateful_cummulative**          0.9338       
 
- **ticket_family_numeric0.5:comment_sentiment_max_negative**     0.159   
+ **ticket_family_numeric0.5:comment_sentiment_max_negative**         0.159        
 
-  **ticket_family_numeric0.5:comment_grateful_cumulative**      0.9612   
+  **ticket_family_numeric0.5:comment_grateful_cumulative**           0.9612       
 
-       **ticket_family_numeric0.5:number_of_comments**          0.1653   
+       **ticket_family_numeric0.5:number_of_comments**               0.1653       
 
-      **ticket_family_numeric0.5:comment_member_ratio**        4.812e-08 
--------------------------------------------------------------------------
+      **ticket_family_numeric0.5:comment_member_ratio**          0.00000004812    
+----------------------------------------------------------------------------------
 
 
 (Dispersion parameter for  binomial  family taken to be  1 )
@@ -2137,6 +2137,138 @@ Table: Table continues below
 ![**Figure**. Whether a first-time ticket creator will open a second ticket by commenters' expressions of gratitude and responsiveness.](../../figures/sentiment_analysis/ossc-retention_emotion-by_project-knitr.jpg)
 
 ***
+
+## Model 2.2 Univariate tests for newcomer retension
+
+Is retention affected by contribution type?
+
+
+```r
+retention_predictors = glm(retained_newcomer ~ 0 + ticket_family,
+			   data=retention_frame, family=binomial)
+coefficients_and_se = data.frame(
+  summary(retention_predictors)$coefficients)
+
+# get comparison names as rownames
+row_names = gsub("ticket_family", "", row.names(coefficients_and_se))
+# convert model estimates to a dataframe
+means = coefficients_and_se$Estimate
+names(means) = row_names
+
+# convert standard error to dataframe
+se = coefficients_and_se$Std..Error
+names(se) = row_names
+
+# compute t-statistics and p-values for desired contrasts
+contrasts = c("pr-issue")
+retention_tests = compute_t_statistics(
+  means, se,
+  contrasts)
+retention_tests[, "p_value"] = compute_p_value_from_t_stats(
+  retention_tests$t_stats)
+```
+
+
+```r
+retention_predictor = glm(retained_newcomer ~ open_time,
+			  data=retention_frame, family=binomial)
+retention_tests_continuous = as.data.frame(summary(
+    retention_predictor)$coefficients)
+retention_tests_continuous[, "row_names"] = row.names(
+    retention_tests_continuous)
+
+retention_predictor = glm(retained_newcomer ~ comment_grateful_cumulative,
+			  data=retention_frame, family=binomial)
+retention_grateful =  as.data.frame(summary(retention_predictor)$coefficients)
+retention_grateful[, "row_names"] = row.names(
+    retention_grateful)
+retention_tests_continuous = merge(
+    retention_tests_continuous,
+    retention_grateful, all=TRUE, sort=FALSE)
+
+retention_predictor = glm(retained_newcomer ~ comment_sentiment_max_negative,
+			  data=retention_frame, family=binomial)
+retention_comment_sentiment_max_negative = as.data.frame(
+    summary(retention_predictor)$coefficients)
+retention_comment_sentiment_max_negative[, "row_names"] = row.names(
+    retention_comment_sentiment_max_negative)
+retention_tests_continuous = merge(
+    retention_tests_continuous,
+    retention_comment_sentiment_max_negative,
+    all=TRUE, sort=FALSE)
+
+
+retention_predictor = glm(retained_newcomer ~ number_of_comments,
+			  data=retention_frame, family=binomial)
+retention_number_of_comment = as.data.frame(
+    summary(retention_predictor)$coefficients)
+retention_number_of_comment[, "row_names"] = row.names(
+    retention_number_of_comment)
+retention_tests_continuous = merge(
+    retention_tests_continuous,
+    retention_number_of_comment,
+    all=TRUE, sort=FALSE)
+
+retention_predictor = glm(retained_newcomer ~ comment_member_ratio,
+			  data=retention_frame, family=binomial)
+retention_comment_member_ratio = as.data.frame(
+    summary(retention_predictor)$coefficients)
+retention_comment_member_ratio[, "row_names"] = row.names(
+    retention_comment_member_ratio)
+retention_tests_continuous = merge(
+    retention_tests_continuous,
+    retention_comment_member_ratio,
+    all=TRUE, sort=FALSE)
+
+
+retention_predictor = glm(retained_newcomer ~ comment_grateful_cummulative,
+			  data=retention_frame, family=binomial)
+retention_comment_grateful_cummulative = as.data.frame(
+    summary(retention_predictor)$coefficients)
+retention_comment_grateful_cummulative[, "row_names"] = row.names(
+    retention_comment_grateful_cummulative)
+retention_tests_continuous = merge(
+    retention_tests_continuous,
+    retention_comment_grateful_cummulative,
+    all=TRUE, sort=FALSE)
+```
+
+
+
+```r
+mask = retention_tests_continuous$row_names != "(Intercept)"
+retention_tests_continuous = retention_tests_continuous[mask, ]
+row.names(retention_tests_continuous) = retention_tests_continuous[,
+    "row_names"] 
+
+columns_of_interest = c("z value", "Pr(>|z|)")
+retention_tests_continuous = retention_tests_continuous[, columns_of_interest]
+retention_tests_continuous["model"] = row.names(retention_tests_continuous)
+colnames(retention_tests_continuous) = c("stat", "p_value", "model")
+retention_tests["model"] = row.names(retention_tests)
+colnames(retention_tests) = c("stat", "p_value", "model")
+
+retention_tests = merge(retention_tests, retention_tests_continuous, all=TRUE,
+			sort=FALSE)
+```
+
+
+```r
+pander_clean_anova(retention_tests[c("model", "stat", "p_value")],
+		   rename_columns=FALSE)
+```
+
+
+
+|             model              |  stat  | p_value | p_adj  | sig |
+|:------------------------------:|:------:|:-------:|:------:|:---:|
+|            pr-issue            | 17.32  | 0.0001  | 0.0001 | *** |
+|           open_time            | -2.267 |  0.023  | 0.027  |  *  |
+|  comment_grateful_cumulative   | 6.624  | 0.0001  | 0.0001 | *** |
+| comment_sentiment_max_negative | 1.187  |  0.235  | 0.235  |     |
+|       number_of_comments       | 9.261  | 0.0001  | 0.0001 | *** |
+|      comment_member_ratio      | -8.124 | 0.0001  | 0.0001 | *** |
+|  comment_grateful_cummulative  | 6.488  | 0.0001  | 0.0001 | *** |
 
 # Future directions
 
