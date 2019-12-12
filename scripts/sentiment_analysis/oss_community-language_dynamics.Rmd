@@ -1408,7 +1408,7 @@ aggregated_comments = comments_frame %>% ungroup() %>%
   # create metrics for each unique ticket in each project
   dplyr::group_by(project, ticket_id) %>%
   dplyr::summarise(number_of_comments = n(),
-                   comment_grateful_cummulative = mean(compound_emotion, na.rm=TRUE),
+                   comment_sentiment_mean = mean(compound_emotion, na.rm=TRUE),
                    comment_sentiment_variance = var(compound_emotion),
                    comment_sentiment_max_negative = max(negative_emotion),
                    comment_sentiment_max_positive = max(positive_emotion),
@@ -1485,7 +1485,7 @@ retention_frame = tickets_frame %>%
 # what predicts continuing retention?
 retention_predictors = glm(retained_newcomer ~ 0 + ticket_family_numeric * (project +
                                                                               open_time +
-                                                                              comment_grateful_cummulative + 
+                                                                              comment_sentiment_mean + 
                                                                               comment_sentiment_max_negative + 
                                                                               comment_grateful_cumulative +
                                                                               number_of_comments +
@@ -1509,7 +1509,7 @@ pander(summary(retention_predictors))
 retention_plot_aggregated = ggplot(data=retention_frame,
                                    aes(x=open_time/(60*60*24),
                                        color=comment_member_ratio,
-                                       y=comment_grateful_cummulative)) +
+                                       y=comment_sentiment_mean)) +
   geom_jitter(alpha=0.3, size=.1) +
   facet_grid(cols = c(vars(ticket_family),
                       vars(retained_newcomer)),
@@ -1546,7 +1546,7 @@ ggsave(plot = retention_plot_aggregated,
 retention_plot_by_project = ggplot(data=retention_frame,
                                    aes(x=open_time/(60*60*24),
                                        color=comment_member_ratio,
-                                       y=comment_grateful_cummulative)) +
+                                       y=comment_sentiment_mean)) +
   geom_jitter(alpha=0.3, size=.1) +
   facet_grid(rows = vars(project),
              cols = c(vars(ticket_family),
@@ -1664,15 +1664,15 @@ retention_tests_continuous = merge(
     all=TRUE, sort=FALSE)
 
 
-retention_predictor = glm(retained_newcomer ~ comment_grateful_cummulative,
+retention_predictor = glm(retained_newcomer ~ comment_sentiment_mean,
 			  data=retention_frame, family=binomial)
-retention_comment_grateful_cummulative = as.data.frame(
+retention_comment_sentiment_mean = as.data.frame(
     summary(retention_predictor)$coefficients)
-retention_comment_grateful_cummulative[, "row_names"] = row.names(
-    retention_comment_grateful_cummulative)
+retention_comment_sentiment_mean[, "row_names"] = row.names(
+    retention_comment_sentiment_mean)
 retention_tests_continuous = merge(
     retention_tests_continuous,
-    retention_comment_grateful_cummulative,
+    retention_comment_sentiment_mean,
     all=TRUE, sort=FALSE)
 
 ```
