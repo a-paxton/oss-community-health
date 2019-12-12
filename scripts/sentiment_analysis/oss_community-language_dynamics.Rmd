@@ -1648,6 +1648,85 @@ retention_tests_continuous = merge(
 
 ```
 
+Now let's do interaction terms between contribution types and everything else.
+
+```{r interaction_terms}
+retention_predictor = glm(
+    retained_newcomer ~ ticket_family:open_time,
+    data=retention_frame, family=binomial)
+retention_open_time = as.data.frame(
+    summary(retention_predictor)$coefficients)
+retention_open_time[, "row_names"] = row.names(
+    retention_open_time)
+retention_tests_continuous = merge(
+    retention_tests_continuous,
+    retention_open_time,
+    all=TRUE, sort=FALSE)
+
+retention_predictor = glm(
+    retained_newcomer ~ ticket_family:comment_sentiment_max_negative,
+    data=retention_frame, family=binomial)
+retention_comment_sentiment_max_negative = as.data.frame(
+    summary(retention_predictor)$coefficients)
+retention_comment_sentiment_max_negative[, "row_names"] = row.names(
+    retention_comment_sentiment_max_negative)
+retention_tests_continuous = merge(
+    retention_tests_continuous,
+    retention_comment_sentiment_max_negative,
+    all=TRUE, sort=FALSE)
+
+
+retention_predictor = glm(
+    retained_newcomer ~ ticket_family:number_of_comments,
+    data=retention_frame, family=binomial)
+retention_number_of_comments = as.data.frame(
+    summary(retention_predictor)$coefficients)
+retention_number_of_comments[, "row_names"] = row.names(
+    retention_number_of_comments)
+retention_tests_continuous = merge(
+    retention_tests_continuous,
+    retention_number_of_comments,
+    all=TRUE, sort=FALSE)
+
+retention_predictor = glm(
+    retained_newcomer ~ ticket_family:comment_member_ratio,
+    data=retention_frame, family=binomial)
+retention_comment_member_ratio = as.data.frame(
+    summary(retention_predictor)$coefficients)
+retention_comment_member_ratio[, "row_names"] = row.names(
+    retention_comment_member_ratio)
+retention_tests_continuous = merge(
+    retention_tests_continuous,
+    retention_comment_member_ratio,
+    all=TRUE, sort=FALSE)
+
+
+retention_predictor = glm(
+    retained_newcomer ~ ticket_family:comment_sentiment_mean,
+    data=retention_frame, family=binomial)
+retention_comment_sentiment_mean = as.data.frame(
+    summary(retention_predictor)$coefficients)
+retention_comment_sentiment_mean[, "row_names"] = row.names(
+    retention_comment_sentiment_mean)
+retention_tests_continuous = merge(
+    retention_tests_continuous,
+    retention_comment_sentiment_mean,
+    all=TRUE, sort=FALSE)
+
+
+retention_predictor = glm(
+    retained_newcomer ~ ticket_family:open_time,
+    data=retention_frame, family=binomial)
+retention_open_time = as.data.frame(
+    summary(retention_predictor)$coefficients)
+retention_open_time[, "row_names"] = row.names(
+    retention_open_time)
+retention_tests_continuous = merge(
+    retention_tests_continuous,
+    retention_open_time,
+    all=TRUE, sort=FALSE)
+
+```
 
 ```{r cleaning_up_table}
 mask = retention_tests_continuous$row_names != "(Intercept)"
