@@ -1742,6 +1742,23 @@ pander_clean_anova(retention_tests[c("model", "stat", "p_value")],
 		   rename_columns=FALSE)
 ```
 
+Both mean sentiment and max negative sentiment are predictive of newcomer
+retention. We hypothesise that this might be due to giving a lot of feedback,
+both positive and negative.
+
+We thus now look at whether comment sentiment variance is predictive of
+newcomer retension.
+
+```{r sentiment_variance}
+retention_predictor = glm(
+    retained_newcomer ~ ticket_family:comment_sentiment_variance,
+    data=retention_frame, family=binomial)
+retention_comment_sentiment_variance = as.data.frame(
+    summary(retention_predictor)$coefficients)
+retention_comment_sentiment_variance[, "row_names"] = row.names(
+    retention_comment_sentiment_variance)
+pander(retention_comment_sentiment_variance)
+```
 ***
 
 # Future directions

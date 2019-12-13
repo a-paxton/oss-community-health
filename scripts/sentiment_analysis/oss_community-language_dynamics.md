@@ -25,7 +25,7 @@ creates new functions for our analyses.
 **Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux
 (CNRS)
 
-**Date last compiled**:  2019-12-12 16:38:13
+**Date last compiled**:  2019-12-12 21:02:01
 
 
 
@@ -77,7 +77,7 @@ mean of 8583.875 tickets per project.
 
 On these tickets, the dataset includes
 437321 unique comments, with
-54665.125 average comments per project.
+5.4665125\times 10^{4} average comments per project.
 
 In total, we have 15559 unique commenters,
 14147 unique ticket-creators, and
@@ -2070,6 +2070,61 @@ pander_clean_anova(retention_tests[c("model", "stat", "p_value")],
 |  **ticket_familyissue:comment_grateful_cumulative**   |  ticket_familyissue:comment_grateful_cumulative   |  -3.267  |  0.001  | 0.002  | **  |
 |    **ticket_familypr:comment_grateful_cumulative**    |    ticket_familypr:comment_grateful_cumulative    |  10.66   | 0.0001  | 0.0001 | *** |
 
+Both mean sentiment and max negative sentiment are predictive of newcomer
+retention. We hypothesise that this might be due to giving a lot of feedback,
+both positive and negative.
+
+We thus now look at whether comment sentiment variance is predictive of
+newcomer retension.
+
+
+```r
+retention_predictor = glm(
+    retained_newcomer ~ ticket_family:comment_sentiment_variance,
+    data=retention_frame, family=binomial)
+retention_comment_sentiment_variance = as.data.frame(
+    summary(retention_predictor)$coefficients)
+retention_comment_sentiment_variance[, "row_names"] = row.names(
+    retention_comment_sentiment_variance)
+pander(retention_comment_sentiment_variance)
+```
+
+
+---------------------------------------------------------------------------
+                      &nbsp;                         Estimate   Std. Error 
+--------------------------------------------------- ---------- ------------
+                  **(Intercept)**                    -0.5949     0.02955   
+
+ **ticket_familyissue:comment_sentiment_variance**   -0.7781      0.155    
+
+  **ticket_familypr:comment_sentiment_variance**      1.931       0.219    
+---------------------------------------------------------------------------
+
+Table: Table continues below
+
+ 
+-------------------------------------------------------------------------
+                      &nbsp;                         z value   Pr(>|z|)  
+--------------------------------------------------- --------- -----------
+                  **(Intercept)**                    -20.14    3.591e-90 
+
+ **ticket_familyissue:comment_sentiment_variance**   -5.021    5.144e-07 
+
+  **ticket_familypr:comment_sentiment_variance**      8.817    1.173e-18 
+-------------------------------------------------------------------------
+
+Table: Table continues below
+
+ 
+---------------------------------------------------------------------------------------------------
+                      &nbsp;                                           row_names                   
+--------------------------------------------------- -----------------------------------------------
+                  **(Intercept)**                                     (Intercept)                  
+
+ **ticket_familyissue:comment_sentiment_variance**   ticket_familyissue:comment_sentiment_variance 
+
+  **ticket_familypr:comment_sentiment_variance**      ticket_familypr:comment_sentiment_variance   
+---------------------------------------------------------------------------------------------------
 ***
 
 # Future directions
