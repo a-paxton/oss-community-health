@@ -25,7 +25,7 @@ creates new functions for our analyses.
 **Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux
 (CNRS)
 
-**Date last compiled**:  2019-12-12 15:17:14
+**Date last compiled**:  2019-12-12 16:38:13
 
 
 
@@ -1944,10 +1944,9 @@ retention_comment_sentiment_mean = as.data.frame(
     summary(retention_predictor)$coefficients)
 retention_comment_sentiment_mean[, "row_names"] = row.names(
     retention_comment_sentiment_mean)
-retention_tests_continuous = merge(
+retention_tests_continuous = rbind(
     retention_tests_continuous,
-    retention_comment_sentiment_mean,
-    all=TRUE, sort=FALSE)
+    retention_comment_sentiment_mean)
 ```
 
 Now let's do interaction terms between contribution types and everything else.
@@ -1961,10 +1960,9 @@ retention_open_time = as.data.frame(
     summary(retention_predictor)$coefficients)
 retention_open_time[, "row_names"] = row.names(
     retention_open_time)
-retention_tests_continuous = merge(
+retention_tests_continuous = rbind(
     retention_tests_continuous,
-    retention_open_time,
-    all=TRUE, sort=FALSE)
+    retention_open_time)
 
 retention_predictor = glm(
     retained_newcomer ~ ticket_family:comment_sentiment_max_negative,
@@ -1998,11 +1996,9 @@ retention_comment_member_ratio = as.data.frame(
     summary(retention_predictor)$coefficients)
 retention_comment_member_ratio[, "row_names"] = row.names(
     retention_comment_member_ratio)
-retention_tests_continuous = merge(
+retention_tests_continuous = rbind(
     retention_tests_continuous,
-    retention_comment_member_ratio,
-    all=TRUE, sort=FALSE)
-
+    retention_comment_member_ratio)
 
 retention_predictor = glm(
     retained_newcomer ~ ticket_family:comment_sentiment_mean,
@@ -2011,23 +2007,20 @@ retention_comment_sentiment_mean = as.data.frame(
     summary(retention_predictor)$coefficients)
 retention_comment_sentiment_mean[, "row_names"] = row.names(
     retention_comment_sentiment_mean)
-retention_tests_continuous = merge(
+retention_tests_continuous = rbind(
     retention_tests_continuous,
-    retention_comment_sentiment_mean,
-    all=TRUE, sort=FALSE)
-
+    retention_comment_sentiment_mean)
 
 retention_predictor = glm(
-    retained_newcomer ~ ticket_family:open_time,
+    retained_newcomer ~ ticket_family:comment_grateful_cumulative,
     data=retention_frame, family=binomial)
-retention_open_time = as.data.frame(
+retention_comment_grateful_cumulative = as.data.frame(
     summary(retention_predictor)$coefficients)
-retention_open_time[, "row_names"] = row.names(
-    retention_open_time)
-retention_tests_continuous = merge(
+retention_comment_grateful_cumulative[, "row_names"] = row.names(
+    retention_comment_grateful_cumulative)
+retention_tests_continuous = rbind(
     retention_tests_continuous,
-    retention_open_time,
-    all=TRUE, sort=FALSE)
+    retention_comment_grateful_cumulative)
 ```
 
 
@@ -2044,8 +2037,7 @@ colnames(retention_tests_continuous) = c("stat", "p_value", "model")
 retention_tests["model"] = row.names(retention_tests)
 colnames(retention_tests) = c("stat", "p_value", "model")
 
-retention_tests = merge(retention_tests, retention_tests_continuous, all=TRUE,
-			sort=FALSE)
+retention_tests = rbind(retention_tests, retention_tests_continuous)
 ```
 
 
@@ -2056,25 +2048,27 @@ pander_clean_anova(retention_tests[c("model", "stat", "p_value")],
 
 
 
-|                       model                       |   stat   | p_value | p_adj  | sig |
-|:-------------------------------------------------:|:--------:|:-------:|:------:|:---:|
-|                     pr-issue                      |  17.32   | 0.0001  | 0.0001 | *** |
-|           ticket_familyissue:open_time            |  -2.544  |  0.011  | 0.017  |  *  |
-|             ticket_familypr:open_time             |  0.7764  |  0.44   |  0.46  |     |
-|                     open_time                     |  -2.267  |  0.023  | 0.033  |  *  |
-|            comment_grateful_cumulative            |  6.624   | 0.0001  | 0.0001 | *** |
-|          comment_sentiment_max_negative           |  1.187   |  0.235  |  0.27  |     |
-|                number_of_comments                 |  9.261   | 0.0001  | 0.0001 | *** |
-|               comment_member_ratio                |  -8.124  | 0.0001  | 0.0001 | *** |
-|              comment_sentiment_mean               |  6.488   | 0.0001  | 0.0001 | *** |
-| ticket_familyissue:comment_sentiment_max_negative |  -5.995  | 0.0001  | 0.0001 | *** |
-|  ticket_familypr:comment_sentiment_max_negative   |  10.34   | 0.0001  | 0.0001 | *** |
-|        ticket_familypr:number_of_comments         |  13.01   | 0.0001  | 0.0001 | *** |
-|      ticket_familyissue:comment_member_ratio      |  -11.32  | 0.0001  | 0.0001 | *** |
-|       ticket_familyissue:number_of_comments       | -0.05255 |  0.96   |  0.96  |     |
-|     ticket_familyissue:comment_sentiment_mean     |  1.609   |  0.108  | 0.141  |     |
-|      ticket_familypr:comment_sentiment_mean       |  11.14   | 0.0001  | 0.0001 | *** |
-|       ticket_familypr:comment_member_ratio        |  -1.365  |  0.172  | 0.209  |     |
+|                        &nbsp;                         |                       model                       |   stat   | p_value | p_adj  | sig |
+|:-----------------------------------------------------:|:-------------------------------------------------:|:--------:|:-------:|:------:|:---:|
+|                     **pr-issue**                      |                     pr-issue                      |  17.32   | 0.0001  | 0.0001 | *** |
+|                     **open_time**                     |                     open_time                     |  -2.267  |  0.023  | 0.032  |  *  |
+|            **comment_grateful_cumulative**            |            comment_grateful_cumulative            |  6.624   | 0.0001  | 0.0001 | *** |
+|          **comment_sentiment_max_negative**           |          comment_sentiment_max_negative           |  1.187   |  0.235  |  0.26  |     |
+|                **number_of_comments**                 |                number_of_comments                 |  9.261   | 0.0001  | 0.0001 | *** |
+|               **comment_member_ratio**                |               comment_member_ratio                |  -8.124  | 0.0001  | 0.0001 | *** |
+|              **comment_sentiment_mean**               |              comment_sentiment_mean               |  6.488   | 0.0001  | 0.0001 | *** |
+|           **ticket_familyissue:open_time**            |           ticket_familyissue:open_time            |  -2.544  |  0.011  | 0.016  |  *  |
+|             **ticket_familypr:open_time**             |             ticket_familypr:open_time             |  0.7764  |  0.44   |  0.46  |     |
+| **ticket_familyissue:comment_sentiment_max_negative** | ticket_familyissue:comment_sentiment_max_negative |  -5.995  | 0.0001  | 0.0001 | *** |
+|  **ticket_familypr:comment_sentiment_max_negative**   |  ticket_familypr:comment_sentiment_max_negative   |  10.34   | 0.0001  | 0.0001 | *** |
+|       **ticket_familyissue:number_of_comments**       |       ticket_familyissue:number_of_comments       | -0.05255 |  0.96   |  0.96  |     |
+|        **ticket_familypr:number_of_comments**         |        ticket_familypr:number_of_comments         |  13.01   | 0.0001  | 0.0001 | *** |
+|      **ticket_familyissue:comment_member_ratio**      |      ticket_familyissue:comment_member_ratio      |  -11.32  | 0.0001  | 0.0001 | *** |
+|       **ticket_familypr:comment_member_ratio**        |       ticket_familypr:comment_member_ratio        |  -1.365  |  0.172  | 0.204  |     |
+|     **ticket_familyissue:comment_sentiment_mean**     |     ticket_familyissue:comment_sentiment_mean     |  1.609   |  0.108  | 0.136  |     |
+|      **ticket_familypr:comment_sentiment_mean**       |      ticket_familypr:comment_sentiment_mean       |  11.14   | 0.0001  | 0.0001 | *** |
+|  **ticket_familyissue:comment_grateful_cumulative**   |  ticket_familyissue:comment_grateful_cumulative   |  -3.267  |  0.001  | 0.002  | **  |
+|    **ticket_familypr:comment_grateful_cumulative**    |    ticket_familypr:comment_grateful_cumulative    |  10.66   | 0.0001  | 0.0001 | *** |
 
 ***
 

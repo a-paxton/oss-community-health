@@ -1641,11 +1641,9 @@ retention_comment_sentiment_mean = as.data.frame(
     summary(retention_predictor)$coefficients)
 retention_comment_sentiment_mean[, "row_names"] = row.names(
     retention_comment_sentiment_mean)
-retention_tests_continuous = merge(
+retention_tests_continuous = rbind(
     retention_tests_continuous,
-    retention_comment_sentiment_mean,
-    all=TRUE, sort=FALSE)
-
+    retention_comment_sentiment_mean)
 ```
 
 Now let's do interaction terms between contribution types and everything else.
@@ -1658,10 +1656,9 @@ retention_open_time = as.data.frame(
     summary(retention_predictor)$coefficients)
 retention_open_time[, "row_names"] = row.names(
     retention_open_time)
-retention_tests_continuous = merge(
+retention_tests_continuous = rbind(
     retention_tests_continuous,
-    retention_open_time,
-    all=TRUE, sort=FALSE)
+    retention_open_time)
 
 retention_predictor = glm(
     retained_newcomer ~ ticket_family:comment_sentiment_max_negative,
@@ -1695,11 +1692,9 @@ retention_comment_member_ratio = as.data.frame(
     summary(retention_predictor)$coefficients)
 retention_comment_member_ratio[, "row_names"] = row.names(
     retention_comment_member_ratio)
-retention_tests_continuous = merge(
+retention_tests_continuous = rbind(
     retention_tests_continuous,
-    retention_comment_member_ratio,
-    all=TRUE, sort=FALSE)
-
+    retention_comment_member_ratio)
 
 retention_predictor = glm(
     retained_newcomer ~ ticket_family:comment_sentiment_mean,
@@ -1708,23 +1703,21 @@ retention_comment_sentiment_mean = as.data.frame(
     summary(retention_predictor)$coefficients)
 retention_comment_sentiment_mean[, "row_names"] = row.names(
     retention_comment_sentiment_mean)
-retention_tests_continuous = merge(
+retention_tests_continuous = rbind(
     retention_tests_continuous,
-    retention_comment_sentiment_mean,
-    all=TRUE, sort=FALSE)
-
+    retention_comment_sentiment_mean)
 
 retention_predictor = glm(
-    retained_newcomer ~ ticket_family:open_time,
+    retained_newcomer ~ ticket_family:comment_grateful_cumulative,
     data=retention_frame, family=binomial)
-retention_open_time = as.data.frame(
+retention_comment_grateful_cumulative = as.data.frame(
     summary(retention_predictor)$coefficients)
-retention_open_time[, "row_names"] = row.names(
-    retention_open_time)
-retention_tests_continuous = merge(
+retention_comment_grateful_cumulative[, "row_names"] = row.names(
+    retention_comment_grateful_cumulative)
+retention_tests_continuous = rbind(
     retention_tests_continuous,
-    retention_open_time,
-    all=TRUE, sort=FALSE)
+    retention_comment_grateful_cumulative)
+
 
 ```
 
@@ -1741,8 +1734,7 @@ colnames(retention_tests_continuous) = c("stat", "p_value", "model")
 retention_tests["model"] = row.names(retention_tests)
 colnames(retention_tests) = c("stat", "p_value", "model")
 
-retention_tests = merge(retention_tests, retention_tests_continuous, all=TRUE,
-			sort=FALSE)
+retention_tests = rbind(retention_tests, retention_tests_continuous)
 ```
 
 ```{r display_model2_results}
