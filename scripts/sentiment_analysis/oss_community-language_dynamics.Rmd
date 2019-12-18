@@ -353,6 +353,13 @@ types_author_groups_tests[, "p_value"] = compute_p_value_from_t_stats(
 
 ```
 
+```{r saving_results-model-1.1b3}
+write.table(coefficients_and_se,
+	    file="results/models/model-1.1b3.tsv",
+	    sep="\t")
+```
+
+
 ##### Model 1.1b.4 : Do different kinds of user contributions differ in emotion by projects?
 
 Now adding projects into the mix to understand how the previous analysis
@@ -518,6 +525,13 @@ project_types_author_group_tests[, "p_value"] = compute_p_value_from_t_stats(
   project_types_author_group_tests$t_stats) 
 
 ```
+
+```{r saving_results-model-1.1c}
+write.table(coefficients_and_se,
+	    file="results/models/model-1.1c.tsv",
+	    sep="\t")
+```
+
 
 #### Model 1.1b: Overall results
 
@@ -1070,6 +1084,13 @@ author_groups_tests[, "p_value"] = compute_p_value_from_t_stats(
 
 ```
 
+```{r saving_results-model-1.3b1}
+write.table(coefficients_and_se,
+	    file="results/models/model-1.3b1.tsv",
+	    sep="\t")
+```
+
+
 ##### Model 1.3b.2: Does sentiment vary significantly across contribution types?
 
 Now, look at whether there are differences in sentiment between contribution
@@ -1116,6 +1137,13 @@ types_tests = compute_t_statistics(
 types_tests[, "p_value"] = compute_p_value_from_t_stats(types_tests$t_stats)
 
 ```
+
+```{r saving_results-model-1.3b2}
+write.table(coefficients_and_se,
+	    file="results/models/model-1.3b2.tsv",
+	    sep="\t")
+```
+
 
 ##### Model 1.3b.3: Does sentiment vary significantly across community memberships and contribution types?
 
@@ -1171,6 +1199,13 @@ types_author_groups_tests[, "p_value"] = compute_p_value_from_t_stats(
   types_author_groups_tests$"t_stats")
 
 ```
+
+```{r saving_results-model-1.3b3}
+write.table(coefficients_and_se,
+	    file="results/models/model-1.3b3.tsv",
+	    sep="\t")
+```
+
 
 ##### Model 1.3b.4 : Do different kinds of user contributions differ in emotion by projects?
 
@@ -1337,6 +1372,13 @@ project_types_author_group_tests[, "p_value"] = compute_p_value_from_t_stats(
 
 ```
 
+```{r saving_results-model-1.3b4}
+write.table(coefficients_and_se,
+	    file="results/models/model-1.3b4.tsv",
+	    sep="\t")
+```
+
+
 #### Model 1.3b: Overall results
 
 Now we bring together all analyses from Model 1.3b.
@@ -1478,6 +1520,10 @@ retention_frame = tickets_frame %>%
             as.factor)
 ```
 
+```{r write_data_newcomer_retention}
+write.table(retention_frame, "results/data/newcomer_retention.tsv", sep="\t")
+```
+
 ### Model 2.1: How does a community's response to newcomers predict the newcomer's decision to return?
 
 ```{r plot-predicting-retention-aggregated, include=FALSE, eval=TRUE}
@@ -1559,7 +1605,7 @@ ggsave(plot = retention_plot_by_project,
 ![**Figure**. Whether a first-time ticket creator will open a second ticket by commenters' expressions of gratitude and responsiveness.](../../figures/sentiment_analysis/ossc-retention_emotion-by_project-knitr.jpg)
 
 ```{r retention_contribution_type}
-retention_predictors = glm(retained_newcomer ~ 0 + ticket_family,
+retention_predictors = glmer(retained_newcomer ~ 0 + ticket_family + (1 | project),
 			   data=retention_frame, family=binomial)
 coefficients_and_se = data.frame(
   summary(retention_predictors)$coefficients)
@@ -1581,29 +1627,45 @@ retention_tests = compute_t_statistics(
   contrasts)
 retention_tests[, "p_value"] = compute_p_value_from_t_stats(
   retention_tests$t_stats)
+
+
+# Keep coefficient + sde for plotting purposes
+all_coefs_and_se = coefficients_and_se[, c("Estimate", "Std..Error")]
 ```
 
 ```{r retention_open_time}
-retention_predictor = glm(retained_newcomer ~ open_time,
-			  data=retention_frame, family=binomial)
+retention_predictor = glmer(retained_newcomer ~ open_time + (1 | project),
+			  data=retention_frame, family=binomial, nAGQ=0)
 retention_tests_continuous = as.data.frame(summary(
     retention_predictor)$coefficients)
+new_coefs = retention_tests_continuous[, c("Estimate", "Std. Error")]
+colnames(new_coefs) = colnames(all_coefs_and_se)
+all_coefs_and_se = rbind(
+    all_coefs_and_se, new_coefs)
 retention_tests_continuous[, "row_names"] = row.names(
     retention_tests_continuous)
 
-retention_predictor = glm(retained_newcomer ~ comment_grateful_cumulative,
-			  data=retention_frame, family=binomial)
+retention_predictor = glmer(retained_newcomer ~ comment_grateful_cumulative + (1 | project),
+			  data=retention_frame, family=binomial, nAGQ=0)
 retention_grateful =  as.data.frame(summary(retention_predictor)$coefficients)
+new_coefs = retention_grateful[, c("Estimate", "Std. Error")]
+colnames(new_coefs) = colnames(all_coefs_and_se)
+all_coefs_and_se = rbind(
+    all_coefs_and_se, new_coefs)
 retention_grateful[, "row_names"] = row.names(
     retention_grateful)
 retention_tests_continuous = merge(
     retention_tests_continuous,
     retention_grateful, all=TRUE, sort=FALSE)
 
-retention_predictor = glm(retained_newcomer ~ comment_sentiment_max_negative,
-			  data=retention_frame, family=binomial)
+retention_predictor = glmer(retained_newcomer ~ comment_sentiment_max_negative + (1 | project),
+			  data=retention_frame, family=binomial, nAGQ=0)
 retention_comment_sentiment_max_negative = as.data.frame(
     summary(retention_predictor)$coefficients)
+new_coefs = retention_comment_sentiment_max_negative[, c("Estimate", "Std. Error")]
+colnames(new_coefs) = colnames(all_coefs_and_se)
+all_coefs_and_se = rbind(
+    all_coefs_and_se, new_coefs)
 retention_comment_sentiment_max_negative[, "row_names"] = row.names(
     retention_comment_sentiment_max_negative)
 retention_tests_continuous = merge(
@@ -1612,10 +1674,31 @@ retention_tests_continuous = merge(
     all=TRUE, sort=FALSE)
 
 
-retention_predictor = glm(retained_newcomer ~ number_of_comments,
-			  data=retention_frame, family=binomial)
+retention_predictor = glmer(retained_newcomer ~ comment_sentiment_max_positive + (1 | project),
+			  data=retention_frame, family=binomial, nAGQ=0)
+retention_comment_sentiment_max_positive = as.data.frame(
+    summary(retention_predictor)$coefficients)
+new_coefs = retention_comment_sentiment_max_positive[, c("Estimate", "Std. Error")]
+colnames(new_coefs) = colnames(all_coefs_and_se)
+all_coefs_and_se = rbind(
+    all_coefs_and_se, new_coefs)
+retention_comment_sentiment_max_positive[, "row_names"] = row.names(
+    retention_comment_sentiment_max_positive)
+retention_tests_continuous = merge(
+    retention_tests_continuous,
+    retention_comment_sentiment_max_positive,
+    all=TRUE, sort=FALSE)
+
+
+retention_predictor = glmer(retained_newcomer ~ number_of_comments + (1 | project),
+			  data=retention_frame, family=binomial, nAGQ=0)
 retention_number_of_comment = as.data.frame(
     summary(retention_predictor)$coefficients)
+new_coefs = retention_number_of_comment[, c("Estimate", "Std. Error")]
+colnames(new_coefs) = colnames(all_coefs_and_se)
+all_coefs_and_se = rbind(
+    all_coefs_and_se,
+    new_coefs)
 retention_number_of_comment[, "row_names"] = row.names(
     retention_number_of_comment)
 retention_tests_continuous = merge(
@@ -1623,10 +1706,18 @@ retention_tests_continuous = merge(
     retention_number_of_comment,
     all=TRUE, sort=FALSE)
 
-retention_predictor = glm(retained_newcomer ~ comment_member_ratio,
-			  data=retention_frame, family=binomial)
+
+retention_predictor = glmer(retained_newcomer ~ comment_member_ratio + (1 | project),
+			  data=retention_frame, family=binomial, nAGQ=0)
+
 retention_comment_member_ratio = as.data.frame(
     summary(retention_predictor)$coefficients)
+new_coefs = retention_comment_member_ratio[, c("Estimate", "Std. Error")]
+colnames(new_coefs) = colnames(all_coefs_and_se)
+all_coefs_and_se = rbind(
+    all_coefs_and_se,
+    new_coefs)
+
 retention_comment_member_ratio[, "row_names"] = row.names(
     retention_comment_member_ratio)
 retention_tests_continuous = merge(
@@ -1635,10 +1726,15 @@ retention_tests_continuous = merge(
     all=TRUE, sort=FALSE)
 
 
-retention_predictor = glm(retained_newcomer ~ comment_sentiment_mean,
-			  data=retention_frame, family=binomial)
+retention_predictor = glmer(retained_newcomer ~ comment_sentiment_mean + (1 | project),
+			  data=retention_frame, family=binomial, nAGQ=0)
 retention_comment_sentiment_mean = as.data.frame(
     summary(retention_predictor)$coefficients)
+new_coefs = retention_comment_sentiment_mean[, c("Estimate", "Std. Error")]
+colnames(new_coefs) = colnames(all_coefs_and_se)
+all_coefs_and_se = rbind(
+    all_coefs_and_se,
+    new_coefs)
 retention_comment_sentiment_mean[, "row_names"] = row.names(
     retention_comment_sentiment_mean)
 retention_tests_continuous = rbind(
@@ -1649,22 +1745,32 @@ retention_tests_continuous = rbind(
 Now let's do interaction terms between contribution types and everything else.
 
 ```{r interaction_terms}
-retention_predictor = glm(
-    retained_newcomer ~ ticket_family:open_time,
-    data=retention_frame, family=binomial)
+retention_predictor = glmer(
+    retained_newcomer ~ 0 + ticket_family + ticket_family:open_time + (1 | project),
+    data=retention_frame, family=binomial, nAGQ=0)
 retention_open_time = as.data.frame(
     summary(retention_predictor)$coefficients)
+new_coefs = retention_open_time[, c("Estimate", "Std. Error")]
+colnames(new_coefs) = colnames(all_coefs_and_se)
+all_coefs_and_se = rbind(
+    all_coefs_and_se,
+    new_coefs)
 retention_open_time[, "row_names"] = row.names(
     retention_open_time)
 retention_tests_continuous = rbind(
     retention_tests_continuous,
     retention_open_time)
 
-retention_predictor = glm(
-    retained_newcomer ~ ticket_family:comment_sentiment_max_negative,
-    data=retention_frame, family=binomial)
+retention_predictor = glmer(
+    retained_newcomer ~ 0 + ticket_family + ticket_family:comment_sentiment_max_negative + (1 | project),
+    data=retention_frame, family=binomial, nAGQ=0)
 retention_comment_sentiment_max_negative = as.data.frame(
     summary(retention_predictor)$coefficients)
+new_coefs = retention_comment_sentiment_max_negative[, c("Estimate", "Std. Error")]
+colnames(new_coefs) = colnames(all_coefs_and_se)
+all_coefs_and_se = rbind(
+    all_coefs_and_se,
+    new_coefs)
 retention_comment_sentiment_max_negative[, "row_names"] = row.names(
     retention_comment_sentiment_max_negative)
 retention_tests_continuous = merge(
@@ -1672,12 +1778,34 @@ retention_tests_continuous = merge(
     retention_comment_sentiment_max_negative,
     all=TRUE, sort=FALSE)
 
+retention_predictor = glmer(
+    retained_newcomer ~ 0 + ticket_family + ticket_family:comment_sentiment_max_positive + (1 | project),
+    data=retention_frame, family=binomial, nAGQ=0)
+retention_comment_sentiment_max_positive = as.data.frame(
+    summary(retention_predictor)$coefficients)
+new_coefs = retention_comment_sentiment_max_positive[, c("Estimate", "Std. Error")]
+colnames(new_coefs) = colnames(all_coefs_and_se)
+all_coefs_and_se = rbind(
+    all_coefs_and_se,
+    new_coefs)
+retention_comment_sentiment_max_positive[, "row_names"] = row.names(
+    retention_comment_sentiment_max_positive)
+retention_tests_continuous = merge(
+    retention_tests_continuous,
+    retention_comment_sentiment_max_positive,
+    all=TRUE, sort=FALSE)
 
-retention_predictor = glm(
-    retained_newcomer ~ ticket_family:number_of_comments,
-    data=retention_frame, family=binomial)
+
+retention_predictor = glmer(
+    retained_newcomer ~ 0 + ticket_family + ticket_family:number_of_comments + (1 | project),
+    data=retention_frame, family=binomial, nAGQ=0)
 retention_number_of_comments = as.data.frame(
     summary(retention_predictor)$coefficients)
+new_coefs = retention_number_of_comments[, c("Estimate", "Std. Error")]
+colnames(new_coefs) = colnames(all_coefs_and_se)
+all_coefs_and_se = rbind(
+    all_coefs_and_se,
+    new_coefs)
 retention_number_of_comments[, "row_names"] = row.names(
     retention_number_of_comments)
 retention_tests_continuous = merge(
@@ -1685,33 +1813,48 @@ retention_tests_continuous = merge(
     retention_number_of_comments,
     all=TRUE, sort=FALSE)
 
-retention_predictor = glm(
-    retained_newcomer ~ ticket_family:comment_member_ratio,
-    data=retention_frame, family=binomial)
+retention_predictor = glmer(
+    retained_newcomer ~ 0 + ticket_family + ticket_family:comment_member_ratio + (1 | project),
+    data=retention_frame, family=binomial, nAGQ=0)
 retention_comment_member_ratio = as.data.frame(
     summary(retention_predictor)$coefficients)
+new_coefs = retention_comment_member_ratio[, c("Estimate", "Std. Error")]
+colnames(new_coefs) = colnames(all_coefs_and_se)
+all_coefs_and_se = rbind(
+    all_coefs_and_se,
+    new_coefs)
 retention_comment_member_ratio[, "row_names"] = row.names(
     retention_comment_member_ratio)
 retention_tests_continuous = rbind(
     retention_tests_continuous,
     retention_comment_member_ratio)
 
-retention_predictor = glm(
-    retained_newcomer ~ ticket_family:comment_sentiment_mean,
-    data=retention_frame, family=binomial)
+retention_predictor = glmer(
+    retained_newcomer ~ 0 + ticket_family + ticket_family:comment_sentiment_mean + (1 | project),
+    data=retention_frame, family=binomial, nAGQ=0)
 retention_comment_sentiment_mean = as.data.frame(
     summary(retention_predictor)$coefficients)
+new_coefs = retention_comment_sentiment_mean[, c("Estimate", "Std. Error")]
+colnames(new_coefs) = colnames(all_coefs_and_se)
+all_coefs_and_se = rbind(
+    all_coefs_and_se,
+    new_coefs)
 retention_comment_sentiment_mean[, "row_names"] = row.names(
     retention_comment_sentiment_mean)
 retention_tests_continuous = rbind(
     retention_tests_continuous,
     retention_comment_sentiment_mean)
 
-retention_predictor = glm(
-    retained_newcomer ~ ticket_family:comment_grateful_cumulative,
-    data=retention_frame, family=binomial)
+retention_predictor = glmer(
+    retained_newcomer ~ 0 + ticket_family + ticket_family:comment_grateful_cumulative + (1 | project),
+    data=retention_frame, family=binomial, nAGQ=0)
 retention_comment_grateful_cumulative = as.data.frame(
     summary(retention_predictor)$coefficients)
+new_coefs = retention_comment_grateful_cumulative[, c("Estimate", "Std. Error")]
+colnames(new_coefs) = colnames(all_coefs_and_se)
+all_coefs_and_se = rbind(
+    all_coefs_and_se,
+    new_coefs)
 retention_comment_grateful_cumulative[, "row_names"] = row.names(
     retention_comment_grateful_cumulative)
 retention_tests_continuous = rbind(
@@ -1722,7 +1865,10 @@ retention_tests_continuous = rbind(
 ```
 
 ```{r cleaning_up_table}
-mask = retention_tests_continuous$row_names != "(Intercept)"
+mask = (
+    retention_tests_continuous$row_names != "(Intercept)" &
+    retention_tests_continuous$row_names != "ticket_familyissue" &
+    retention_tests_continuous$row_names != "ticket_familypr")
 retention_tests_continuous = retention_tests_continuous[mask, ]
 row.names(retention_tests_continuous) = retention_tests_continuous[,
     "row_names"] 
@@ -1750,15 +1896,22 @@ We thus now look at whether comment sentiment variance is predictive of
 newcomer retension.
 
 ```{r sentiment_variance}
-retention_predictor = glm(
-    retained_newcomer ~ ticket_family:comment_sentiment_variance,
-    data=retention_frame, family=binomial)
+retention_predictor = glmer(
+    retained_newcomer ~ 0 + ticket_family + ticket_family:comment_sentiment_variance - (1 | project),
+    data=retention_frame, family=binomial, nAGQ=0)
 retention_comment_sentiment_variance = as.data.frame(
     summary(retention_predictor)$coefficients)
-retention_comment_sentiment_variance[, "row_names"] = row.names(
-    retention_comment_sentiment_variance)
-pander(retention_comment_sentiment_variance)
+colnames(retention_comment_sentiment_variance) = c("Estimate", "Std Error", "Z value", "p_value")
+pander_clean_anova(retention_comment_sentiment_variance, rename_columns=FALSE)
 ```
+
+
+```{r write_results}
+write.table(all_coefs_and_se,
+	    file="results/models/model_2.1.tsv", sep="\t")
+```
+
+
 ***
 
 # Future directions

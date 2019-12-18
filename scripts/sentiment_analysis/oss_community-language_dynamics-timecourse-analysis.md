@@ -23,7 +23,7 @@ creates new functions for our analyses.
 **Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux
 (CNRS)
 
-**Date last compiled**:  2019-12-11 14:48:17
+**Date last compiled**:  2019-12-15 19:29:18
 
 
 
@@ -191,6 +191,14 @@ names(means) = row_names
 # convert standard error to dataframe
 se = coefficients_and_se$Std..Error
 names(se) = row_names
+```
+
+
+```r
+dir.create("results/models", showWarnings=FALSE)
+write.table(coefficients_and_se,
+	    file="results/models/model-1.2.tsv",
+	    sep="\t")
 ```
 
 
@@ -509,6 +517,15 @@ names(means) = row_names
 se = coefficients_and_se$Std..Error
 names(se) = row_names
 ```
+
+
+```r
+dir.create("results/models", showWarnings=FALSE)
+write.table(coefficients_and_se,
+	    file="results/models/model-1.4.tsv",
+	    sep="\t")
+```
+
 
 
 #### Model 1.4: Visualizing the data.

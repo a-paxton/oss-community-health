@@ -164,6 +164,14 @@ se = coefficients_and_se$Std..Error
 names(se) = row_names
 ```
 
+```{r saving_results-model-1.2}
+dir.create("results/models", showWarnings=FALSE)
+write.table(coefficients_and_se,
+	    file="results/models/model-1.2.tsv",
+	    sep="\t")
+
+```
+
 
 #### Model 1.2: Visualizing the data.
 
@@ -327,6 +335,15 @@ names(means) = row_names
 se = coefficients_and_se$Std..Error
 names(se) = row_names
 ```
+
+```{r saving_results-model-1.4}
+dir.create("results/models", showWarnings=FALSE)
+write.table(coefficients_and_se,
+	    file="results/models/model-1.4.tsv",
+	    sep="\t")
+
+```
+
 
 
 #### Model 1.4: Visualizing the data.
