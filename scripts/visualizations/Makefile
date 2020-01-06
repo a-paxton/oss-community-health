@@ -27,6 +27,6 @@ figures/supp/gratitude_%.pdf: results/models/model-1.1c.tsv figure_supp_gratitud
 figures/supp/timecourse_sentiment_%.pdf: results/models/model-1.2.tsv figure_supp_emotions_timecourse_by_projects.py
 	python figure_supp_emotions_timecourse_by_projects.py $* -o $@
 
-figures/supp/timecourse_gratitude_%.pdf: results/models/model-1.2.tsv figure_supp_emotions_timecourse_by_projects.py
+figures/supp/timecourse_gratitude_%.pdf: results/models/model-1.2.tsv figure_supp_gratitude_timecourse_by_projects.py
 	python figure_supp_gratitude_timecourse_by_projects.py $* -o $@
 

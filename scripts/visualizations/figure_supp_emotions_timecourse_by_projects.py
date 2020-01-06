@@ -94,7 +94,14 @@ ax.legend(frameon=False, bbox_to_anchor=(1, 0.5))
 for ax in axes:
     ax.spines["top"].set_linewidth(0)
     ax.spines["right"].set_linewidth(0)
-
+    ax.set_xlim(2009, 2019)
+    ax.set_xticks([2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018])
+    ax.set_xticklabels(
+        ["2010", "", "", "",
+         "2014", "", "", "",
+         "2018"
+        ])
+    ax.set_ylim(-1, 1)
 
 ax = axes[0]
 ax.set_ylabel("Emotion", fontweight="bold")
