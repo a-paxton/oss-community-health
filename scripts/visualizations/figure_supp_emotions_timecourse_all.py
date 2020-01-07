@@ -98,7 +98,7 @@ ax = axes[0]
 ax.set_ylabel("Emotion", fontweight="bold")
 ax.text(
     -0, 1.07,
-    project, fontweight="bold",
+   project, fontweight="bold",
     horizontalalignment="left",
     transform=ax.transAxes)
 
