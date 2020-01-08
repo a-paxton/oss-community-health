@@ -27,12 +27,11 @@ def plot_sentiment(ax, model_results, display_xticks=True):
                            fontsize="x-small")
     else:
         ax.set_xticklabels(["", ""])
-    ax.set_ylabel("Sentiment", fontweight="bold", fontsize=8)
+    ax.set_ylabel("Sentiment", fontweight="bold", fontsize=8, labelpad=0)
     ax.set_yticks([0, 0.1, 0.2, 0.3])
     ax.set_yticklabels(["0", "0.1", "0.2",  "0.3"], fontsize="x-small")
 
     ax.spines["top"].set_linewidth(0)
-    ax.set_ylabel("Sentiment", fontweight="bold")
     ax.spines["right"].set_linewidth(0)
 
 
@@ -58,7 +57,7 @@ def plot_gratitude(ax, model_results, display_xticks=True, common_max_y=True):
                            fontsize="x-small") #horizontalalignment="right")
     else:
         ax.set_xticklabels(["", ""])
-    ax.set_ylabel("Gratitude", fontweight="bold", fontsize=8)
+    ax.set_ylabel("Gratitude", fontweight="bold", fontsize=8, labelpad=0)
     if common_max_y:
         ax.set_yticks([0, 0.1, 0.2])
         ax.set_ylim(0, 0.25)
@@ -67,7 +66,6 @@ def plot_gratitude(ax, model_results, display_xticks=True, common_max_y=True):
         ax.set_yticks([0, 0.1])
         ax.set_ylim(0, 0.15)
         ax.set_yticklabels(["0", "0.1"], fontsize="x-small")
-
 
     ax.spines["top"].set_linewidth(0)
     ax.spines["right"].set_linewidth(0)
@@ -133,17 +131,15 @@ def plot_sentiment_all_projects(axes, model_results, fig,
     ax_right.spines["right"].set_linewidth(0)
     ax_right.yaxis.set_ticks_position('left')
 
-
-
     projects = ["matplotlib", "mayavi", "numpy", "pandas", "scikit-image",
                 "scikit-learn", "scipy", "sphinx-gallery"]
 
     ax_left.set_ylim(-0.5, len(projects)+0.5)
 
     for i in range(len(projects)):
-        x1,y1 = ax_left.transData.transform_point( (0.05, i))
-        x2,y2 = ax_right.transData.transform_point((-0.05, i))
-        x,y = fig.transFigure.inverted().transform_point( ((x1+x2)/2,y1) )
+        x1, y1 = ax_left.transData.transform_point((0.05, i))
+        x2, y2 = ax_right.transData.transform_point((-0.05, i))
+        x, y = fig.transFigure.inverted().transform_point( ((x1+x2)/2,y1) )
         plt.text(x, y, projects[order[i]], transform=fig.transFigure, fontsize=8,
                 horizontalalignment='center', verticalalignment='center')
 
@@ -259,4 +255,27 @@ def plot_sentiment_timecourse(axes, model_results, project_name):
     axes[1].set_ylim(-0.25, 0.55)
     
     axes[0].set_ylabel("Sentiment", fontsize="small", fontweight="bold",
-                        labelpad=-0.1)
+                        labelpad=0)
+
+
+def add_letter_and_title(ax, letter, title=None, extra_x_shift=0):
+    x1, y1 = ax.transAxes.transform_point((0, 1))
+    # Shift 0.4 inch on the x-axis and 0.1 inch on the y-axis
+    x, y = ax.transAxes.inverted().transform_point(
+        (x1 - 45 + extra_x_shift, y1 + 10))
+    ax.text(
+        x, y,
+        letter, fontweight="bold", fontsize=10,
+        horizontalalignment="left",
+        transform=ax.transAxes)
+
+    if title is not None:
+        x, y = ax.transAxes.inverted().transform_point(
+            (x1 + extra_x_shift, y1 + 10))
+        ax.text(
+            x, y,
+            title, fontweight="bold", fontsize=9,
+            horizontalalignment="left",
+            transform=ax.transAxes)
+
+

@@ -1,34 +1,29 @@
 import pandas as pd
+from utils import colors
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
+from matplotlib import patches
 import os
 
 from utils_vis import plot_sentiment
 from utils_vis import plot_gratitude
 from utils_vis import plot_sentiment_all_projects
+from utils_vis import add_letter_and_title
 
 model_results = pd.read_csv("results/models/model-1.1b3.tsv", sep="\t")
 
+
+
 fig = plt.figure(figsize=(7.007874, 4.2047))
 
-gs = GridSpec(100, 150, figure=fig,
+gs = GridSpec(110, 150, figure=fig,
               top=0.9, left=0.06, right=0.96,
               bottom=0.04)
 
 ax = fig.add_subplot(gs[:40, 5:45])
 
-ax.text(
-    -0.2, 1.07,
-    "A", fontweight="bold", fontsize=10,
-    horizontalalignment="left",
-    transform=ax.transAxes)
-ax.text(
-    -0, 1.07,
-    "Sentiment per context", fontweight="bold", fontsize=9,
-    horizontalalignment="left",
-    transform=ax.transAxes)
-
+add_letter_and_title(ax, "A", title="Sentiment per context")
 
 plot_sentiment(ax, model_results)
 
@@ -52,18 +47,8 @@ ax_left = fig.add_subplot(gs[:40, 55:68])
 ax_right = fig.add_subplot(gs[:40, 87:100], sharey=ax_left)
 
 order = plot_sentiment_all_projects([ax_left, ax_right], model_results, fig)
-
-ax_left.text(
-    -0.4, 1.07,
-    "B", fontweight="bold", fontsize=10,
-    horizontalalignment="left",
-    transform=ax_left.transAxes)
-
-ax_left.text(
-    -0, 1.07,
-    "Sentiment post:PR", fontweight="bold", fontsize=9,
-    horizontalalignment="left",
-    transform=ax_left.transAxes)
+add_letter_and_title(ax_left, "B", title="Sentiment post:PR",
+                     extra_x_shift=20)
 
 ax_skimage = fig.add_subplot(gs[:15, 120:])
 ax_numpy = fig.add_subplot(gs[28:40, 120:], sharey=ax_skimage)
@@ -72,27 +57,8 @@ ax_numpy = fig.add_subplot(gs[28:40, 120:], sharey=ax_skimage)
 plot_sentiment(ax_skimage, model_results[skimage]) #, display_xticks=False)
 plot_sentiment(ax_numpy, model_results[numpy])
 
-ax_skimage.text(
-    -0.4, 1.14,
-    "C", fontweight="bold", fontsize=10,
-    horizontalalignment="left",
-    transform=ax_skimage.transAxes)
-ax_skimage.text(
-     -0, 1.14,
-     "scikit-image", fontweight="bold", fontsize=9,
-     horizontalalignment="left",
-     transform=ax_skimage.transAxes)
-
-ax_numpy.text(
-     -0.4, 1.14,
-    "D", fontweight="bold", fontsize=10,
-    horizontalalignment="left",
-    transform=ax_numpy.transAxes)
-ax_numpy.text(
-    -0, 1.14,
-    "numpy", fontweight="bold", fontsize=9,
-    horizontalalignment="left",
-    transform=ax_numpy.transAxes)
+add_letter_and_title(ax_skimage, "C", title="scikit-image")
+add_letter_and_title(ax_numpy, "D", title="numpy")
 
 
 ###############################################################################
@@ -101,18 +67,7 @@ model_results = pd.read_csv("results/models/model-1.3b3.tsv", sep="\t")
 
 ax = fig.add_subplot(gs[55:95, 5:45])
 plot_gratitude(ax, model_results, common_max_y=False)
-ax.text(
-    -0.2, 1.07,
-    "E", fontweight="bold", fontsize=10,
-    horizontalalignment="left",
-    transform=ax.transAxes)
-ax.text(
-    -0, 1.07,
-    "Gratitude per context", fontweight="bold", fontsize=9,
-    horizontalalignment="left",
-    transform=ax.transAxes)
-
-
+add_letter_and_title(ax, "E", title="Gratitude per context")
 
 
 model_results = pd.read_csv("results/models/model-1.3b4.tsv", sep="\t")
@@ -122,18 +77,8 @@ ax_right = fig.add_subplot(gs[55:95, 87:100], sharey=ax_left)
 
 plot_sentiment_all_projects([ax_left, ax_right], model_results, fig,
                             type="gratitude", order=order)
-
-ax_left.text(
-    -0.4, 1.07,
-    "F", fontweight="bold", fontsize=10,
-    horizontalalignment="left",
-    transform=ax_left.transAxes)
-
-ax_left.text(
-    -0, 1.07,
-    "Gratitude post:PR", fontweight="bold", fontsize=9,
-    horizontalalignment="left",
-    transform=ax_left.transAxes)
+add_letter_and_title(ax_left, "F", title="Gratitude post:PR",
+                     extra_x_shift=20)
 
 
 ax_skimage = fig.add_subplot(gs[55:67, 120:])
@@ -142,28 +87,32 @@ ax_numpy = fig.add_subplot(gs[80:95, 120:])
 plot_gratitude(ax_skimage, model_results[skimage], common_max_y=False) 
 plot_gratitude(ax_numpy, model_results[numpy], common_max_y=False)
 
-ax_skimage.text(
-    -0.4, 1.14,
-    "G", fontweight="bold", fontsize=10,
-    horizontalalignment="left",
-    transform=ax_skimage.transAxes)
-ax_skimage.text(
-    -0, 1.14,
-    "scikit-image", fontweight="bold", fontsize=9,
-    horizontalalignment="left",
-    transform=ax_skimage.transAxes)
+add_letter_and_title(ax_skimage, "G", title="scikit-image")
+add_letter_and_title(ax_numpy, "H", title="numpy")
 
-ax_numpy.text(
-    -0.4, 1.14,
-    "H", fontweight="bold", fontsize=10,
-    horizontalalignment="left",
-    transform=ax_numpy.transAxes)
-ax_numpy.text(
-    -0, 1.14,
-    "numpy", fontweight="bold", fontsize=9,
-    horizontalalignment="left",
-    transform=ax_numpy.transAxes)
+###############################################################################
+# Adding legend
 
+legend_patches = (
+    patches.Patch(color=colors["issue_post"]),
+    patches.Patch(color=colors["issue_reply"]),
+    patches.Patch(color=colors["pr_post"]),
+    patches.Patch(color=colors["pr_reply"]))
+
+ax = fig.add_subplot(gs[106:, :])
+ax.legend(legend_patches,
+          ("post:issue",
+           "comment:issue",
+           "post:PR",
+           "comment:PR"),
+          fontsize=8,
+          ncol=4, loc="center", frameon=False)
+ax.spines["left"].set_linewidth(0)
+ax.spines["right"].set_linewidth(0)
+ax.spines["top"].set_linewidth(0)
+ax.spines["bottom"].set_linewidth(0)
+ax.set_xticks([])
+ax.set_yticks([])
 
 
 try:
