@@ -1524,6 +1524,16 @@ retention_frame = tickets_frame %>%
 write.table(retention_frame, "results/data/newcomer_retention.tsv", sep="\t")
 ```
 
+```{r proportion_of_newcomer}
+
+proportion_of_newcomer = (
+    sum(as.integer(retention_frame$retained_newcomer) - 1) / dim(retention_frame)[1] * 100)
+
+```
+
+`r proportion_of_newcomer`% of first-time contributors come back for a second
+contribution.
+
 ### Model 2.1: How does a community's response to newcomers predict the newcomer's decision to return?
 
 ```{r plot-predicting-retention-aggregated, include=FALSE, eval=TRUE}
@@ -1893,7 +1903,7 @@ retention. We hypothesise that this might be due to giving a lot of feedback,
 both positive and negative.
 
 We thus now look at whether comment sentiment variance is predictive of
-newcomer retension.
+newcomer retention.
 
 ```{r sentiment_variance}
 retention_predictor = glmer(

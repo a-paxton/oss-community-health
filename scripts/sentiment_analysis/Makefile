@@ -8,7 +8,7 @@ all: $(OUTPUT_FOLDERS)
 
 supp_tables: $(SUPP_TABLES)
 
-results/latex/%.tex: results/models/%.tsv export_supp_tables_pvalues.py
+results/latex/%.tex: results/models/%.tsv export_supp_tables_pvalues.py columns
 	python export_supp_tables_pvalues.py $< -o $@
 
 data/processed_data/%/processed-comments.csv: data/raw_data/%/comments.tsv extract_features.py ../bot_names.txt

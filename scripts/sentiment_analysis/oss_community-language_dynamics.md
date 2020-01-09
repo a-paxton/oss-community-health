@@ -25,7 +25,7 @@ creates new functions for our analyses.
 **Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux
 (CNRS)
 
-**Date last compiled**:  2020-01-07 16:13:11
+**Date last compiled**:  2020-01-09 10:08:57
 
 
 
@@ -77,7 +77,7 @@ mean of 8583.875 tickets per project.
 
 On these tickets, the dataset includes
 437321 unique comments, with
-5.4665125\times 10^{4} average comments per project.
+54665.125 average comments per project.
 
 In total, we have 15559 unique commenters,
 14147 unique ticket-creators, and
@@ -107,23 +107,11 @@ sentiment_frame = combine_tickets_and_comments(tickets_frame, comments_frame)
 ```
 
 ```
-## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
-## into character vector
+## Warning in bind_rows_(x, .id): binding character and factor vector,
+## coercing into character vector
 
-## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
-## into character vector
-```
-
-```
-## Warning in bind_rows_(x, .id): Unequal factor levels: coercing to character
-```
-
-```
-## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
-## into character vector
-
-## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
-## into character vector
+## Warning in bind_rows_(x, .id): binding character and factor vector,
+## coercing into character vector
 ```
 
 ```
@@ -131,11 +119,11 @@ sentiment_frame = combine_tickets_and_comments(tickets_frame, comments_frame)
 ```
 
 ```
-## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
-## into character vector
+## Warning in bind_rows_(x, .id): binding character and factor vector,
+## coercing into character vector
 
-## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
-## into character vector
+## Warning in bind_rows_(x, .id): binding character and factor vector,
+## coercing into character vector
 ```
 
 ```
@@ -143,11 +131,23 @@ sentiment_frame = combine_tickets_and_comments(tickets_frame, comments_frame)
 ```
 
 ```
-## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
-## into character vector
+## Warning in bind_rows_(x, .id): binding character and factor vector,
+## coercing into character vector
 
-## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
-## into character vector
+## Warning in bind_rows_(x, .id): binding character and factor vector,
+## coercing into character vector
+```
+
+```
+## Warning in bind_rows_(x, .id): Unequal factor levels: coercing to character
+```
+
+```
+## Warning in bind_rows_(x, .id): binding character and factor vector,
+## coercing into character vector
+
+## Warning in bind_rows_(x, .id): binding character and factor vector,
+## coercing into character vector
 ```
 
 
@@ -393,8 +393,9 @@ creators_v_commenters_emotion_by_project = lmer(
 ```
 
 ```
-## Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, :
-## Model failed to converge with max|grad| = 0.00294682 (tol = 0.002, component 1)
+## Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl =
+## control$checkConv, : Model failed to converge with max|grad| = 0.00294682
+## (tol = 0.002, component 1)
 ```
 
 Run *t*-tests among levels and prepare for the Model 1.1b table later.
@@ -858,20 +859,20 @@ arrows(bar_centers,
 ```
 
 ```
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, : zero-
-## length arrow is of indeterminate angle and so skipped
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
 
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, : zero-
-## length arrow is of indeterminate angle and so skipped
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
 
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, : zero-
-## length arrow is of indeterminate angle and so skipped
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
 
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, : zero-
-## length arrow is of indeterminate angle and so skipped
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
 
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, : zero-
-## length arrow is of indeterminate angle and so skipped
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
 ```
 
 ![](oss_community-language_dynamics_files/figure-html/plot_pr_reply_members-1.png)<!-- -->
@@ -893,11 +894,11 @@ arrows(bar_centers,
 ```
 
 ```
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, : zero-
-## length arrow is of indeterminate angle and so skipped
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
 
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, : zero-
-## length arrow is of indeterminate angle and so skipped
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
 ```
 
 ![](oss_community-language_dynamics_files/figure-html/plot_pr_reply_nonmembers-1.png)<!-- -->
@@ -920,20 +921,20 @@ arrows(bar_centers,
 ```
 
 ```
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, : zero-
-## length arrow is of indeterminate angle and so skipped
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
 
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, : zero-
-## length arrow is of indeterminate angle and so skipped
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
 
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, : zero-
-## length arrow is of indeterminate angle and so skipped
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
 
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, : zero-
-## length arrow is of indeterminate angle and so skipped
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
 
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, : zero-
-## length arrow is of indeterminate angle and so skipped
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
 ```
 
 ![](oss_community-language_dynamics_files/figure-html/plot_issue_reply_members-1.png)<!-- -->
@@ -955,17 +956,17 @@ arrows(bar_centers,
 ```
 
 ```
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, : zero-
-## length arrow is of indeterminate angle and so skipped
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
 
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, : zero-
-## length arrow is of indeterminate angle and so skipped
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
 
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, : zero-
-## length arrow is of indeterminate angle and so skipped
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
 
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, : zero-
-## length arrow is of indeterminate angle and so skipped
+## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
+## zero-length arrow is of indeterminate angle and so skipped
 ```
 
 ![](oss_community-language_dynamics_files/figure-html/plot_issue_reply_nonmembers-1.png)<!-- -->
@@ -1903,6 +1904,15 @@ retention_frame = tickets_frame %>%
 write.table(retention_frame, "results/data/newcomer_retention.tsv", sep="\t")
 ```
 
+
+```r
+proportion_of_newcomer = (
+    sum(as.integer(retention_frame$retained_newcomer) - 1) / dim(retention_frame)[1] * 100)
+```
+
+35.010285% of first-time contributors come back for a second
+contribution.
+
 ### Model 2.1: How does a community's response to newcomers predict the newcomer's decision to return?
 
 
@@ -2216,37 +2226,37 @@ pander_clean_anova(retention_tests[c("model", "stat", "p_value")],
 
 
 
-|                        &nbsp;                         |                       model                       |  stat   | p_value | p_adj | sig |
-|:-----------------------------------------------------:|:-------------------------------------------------:|:-------:|:-------:|:-----:|:---:|
-|                     **pr-issue**                      |                     pr-issue                      |  5.531  |  1e-04  | 1e-04 | *** |
-|                     **open_time**                     |                     open_time                     | -1.296  |  0.195  | 0.234 |     |
-|            **comment_grateful_cumulative**            |            comment_grateful_cumulative            |  6.701  |  1e-04  | 1e-04 | *** |
-|          **comment_sentiment_max_negative**           |          comment_sentiment_max_negative           |   1.4   |  0.162  | 0.209 |     |
-|          **comment_sentiment_max_positive**           |          comment_sentiment_max_positive           |  10.87  |  1e-04  | 1e-04 | *** |
-|                **number_of_comments**                 |                number_of_comments                 |  9.35   |  1e-04  | 1e-04 | *** |
-|               **comment_member_ratio**                |               comment_member_ratio                | -8.363  |  1e-04  | 1e-04 | *** |
-|              **comment_sentiment_mean**               |              comment_sentiment_mean               |  6.341  |  1e-04  | 1e-04 | *** |
-|           **ticket_familyissue:open_time**            |           ticket_familyissue:open_time            |  3.298  |  0.001  | 0.001 | **  |
-|             **ticket_familypr:open_time**             |             ticket_familypr:open_time             | -2.956  |  0.003  | 0.004 | **  |
-| **ticket_familyissue:comment_sentiment_max_negative** | ticket_familyissue:comment_sentiment_max_negative | -1.275  |  0.202  | 0.234 |     |
-|  **ticket_familypr:comment_sentiment_max_negative**   |  ticket_familypr:comment_sentiment_max_negative   |  4.107  |  1e-04  | 1e-04 | *** |
-| **ticket_familyissue:comment_sentiment_max_positive** | ticket_familyissue:comment_sentiment_max_positive |   5.3   |  1e-04  | 1e-04 | *** |
-|  **ticket_familypr:comment_sentiment_max_positive**   |  ticket_familypr:comment_sentiment_max_positive   | 0.4519  |  0.65   | 0.68  |     |
-|       **ticket_familyissue:number_of_comments**       |       ticket_familyissue:number_of_comments       |  4.011  |  1e-04  | 1e-04 | *** |
-|        **ticket_familypr:number_of_comments**         |        ticket_familypr:number_of_comments         |  6.617  |  1e-04  | 1e-04 | *** |
-|      **ticket_familyissue:comment_member_ratio**      |      ticket_familyissue:comment_member_ratio      | -4.288  |  1e-04  | 1e-04 | *** |
-|       **ticket_familypr:comment_member_ratio**        |       ticket_familypr:comment_member_ratio        | -9.562  |  1e-04  | 1e-04 | *** |
-|     **ticket_familyissue:comment_sentiment_mean**     |     ticket_familyissue:comment_sentiment_mean     |  4.387  |  1e-04  | 1e-04 | *** |
-|      **ticket_familypr:comment_sentiment_mean**       |      ticket_familypr:comment_sentiment_mean       | -0.6878 |  0.49   | 0.54  |     |
-|  **ticket_familyissue:comment_grateful_cumulative**   |  ticket_familyissue:comment_grateful_cumulative   | 0.06044 |  0.95   | 0.95  |     |
-|    **ticket_familypr:comment_grateful_cumulative**    |    ticket_familypr:comment_grateful_cumulative    |   3.4   |  0.001  | 0.001 | **  |
+|                        &nbsp;                         |                       model                       |  stat   | p_value | p_adj  | sig |
+|:-----------------------------------------------------:|:-------------------------------------------------:|:-------:|:-------:|:------:|:---:|
+|                     **pr-issue**                      |                     pr-issue                      |  5.531  | 0.0001  | 0.0001 | *** |
+|                     **open_time**                     |                     open_time                     | -1.296  |  0.195  | 0.234  |     |
+|            **comment_grateful_cumulative**            |            comment_grateful_cumulative            |  6.701  | 0.0001  | 0.0001 | *** |
+|          **comment_sentiment_max_negative**           |          comment_sentiment_max_negative           |   1.4   |  0.162  | 0.209  |     |
+|          **comment_sentiment_max_positive**           |          comment_sentiment_max_positive           |  10.87  | 0.0001  | 0.0001 | *** |
+|                **number_of_comments**                 |                number_of_comments                 |  9.35   | 0.0001  | 0.0001 | *** |
+|               **comment_member_ratio**                |               comment_member_ratio                | -8.363  | 0.0001  | 0.0001 | *** |
+|              **comment_sentiment_mean**               |              comment_sentiment_mean               |  6.341  | 0.0001  | 0.0001 | *** |
+|           **ticket_familyissue:open_time**            |           ticket_familyissue:open_time            |  3.298  |  0.001  | 0.001  | **  |
+|             **ticket_familypr:open_time**             |             ticket_familypr:open_time             | -2.956  |  0.003  | 0.004  | **  |
+| **ticket_familyissue:comment_sentiment_max_negative** | ticket_familyissue:comment_sentiment_max_negative | -1.275  |  0.202  | 0.234  |     |
+|  **ticket_familypr:comment_sentiment_max_negative**   |  ticket_familypr:comment_sentiment_max_negative   |  4.107  | 0.0001  | 0.0001 | *** |
+| **ticket_familyissue:comment_sentiment_max_positive** | ticket_familyissue:comment_sentiment_max_positive |   5.3   | 0.0001  | 0.0001 | *** |
+|  **ticket_familypr:comment_sentiment_max_positive**   |  ticket_familypr:comment_sentiment_max_positive   | 0.4519  |  0.65   |  0.68  |     |
+|       **ticket_familyissue:number_of_comments**       |       ticket_familyissue:number_of_comments       |  4.011  | 0.0001  | 0.0001 | *** |
+|        **ticket_familypr:number_of_comments**         |        ticket_familypr:number_of_comments         |  6.617  | 0.0001  | 0.0001 | *** |
+|      **ticket_familyissue:comment_member_ratio**      |      ticket_familyissue:comment_member_ratio      | -4.288  | 0.0001  | 0.0001 | *** |
+|       **ticket_familypr:comment_member_ratio**        |       ticket_familypr:comment_member_ratio        | -9.562  | 0.0001  | 0.0001 | *** |
+|     **ticket_familyissue:comment_sentiment_mean**     |     ticket_familyissue:comment_sentiment_mean     |  4.387  | 0.0001  | 0.0001 | *** |
+|      **ticket_familypr:comment_sentiment_mean**       |      ticket_familypr:comment_sentiment_mean       | -0.6878 |  0.49   |  0.54  |     |
+|  **ticket_familyissue:comment_grateful_cumulative**   |  ticket_familyissue:comment_grateful_cumulative   | 0.06044 |  0.95   |  0.95  |     |
+|    **ticket_familypr:comment_grateful_cumulative**    |    ticket_familypr:comment_grateful_cumulative    |   3.4   |  0.001  | 0.001  | **  |
 
 Both mean sentiment and max negative sentiment are predictive of newcomer
 retention. We hypothesise that this might be due to giving a lot of feedback,
 both positive and negative.
 
 We thus now look at whether comment sentiment variance is predictive of
-newcomer retension.
+newcomer retention.
 
 
 ```r
@@ -2261,12 +2271,12 @@ pander_clean_anova(retention_comment_sentiment_variance, rename_columns=FALSE)
 
 
 
-|                      &nbsp;                       | Estimate | Std Error | Z value | p_value | p_adj | sig |
-|:-------------------------------------------------:|:--------:|:---------:|:-------:|:-------:|:-----:|:---:|
-|              **ticket_familyissue**               | -0.7779  |  0.07327  | -10.62  |  1e-04  | 1e-04 | *** |
-|                **ticket_familypr**                | -0.2456  |  0.08486  | -2.894  |  0.004  | 0.008 | **  |
-| **ticket_familyissue:comment_sentiment_variance** | -0.1611  |   0.166   | -0.9703 |  0.33   | 0.33  |     |
-|  **ticket_familypr:comment_sentiment_variance**   |  0.4456  |  0.2917   |  1.527  |  0.127  | 0.169 |     |
+|                      &nbsp;                       | Estimate | Std Error | Z value | p_value | p_adj  | sig |
+|:-------------------------------------------------:|:--------:|:---------:|:-------:|:-------:|:------:|:---:|
+|              **ticket_familyissue**               | -0.7779  |  0.07327  | -10.62  | 0.0001  | 0.0001 | *** |
+|                **ticket_familypr**                | -0.2456  |  0.08486  | -2.894  |  0.004  | 0.008  | **  |
+| **ticket_familyissue:comment_sentiment_variance** | -0.1611  |   0.166   | -0.9703 |  0.33   |  0.33  |     |
+|  **ticket_familypr:comment_sentiment_variance**   |  0.4456  |  0.2917   |  1.527  |  0.127  | 0.169  |     |
 
 
 
