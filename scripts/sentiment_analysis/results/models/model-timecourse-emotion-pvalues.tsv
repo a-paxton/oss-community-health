@@ -1,481 +1,481 @@
-"t_stats" "p_value"
-"pr_post:member:numpyTRUE:year2010-pr_post:member:numpyFALSE:year2010" 2.57406215416656 0.0100512215138164
-"pr_reply:member:numpyTRUE:year2010-pr_reply:member:numpyFALSE:year2010" 0.533584659001747 0.593628924414781
-"pr_post:nonmember:numpyTRUE:year2010-pr_post:nonmember:numpyFALSE:year2010" 0.121255848329226 0.903488389833685
-"pr_reply:nonmember:numpyTRUE:year2010-pr_reply:nonmember:numpyFALSE:year2010" -2.40502551144979 0.0161713368287448
-"pr_post:member:numpyTRUE:year2011-pr_post:member:numpyFALSE:year2011" -0.18349877346631 0.854406681067763
-"pr_reply:member:numpyTRUE:year2011-pr_reply:member:numpyFALSE:year2011" -1.88986619696662 0.0587758574532284
-"pr_post:nonmember:numpyTRUE:year2011-pr_post:nonmember:numpyFALSE:year2011" -0.281791318028512 0.778103528490156
-"pr_reply:nonmember:numpyTRUE:year2011-pr_reply:nonmember:numpyFALSE:year2011" 0.406293894444198 0.684526670983176
-"issue_post:member:numpyTRUE:year2012-issue_post:member:numpyFALSE:year2012" -3.26874950732505 0.00108023888596298
-"pr_post:member:numpyTRUE:year2012-pr_post:member:numpyFALSE:year2012" -3.40084286233056 0.000671784322841651
-"issue_reply:member:numpyTRUE:year2012-issue_reply:member:numpyFALSE:year2012" -4.45972529280075 8.20647692445498e-06
-"pr_reply:member:numpyTRUE:year2012-pr_reply:member:numpyFALSE:year2012" -6.18495044719574 6.21219742313883e-10
-"issue_post:nonmember:numpyTRUE:year2012-issue_post:nonmember:numpyFALSE:year2012" -1.51018727642713 0.130995644375903
-"pr_post:nonmember:numpyTRUE:year2012-pr_post:nonmember:numpyFALSE:year2012" -2.13292137279761 0.0329311767522833
-"issue_reply:nonmember:numpyTRUE:year2012-issue_reply:nonmember:numpyFALSE:year2012" -2.92269623884017 0.00347014872888285
-"pr_reply:nonmember:numpyTRUE:year2012-pr_reply:nonmember:numpyFALSE:year2012" -1.49515138365698 0.134874938203802
-"issue_post:member:numpyTRUE:year2013-issue_post:member:numpyFALSE:year2013" -0.661248061332527 0.508453243912141
-"pr_post:member:numpyTRUE:year2013-pr_post:member:numpyFALSE:year2013" -1.88592062935228 0.0593056511321708
-"issue_reply:member:numpyTRUE:year2013-issue_reply:member:numpyFALSE:year2013" -3.0573554664953 0.00223299299245827
-"pr_reply:member:numpyTRUE:year2013-pr_reply:member:numpyFALSE:year2013" 0.749643440745356 0.453469480142172
-"issue_post:nonmember:numpyTRUE:year2013-issue_post:nonmember:numpyFALSE:year2013" -2.80231758404306 0.00507369003112634
-"pr_post:nonmember:numpyTRUE:year2013-pr_post:nonmember:numpyFALSE:year2013" 0.00714344845435672 0.994300401241419
-"issue_reply:nonmember:numpyTRUE:year2013-issue_reply:nonmember:numpyFALSE:year2013" -2.62753368185309 0.00860063268311273
-"pr_reply:nonmember:numpyTRUE:year2013-pr_reply:nonmember:numpyFALSE:year2013" -1.45844186560048 0.144718788083184
-"issue_post:member:numpyTRUE:year2014-issue_post:member:numpyFALSE:year2014" -1.71406163678759 0.0865174064826015
-"pr_post:member:numpyTRUE:year2014-pr_post:member:numpyFALSE:year2014" -0.784171241963758 0.432939637102847
-"issue_reply:member:numpyTRUE:year2014-issue_reply:member:numpyFALSE:year2014" -3.93698191717647 8.25128220578453e-05
-"pr_reply:member:numpyTRUE:year2014-pr_reply:member:numpyFALSE:year2014" -0.105902712908346 0.915659541585272
-"issue_post:nonmember:numpyTRUE:year2014-issue_post:nonmember:numpyFALSE:year2014" -1.6949307929725 0.090088550224348
-"pr_post:nonmember:numpyTRUE:year2014-pr_post:nonmember:numpyFALSE:year2014" -1.61933522571843 0.105375155412398
-"issue_reply:nonmember:numpyTRUE:year2014-issue_reply:nonmember:numpyFALSE:year2014" -2.44609030963093 0.0144414821842718
-"pr_reply:nonmember:numpyTRUE:year2014-pr_reply:nonmember:numpyFALSE:year2014" -0.781602192347075 0.434448398076155
-"issue_post:member:numpyTRUE:year2015-issue_post:member:numpyFALSE:year2015" -1.08412039916545 0.278311419275419
-"pr_post:member:numpyTRUE:year2015-pr_post:member:numpyFALSE:year2015" -0.178697850602271 0.858174956990544
-"issue_reply:member:numpyTRUE:year2015-issue_reply:member:numpyFALSE:year2015" 0.840264191574663 0.400760274012197
-"pr_reply:member:numpyTRUE:year2015-pr_reply:member:numpyFALSE:year2015" 1.63113315990219 0.102862225111085
-"issue_post:nonmember:numpyTRUE:year2015-issue_post:nonmember:numpyFALSE:year2015" -1.95856068500313 0.050164257609788
-"pr_post:nonmember:numpyTRUE:year2015-pr_post:nonmember:numpyFALSE:year2015" -1.94515654957189 0.0517561395465189
-"issue_reply:nonmember:numpyTRUE:year2015-issue_reply:nonmember:numpyFALSE:year2015" -2.43825192159276 0.0147584847797788
-"pr_reply:nonmember:numpyTRUE:year2015-pr_reply:nonmember:numpyFALSE:year2015" -0.281237368315521 0.778528345021486
-"issue_post:member:numpyTRUE:year2016-issue_post:member:numpyFALSE:year2016" -3.54793023357509 0.000388271052604416
-"pr_post:member:numpyTRUE:year2016-pr_post:member:numpyFALSE:year2016" -1.52769547023178 0.126588165318395
-"issue_reply:member:numpyTRUE:year2016-issue_reply:member:numpyFALSE:year2016" -2.34117204731105 0.019223306318995
-"pr_reply:member:numpyTRUE:year2016-pr_reply:member:numpyFALSE:year2016" 1.71898804738852 0.0856165483606077
-"issue_post:nonmember:numpyTRUE:year2016-issue_post:nonmember:numpyFALSE:year2016" -3.55912432296426 0.000372093373135485
-"pr_post:nonmember:numpyTRUE:year2016-pr_post:nonmember:numpyFALSE:year2016" -1.07695027991807 0.2815024787399
-"issue_reply:nonmember:numpyTRUE:year2016-issue_reply:nonmember:numpyFALSE:year2016" -0.876300437808221 0.380866727112368
-"pr_reply:nonmember:numpyTRUE:year2016-pr_reply:nonmember:numpyFALSE:year2016" 1.41281884028165 0.157708997183871
-"issue_post:member:numpyTRUE:year2017-issue_post:member:numpyFALSE:year2017" -2.68710156093958 0.00720750342295462
-"pr_post:member:numpyTRUE:year2017-pr_post:member:numpyFALSE:year2017" -1.08400661122214 0.278361867541421
-"issue_reply:member:numpyTRUE:year2017-issue_reply:member:numpyFALSE:year2017" -7.72191852834065 1.15463194561016e-14
-"pr_reply:member:numpyTRUE:year2017-pr_reply:member:numpyFALSE:year2017" 1.09618892984462 0.27299610314448
-"issue_post:nonmember:numpyTRUE:year2017-issue_post:nonmember:numpyFALSE:year2017" -2.05900540613846 0.0394937206024832
-"pr_post:nonmember:numpyTRUE:year2017-pr_post:nonmember:numpyFALSE:year2017" -2.80392104997715 0.00504852656455279
-"issue_reply:nonmember:numpyTRUE:year2017-issue_reply:nonmember:numpyFALSE:year2017" -1.36601331549198 0.171934784065146
-"pr_reply:nonmember:numpyTRUE:year2017-pr_reply:nonmember:numpyFALSE:year2017" -0.464036806681441 0.642621375512793
-"issue_post:member:numpyTRUE:year2018-issue_post:member:numpyFALSE:year2018" -1.48632546372217 0.137193054535548
-"pr_post:member:numpyTRUE:year2018-pr_post:member:numpyFALSE:year2018" -0.343108056163572 0.731517170664846
-"issue_reply:member:numpyTRUE:year2018-issue_reply:member:numpyFALSE:year2018" -3.46860519759377 0.000523167656786505
-"pr_reply:member:numpyTRUE:year2018-pr_reply:member:numpyFALSE:year2018" 0.533903271181762 0.593408458751486
-"issue_post:nonmember:numpyTRUE:year2018-issue_post:nonmember:numpyFALSE:year2018" -3.88186070476237 0.000103660252109172
-"pr_post:nonmember:numpyTRUE:year2018-pr_post:nonmember:numpyFALSE:year2018" -2.67767754432441 0.0074134550632694
-"issue_reply:nonmember:numpyTRUE:year2018-issue_reply:nonmember:numpyFALSE:year2018" -3.46050467666642 0.000539163868482184
-"pr_reply:nonmember:numpyTRUE:year2018-pr_reply:nonmember:numpyFALSE:year2018" -0.353269982051224 0.723886047411444
-"issue_post:member:scikit-learnTRUE:year2010-issue_post:member:scikit-learnFALSE:year2010" -0.489780591117455 0.624289166333501
-"pr_post:member:scikit-learnTRUE:year2010-pr_post:member:scikit-learnFALSE:year2010" -2.58525984886937 0.00973056325094146
-"issue_reply:member:scikit-learnTRUE:year2010-issue_reply:member:scikit-learnFALSE:year2010" -0.333065261617024 0.739085020940375
-"pr_reply:member:scikit-learnTRUE:year2010-pr_reply:member:scikit-learnFALSE:year2010" -0.539554105752402 0.589504574171735
-"issue_post:nonmember:scikit-learnTRUE:year2010-issue_post:nonmember:scikit-learnFALSE:year2010" 0.0963447781266835 0.92324674866963
-"pr_post:nonmember:scikit-learnTRUE:year2010-pr_post:nonmember:scikit-learnFALSE:year2010" -0.0924053722172033 0.926375971280692
-"issue_reply:nonmember:scikit-learnTRUE:year2010-issue_reply:nonmember:scikit-learnFALSE:year2010" -1.13651092253111 0.25574279692804
-"pr_reply:nonmember:scikit-learnTRUE:year2010-pr_reply:nonmember:scikit-learnFALSE:year2010" 2.44746185001767 0.0143866354742865
-"issue_post:member:scikit-learnTRUE:year2011-issue_post:member:scikit-learnFALSE:year2011" 0.304518160989437 0.760733158851312
-"pr_post:member:scikit-learnTRUE:year2011-pr_post:member:scikit-learnFALSE:year2011" 5.64373493906673 1.66400191403682e-08
-"issue_reply:member:scikit-learnTRUE:year2011-issue_reply:member:scikit-learnFALSE:year2011" 1.57822015364738 0.114515041819981
-"pr_reply:member:scikit-learnTRUE:year2011-pr_reply:member:scikit-learnFALSE:year2011" 2.40490981497096 0.0161764572879299
-"issue_post:nonmember:scikit-learnTRUE:year2011-issue_post:nonmember:scikit-learnFALSE:year2011" 0.274464080701578 0.783728003545259
-"pr_post:nonmember:scikit-learnTRUE:year2011-pr_post:nonmember:scikit-learnFALSE:year2011" 0.399921921432485 0.689214025687358
-"issue_reply:nonmember:scikit-learnTRUE:year2011-issue_reply:nonmember:scikit-learnFALSE:year2011" 0.691264140842926 0.489399562369446
-"pr_reply:nonmember:scikit-learnTRUE:year2011-pr_reply:nonmember:scikit-learnFALSE:year2011" -0.916599635838466 0.359352475273702
-"issue_post:member:scikit-learnTRUE:year2012-issue_post:member:scikit-learnFALSE:year2012" 2.07220478429837 0.0382463474328099
-"pr_post:member:scikit-learnTRUE:year2012-pr_post:member:scikit-learnFALSE:year2012" 3.03641593287312 0.0023940885883591
-"issue_reply:member:scikit-learnTRUE:year2012-issue_reply:member:scikit-learnFALSE:year2012" 3.984701338111 6.756504982941e-05
-"pr_reply:member:scikit-learnTRUE:year2012-pr_reply:member:scikit-learnFALSE:year2012" 4.20309832862763 2.63286148425301e-05
-"issue_post:nonmember:scikit-learnTRUE:year2012-issue_post:nonmember:scikit-learnFALSE:year2012" -1.9348967129272 0.05300297165582
-"pr_post:nonmember:scikit-learnTRUE:year2012-pr_post:nonmember:scikit-learnFALSE:year2012" 2.66730234643968 0.00764628501357389
-"issue_reply:nonmember:scikit-learnTRUE:year2012-issue_reply:nonmember:scikit-learnFALSE:year2012" -0.278886745615843 0.780331740615549
-"pr_reply:nonmember:scikit-learnTRUE:year2012-pr_reply:nonmember:scikit-learnFALSE:year2012" -0.171750120777707 0.863633980544596
-"issue_post:member:scikit-learnTRUE:year2013-issue_post:member:scikit-learnFALSE:year2013" -0.322398755379286 0.747150626995277
-"pr_post:member:scikit-learnTRUE:year2013-pr_post:member:scikit-learnFALSE:year2013" 3.85172442155846 0.00011728897193386
-"issue_reply:member:scikit-learnTRUE:year2013-issue_reply:member:scikit-learnFALSE:year2013" 2.3173097233789 0.0204868660173247
-"pr_reply:member:scikit-learnTRUE:year2013-pr_reply:member:scikit-learnFALSE:year2013" 5.49744466634203 3.85334169017426e-08
-"issue_post:nonmember:scikit-learnTRUE:year2013-issue_post:nonmember:scikit-learnFALSE:year2013" 0.136639363660627 0.891315860591941
-"pr_post:nonmember:scikit-learnTRUE:year2013-pr_post:nonmember:scikit-learnFALSE:year2013" 0.893882658260255 0.371384677252386
-"issue_reply:nonmember:scikit-learnTRUE:year2013-issue_reply:nonmember:scikit-learnFALSE:year2013" -2.28581073007756 0.0222653336790881
-"pr_reply:nonmember:scikit-learnTRUE:year2013-pr_reply:nonmember:scikit-learnFALSE:year2013" 1.79407202979877 0.0728016727543328
-"issue_post:member:scikit-learnTRUE:year2014-issue_post:member:scikit-learnFALSE:year2014" -1.36726998264671 0.171540696793614
-"pr_post:member:scikit-learnTRUE:year2014-pr_post:member:scikit-learnFALSE:year2014" 2.59935149211794 0.00934000823223857
-"issue_reply:member:scikit-learnTRUE:year2014-issue_reply:member:scikit-learnFALSE:year2014" -0.273250633149865 0.784660560724811
-"pr_reply:member:scikit-learnTRUE:year2014-pr_reply:member:scikit-learnFALSE:year2014" 3.41788099677544 0.000631106946484605
-"issue_post:nonmember:scikit-learnTRUE:year2014-issue_post:nonmember:scikit-learnFALSE:year2014" 1.70564537323203 0.0880741260905844
-"pr_post:nonmember:scikit-learnTRUE:year2014-pr_post:nonmember:scikit-learnFALSE:year2014" 1.35087332026769 0.176736015960124
-"issue_reply:nonmember:scikit-learnTRUE:year2014-issue_reply:nonmember:scikit-learnFALSE:year2014" -1.10624037173536 0.268622493013484
-"pr_reply:nonmember:scikit-learnTRUE:year2014-pr_reply:nonmember:scikit-learnFALSE:year2014" 1.53333620306017 0.125193038869962
-"issue_post:member:scikit-learnTRUE:year2015-issue_post:member:scikit-learnFALSE:year2015" -0.949537164460599 0.342347479439541
-"pr_post:member:scikit-learnTRUE:year2015-pr_post:member:scikit-learnFALSE:year2015" 1.26953392088046 0.204250700249929
-"issue_reply:member:scikit-learnTRUE:year2015-issue_reply:member:scikit-learnFALSE:year2015" -2.75425387773554 0.00588261165481163
-"pr_reply:member:scikit-learnTRUE:year2015-pr_reply:member:scikit-learnFALSE:year2015" -2.09087941511147 0.0365388748077768
-"issue_post:nonmember:scikit-learnTRUE:year2015-issue_post:nonmember:scikit-learnFALSE:year2015" 0.550423533370918 0.58202891108344
-"pr_post:nonmember:scikit-learnTRUE:year2015-pr_post:nonmember:scikit-learnFALSE:year2015" -0.880638962323427 0.378513263129262
-"issue_reply:nonmember:scikit-learnTRUE:year2015-issue_reply:nonmember:scikit-learnFALSE:year2015" -0.607637224964817 0.54342810614072
-"pr_reply:nonmember:scikit-learnTRUE:year2015-pr_reply:nonmember:scikit-learnFALSE:year2015" 0.310987026961295 0.755810483970766
-"issue_post:member:scikit-learnTRUE:year2016-issue_post:member:scikit-learnFALSE:year2016" 0.810312753743936 0.417760447115618
-"pr_post:member:scikit-learnTRUE:year2016-pr_post:member:scikit-learnFALSE:year2016" 0.619937614598408 0.535298860279452
-"issue_reply:member:scikit-learnTRUE:year2016-issue_reply:member:scikit-learnFALSE:year2016" 0.3434075573054 0.731291874930709
-"pr_reply:member:scikit-learnTRUE:year2016-pr_reply:member:scikit-learnFALSE:year2016" -1.53986861563036 0.123592382270403
-"issue_post:nonmember:scikit-learnTRUE:year2016-issue_post:nonmember:scikit-learnFALSE:year2016" -1.63939172119981 0.101131704706172
-"pr_post:nonmember:scikit-learnTRUE:year2016-pr_post:nonmember:scikit-learnFALSE:year2016" 1.10961465953262 0.267165111495963
-"issue_reply:nonmember:scikit-learnTRUE:year2016-issue_reply:nonmember:scikit-learnFALSE:year2016" 0.786571091619248 0.431532987494649
-"pr_reply:nonmember:scikit-learnTRUE:year2016-pr_reply:nonmember:scikit-learnFALSE:year2016" 1.12097112522477 0.262300153477977
-"issue_post:member:scikit-learnTRUE:year2017-issue_post:member:scikit-learnFALSE:year2017" 1.93754667062608 0.052678554181298
-"pr_post:member:scikit-learnTRUE:year2017-pr_post:member:scikit-learnFALSE:year2017" -0.34853676974116 0.727437104556631
-"issue_reply:member:scikit-learnTRUE:year2017-issue_reply:member:scikit-learnFALSE:year2017" 1.95089263134792 0.0510698193928651
-"pr_reply:member:scikit-learnTRUE:year2017-pr_reply:member:scikit-learnFALSE:year2017" 0.111602852299683 0.911138310345855
-"issue_post:nonmember:scikit-learnTRUE:year2017-issue_post:nonmember:scikit-learnFALSE:year2017" -0.42862314001831 0.668197502823439
-"pr_post:nonmember:scikit-learnTRUE:year2017-pr_post:nonmember:scikit-learnFALSE:year2017" 0.17526221961492 0.860873596624833
-"issue_reply:nonmember:scikit-learnTRUE:year2017-issue_reply:nonmember:scikit-learnFALSE:year2017" 1.40414778453618 0.160274846810241
-"pr_reply:nonmember:scikit-learnTRUE:year2017-pr_reply:nonmember:scikit-learnFALSE:year2017" -1.65380235188183 0.0981676779629399
-"issue_post:member:scikit-learnTRUE:year2018-issue_post:member:scikit-learnFALSE:year2018" -1.75157652892195 0.0798466513837854
-"pr_post:member:scikit-learnTRUE:year2018-pr_post:member:scikit-learnFALSE:year2018" -2.46159911254336 0.0138319174771202
-"issue_reply:member:scikit-learnTRUE:year2018-issue_reply:member:scikit-learnFALSE:year2018" -0.37045664667698 0.711042273248871
-"pr_reply:member:scikit-learnTRUE:year2018-pr_reply:member:scikit-learnFALSE:year2018" -0.855787340852635 0.392115418643364
-"issue_post:nonmember:scikit-learnTRUE:year2018-issue_post:nonmember:scikit-learnFALSE:year2018" 2.4500366007412 0.0142841694119002
-"pr_post:nonmember:scikit-learnTRUE:year2018-pr_post:nonmember:scikit-learnFALSE:year2018" -5.04550909236839 4.52315382704072e-07
-"issue_reply:nonmember:scikit-learnTRUE:year2018-issue_reply:nonmember:scikit-learnFALSE:year2018" 2.80136863416966 0.00508863541493976
-"pr_reply:nonmember:scikit-learnTRUE:year2018-pr_reply:nonmember:scikit-learnFALSE:year2018" 3.28401976408628 0.00102337745355907
-"pr_post:member:scipyTRUE:year2011-pr_post:member:scipyFALSE:year2011" -0.108246778875836 0.913799938751157
-"pr_reply:member:scipyTRUE:year2011-pr_reply:member:scipyFALSE:year2011" 0.469878899242607 0.638441540542096
-"pr_post:nonmember:scipyTRUE:year2011-pr_post:nonmember:scipyFALSE:year2011" 1.01689111432961 0.309205230852051
-"pr_reply:nonmember:scipyTRUE:year2011-pr_reply:nonmember:scipyFALSE:year2011" 0.550269880869809 0.582134279344686
-"pr_post:member:scipyTRUE:year2012-pr_post:member:scipyFALSE:year2012" 0.47533308282811 0.634549582367007
-"pr_reply:member:scipyTRUE:year2012-pr_reply:member:scipyFALSE:year2012" -0.0799522035779771 0.936275270231643
-"pr_post:nonmember:scipyTRUE:year2012-pr_post:nonmember:scipyFALSE:year2012" -0.374530206728166 0.708009887462355
-"pr_reply:nonmember:scipyTRUE:year2012-pr_reply:nonmember:scipyFALSE:year2012" 1.33058278484983 0.183326330087656
-"issue_post:member:scipyTRUE:year2013-issue_post:member:scipyFALSE:year2013" -1.48462403732098 0.13764344432807
-"pr_post:member:scipyTRUE:year2013-pr_post:member:scipyFALSE:year2013" -0.197990749147507 0.843052301573749
-"issue_reply:member:scipyTRUE:year2013-issue_reply:member:scipyFALSE:year2013" -1.29778446431019 0.19436140959634
-"pr_reply:member:scipyTRUE:year2013-pr_reply:member:scipyFALSE:year2013" 6.32090356679691 2.60038213184544e-10
-"issue_post:nonmember:scipyTRUE:year2013-issue_post:nonmember:scipyFALSE:year2013" 0.327220601444578 0.743501040132011
-"pr_post:nonmember:scipyTRUE:year2013-pr_post:nonmember:scipyFALSE:year2013" -0.000958202137946753 0.999235465424997
-"issue_reply:nonmember:scipyTRUE:year2013-issue_reply:nonmember:scipyFALSE:year2013" -0.519786715268664 0.603212239600612
-"pr_reply:nonmember:scipyTRUE:year2013-pr_reply:nonmember:scipyFALSE:year2013" -0.0186605715069876 0.985111882152943
-"issue_post:member:scipyTRUE:year2014-issue_post:member:scipyFALSE:year2014" -0.925819275312543 0.354539908305854
-"pr_post:member:scipyTRUE:year2014-pr_post:member:scipyFALSE:year2014" -0.794114046455363 0.427129041030424
-"issue_reply:member:scipyTRUE:year2014-issue_reply:member:scipyFALSE:year2014" 1.35496931103524 0.175427334883387
-"pr_reply:member:scipyTRUE:year2014-pr_reply:member:scipyFALSE:year2014" -0.55026736479023 0.582136004837737
-"issue_post:nonmember:scipyTRUE:year2014-issue_post:nonmember:scipyFALSE:year2014" -0.0245602790429947 0.980405702466292
-"pr_post:nonmember:scipyTRUE:year2014-pr_post:nonmember:scipyFALSE:year2014" 0.579933917689833 0.561959181910371
-"issue_reply:nonmember:scipyTRUE:year2014-issue_reply:nonmember:scipyFALSE:year2014" 1.20324316487091 0.228882235650949
-"pr_reply:nonmember:scipyTRUE:year2014-pr_reply:nonmember:scipyFALSE:year2014" 0.864373474074011 0.387382759742546
-"issue_post:member:scipyTRUE:year2015-issue_post:member:scipyFALSE:year2015" -0.258594782326345 0.795947909449394
-"pr_post:member:scipyTRUE:year2015-pr_post:member:scipyFALSE:year2015" 0.689530890531737 0.490489240822359
-"issue_reply:member:scipyTRUE:year2015-issue_reply:member:scipyFALSE:year2015" 1.82817931425394 0.0675226444807213
-"pr_reply:member:scipyTRUE:year2015-pr_reply:member:scipyFALSE:year2015" 5.06588193215639 4.06513830819577e-07
-"issue_post:nonmember:scipyTRUE:year2015-issue_post:nonmember:scipyFALSE:year2015" -1.67189729002141 0.0945445772779214
-"pr_post:nonmember:scipyTRUE:year2015-pr_post:nonmember:scipyFALSE:year2015" 2.74190843857185 0.0061083366005279
-"issue_reply:nonmember:scipyTRUE:year2015-issue_reply:nonmember:scipyFALSE:year2015" 3.08282245761016 0.00205047447661544
-"pr_reply:nonmember:scipyTRUE:year2015-pr_reply:nonmember:scipyFALSE:year2015" 4.19943663895339 2.67579891168879e-05
-"issue_post:member:scipyTRUE:year2016-issue_post:member:scipyFALSE:year2016" -1.51526644006877 0.129704943521356
-"pr_post:member:scipyTRUE:year2016-pr_post:member:scipyFALSE:year2016" 1.21153385266336 0.225690868544167
-"issue_reply:member:scipyTRUE:year2016-issue_reply:member:scipyFALSE:year2016" 0.545775345113006 0.585220372836485
-"pr_reply:member:scipyTRUE:year2016-pr_reply:member:scipyFALSE:year2016" 7.71353524994643 1.22124532708767e-14
-"issue_post:nonmember:scipyTRUE:year2016-issue_post:nonmember:scipyFALSE:year2016" -0.0890552204426565 0.929038024843054
-"pr_post:nonmember:scipyTRUE:year2016-pr_post:nonmember:scipyFALSE:year2016" 0.408460787581965 0.682935413230269
-"issue_reply:nonmember:scipyTRUE:year2016-issue_reply:nonmember:scipyFALSE:year2016" 0.0783871507284806 0.93752009431337
-"pr_reply:nonmember:scipyTRUE:year2016-pr_reply:nonmember:scipyFALSE:year2016" 2.33511129608736 0.0195376073679663
-"issue_post:member:scipyTRUE:year2017-issue_post:member:scipyFALSE:year2017" -3.15680739074194 0.00159506668286014
-"pr_post:member:scipyTRUE:year2017-pr_post:member:scipyFALSE:year2017" -0.804022360894138 0.421384061096269
-"issue_reply:member:scipyTRUE:year2017-issue_reply:member:scipyFALSE:year2017" -0.313073757149095 0.754224626363371
-"pr_reply:member:scipyTRUE:year2017-pr_reply:member:scipyFALSE:year2017" 1.3268450725393 0.184559937192668
-"issue_post:nonmember:scipyTRUE:year2017-issue_post:nonmember:scipyFALSE:year2017" 1.15273168156642 0.249020533423794
-"pr_post:nonmember:scipyTRUE:year2017-pr_post:nonmember:scipyFALSE:year2017" 0.760104407099211 0.447192178549455
-"issue_reply:nonmember:scipyTRUE:year2017-issue_reply:nonmember:scipyFALSE:year2017" 1.47819412012291 0.139355827274999
-"pr_reply:nonmember:scipyTRUE:year2017-pr_reply:nonmember:scipyFALSE:year2017" 1.5384917712466 0.123928418978013
-"issue_post:member:scipyTRUE:year2018-issue_post:member:scipyFALSE:year2018" -1.8216188919631 0.0685128323691291
-"pr_post:member:scipyTRUE:year2018-pr_post:member:scipyFALSE:year2018" -1.36501250128734 0.172249120884555
-"issue_reply:member:scipyTRUE:year2018-issue_reply:member:scipyFALSE:year2018" -1.96410049721159 0.0495184385795242
-"pr_reply:member:scipyTRUE:year2018-pr_reply:member:scipyFALSE:year2018" 2.96395712884333 0.00303710595593709
-"issue_post:nonmember:scipyTRUE:year2018-issue_post:nonmember:scipyFALSE:year2018" -1.15282431081536 0.248982503814498
-"pr_post:nonmember:scipyTRUE:year2018-pr_post:nonmember:scipyFALSE:year2018" -0.560916776069122 0.574854273042466
-"issue_reply:nonmember:scipyTRUE:year2018-issue_reply:nonmember:scipyFALSE:year2018" 2.63384240389792 0.00844246637182611
-"pr_reply:nonmember:scipyTRUE:year2018-pr_reply:nonmember:scipyFALSE:year2018" 4.7303406902866 2.24143361848839e-06
-"issue_post:nonmember:mayaviTRUE:year2011-issue_post:nonmember:mayaviFALSE:year2011" -0.659723472175682 0.509431301074074
-"pr_post:nonmember:mayaviTRUE:year2011-pr_post:nonmember:mayaviFALSE:year2011" -1.30554068913519 0.191708801402293
-"issue_reply:nonmember:mayaviTRUE:year2011-issue_reply:nonmember:mayaviFALSE:year2011" -2.57558961362955 0.0100069338494737
-"pr_reply:nonmember:mayaviTRUE:year2011-pr_reply:nonmember:mayaviFALSE:year2011" 0.691845985420522 0.489034054503291
-"issue_reply:member:mayaviTRUE:year2012-issue_reply:member:mayaviFALSE:year2012" 1.0266533696336 0.304583713811935
-"issue_post:nonmember:mayaviTRUE:year2012-issue_post:nonmember:mayaviFALSE:year2012" -0.541715437126801 0.588014553579116
-"pr_post:nonmember:mayaviTRUE:year2012-pr_post:nonmember:mayaviFALSE:year2012" -1.41889426395091 0.155929844855329
-"issue_reply:nonmember:mayaviTRUE:year2012-issue_reply:nonmember:mayaviFALSE:year2012" -2.59123848705853 0.00956311935411724
-"pr_reply:nonmember:mayaviTRUE:year2012-pr_reply:nonmember:mayaviFALSE:year2012" -0.213869389319801 0.830648911709331
-"issue_post:member:mayaviTRUE:year2013-issue_post:member:mayaviFALSE:year2013" -0.0173303851970978 0.986173045358381
-"pr_post:member:mayaviTRUE:year2013-pr_post:member:mayaviFALSE:year2013" -0.679902490738198 0.496566204435458
-"issue_reply:member:mayaviTRUE:year2013-issue_reply:member:mayaviFALSE:year2013" -1.10974317969286 0.267109710322443
-"pr_reply:member:mayaviTRUE:year2013-pr_reply:member:mayaviFALSE:year2013" -1.02145441503877 0.307039195823998
-"issue_post:nonmember:mayaviTRUE:year2013-issue_post:nonmember:mayaviFALSE:year2013" 2.32702350104609 0.0199640144761117
-"pr_post:nonmember:mayaviTRUE:year2013-pr_post:nonmember:mayaviFALSE:year2013" -1.1721626899094 0.241131744706249
-"issue_reply:nonmember:mayaviTRUE:year2013-issue_reply:nonmember:mayaviFALSE:year2013" -1.00409824813601 0.315331259762732
-"pr_reply:nonmember:mayaviTRUE:year2013-pr_reply:nonmember:mayaviFALSE:year2013" 1.11210060751639 0.266094895561702
-"pr_post:member:mayaviTRUE:year2014-pr_post:member:mayaviFALSE:year2014" -2.14564476439033 0.0319013311352243
-"issue_reply:member:mayaviTRUE:year2014-issue_reply:member:mayaviFALSE:year2014" -1.93658666579497 0.0527958892211891
-"pr_reply:member:mayaviTRUE:year2014-pr_reply:member:mayaviFALSE:year2014" -2.46564477286088 0.0136766893806446
-"issue_post:nonmember:mayaviTRUE:year2014-issue_post:nonmember:mayaviFALSE:year2014" 0.53950484136434 0.58953855729712
-"pr_post:nonmember:mayaviTRUE:year2014-pr_post:nonmember:mayaviFALSE:year2014" -0.746395400675342 0.455428596798112
-"issue_reply:nonmember:mayaviTRUE:year2014-issue_reply:nonmember:mayaviFALSE:year2014" 0.275278750448225 0.78310208872841
-"pr_reply:nonmember:mayaviTRUE:year2014-pr_reply:nonmember:mayaviFALSE:year2014" -2.74507329931538 0.00604973836228528
-"issue_post:member:mayaviTRUE:year2015-issue_post:member:mayaviFALSE:year2015" -0.755697927929218 0.449830326691347
-"pr_post:member:mayaviTRUE:year2015-pr_post:member:mayaviFALSE:year2015" -0.231625350450079 0.81682901609268
-"issue_reply:member:mayaviTRUE:year2015-issue_reply:member:mayaviFALSE:year2015" -0.42873569078264 0.66811558390286
-"pr_reply:member:mayaviTRUE:year2015-pr_reply:member:mayaviFALSE:year2015" -2.35703405690865 0.0184215572843121
-"issue_post:nonmember:mayaviTRUE:year2015-issue_post:nonmember:mayaviFALSE:year2015" 0.516742756020333 0.605335745076013
-"pr_post:nonmember:mayaviTRUE:year2015-pr_post:nonmember:mayaviFALSE:year2015" 0.522238225681422 0.601504474089564
-"issue_reply:nonmember:mayaviTRUE:year2015-issue_reply:nonmember:mayaviFALSE:year2015" -2.26945190594525 0.0232408587522133
-"pr_reply:nonmember:mayaviTRUE:year2015-pr_reply:nonmember:mayaviFALSE:year2015" -0.324062627671117 0.745890620222916
-"issue_post:member:mayaviTRUE:year2016-issue_post:member:mayaviFALSE:year2016" -1.35363320911705 0.175853426504056
-"pr_post:member:mayaviTRUE:year2016-pr_post:member:mayaviFALSE:year2016" -0.454162075151513 0.64971217726333
-"issue_reply:member:mayaviTRUE:year2016-issue_reply:member:mayaviFALSE:year2016" -0.424076923183108 0.67150971464517
-"pr_reply:member:mayaviTRUE:year2016-pr_reply:member:mayaviFALSE:year2016" -2.31739896641061 0.0204820086022908
-"issue_post:nonmember:mayaviTRUE:year2016-issue_post:nonmember:mayaviFALSE:year2016" -1.943950404796 0.0519014320708779
-"pr_post:nonmember:mayaviTRUE:year2016-pr_post:nonmember:mayaviFALSE:year2016" 0.669756594014029 0.503012967897003
-"issue_reply:nonmember:mayaviTRUE:year2016-issue_reply:nonmember:mayaviFALSE:year2016" -0.532583817978219 0.594321706268242
-"pr_reply:nonmember:mayaviTRUE:year2016-pr_reply:nonmember:mayaviFALSE:year2016" 0.45442844341709 0.649520484027918
-"issue_post:member:mayaviTRUE:year2017-issue_post:member:mayaviFALSE:year2017" 1.48888775844614 0.136516927637777
-"pr_post:member:mayaviTRUE:year2017-pr_post:member:mayaviFALSE:year2017" -1.75999966244039 0.0784078638091337
-"issue_reply:member:mayaviTRUE:year2017-issue_reply:member:mayaviFALSE:year2017" -2.6893157614391 0.00715986576007865
-"pr_reply:member:mayaviTRUE:year2017-pr_reply:member:mayaviFALSE:year2017" -0.602173484335679 0.547058663818416
-"issue_post:nonmember:mayaviTRUE:year2017-issue_post:nonmember:mayaviFALSE:year2017" -1.29247419741077 0.196192975981528
-"pr_post:nonmember:mayaviTRUE:year2017-pr_post:nonmember:mayaviFALSE:year2017" -1.57855292955008 0.114438638517956
-"issue_reply:nonmember:mayaviTRUE:year2017-issue_reply:nonmember:mayaviFALSE:year2017" -2.55914670164682 0.01049294510692
-"pr_reply:nonmember:mayaviTRUE:year2017-pr_reply:nonmember:mayaviFALSE:year2017" -0.353428052433235 0.723767558276034
-"issue_post:member:mayaviTRUE:year2018-issue_post:member:mayaviFALSE:year2018" -2.44154506831881 0.0146245627998571
-"pr_post:member:mayaviTRUE:year2018-pr_post:member:mayaviFALSE:year2018" -2.60395264576653 0.00921554885988618
-"issue_reply:member:mayaviTRUE:year2018-issue_reply:member:mayaviFALSE:year2018" -3.80711105973047 0.000140599615311876
-"pr_reply:member:mayaviTRUE:year2018-pr_reply:member:mayaviFALSE:year2018" -1.72744380612786 0.0840879890473962
-"issue_post:nonmember:mayaviTRUE:year2018-issue_post:nonmember:mayaviFALSE:year2018" -0.327679515378523 0.743153993362306
-"pr_post:nonmember:mayaviTRUE:year2018-pr_post:nonmember:mayaviFALSE:year2018" -1.05076478979319 0.293366630900398
-"issue_reply:nonmember:mayaviTRUE:year2018-issue_reply:nonmember:mayaviFALSE:year2018" -0.174197443913577 0.86171029428885
-"pr_reply:nonmember:mayaviTRUE:year2018-pr_reply:nonmember:mayaviFALSE:year2018" 0.701539306465042 0.482966513554973
-"issue_post:nonmember:sphinx-galleryTRUE:year2014-issue_post:nonmember:sphinx-galleryFALSE:year2014" 1.34879525587792 0.177402738948745
-"pr_post:nonmember:sphinx-galleryTRUE:year2014-pr_post:nonmember:sphinx-galleryFALSE:year2014" 1.73579538804957 0.0826000198827632
-"issue_reply:nonmember:sphinx-galleryTRUE:year2014-issue_reply:nonmember:sphinx-galleryFALSE:year2014" 0.057876954674438 0.95384663985018
-"pr_reply:nonmember:sphinx-galleryTRUE:year2014-pr_reply:nonmember:sphinx-galleryFALSE:year2014" -0.282582049183142 0.777497242387772
-"issue_post:member:sphinx-galleryTRUE:year2015-issue_post:member:sphinx-galleryFALSE:year2015" -0.440217216352218 0.659779791603947
-"pr_post:member:sphinx-galleryTRUE:year2015-pr_post:member:sphinx-galleryFALSE:year2015" 1.49549131350601 0.134786265247311
-"issue_reply:member:sphinx-galleryTRUE:year2015-issue_reply:member:sphinx-galleryFALSE:year2015" -0.333615856526531 0.738669451377783
-"pr_reply:member:sphinx-galleryTRUE:year2015-pr_reply:member:sphinx-galleryFALSE:year2015" 1.54300663056353 0.122829167150536
-"issue_post:nonmember:sphinx-galleryTRUE:year2015-issue_post:nonmember:sphinx-galleryFALSE:year2015" -0.18363381335229 0.854300734960679
-"pr_post:nonmember:sphinx-galleryTRUE:year2015-pr_post:nonmember:sphinx-galleryFALSE:year2015" 1.4374783283799 0.150582126347298
-"issue_reply:nonmember:sphinx-galleryTRUE:year2015-issue_reply:nonmember:sphinx-galleryFALSE:year2015" -0.0226251274938948 0.981949300114259
-"pr_reply:nonmember:sphinx-galleryTRUE:year2015-pr_reply:nonmember:sphinx-galleryFALSE:year2015" 0.27326278391201 0.784651221101424
-"issue_post:member:sphinx-galleryTRUE:year2016-issue_post:member:sphinx-galleryFALSE:year2016" -2.08253018246754 0.0372940689409667
-"pr_post:member:sphinx-galleryTRUE:year2016-pr_post:member:sphinx-galleryFALSE:year2016" 0.139054359207426 0.889407193819381
-"issue_reply:member:sphinx-galleryTRUE:year2016-issue_reply:member:sphinx-galleryFALSE:year2016" 1.35161742096702 0.176497734396508
-"pr_reply:member:sphinx-galleryTRUE:year2016-pr_reply:member:sphinx-galleryFALSE:year2016" -0.309134354910581 0.75721932676035
-"issue_post:nonmember:sphinx-galleryTRUE:year2016-issue_post:nonmember:sphinx-galleryFALSE:year2016" -0.790725966369435 0.429103920070089
-"pr_post:nonmember:sphinx-galleryTRUE:year2016-pr_post:nonmember:sphinx-galleryFALSE:year2016" -0.791578106209158 0.428606717012981
-"issue_reply:nonmember:sphinx-galleryTRUE:year2016-issue_reply:nonmember:sphinx-galleryFALSE:year2016" 1.22224182450292 0.221616191728951
-"pr_reply:nonmember:sphinx-galleryTRUE:year2016-pr_reply:nonmember:sphinx-galleryFALSE:year2016" -1.10741756596364 0.268113434691936
-"issue_post:member:sphinx-galleryTRUE:year2017-issue_post:member:sphinx-galleryFALSE:year2017" -0.177319814268943 0.859257187867508
-"pr_post:member:sphinx-galleryTRUE:year2017-pr_post:member:sphinx-galleryFALSE:year2017" -0.222640913834037 0.823814990921044
-"issue_reply:member:sphinx-galleryTRUE:year2017-issue_reply:member:sphinx-galleryFALSE:year2017" 2.67152708572284 0.00755069784706253
-"pr_reply:member:sphinx-galleryTRUE:year2017-pr_reply:member:sphinx-galleryFALSE:year2017" -1.08668464777926 0.277176201080366
-"issue_post:nonmember:sphinx-galleryTRUE:year2017-issue_post:nonmember:sphinx-galleryFALSE:year2017" 0.195742358572909 0.844811828330981
-"pr_post:nonmember:sphinx-galleryTRUE:year2017-pr_post:nonmember:sphinx-galleryFALSE:year2017" 1.43657330303845 0.150839273893811
-"issue_reply:nonmember:sphinx-galleryTRUE:year2017-issue_reply:nonmember:sphinx-galleryFALSE:year2017" 0.636766328096779 0.524277062034586
-"pr_reply:nonmember:sphinx-galleryTRUE:year2017-pr_reply:nonmember:sphinx-galleryFALSE:year2017" -0.229884214887438 0.818181742565765
-"issue_post:member:sphinx-galleryTRUE:year2018-issue_post:member:sphinx-galleryFALSE:year2018" 2.00950256267034 0.0444838631841384
-"pr_post:member:sphinx-galleryTRUE:year2018-pr_post:member:sphinx-galleryFALSE:year2018" 0.139986192207686 0.888670899983513
-"issue_reply:member:sphinx-galleryTRUE:year2018-issue_reply:member:sphinx-galleryFALSE:year2018" 3.50263203077367 0.00046068540264077
-"pr_reply:member:sphinx-galleryTRUE:year2018-pr_reply:member:sphinx-galleryFALSE:year2018" 2.21800143120629 0.0265547348325339
-"issue_post:nonmember:sphinx-galleryTRUE:year2018-issue_post:nonmember:sphinx-galleryFALSE:year2018" -2.16561719730032 0.0303404511390126
-"pr_post:nonmember:sphinx-galleryTRUE:year2018-pr_post:nonmember:sphinx-galleryFALSE:year2018" 0.852752763669968 0.393796423903513
-"issue_reply:nonmember:sphinx-galleryTRUE:year2018-issue_reply:nonmember:sphinx-galleryFALSE:year2018" 2.30050369772324 0.0214197000391951
-"pr_reply:nonmember:sphinx-galleryTRUE:year2018-pr_reply:nonmember:sphinx-galleryFALSE:year2018" 0.869129754947807 0.38477616345444
-"issue_post:member:matplotlibTRUE:year2011-issue_post:member:matplotlibFALSE:year2011" 2.0970852343073 0.0359860308423736
-"pr_post:member:matplotlibTRUE:year2011-pr_post:member:matplotlibFALSE:year2011" -4.58421456595874 4.55696111889559e-06
-"issue_reply:member:matplotlibTRUE:year2011-issue_reply:member:matplotlibFALSE:year2011" -4.03727399892271 5.40758975240418e-05
-"pr_reply:member:matplotlibTRUE:year2011-pr_reply:member:matplotlibFALSE:year2011" -2.29835383759533 0.02154165858597
-"issue_post:nonmember:matplotlibTRUE:year2011-issue_post:nonmember:matplotlibFALSE:year2011" -1.23315239743185 0.21751891157012
-"pr_post:nonmember:matplotlibTRUE:year2011-pr_post:nonmember:matplotlibFALSE:year2011" -1.59410251170921 0.110913076457464
-"issue_reply:nonmember:matplotlibTRUE:year2011-issue_reply:nonmember:matplotlibFALSE:year2011" 0.0804428710100514 0.935885031226372
-"pr_reply:nonmember:matplotlibTRUE:year2011-pr_reply:nonmember:matplotlibFALSE:year2011" -1.03689904715316 0.299782908059764
-"issue_post:member:matplotlibTRUE:year2012-issue_post:member:matplotlibFALSE:year2012" -2.35934349823506 0.0183073010689341
-"pr_post:member:matplotlibTRUE:year2012-pr_post:member:matplotlibFALSE:year2012" 1.70560126770181 0.0880823431989619
-"issue_reply:member:matplotlibTRUE:year2012-issue_reply:member:matplotlibFALSE:year2012" -0.787020977431298 0.431269586268671
-"pr_reply:member:matplotlibTRUE:year2012-pr_reply:member:matplotlibFALSE:year2012" -1.52492363719141 0.127278145430319
-"issue_post:nonmember:matplotlibTRUE:year2012-issue_post:nonmember:matplotlibFALSE:year2012" 1.41805701964975 0.156174118235527
-"pr_post:nonmember:matplotlibTRUE:year2012-pr_post:nonmember:matplotlibFALSE:year2012" 0.100184909773375 0.920197525992826
-"issue_reply:nonmember:matplotlibTRUE:year2012-issue_reply:nonmember:matplotlibFALSE:year2012" 0.10543225416159 0.91603282356255
-"pr_reply:nonmember:matplotlibTRUE:year2012-pr_reply:nonmember:matplotlibFALSE:year2012" 1.3466819137289 0.178082699703569
-"issue_post:member:matplotlibTRUE:year2013-issue_post:member:matplotlibFALSE:year2013" -3.16973828449964 0.00152576297131368
-"pr_post:member:matplotlibTRUE:year2013-pr_post:member:matplotlibFALSE:year2013" -0.406184519726344 0.684607027505701
-"issue_reply:member:matplotlibTRUE:year2013-issue_reply:member:matplotlibFALSE:year2013" -1.0176136975476 0.308861575245073
-"pr_reply:member:matplotlibTRUE:year2013-pr_reply:member:matplotlibFALSE:year2013" -3.08186120671908 0.00205710728855113
-"issue_post:nonmember:matplotlibTRUE:year2013-issue_post:nonmember:matplotlibFALSE:year2013" 1.51030397172902 0.130965878756801
-"pr_post:nonmember:matplotlibTRUE:year2013-pr_post:nonmember:matplotlibFALSE:year2013" -1.41228142091205 0.157867114689372
-"issue_reply:nonmember:matplotlibTRUE:year2013-issue_reply:nonmember:matplotlibFALSE:year2013" -0.903730968223693 0.366138073881623
-"pr_reply:nonmember:matplotlibTRUE:year2013-pr_reply:nonmember:matplotlibFALSE:year2013" 0.16656722566276 0.867710583507181
-"issue_post:member:matplotlibTRUE:year2014-issue_post:member:matplotlibFALSE:year2014" -0.0774035618924791 0.938302507305573
-"pr_post:member:matplotlibTRUE:year2014-pr_post:member:matplotlibFALSE:year2014" 0.400425018749968 0.688843499967768
-"issue_reply:member:matplotlibTRUE:year2014-issue_reply:member:matplotlibFALSE:year2014" -1.86631918068878 0.0619967228219935
-"pr_reply:member:matplotlibTRUE:year2014-pr_reply:member:matplotlibFALSE:year2014" -2.78740678162991 0.00531317380320151
-"issue_post:nonmember:matplotlibTRUE:year2014-issue_post:nonmember:matplotlibFALSE:year2014" -1.22666051477954 0.2199502142014
-"pr_post:nonmember:matplotlibTRUE:year2014-pr_post:nonmember:matplotlibFALSE:year2014" 1.32448323494345 0.185342607337672
-"issue_reply:nonmember:matplotlibTRUE:year2014-issue_reply:nonmember:matplotlibFALSE:year2014" -3.45951597499059 0.000541147176190693
-"pr_reply:nonmember:matplotlibTRUE:year2014-pr_reply:nonmember:matplotlibFALSE:year2014" 0.178862932829216 0.858045328690203
-"issue_post:member:matplotlibTRUE:year2015-issue_post:member:matplotlibFALSE:year2015" 2.56179806207347 0.0104131845569131
-"pr_post:member:matplotlibTRUE:year2015-pr_post:member:matplotlibFALSE:year2015" -0.113957150701227 0.90927176088291
-"issue_reply:member:matplotlibTRUE:year2015-issue_reply:member:matplotlibFALSE:year2015" -0.823219204889985 0.410383349534561
-"pr_reply:member:matplotlibTRUE:year2015-pr_reply:member:matplotlibFALSE:year2015" -5.01897152103486 5.19488496442122e-07
-"issue_post:nonmember:matplotlibTRUE:year2015-issue_post:nonmember:matplotlibFALSE:year2015" 2.6274867939736 0.0086018180624412
-"pr_post:nonmember:matplotlibTRUE:year2015-pr_post:nonmember:matplotlibFALSE:year2015" -0.0628389310330571 0.94989476463078
-"issue_reply:nonmember:matplotlibTRUE:year2015-issue_reply:nonmember:matplotlibFALSE:year2015" -1.18847857133012 0.234644917309329
-"pr_reply:nonmember:matplotlibTRUE:year2015-pr_reply:nonmember:matplotlibFALSE:year2015" -1.69899717097056 0.0893197166561523
-"issue_post:member:matplotlibTRUE:year2016-issue_post:member:matplotlibFALSE:year2016" 1.96378676719092 0.0495548253104476
-"pr_post:member:matplotlibTRUE:year2016-pr_post:member:matplotlibFALSE:year2016" 1.77821641513966 0.0753683179465463
-"issue_reply:member:matplotlibTRUE:year2016-issue_reply:member:matplotlibFALSE:year2016" 1.17684955383187 0.239255559883981
-"pr_reply:member:matplotlibTRUE:year2016-pr_reply:member:matplotlibFALSE:year2016" -4.48870391585509 7.16578112269772e-06
-"issue_post:nonmember:matplotlibTRUE:year2016-issue_post:nonmember:matplotlibFALSE:year2016" 1.43741271824322 0.150600757108409
-"pr_post:nonmember:matplotlibTRUE:year2016-pr_post:nonmember:matplotlibFALSE:year2016" -0.66257683698336 0.507601609113539
-"issue_reply:nonmember:matplotlibTRUE:year2016-issue_reply:nonmember:matplotlibFALSE:year2016" -0.246691978464223 0.80514661500027
-"pr_reply:nonmember:matplotlibTRUE:year2016-pr_reply:nonmember:matplotlibFALSE:year2016" -2.85328049265175 0.00432704100572345
-"issue_post:member:matplotlibTRUE:year2017-issue_post:member:matplotlibFALSE:year2017" -1.43543509793542 0.151163150468973
-"pr_post:member:matplotlibTRUE:year2017-pr_post:member:matplotlibFALSE:year2017" 1.93339486631913 0.0531875731911651
-"issue_reply:member:matplotlibTRUE:year2017-issue_reply:member:matplotlibFALSE:year2017" -1.46734328235866 0.142282695098761
-"pr_reply:member:matplotlibTRUE:year2017-pr_reply:member:matplotlibFALSE:year2017" -2.41612016023821 0.0156868836431576
-"issue_post:nonmember:matplotlibTRUE:year2017-issue_post:nonmember:matplotlibFALSE:year2017" -2.05099049993872 0.0402678719101823
-"pr_post:nonmember:matplotlibTRUE:year2017-pr_post:nonmember:matplotlibFALSE:year2017" -0.622658029117842 0.533509269047296
-"issue_reply:nonmember:matplotlibTRUE:year2017-issue_reply:nonmember:matplotlibFALSE:year2017" -1.73704767443906 0.0823787561871501
-"pr_reply:nonmember:matplotlibTRUE:year2017-pr_reply:nonmember:matplotlibFALSE:year2017" -2.8026390290593 0.00506863647158817
-"issue_post:member:matplotlibTRUE:year2018-issue_post:member:matplotlibFALSE:year2018" -2.64947602297632 0.00806166923976215
-"pr_post:member:matplotlibTRUE:year2018-pr_post:member:matplotlibFALSE:year2018" 0.720543613949978 0.471190356589027
-"issue_reply:member:matplotlibTRUE:year2018-issue_reply:member:matplotlibFALSE:year2018" 0.231958897392707 0.816569938277427
-"pr_reply:member:matplotlibTRUE:year2018-pr_reply:member:matplotlibFALSE:year2018" -1.10764933728242 0.26801328713525
-"issue_post:nonmember:matplotlibTRUE:year2018-issue_post:nonmember:matplotlibFALSE:year2018" -1.16946146686353 0.242217757442415
-"pr_post:nonmember:matplotlibTRUE:year2018-pr_post:nonmember:matplotlibFALSE:year2018" -1.62461673258374 0.1042442495582
-"issue_reply:nonmember:matplotlibTRUE:year2018-issue_reply:nonmember:matplotlibFALSE:year2018" -1.69235009100766 0.0905792423583329
-"pr_reply:nonmember:matplotlibTRUE:year2018-pr_reply:nonmember:matplotlibFALSE:year2018" -0.388263370790625 0.697821141043241
-"issue_post:member:scikit-imageTRUE:year2011-issue_post:member:scikit-imageFALSE:year2011" 0.274780449753228 0.783484918985264
-"pr_post:member:scikit-imageTRUE:year2011-pr_post:member:scikit-imageFALSE:year2011" -1.56742742566149 0.117014817590949
-"issue_reply:member:scikit-imageTRUE:year2011-issue_reply:member:scikit-imageFALSE:year2011" 0.40405653739659 0.686171144487808
-"pr_reply:member:scikit-imageTRUE:year2011-pr_reply:member:scikit-imageFALSE:year2011" 0.262924759785312 0.792608571974854
-"issue_post:nonmember:scikit-imageTRUE:year2011-issue_post:nonmember:scikit-imageFALSE:year2011" 0.187296145200122 0.851428445193725
-"pr_post:nonmember:scikit-imageTRUE:year2011-pr_post:nonmember:scikit-imageFALSE:year2011" 0.563596170722243 0.573028993470977
-"issue_reply:nonmember:scikit-imageTRUE:year2011-issue_reply:nonmember:scikit-imageFALSE:year2011" -0.423958910476467 0.671595779862684
-"pr_reply:nonmember:scikit-imageTRUE:year2011-pr_reply:nonmember:scikit-imageFALSE:year2011" 1.26850829351719 0.204616490892503
-"issue_post:member:scikit-imageTRUE:year2012-issue_post:member:scikit-imageFALSE:year2012" -2.03390874729701 0.0419607968562257
-"pr_post:member:scikit-imageTRUE:year2012-pr_post:member:scikit-imageFALSE:year2012" -1.44641747046111 0.148060144628625
-"issue_reply:member:scikit-imageTRUE:year2012-issue_reply:member:scikit-imageFALSE:year2012" 0.224118392460945 0.822665181358703
-"pr_reply:member:scikit-imageTRUE:year2012-pr_reply:member:scikit-imageFALSE:year2012" 1.4255751045655 0.153991026638294
-"issue_post:nonmember:scikit-imageTRUE:year2012-issue_post:nonmember:scikit-imageFALSE:year2012" -2.14804174783969 0.0317104391285914
-"pr_post:nonmember:scikit-imageTRUE:year2012-pr_post:nonmember:scikit-imageFALSE:year2012" -0.0913874120221651 0.927184763644523
-"issue_reply:nonmember:scikit-imageTRUE:year2012-issue_reply:nonmember:scikit-imageFALSE:year2012" -0.693654806622467 0.487898714254902
-"pr_reply:nonmember:scikit-imageTRUE:year2012-pr_reply:nonmember:scikit-imageFALSE:year2012" -1.50944274036096 0.131185677670502
-"issue_post:member:scikit-imageTRUE:year2013-issue_post:member:scikit-imageFALSE:year2013" -1.59426994802934 0.110875585608256
-"pr_post:member:scikit-imageTRUE:year2013-pr_post:member:scikit-imageFALSE:year2013" 0.374385130954154 0.708117803722684
-"issue_reply:member:scikit-imageTRUE:year2013-issue_reply:member:scikit-imageFALSE:year2013" -0.10797736562988 0.914013646829829
-"pr_reply:member:scikit-imageTRUE:year2013-pr_reply:member:scikit-imageFALSE:year2013" 2.95219376150705 0.00315524871088169
-"issue_post:nonmember:scikit-imageTRUE:year2013-issue_post:nonmember:scikit-imageFALSE:year2013" -0.618593179851606 0.536184395938105
-"pr_post:nonmember:scikit-imageTRUE:year2013-pr_post:nonmember:scikit-imageFALSE:year2013" 2.32658800212521 0.0199872037188913
-"issue_reply:nonmember:scikit-imageTRUE:year2013-issue_reply:nonmember:scikit-imageFALSE:year2013" -0.856664458793055 0.391630350827333
-"pr_reply:nonmember:scikit-imageTRUE:year2013-pr_reply:nonmember:scikit-imageFALSE:year2013" 0.914051645541752 0.360689708895576
-"issue_post:member:scikit-imageTRUE:year2014-issue_post:member:scikit-imageFALSE:year2014" -1.82098457968488 0.0686092009347152
-"pr_post:member:scikit-imageTRUE:year2014-pr_post:member:scikit-imageFALSE:year2014" -1.16798505835946 0.242812791937885
-"issue_reply:member:scikit-imageTRUE:year2014-issue_reply:member:scikit-imageFALSE:year2014" -1.24989435834147 0.211338140586362
-"pr_reply:member:scikit-imageTRUE:year2014-pr_reply:member:scikit-imageFALSE:year2014" 1.74620226222152 0.0807758118757629
-"issue_post:nonmember:scikit-imageTRUE:year2014-issue_post:nonmember:scikit-imageFALSE:year2014" 0.553940102723137 0.579619838610012
-"pr_post:nonmember:scikit-imageTRUE:year2014-pr_post:nonmember:scikit-imageFALSE:year2014" 0.752518608938037 0.451739243271462
-"issue_reply:nonmember:scikit-imageTRUE:year2014-issue_reply:nonmember:scikit-imageFALSE:year2014" 0.018084717174246 0.985571269887322
-"pr_reply:nonmember:scikit-imageTRUE:year2014-pr_reply:nonmember:scikit-imageFALSE:year2014" 1.70949144662841 0.087359954754088
-"issue_post:member:scikit-imageTRUE:year2015-issue_post:member:scikit-imageFALSE:year2015" -0.645756542047522 0.518437036335129
-"pr_post:member:scikit-imageTRUE:year2015-pr_post:member:scikit-imageFALSE:year2015" 0.0885302183221528 0.929455267875684
-"issue_reply:member:scikit-imageTRUE:year2015-issue_reply:member:scikit-imageFALSE:year2015" 2.11832707103813 0.0341473775094263
-"pr_reply:member:scikit-imageTRUE:year2015-pr_reply:member:scikit-imageFALSE:year2015" 2.70622957486256 0.00680519826297665
-"issue_post:nonmember:scikit-imageTRUE:year2015-issue_post:nonmember:scikit-imageFALSE:year2015" 1.1636866428852 0.244551024397295
-"pr_post:nonmember:scikit-imageTRUE:year2015-pr_post:nonmember:scikit-imageFALSE:year2015" 1.2142128858835 0.224666441091286
-"issue_reply:nonmember:scikit-imageTRUE:year2015-issue_reply:nonmember:scikit-imageFALSE:year2015" 1.12466063555584 0.260732868526238
-"pr_reply:nonmember:scikit-imageTRUE:year2015-pr_reply:nonmember:scikit-imageFALSE:year2015" -1.37957315948915 0.167718106270985
-"issue_post:member:scikit-imageTRUE:year2016-issue_post:member:scikit-imageFALSE:year2016" -2.66956835155595 0.00759488131891617
-"pr_post:member:scikit-imageTRUE:year2016-pr_post:member:scikit-imageFALSE:year2016" 0.596793946163348 0.550644960271655
-"issue_reply:member:scikit-imageTRUE:year2016-issue_reply:member:scikit-imageFALSE:year2016" 0.199785187673603 0.841648586311061
-"pr_reply:member:scikit-imageTRUE:year2016-pr_reply:member:scikit-imageFALSE:year2016" 1.75993189430489 0.0784193547730929
-"issue_post:nonmember:scikit-imageTRUE:year2016-issue_post:nonmember:scikit-imageFALSE:year2016" -1.08792417859726 0.27662858118211
-"pr_post:nonmember:scikit-imageTRUE:year2016-pr_post:nonmember:scikit-imageFALSE:year2016" 5.05991479159812 4.19443876076286e-07
-"issue_reply:nonmember:scikit-imageTRUE:year2016-issue_reply:nonmember:scikit-imageFALSE:year2016" -0.444559606201317 0.656638044287817
-"pr_reply:nonmember:scikit-imageTRUE:year2016-pr_reply:nonmember:scikit-imageFALSE:year2016" 1.92085907008681 0.0547494770368855
-"issue_post:member:scikit-imageTRUE:year2017-issue_post:member:scikit-imageFALSE:year2017" -1.34541287752724 0.178491938934279
-"pr_post:member:scikit-imageTRUE:year2017-pr_post:member:scikit-imageFALSE:year2017" 2.40379324780615 0.0162259472557387
-"issue_reply:member:scikit-imageTRUE:year2017-issue_reply:member:scikit-imageFALSE:year2017" 2.37860217683767 0.017378419877957
-"pr_reply:member:scikit-imageTRUE:year2017-pr_reply:member:scikit-imageFALSE:year2017" 2.34032442469896 0.0192669951782696
-"issue_post:nonmember:scikit-imageTRUE:year2017-issue_post:nonmember:scikit-imageFALSE:year2017" -1.27556303329537 0.20211002872347
-"pr_post:nonmember:scikit-imageTRUE:year2017-pr_post:nonmember:scikit-imageFALSE:year2017" 8.70144021679189 0
-"issue_reply:nonmember:scikit-imageTRUE:year2017-issue_reply:nonmember:scikit-imageFALSE:year2017" 0.876708221515404 0.380645140036745
-"pr_reply:nonmember:scikit-imageTRUE:year2017-pr_reply:nonmember:scikit-imageFALSE:year2017" 5.53998976610491 3.02489322479005e-08
-"issue_post:member:scikit-imageTRUE:year2018-issue_post:member:scikit-imageFALSE:year2018" 1.34392929782574 0.178971250922624
-"pr_post:member:scikit-imageTRUE:year2018-pr_post:member:scikit-imageFALSE:year2018" 6.40855277807218 1.4690737515366e-10
-"issue_reply:member:scikit-imageTRUE:year2018-issue_reply:member:scikit-imageFALSE:year2018" 2.49115683538479 0.0127327900816532
-"pr_reply:member:scikit-imageTRUE:year2018-pr_reply:member:scikit-imageFALSE:year2018" 0.840542986206052 0.400604010310934
-"issue_post:nonmember:scikit-imageTRUE:year2018-issue_post:nonmember:scikit-imageFALSE:year2018" -0.468675879816677 0.639301330246791
-"pr_post:nonmember:scikit-imageTRUE:year2018-pr_post:nonmember:scikit-imageFALSE:year2018" 6.1754959641923 6.59560850380103e-10
-"issue_reply:nonmember:scikit-imageTRUE:year2018-issue_reply:nonmember:scikit-imageFALSE:year2018" 2.31525502731127 0.0205989793895227
-"pr_reply:nonmember:scikit-imageTRUE:year2018-pr_reply:nonmember:scikit-imageFALSE:year2018" 6.46081475713546 1.04140696066679e-10
-"issue_post:member:pandasTRUE:year2010-issue_post:member:pandasFALSE:year2010" 0.579066434008669 0.56254434763667
-"issue_reply:member:pandasTRUE:year2010-issue_reply:member:pandasFALSE:year2010" 0.399003491537657 0.689890631580948
-"issue_post:nonmember:pandasTRUE:year2010-issue_post:nonmember:pandasFALSE:year2010" 0.00227941577922195 0.998181290917031
-"issue_reply:nonmember:pandasTRUE:year2010-issue_reply:nonmember:pandasFALSE:year2010" 1.22363126630516 0.221091359233961
-"issue_post:member:pandasTRUE:year2011-issue_post:member:pandasFALSE:year2011" -2.24814292399309 0.0245670777657352
-"pr_post:member:pandasTRUE:year2011-pr_post:member:pandasFALSE:year2011" -0.274788343847051 0.783478853768526
-"issue_reply:member:pandasTRUE:year2011-issue_reply:member:pandasFALSE:year2011" 1.77618162520574 0.0757029858499612
-"pr_reply:member:pandasTRUE:year2011-pr_reply:member:pandasFALSE:year2011" 1.58999693507454 0.111835495900606
-"issue_post:nonmember:pandasTRUE:year2011-issue_post:nonmember:pandasFALSE:year2011" 1.19941311098241 0.230367352037482
-"pr_post:nonmember:pandasTRUE:year2011-pr_post:nonmember:pandasFALSE:year2011" 0.593159785520235 0.553074222814556
-"issue_reply:nonmember:pandasTRUE:year2011-issue_reply:nonmember:pandasFALSE:year2011" 0.828272908861038 0.407515961658484
-"pr_reply:nonmember:pandasTRUE:year2011-pr_reply:nonmember:pandasFALSE:year2011" 1.31721416280531 0.187766847884214
-"issue_post:member:pandasTRUE:year2012-issue_post:member:pandasFALSE:year2012" 0.260166526795894 0.794735323146448
-"pr_post:member:pandasTRUE:year2012-pr_post:member:pandasFALSE:year2012" -2.10147312622356 0.0355994546311329
-"issue_reply:member:pandasTRUE:year2012-issue_reply:member:pandasFALSE:year2012" -1.86724510723497 0.0618673671371017
-"pr_reply:member:pandasTRUE:year2012-pr_reply:member:pandasFALSE:year2012" -0.192546175940945 0.847314401348685
-"issue_post:nonmember:pandasTRUE:year2012-issue_post:nonmember:pandasFALSE:year2012" 2.06457813443057 0.0389629339086182
-"pr_post:nonmember:pandasTRUE:year2012-pr_post:nonmember:pandasFALSE:year2012" -0.102659572797368 0.918233160293018
-"issue_reply:nonmember:pandasTRUE:year2012-issue_reply:nonmember:pandasFALSE:year2012" 2.87312396723821 0.00406434598869776
-"pr_reply:nonmember:pandasTRUE:year2012-pr_reply:nonmember:pandasFALSE:year2012" 0.324673401317537 0.745428267645115
-"issue_post:member:pandasTRUE:year2013-issue_post:member:pandasFALSE:year2013" 3.2274177052243 0.00124912966329238
-"pr_post:member:pandasTRUE:year2013-pr_post:member:pandasFALSE:year2013" -1.42760564449887 0.153405398043985
-"issue_reply:member:pandasTRUE:year2013-issue_reply:member:pandasFALSE:year2013" 0.274195630096619 0.78393428615905
-"pr_reply:member:pandasTRUE:year2013-pr_reply:member:pandasFALSE:year2013" -8.06459436225433 6.66133814775094e-16
-"issue_post:nonmember:pandasTRUE:year2013-issue_post:nonmember:pandasFALSE:year2013" 0.51265336649775 0.608193815687898
-"pr_post:nonmember:pandasTRUE:year2013-pr_post:nonmember:pandasFALSE:year2013" -0.708754228302149 0.478477006385707
-"issue_reply:nonmember:pandasTRUE:year2013-issue_reply:nonmember:pandasFALSE:year2013" 5.22280986629781 1.7622831460784e-07
-"pr_reply:nonmember:pandasTRUE:year2013-pr_reply:nonmember:pandasFALSE:year2013" -1.1147505874185 0.264957316365099
-"issue_post:member:pandasTRUE:year2014-issue_post:member:pandasFALSE:year2014" 3.11572315329339 0.00183494453430977
-"pr_post:member:pandasTRUE:year2014-pr_post:member:pandasFALSE:year2014" -0.319785664025485 0.749130815878672
-"issue_reply:member:pandasTRUE:year2014-issue_reply:member:pandasFALSE:year2014" 2.78648409545098 0.00532832327435862
-"pr_reply:member:pandasTRUE:year2014-pr_reply:member:pandasFALSE:year2014" -1.61188177209269 0.106987669429711
-"issue_post:nonmember:pandasTRUE:year2014-issue_post:nonmember:pandasFALSE:year2014" 0.65112906536387 0.514963175510527
-"pr_post:nonmember:pandasTRUE:year2014-pr_post:nonmember:pandasFALSE:year2014" -2.06392742326725 0.0390245981865622
-"issue_reply:nonmember:pandasTRUE:year2014-issue_reply:nonmember:pandasFALSE:year2014" 4.58601052437767 4.51795836764468e-06
-"pr_reply:nonmember:pandasTRUE:year2014-pr_reply:nonmember:pandasFALSE:year2014" -2.26319219483229 0.0236238441632972
-"issue_post:member:pandasTRUE:year2015-issue_post:member:pandasFALSE:year2015" 0.137377273044765 0.890732594198954
-"pr_post:member:pandasTRUE:year2015-pr_post:member:pandasFALSE:year2015" -2.28244448443764 0.0224631115475167
-"issue_reply:member:pandasTRUE:year2015-issue_reply:member:pandasFALSE:year2015" 0.155967578043432 0.876058577398098
-"pr_reply:member:pandasTRUE:year2015-pr_reply:member:pandasFALSE:year2015" 1.00442529711127 0.315173661725295
-"issue_post:nonmember:pandasTRUE:year2015-issue_post:nonmember:pandasFALSE:year2015" -0.584618092488989 0.558804539548985
-"pr_post:nonmember:pandasTRUE:year2015-pr_post:nonmember:pandasFALSE:year2015" -0.547103952992803 0.584307316652151
-"issue_reply:nonmember:pandasTRUE:year2015-issue_reply:nonmember:pandasFALSE:year2015" 1.08518500405859 0.277839724586354
-"pr_reply:nonmember:pandasTRUE:year2015-pr_reply:nonmember:pandasFALSE:year2015" -1.16820414624702 0.242724428427104
-"issue_post:member:pandasTRUE:year2016-issue_post:member:pandasFALSE:year2016" 2.69680857138235 0.00700075023311397
-"pr_post:member:pandasTRUE:year2016-pr_post:member:pandasFALSE:year2016" -2.64908024546926 0.00807111648861958
-"issue_reply:member:pandasTRUE:year2016-issue_reply:member:pandasFALSE:year2016" -1.15801890938386 0.246856319813056
-"pr_reply:member:pandasTRUE:year2016-pr_reply:member:pandasFALSE:year2016" -1.49968819565034 0.133695189726655
-"issue_post:nonmember:pandasTRUE:year2016-issue_post:nonmember:pandasFALSE:year2016" 4.02663730918124 5.65802043239749e-05
-"pr_post:nonmember:pandasTRUE:year2016-pr_post:nonmember:pandasFALSE:year2016" -3.01889260372697 0.00253700448386063
-"issue_reply:nonmember:pandasTRUE:year2016-issue_reply:nonmember:pandasFALSE:year2016" 0.041908095303283 0.966571962950382
-"pr_reply:nonmember:pandasTRUE:year2016-pr_reply:nonmember:pandasFALSE:year2016" -2.93657410420961 0.00331859521228961
-"issue_post:member:pandasTRUE:year2017-issue_post:member:pandasFALSE:year2017" 3.43637546680959 0.000589553316979075
-"pr_post:member:pandasTRUE:year2017-pr_post:member:pandasFALSE:year2017" -1.33629714019769 0.181452170891749
-"issue_reply:member:pandasTRUE:year2017-issue_reply:member:pandasFALSE:year2017" 3.26507084917461 0.0010943669952117
-"pr_reply:member:pandasTRUE:year2017-pr_reply:member:pandasFALSE:year2017" -1.08127158320586 0.279576324067424
-"issue_post:nonmember:pandasTRUE:year2017-issue_post:nonmember:pandasFALSE:year2017" 3.56275662585988 0.000366980872376299
-"pr_post:nonmember:pandasTRUE:year2017-pr_post:nonmember:pandasFALSE:year2017" -2.687393231908 0.00720121200968227
-"issue_reply:nonmember:pandasTRUE:year2017-issue_reply:nonmember:pandasFALSE:year2017" 0.1580319979452 0.874431584805956
-"pr_reply:nonmember:pandasTRUE:year2017-pr_reply:nonmember:pandasFALSE:year2017" -1.64400282720892 0.100175618386507
-"issue_post:member:pandasTRUE:year2018-issue_post:member:pandasFALSE:year2018" 3.91557583059088 9.01886912727523e-05
-"pr_post:member:pandasTRUE:year2018-pr_post:member:pandasFALSE:year2018" -0.997650081276426 0.318449067124787
-"issue_reply:member:pandasTRUE:year2018-issue_reply:member:pandasFALSE:year2018" 1.96952874128458 0.0488924054569237
-"pr_reply:member:pandasTRUE:year2018-pr_reply:member:pandasFALSE:year2018" -1.14569986155338 0.251919361164454
-"issue_post:nonmember:pandasTRUE:year2018-issue_post:nonmember:pandasFALSE:year2018" 3.33927343111745 0.000839978401616204
-"pr_post:nonmember:pandasTRUE:year2018-pr_post:nonmember:pandasFALSE:year2018" 4.6837786660731 2.81634119025931e-06
-"issue_reply:nonmember:pandasTRUE:year2018-issue_reply:nonmember:pandasFALSE:year2018" -1.50235347477434 0.133005845111951
-"pr_reply:nonmember:pandasTRUE:year2018-pr_reply:nonmember:pandasFALSE:year2018" -7.9949188441674 1.33226762955019e-15
+"t_stats" "p_value" "p_val_adjusted"
+"pr_post:member:numpyTRUE:year2010-pr_post:member:numpyFALSE:year2010" 2.57406215416656 0.0100512215138164 0.0524411557242596
+"pr_reply:member:numpyTRUE:year2010-pr_reply:member:numpyFALSE:year2010" 0.533584659001747 0.593628924414781 0.781573750708921
+"pr_post:nonmember:numpyTRUE:year2010-pr_post:nonmember:numpyFALSE:year2010" 0.121255848329226 0.903488389833685 0.959437695871673
+"pr_reply:nonmember:numpyTRUE:year2010-pr_reply:nonmember:numpyFALSE:year2010" -2.40502551144979 0.0161713368287448 0.0734759875731562
+"pr_post:member:numpyTRUE:year2011-pr_post:member:numpyFALSE:year2011" -0.18349877346631 0.854406681067763 0.93365835734551
+"pr_reply:member:numpyTRUE:year2011-pr_reply:member:numpyFALSE:year2011" -1.88986619696662 0.0587758574532284 0.183197477776296
+"pr_post:nonmember:numpyTRUE:year2011-pr_post:nonmember:numpyFALSE:year2011" -0.281791318028512 0.778103528490156 0.894624867334701
+"pr_reply:nonmember:numpyTRUE:year2011-pr_reply:nonmember:numpyFALSE:year2011" 0.406293894444198 0.684526670983176 0.851278928428933
+"issue_post:member:numpyTRUE:year2012-issue_post:member:numpyFALSE:year2012" -3.26874950732505 0.00108023888596298 0.010943669952117
+"pr_post:member:numpyTRUE:year2012-pr_post:member:numpyFALSE:year2012" -3.40084286233056 0.000671784322841651 0.00732855624918165
+"issue_reply:member:numpyTRUE:year2012-issue_reply:member:numpyFALSE:year2012" -4.45972529280075 8.20647692445498e-06 0.0001641295384891
+"pr_reply:member:numpyTRUE:year2012-pr_reply:member:numpyFALSE:year2012" -6.18495044719574 6.21219742313883e-10 3.1658920818245e-08
+"issue_post:nonmember:numpyTRUE:year2012-issue_post:nonmember:numpyFALSE:year2012" -1.51018727642713 0.130995644375903 0.311728342979411
+"pr_post:nonmember:numpyTRUE:year2012-pr_post:nonmember:numpyFALSE:year2012" -2.13292137279761 0.0329311767522833 0.122534611171287
+"issue_reply:nonmember:numpyTRUE:year2012-issue_reply:nonmember:numpyFALSE:year2012" -2.92269623884017 0.00347014872888285 0.0273060883584224
+"pr_reply:nonmember:numpyTRUE:year2012-pr_reply:nonmember:numpyFALSE:year2012" -1.49515138365698 0.134874938203802 0.314271700669053
+"issue_post:member:numpyTRUE:year2013-issue_post:member:numpyFALSE:year2013" -0.661248061332527 0.508453243912141 0.723452735253123
+"pr_post:member:numpyTRUE:year2013-pr_post:member:numpyFALSE:year2013" -1.88592062935228 0.0593056511321708 0.18365620995769
+"issue_reply:member:numpyTRUE:year2013-issue_reply:member:numpyFALSE:year2013" -3.0573554664953 0.00223299299245827 0.0194879388432722
+"pr_reply:member:numpyTRUE:year2013-pr_reply:member:numpyFALSE:year2013" 0.749643440745356 0.453469480142172 0.669739539902285
+"issue_post:nonmember:numpyTRUE:year2013-issue_post:nonmember:numpyFALSE:year2013" -2.80231758404306 0.00507369003112634 0.0364558955100162
+"pr_post:nonmember:numpyTRUE:year2013-pr_post:nonmember:numpyFALSE:year2013" 0.00714344845435672 0.994300401241419 0.998460653966279
+"issue_reply:nonmember:numpyTRUE:year2013-issue_reply:nonmember:numpyFALSE:year2013" -2.62753368185309 0.00860063268311273 0.0480101473252532
+"pr_reply:nonmember:numpyTRUE:year2013-pr_reply:nonmember:numpyFALSE:year2013" -1.45844186560048 0.144718788083184 0.327665180565699
+"issue_post:member:numpyTRUE:year2014-issue_post:member:numpyFALSE:year2014" -1.71406163678759 0.0865174064826015 0.241443925067725
+"pr_post:member:numpyTRUE:year2014-pr_post:member:numpyFALSE:year2014" -0.784171241963758 0.432939637102847 0.64940945565427
+"issue_reply:member:numpyTRUE:year2014-issue_reply:member:numpyFALSE:year2014" -3.93698191717647 8.25128220578453e-05 0.00132020515292552
+"pr_reply:member:numpyTRUE:year2014-pr_reply:member:numpyFALSE:year2014" -0.105902712908346 0.915659541585272 0.959437695871673
+"issue_post:nonmember:numpyTRUE:year2014-issue_post:nonmember:numpyFALSE:year2014" -1.6949307929725 0.090088550224348 0.244258631078651
+"pr_post:nonmember:numpyTRUE:year2014-pr_post:nonmember:numpyFALSE:year2014" -1.61933522571843 0.105375155412398 0.273405808637574
+"issue_reply:nonmember:numpyTRUE:year2014-issue_reply:nonmember:numpyFALSE:year2014" -2.44609030963093 0.0144414821842718 0.0693191144845045
+"pr_reply:nonmember:numpyTRUE:year2014-pr_reply:nonmember:numpyFALSE:year2014" -0.781602192347075 0.434448398076155 0.649642464412942
+"issue_post:member:numpyTRUE:year2015-issue_post:member:numpyFALSE:year2015" -1.08412039916545 0.278311419275419 0.472133202897109
+"pr_post:member:numpyTRUE:year2015-pr_post:member:numpyFALSE:year2015" -0.178697850602271 0.858174956990544 0.93365835734551
+"issue_reply:member:numpyTRUE:year2015-issue_reply:member:numpyFALSE:year2015" 0.840264191574663 0.400760274012197 0.620532037180176
+"pr_reply:member:numpyTRUE:year2015-pr_reply:member:numpyFALSE:year2015" 1.63113315990219 0.102862225111085 0.26980255766842
+"issue_post:nonmember:numpyTRUE:year2015-issue_post:nonmember:numpyFALSE:year2015" -1.95856068500313 0.050164257609788 0.166060990708264
+"pr_post:nonmember:numpyTRUE:year2015-pr_post:nonmember:numpyFALSE:year2015" -1.94515654957189 0.0517561395465189 0.167960757445784
+"issue_reply:nonmember:numpyTRUE:year2015-issue_reply:nonmember:numpyFALSE:year2015" -2.43825192159276 0.0147584847797788 0.0694516930813121
+"pr_reply:nonmember:numpyTRUE:year2015-pr_reply:nonmember:numpyFALSE:year2015" -0.281237368315521 0.778528345021486 0.894624867334701
+"issue_post:member:numpyTRUE:year2016-issue_post:member:numpyFALSE:year2016" -3.54793023357509 0.000388271052604416 0.00503702987162486
+"pr_post:member:numpyTRUE:year2016-pr_post:member:numpyFALSE:year2016" -1.52769547023178 0.126588165318395 0.308438169303703
+"issue_reply:member:numpyTRUE:year2016-issue_reply:member:numpyFALSE:year2016" -2.34117204731105 0.019223306318995 0.0833167359060306
+"pr_reply:member:numpyTRUE:year2016-pr_reply:member:numpyFALSE:year2016" 1.71898804738852 0.0856165483606077 0.240327153292934
+"issue_post:nonmember:numpyTRUE:year2016-issue_post:nonmember:numpyFALSE:year2016" -3.55912432296426 0.000372093373135485 0.0049612449751398
+"pr_post:nonmember:numpyTRUE:year2016-pr_post:nonmember:numpyFALSE:year2016" -1.07695027991807 0.2815024787399 0.474109437877726
+"issue_reply:nonmember:numpyTRUE:year2016-issue_reply:nonmember:numpyFALSE:year2016" -0.876300437808221 0.380866727112368 0.603353231069099
+"pr_reply:nonmember:numpyTRUE:year2016-pr_reply:nonmember:numpyFALSE:year2016" 1.41281884028165 0.157708997183871 0.339803654936764
+"issue_post:member:numpyTRUE:year2017-issue_post:member:numpyFALSE:year2017" -2.68710156093958 0.00720750342295462 0.0449298914677691
+"pr_post:member:numpyTRUE:year2017-pr_post:member:numpyFALSE:year2017" -1.08400661122214 0.278361867541421 0.472133202897109
+"issue_reply:member:numpyTRUE:year2017-issue_reply:member:numpyFALSE:year2017" -7.72191852834065 1.15463194561016e-14 1.17239551400417e-12
+"pr_reply:member:numpyTRUE:year2017-pr_reply:member:numpyFALSE:year2017" 1.09618892984462 0.27299610314448 0.471360178091189
+"issue_post:nonmember:numpyTRUE:year2017-issue_post:nonmember:numpyFALSE:year2017" -2.05900540613846 0.0394937206024832 0.137369462965159
+"pr_post:nonmember:numpyTRUE:year2017-pr_post:nonmember:numpyFALSE:year2017" -2.80392104997715 0.00504852656455279 0.0364558955100162
+"issue_reply:nonmember:numpyTRUE:year2017-issue_reply:nonmember:numpyFALSE:year2017" -1.36601331549198 0.171934784065146 0.36262972817801
+"pr_reply:nonmember:numpyTRUE:year2017-pr_reply:nonmember:numpyFALSE:year2017" -0.464036806681441 0.642621375512793 0.824754706540483
+"issue_post:member:numpyTRUE:year2018-issue_post:member:numpyFALSE:year2018" -1.48632546372217 0.137193054535548 0.316118915203223
+"pr_post:member:numpyTRUE:year2018-pr_post:member:numpyFALSE:year2018" -0.343108056163572 0.731517170664846 0.882231763615894
+"issue_reply:member:numpyTRUE:year2018-issue_reply:member:numpyFALSE:year2018" -3.46860519759377 0.000523167656786505 0.00633538157491543
+"pr_reply:member:numpyTRUE:year2018-pr_reply:member:numpyFALSE:year2018" 0.533903271181762 0.593408458751486 0.781573750708921
+"issue_post:nonmember:numpyTRUE:year2018-issue_post:nonmember:numpyFALSE:year2018" -3.88186070476237 0.000103660252109172 0.00155490378163758
+"pr_post:nonmember:numpyTRUE:year2018-pr_post:nonmember:numpyFALSE:year2018" -2.67767754432441 0.0074134550632694 0.0453113185989564
+"issue_reply:nonmember:numpyTRUE:year2018-issue_reply:nonmember:numpyFALSE:year2018" -3.46050467666642 0.000539163868482184 0.00633538157491543
+"pr_reply:nonmember:numpyTRUE:year2018-pr_reply:nonmember:numpyFALSE:year2018" -0.353269982051224 0.723886047411444 0.879658994322767
+"issue_post:member:scikit-learnTRUE:year2010-issue_post:member:scikit-learnFALSE:year2010" -0.489780591117455 0.624289166333501 0.809888648216433
+"pr_post:member:scikit-learnTRUE:year2010-pr_post:member:scikit-learnFALSE:year2010" -2.58525984886937 0.00973056325094146 0.0518963373383544
+"issue_reply:member:scikit-learnTRUE:year2010-issue_reply:member:scikit-learnFALSE:year2010" -0.333065261617024 0.739085020940375 0.885511854216625
+"pr_reply:member:scikit-learnTRUE:year2010-pr_reply:member:scikit-learnFALSE:year2010" -0.539554105752402 0.589504574171735 0.781573750708921
+"issue_post:nonmember:scikit-learnTRUE:year2010-issue_post:nonmember:scikit-learnFALSE:year2010" 0.0963447781266835 0.92324674866963 0.959437695871673
+"pr_post:nonmember:scikit-learnTRUE:year2010-pr_post:nonmember:scikit-learnFALSE:year2010" -0.0924053722172033 0.926375971280692 0.959437695871673
+"issue_reply:nonmember:scikit-learnTRUE:year2010-issue_reply:nonmember:scikit-learnFALSE:year2010" -1.13651092253111 0.25574279692804 0.458046800468132
+"pr_reply:nonmember:scikit-learnTRUE:year2010-pr_reply:nonmember:scikit-learnFALSE:year2010" 2.44746185001767 0.0143866354742865 0.0693191144845045
+"issue_post:member:scikit-learnTRUE:year2011-issue_post:member:scikit-learnFALSE:year2011" 0.304518160989437 0.760733158851312 0.890614429874706
+"pr_post:member:scikit-learnTRUE:year2011-pr_post:member:scikit-learnFALSE:year2011" 5.64373493906673 1.66400191403682e-08 7.26109926125156e-07
+"issue_reply:member:scikit-learnTRUE:year2011-issue_reply:member:scikit-learnFALSE:year2011" 1.57822015364738 0.114515041819981 0.287786492531889
+"pr_reply:member:scikit-learnTRUE:year2011-pr_reply:member:scikit-learnFALSE:year2011" 2.40490981497096 0.0161764572879299 0.0734759875731562
+"issue_post:nonmember:scikit-learnTRUE:year2011-issue_post:nonmember:scikit-learnFALSE:year2011" 0.274464080701578 0.783728003545259 0.894624867334701
+"pr_post:nonmember:scikit-learnTRUE:year2011-pr_post:nonmember:scikit-learnFALSE:year2011" 0.399921921432485 0.689214025687358 0.851278928428933
+"issue_reply:nonmember:scikit-learnTRUE:year2011-issue_reply:nonmember:scikit-learnFALSE:year2011" 0.691264140842926 0.489399562369446 0.707011518302499
+"pr_reply:nonmember:scikit-learnTRUE:year2011-pr_reply:nonmember:scikit-learnFALSE:year2011" -0.916599635838466 0.359352475273702 0.580771677210024
+"issue_post:member:scikit-learnTRUE:year2012-issue_post:member:scikit-learnFALSE:year2012" 2.07220478429837 0.0382463474328099 0.135987013094435
+"pr_post:member:scikit-learnTRUE:year2012-pr_post:member:scikit-learnFALSE:year2012" 3.03641593287312 0.0023940885883591 0.0205207593287923
+"issue_reply:member:scikit-learnTRUE:year2012-issue_reply:member:scikit-learnFALSE:year2012" 3.984701338111 6.756504982941e-05 0.00111831806614196
+"pr_reply:member:scikit-learnTRUE:year2012-pr_reply:member:scikit-learnFALSE:year2012" 4.20309832862763 2.63286148425301e-05 0.000493993645234853
+"issue_post:nonmember:scikit-learnTRUE:year2012-issue_post:nonmember:scikit-learnFALSE:year2012" -1.9348967129272 0.05300297165582 0.167960757445784
+"pr_post:nonmember:scikit-learnTRUE:year2012-pr_post:nonmember:scikit-learnFALSE:year2012" 2.66730234643968 0.00764628501357389 0.0453113185989564
+"issue_reply:nonmember:scikit-learnTRUE:year2012-issue_reply:nonmember:scikit-learnFALSE:year2012" -0.278886745615843 0.780331740615549 0.894624867334701
+"pr_reply:nonmember:scikit-learnTRUE:year2012-pr_reply:nonmember:scikit-learnFALSE:year2012" -0.171750120777707 0.863633980544596 0.93365835734551
+"issue_post:member:scikit-learnTRUE:year2013-issue_post:member:scikit-learnFALSE:year2013" -0.322398755379286 0.747150626995277 0.885511854216625
+"pr_post:member:scikit-learnTRUE:year2013-pr_post:member:scikit-learnFALSE:year2013" 3.85172442155846 0.00011728897193386 0.00170602140994705
+"issue_reply:member:scikit-learnTRUE:year2013-issue_reply:member:scikit-learnFALSE:year2013" 2.3173097233789 0.0204868660173247 0.0845086333929137
+"pr_reply:member:scikit-learnTRUE:year2013-pr_reply:member:scikit-learnFALSE:year2013" 5.49744466634203 3.85334169017426e-08 1.42277231637203e-06
+"issue_post:nonmember:scikit-learnTRUE:year2013-issue_post:nonmember:scikit-learnFALSE:year2013" 0.136639363660627 0.891315860591941 0.948628853845081
+"pr_post:nonmember:scikit-learnTRUE:year2013-pr_post:nonmember:scikit-learnFALSE:year2013" 0.893882658260255 0.371384677252386 0.594215483603817
+"issue_reply:nonmember:scikit-learnTRUE:year2013-issue_reply:nonmember:scikit-learnFALSE:year2013" -2.28581073007756 0.0222653336790881 0.0890613347163525
+"pr_reply:nonmember:scikit-learnTRUE:year2013-pr_reply:nonmember:scikit-learnFALSE:year2013" 1.79407202979877 0.0728016727543328 0.217048465354533
+"issue_post:member:scikit-learnTRUE:year2014-issue_post:member:scikit-learnFALSE:year2014" -1.36726998264671 0.171540696793614 0.36262972817801
+"pr_post:member:scikit-learnTRUE:year2014-pr_post:member:scikit-learnFALSE:year2014" 2.59935149211794 0.00934000823223857 0.050945499448574
+"issue_reply:member:scikit-learnTRUE:year2014-issue_reply:member:scikit-learnFALSE:year2014" -0.273250633149865 0.784660560724811 0.894624867334701
+"pr_reply:member:scikit-learnTRUE:year2014-pr_reply:member:scikit-learnFALSE:year2014" 3.41788099677544 0.000631106946484605 0.00704491475145606
+"issue_post:nonmember:scikit-learnTRUE:year2014-issue_post:nonmember:scikit-learnFALSE:year2014" 1.70564537323203 0.0880741260905844 0.241597284202867
+"pr_post:nonmember:scikit-learnTRUE:year2014-pr_post:nonmember:scikit-learnFALSE:year2014" 1.35087332026769 0.176736015960124 0.364009323910421
+"issue_reply:nonmember:scikit-learnTRUE:year2014-issue_reply:nonmember:scikit-learnFALSE:year2014" -1.10624037173536 0.268622493013484 0.465483020384377
+"pr_reply:nonmember:scikit-learnTRUE:year2014-pr_reply:nonmember:scikit-learnFALSE:year2014" 1.53333620306017 0.125193038869962 0.306595197232559
+"issue_post:member:scikit-learnTRUE:year2015-issue_post:member:scikit-learnFALSE:year2015" -0.949537164460599 0.342347479439541 0.557039966545694
+"pr_post:member:scikit-learnTRUE:year2015-pr_post:member:scikit-learnFALSE:year2015" 1.26953392088046 0.204250700249929 0.397635285944944
+"issue_reply:member:scikit-learnTRUE:year2015-issue_reply:member:scikit-learnFALSE:year2015" -2.75425387773554 0.00588261165481163 0.0403379084901369
+"pr_reply:member:scikit-learnTRUE:year2015-pr_reply:member:scikit-learnFALSE:year2015" -2.09087941511147 0.0365388748077768 0.131869623366413
+"issue_post:nonmember:scikit-learnTRUE:year2015-issue_post:nonmember:scikit-learnFALSE:year2015" 0.550423533370918 0.58202891108344 0.781573750708921
+"pr_post:nonmember:scikit-learnTRUE:year2015-pr_post:nonmember:scikit-learnFALSE:year2015" -0.880638962323427 0.378513263129262 0.603353231069099
+"issue_reply:nonmember:scikit-learnTRUE:year2015-issue_reply:nonmember:scikit-learnFALSE:year2015" -0.607637224964817 0.54342810614072 0.75607388680448
+"pr_reply:nonmember:scikit-learnTRUE:year2015-pr_reply:nonmember:scikit-learnFALSE:year2015" 0.310987026961295 0.755810483970766 0.888668158545155
+"issue_post:member:scikit-learnTRUE:year2016-issue_post:member:scikit-learnFALSE:year2016" 0.810312753743936 0.417760447115618 0.640654998771554
+"pr_post:member:scikit-learnTRUE:year2016-pr_post:member:scikit-learnFALSE:year2016" 0.619937614598408 0.535298860279452 0.748164273402007
+"issue_reply:member:scikit-learnTRUE:year2016-issue_reply:member:scikit-learnFALSE:year2016" 0.3434075573054 0.731291874930709 0.882231763615894
+"pr_reply:member:scikit-learnTRUE:year2016-pr_reply:member:scikit-learnFALSE:year2016" -1.53986861563036 0.123592382270403 0.305054569792031
+"issue_post:nonmember:scikit-learnTRUE:year2016-issue_post:nonmember:scikit-learnFALSE:year2016" -1.63939172119981 0.101131704706172 0.266720979444849
+"pr_post:nonmember:scikit-learnTRUE:year2016-pr_post:nonmember:scikit-learnFALSE:year2016" 1.10961465953262 0.267165111495963 0.465483020384377
+"issue_reply:nonmember:scikit-learnTRUE:year2016-issue_reply:nonmember:scikit-learnFALSE:year2016" 0.786571091619248 0.431532987494649 0.649328633220789
+"pr_reply:nonmember:scikit-learnTRUE:year2016-pr_reply:nonmember:scikit-learnFALSE:year2016" 1.12097112522477 0.262300153477977 0.465483020384377
+"issue_post:member:scikit-learnTRUE:year2017-issue_post:member:scikit-learnFALSE:year2017" 1.93754667062608 0.052678554181298 0.167960757445784
+"pr_post:member:scikit-learnTRUE:year2017-pr_post:member:scikit-learnFALSE:year2017" -0.34853676974116 0.727437104556631 0.881741944917128
+"issue_reply:member:scikit-learnTRUE:year2017-issue_reply:member:scikit-learnFALSE:year2017" 1.95089263134792 0.0510698193928651 0.167900776086132
+"pr_reply:member:scikit-learnTRUE:year2017-pr_reply:member:scikit-learnFALSE:year2017" 0.111602852299683 0.911138310345855 0.959437695871673
+"issue_post:nonmember:scikit-learnTRUE:year2017-issue_post:nonmember:scikit-learnFALSE:year2017" -0.42862314001831 0.668197502823439 0.843889985167771
+"pr_post:nonmember:scikit-learnTRUE:year2017-pr_post:nonmember:scikit-learnFALSE:year2017" 0.17526221961492 0.860873596624833 0.93365835734551
+"issue_reply:nonmember:scikit-learnTRUE:year2017-issue_reply:nonmember:scikit-learnFALSE:year2017" 1.40414778453618 0.160274846810241 0.343446100307659
+"pr_reply:nonmember:scikit-learnTRUE:year2017-pr_reply:nonmember:scikit-learnFALSE:year2017" -1.65380235188183 0.0981676779629399 0.26178047456784
+"issue_post:member:scikit-learnTRUE:year2018-issue_post:member:scikit-learnFALSE:year2018" -1.75157652892195 0.0798466513837854 0.23088188351938
+"pr_post:member:scikit-learnTRUE:year2018-pr_post:member:scikit-learnFALSE:year2018" -2.46159911254336 0.0138319174771202 0.0684466019486361
+"issue_reply:member:scikit-learnTRUE:year2018-issue_reply:member:scikit-learnFALSE:year2018" -0.37045664667698 0.711042273248871 0.868448578013889
+"pr_reply:member:scikit-learnTRUE:year2018-pr_reply:member:scikit-learnFALSE:year2018" -0.855787340852635 0.392115418643364 0.613079481917963
+"issue_post:nonmember:scikit-learnTRUE:year2018-issue_post:nonmember:scikit-learnFALSE:year2018" 2.4500366007412 0.0142841694119002 0.0693191144845045
+"pr_post:nonmember:scikit-learnTRUE:year2018-pr_post:nonmember:scikit-learnFALSE:year2018" -5.04550909236839 4.52315382704072e-07 1.27712578645856e-05
+"issue_reply:nonmember:scikit-learnTRUE:year2018-issue_reply:nonmember:scikit-learnFALSE:year2018" 2.80136863416966 0.00508863541493976 0.0364558955100162
+"pr_reply:nonmember:scikit-learnTRUE:year2018-pr_reply:nonmember:scikit-learnFALSE:year2018" 3.28401976408628 0.00102337745355907 0.0106787212545294
+"pr_post:member:scipyTRUE:year2011-pr_post:member:scipyFALSE:year2011" -0.108246778875836 0.913799938751157 0.959437695871673
+"pr_reply:member:scipyTRUE:year2011-pr_reply:member:scipyFALSE:year2011" 0.469878899242607 0.638441540542096 0.822693400853779
+"pr_post:nonmember:scipyTRUE:year2011-pr_post:nonmember:scipyFALSE:year2011" 1.01689111432961 0.309205230852051 0.51002924676627
+"pr_reply:nonmember:scipyTRUE:year2011-pr_reply:nonmember:scipyFALSE:year2011" 0.550269880869809 0.582134279344686 0.781573750708921
+"pr_post:member:scipyTRUE:year2012-pr_post:member:scipyFALSE:year2012" 0.47533308282811 0.634549582367007 0.82098059174168
+"pr_reply:member:scipyTRUE:year2012-pr_reply:member:scipyFALSE:year2012" -0.0799522035779771 0.936275270231643 0.960309602359648
+"pr_post:nonmember:scipyTRUE:year2012-pr_post:nonmember:scipyFALSE:year2012" -0.374530206728166 0.708009887462355 0.867083024966551
+"pr_reply:nonmember:scipyTRUE:year2012-pr_reply:nonmember:scipyFALSE:year2012" 1.33058278484983 0.183326330087656 0.369733774966702
+"issue_post:member:scipyTRUE:year2013-issue_post:member:scipyFALSE:year2013" -1.48462403732098 0.13764344432807 0.316118915203223
+"pr_post:member:scipyTRUE:year2013-pr_post:member:scipyFALSE:year2013" -0.197990749147507 0.843052301573749 0.93365835734551
+"issue_reply:member:scipyTRUE:year2013-issue_reply:member:scipyFALSE:year2013" -1.29778446431019 0.19436140959634 0.383923772042152
+"pr_reply:member:scipyTRUE:year2013-pr_reply:member:scipyFALSE:year2013" 6.32090356679691 2.60038213184544e-10 1.56022927910726e-08
+"issue_post:nonmember:scipyTRUE:year2013-issue_post:nonmember:scipyFALSE:year2013" 0.327220601444578 0.743501040132011 0.885511854216625
+"pr_post:nonmember:scipyTRUE:year2013-pr_post:nonmember:scipyFALSE:year2013" -0.000958202137946753 0.999235465424997 0.999235465424997
+"issue_reply:nonmember:scipyTRUE:year2013-issue_reply:nonmember:scipyFALSE:year2013" -0.519786715268664 0.603212239600612 0.788942438714697
+"pr_reply:nonmember:scipyTRUE:year2013-pr_reply:nonmember:scipyFALSE:year2013" -0.0186605715069876 0.985111882152943 0.992375391555603
+"issue_post:member:scipyTRUE:year2014-issue_post:member:scipyFALSE:year2014" -0.925819275312543 0.354539908305854 0.57492958103652
+"pr_post:member:scipyTRUE:year2014-pr_post:member:scipyFALSE:year2014" -0.794114046455363 0.427129041030424 0.649328633220789
+"issue_reply:member:scipyTRUE:year2014-issue_reply:member:scipyFALSE:year2014" 1.35496931103524 0.175427334883387 0.364009323910421
+"pr_reply:member:scipyTRUE:year2014-pr_reply:member:scipyFALSE:year2014" -0.55026736479023 0.582136004837737 0.781573750708921
+"issue_post:nonmember:scipyTRUE:year2014-issue_post:nonmember:scipyFALSE:year2014" -0.0245602790429947 0.980405702466292 0.992375391555603
+"pr_post:nonmember:scipyTRUE:year2014-pr_post:nonmember:scipyFALSE:year2014" 0.579933917689833 0.561959181910371 0.769291415571515
+"issue_reply:nonmember:scipyTRUE:year2014-issue_reply:nonmember:scipyFALSE:year2014" 1.20324316487091 0.228882235650949 0.430837149460611
+"pr_reply:nonmember:scipyTRUE:year2014-pr_reply:nonmember:scipyFALSE:year2014" 0.864373474074011 0.387382759742546 0.609651556316138
+"issue_post:member:scipyTRUE:year2015-issue_post:member:scipyFALSE:year2015" -0.258594782326345 0.795947909449394 0.90107310503705
+"pr_post:member:scipyTRUE:year2015-pr_post:member:scipyFALSE:year2015" 0.689530890531737 0.490489240822359 0.707011518302499
+"issue_reply:member:scipyTRUE:year2015-issue_reply:member:scipyFALSE:year2015" 1.82817931425394 0.0675226444807213 0.205132084498394
+"pr_reply:member:scipyTRUE:year2015-pr_reply:member:scipyFALSE:year2015" 5.06588193215639 4.06513830819577e-07 1.25833162822886e-05
+"issue_post:nonmember:scipyTRUE:year2015-issue_post:nonmember:scipyFALSE:year2015" -1.67189729002141 0.0945445772779214 0.2535273580637
+"pr_post:nonmember:scipyTRUE:year2015-pr_post:nonmember:scipyFALSE:year2015" 2.74190843857185 0.0061083366005279 0.0407222440035193
+"issue_reply:nonmember:scipyTRUE:year2015-issue_reply:nonmember:scipyFALSE:year2015" 3.08282245761016 0.00205047447661544 0.0182853981204545
+"pr_reply:nonmember:scipyTRUE:year2015-pr_reply:nonmember:scipyFALSE:year2015" 4.19943663895339 2.67579891168879e-05 0.000493993645234853
+"issue_post:member:scipyTRUE:year2016-issue_post:member:scipyFALSE:year2016" -1.51526644006877 0.129704943521356 0.311728342979411
+"pr_post:member:scipyTRUE:year2016-pr_post:member:scipyFALSE:year2016" 1.21153385266336 0.225690868544167 0.426502428744882
+"issue_reply:member:scipyTRUE:year2016-issue_reply:member:scipyFALSE:year2016" 0.545775345113006 0.585220372836485 0.781573750708921
+"pr_reply:member:scipyTRUE:year2016-pr_reply:member:scipyFALSE:year2016" 7.71353524994643 1.22124532708767e-14 1.17239551400417e-12
+"issue_post:nonmember:scipyTRUE:year2016-issue_post:nonmember:scipyFALSE:year2016" -0.0890552204426565 0.929038024843054 0.959437695871673
+"pr_post:nonmember:scipyTRUE:year2016-pr_post:nonmember:scipyFALSE:year2016" 0.408460787581965 0.682935413230269 0.851278928428933
+"issue_reply:nonmember:scipyTRUE:year2016-issue_reply:nonmember:scipyFALSE:year2016" 0.0783871507284806 0.93752009431337 0.960309602359648
+"pr_reply:nonmember:scipyTRUE:year2016-pr_reply:nonmember:scipyFALSE:year2016" 2.33511129608736 0.0195376073679663 0.0837326030055698
+"issue_post:member:scipyTRUE:year2017-issue_post:member:scipyFALSE:year2017" -3.15680739074194 0.00159506668286014 0.0150123923092719
+"pr_post:member:scipyTRUE:year2017-pr_post:member:scipyFALSE:year2017" -0.804022360894138 0.421384061096269 0.644153978745889
+"issue_reply:member:scipyTRUE:year2017-issue_reply:member:scipyFALSE:year2017" -0.313073757149095 0.754224626363371 0.888668158545155
+"pr_reply:member:scipyTRUE:year2017-pr_reply:member:scipyFALSE:year2017" 1.3268450725393 0.184559937192668 0.370664309006196
+"issue_post:nonmember:scipyTRUE:year2017-issue_post:nonmember:scipyFALSE:year2017" 1.15273168156642 0.249020533423794 0.449360361065493
+"pr_post:nonmember:scipyTRUE:year2017-pr_post:nonmember:scipyFALSE:year2017" 0.760104407099211 0.447192178549455 0.66662188106751
+"issue_reply:nonmember:scipyTRUE:year2017-issue_reply:nonmember:scipyFALSE:year2017" 1.47819412012291 0.139355827274999 0.318527605199998
+"pr_reply:nonmember:scipyTRUE:year2017-pr_reply:nonmember:scipyFALSE:year2017" 1.5384917712466 0.123928418978013 0.305054569792031
+"issue_post:member:scipyTRUE:year2018-issue_post:member:scipyFALSE:year2018" -1.8216188919631 0.0685128323691291 0.205827602804146
+"pr_post:member:scipyTRUE:year2018-pr_post:member:scipyFALSE:year2018" -1.36501250128734 0.172249120884555 0.36262972817801
+"issue_reply:member:scipyTRUE:year2018-issue_reply:member:scipyFALSE:year2018" -1.96410049721159 0.0495184385795242 0.165182751034825
+"pr_reply:member:scipyTRUE:year2018-pr_reply:member:scipyFALSE:year2018" 2.96395712884333 0.00303710595593709 0.025134669980169
+"issue_post:nonmember:scipyTRUE:year2018-issue_post:nonmember:scipyFALSE:year2018" -1.15282431081536 0.248982503814498 0.449360361065493
+"pr_post:nonmember:scipyTRUE:year2018-pr_post:nonmember:scipyFALSE:year2018" -0.560916776069122 0.574854273042466 0.781573750708921
+"issue_reply:nonmember:scipyTRUE:year2018-issue_reply:nonmember:scipyFALSE:year2018" 2.63384240389792 0.00844246637182611 0.0480101473252532
+"pr_reply:nonmember:scipyTRUE:year2018-pr_reply:nonmember:scipyFALSE:year2018" 4.7303406902866 2.24143361848839e-06 5.66256914144434e-05
+"issue_post:nonmember:mayaviTRUE:year2011-issue_post:nonmember:mayaviFALSE:year2011" -0.659723472175682 0.509431301074074 0.723452735253123
+"pr_post:nonmember:mayaviTRUE:year2011-pr_post:nonmember:mayaviFALSE:year2011" -1.30554068913519 0.191708801402293 0.38024886228554
+"issue_reply:nonmember:mayaviTRUE:year2011-issue_reply:nonmember:mayaviFALSE:year2011" -2.57558961362955 0.0100069338494737 0.0524411557242596
+"pr_reply:nonmember:mayaviTRUE:year2011-pr_reply:nonmember:mayaviFALSE:year2011" 0.691845985420522 0.489034054503291 0.707011518302499
+"issue_reply:member:mayaviTRUE:year2012-issue_reply:member:mayaviFALSE:year2012" 1.0266533696336 0.304583713811935 0.507639523019892
+"issue_post:nonmember:mayaviTRUE:year2012-issue_post:nonmember:mayaviFALSE:year2012" -0.541715437126801 0.588014553579116 0.781573750708921
+"pr_post:nonmember:mayaviTRUE:year2012-pr_post:nonmember:mayaviFALSE:year2012" -1.41889426395091 0.155929844855329 0.339201704764945
+"issue_reply:nonmember:mayaviTRUE:year2012-issue_reply:nonmember:mayaviFALSE:year2012" -2.59123848705853 0.00956311935411724 0.0515763740446773
+"pr_reply:nonmember:mayaviTRUE:year2012-pr_reply:nonmember:mayaviFALSE:year2012" -0.213869389319801 0.830648911709331 0.925084634850299
+"issue_post:member:mayaviTRUE:year2013-issue_post:member:mayaviFALSE:year2013" -0.0173303851970978 0.986173045358381 0.992375391555603
+"pr_post:member:mayaviTRUE:year2013-pr_post:member:mayaviFALSE:year2013" -0.679902490738198 0.496566204435458 0.713628078230599
+"issue_reply:member:mayaviTRUE:year2013-issue_reply:member:mayaviFALSE:year2013" -1.10974317969286 0.267109710322443 0.465483020384377
+"pr_reply:member:mayaviTRUE:year2013-pr_reply:member:mayaviFALSE:year2013" -1.02145441503877 0.307039195823998 0.509961294102141
+"issue_post:nonmember:mayaviTRUE:year2013-issue_post:nonmember:mayaviFALSE:year2013" 2.32702350104609 0.0199640144761117 0.084156647237437
+"pr_post:nonmember:mayaviTRUE:year2013-pr_post:nonmember:mayaviFALSE:year2013" -1.1721626899094 0.241131744706249 0.444847863092309
+"issue_reply:nonmember:mayaviTRUE:year2013-issue_reply:nonmember:mayaviFALSE:year2013" -1.00409824813601 0.315331259762732 0.516583633740995
+"pr_reply:nonmember:mayaviTRUE:year2013-pr_reply:nonmember:mayaviFALSE:year2013" 1.11210060751639 0.266094895561702 0.465483020384377
+"pr_post:member:mayaviTRUE:year2014-pr_post:member:mayaviFALSE:year2014" -2.14564476439033 0.0319013311352243 0.119629991757091
+"issue_reply:member:mayaviTRUE:year2014-issue_reply:member:mayaviFALSE:year2014" -1.93658666579497 0.0527958892211891 0.167960757445784
+"pr_reply:member:mayaviTRUE:year2014-pr_reply:member:mayaviFALSE:year2014" -2.46564477286088 0.0136766893806446 0.068383446903223
+"issue_post:nonmember:mayaviTRUE:year2014-issue_post:nonmember:mayaviFALSE:year2014" 0.53950484136434 0.58953855729712 0.781573750708921
+"pr_post:nonmember:mayaviTRUE:year2014-pr_post:nonmember:mayaviFALSE:year2014" -0.746395400675342 0.455428596798112 0.670569713076974
+"issue_reply:nonmember:mayaviTRUE:year2014-issue_reply:nonmember:mayaviFALSE:year2014" 0.275278750448225 0.78310208872841 0.894624867334701
+"pr_reply:nonmember:mayaviTRUE:year2014-pr_reply:nonmember:mayaviFALSE:year2014" -2.74507329931538 0.00604973836228528 0.0407222440035193
+"issue_post:member:mayaviTRUE:year2015-issue_post:member:mayaviFALSE:year2015" -0.755697927929218 0.449830326691347 0.668478504061445
+"pr_post:member:mayaviTRUE:year2015-pr_post:member:mayaviFALSE:year2015" -0.231625350450079 0.81682901609268 0.917587001008334
+"issue_reply:member:mayaviTRUE:year2015-issue_reply:member:mayaviFALSE:year2015" -0.42873569078264 0.66811558390286 0.843889985167771
+"pr_reply:member:mayaviTRUE:year2015-pr_reply:member:mayaviFALSE:year2015" -2.35703405690865 0.0184215572843121 0.0811224540960531
+"issue_post:nonmember:mayaviTRUE:year2015-issue_post:nonmember:mayaviFALSE:year2015" 0.516742756020333 0.605335745076013 0.789568363142625
+"pr_post:nonmember:mayaviTRUE:year2015-pr_post:nonmember:mayaviFALSE:year2015" 0.522238225681422 0.601504474089564 0.788858326674837
+"issue_reply:nonmember:mayaviTRUE:year2015-issue_reply:nonmember:mayaviFALSE:year2015" -2.26945190594525 0.0232408587522133 0.091439444271003
+"pr_reply:nonmember:mayaviTRUE:year2015-pr_reply:nonmember:mayaviFALSE:year2015" -0.324062627671117 0.745890620222916 0.885511854216625
+"issue_post:member:mayaviTRUE:year2016-issue_post:member:mayaviFALSE:year2016" -1.35363320911705 0.175853426504056 0.364009323910421
+"pr_post:member:mayaviTRUE:year2016-pr_post:member:mayaviFALSE:year2016" -0.454162075151513 0.64971217726333 0.829419800761698
+"issue_reply:member:mayaviTRUE:year2016-issue_reply:member:mayaviFALSE:year2016" -0.424076923183108 0.67150971464517 0.843889985167771
+"pr_reply:member:mayaviTRUE:year2016-pr_reply:member:mayaviFALSE:year2016" -2.31739896641061 0.0204820086022908 0.0845086333929137
+"issue_post:nonmember:mayaviTRUE:year2016-issue_post:nonmember:mayaviFALSE:year2016" -1.943950404796 0.0519014320708779 0.167960757445784
+"pr_post:nonmember:mayaviTRUE:year2016-pr_post:nonmember:mayaviFALSE:year2016" 0.669756594014029 0.503012967897003 0.720734998777795
+"issue_reply:nonmember:mayaviTRUE:year2016-issue_reply:nonmember:mayaviFALSE:year2016" -0.532583817978219 0.594321706268242 0.781573750708921
+"pr_reply:nonmember:mayaviTRUE:year2016-pr_reply:nonmember:mayaviFALSE:year2016" 0.45442844341709 0.649520484027918 0.829419800761698
+"issue_post:member:mayaviTRUE:year2017-issue_post:member:mayaviFALSE:year2017" 1.48888775844614 0.136516927637777 0.316118915203223
+"pr_post:member:mayaviTRUE:year2017-pr_post:member:mayaviFALSE:year2017" -1.75999966244039 0.0784078638091337 0.228129032067179
+"issue_reply:member:mayaviTRUE:year2017-issue_reply:member:mayaviFALSE:year2017" -2.6893157614391 0.00715986576007865 0.0449298914677691
+"pr_reply:member:mayaviTRUE:year2017-pr_reply:member:mayaviFALSE:year2017" -0.602173484335679 0.547058663818416 0.758925313967745
+"issue_post:nonmember:mayaviTRUE:year2017-issue_post:nonmember:mayaviFALSE:year2017" -1.29247419741077 0.196192975981528 0.385953395373498
+"pr_post:nonmember:mayaviTRUE:year2017-pr_post:nonmember:mayaviFALSE:year2017" -1.57855292955008 0.114438638517956 0.287786492531889
+"issue_reply:nonmember:mayaviTRUE:year2017-issue_reply:nonmember:mayaviFALSE:year2017" -2.55914670164682 0.01049294510692 0.0535809962906553
+"pr_reply:nonmember:mayaviTRUE:year2017-pr_reply:nonmember:mayaviFALSE:year2017" -0.353428052433235 0.723767558276034 0.879658994322767
+"issue_post:member:mayaviTRUE:year2018-issue_post:member:mayaviFALSE:year2018" -2.44154506831881 0.0146245627998571 0.0694516930813121
+"pr_post:member:mayaviTRUE:year2018-pr_post:member:mayaviFALSE:year2018" -2.60395264576653 0.00921554885988618 0.0508444075028203
+"issue_reply:member:mayaviTRUE:year2018-issue_reply:member:mayaviFALSE:year2018" -3.80711105973047 0.000140599615311876 0.00198493574557943
+"pr_reply:member:mayaviTRUE:year2018-pr_reply:member:mayaviFALSE:year2018" -1.72744380612786 0.0840879890473962 0.237424910251472
+"issue_post:nonmember:mayaviTRUE:year2018-issue_post:nonmember:mayaviFALSE:year2018" -0.327679515378523 0.743153993362306 0.885511854216625
+"pr_post:nonmember:mayaviTRUE:year2018-pr_post:nonmember:mayaviFALSE:year2018" -1.05076478979319 0.293366630900398 0.492363576336333
+"issue_reply:nonmember:mayaviTRUE:year2018-issue_reply:nonmember:mayaviFALSE:year2018" -0.174197443913577 0.86171029428885 0.93365835734551
+"pr_reply:nonmember:mayaviTRUE:year2018-pr_reply:nonmember:mayaviFALSE:year2018" 0.701539306465042 0.482966513554973 0.704631995460142
+"issue_post:nonmember:sphinx-galleryTRUE:year2014-issue_post:nonmember:sphinx-galleryFALSE:year2014" 1.34879525587792 0.177402738948745 0.364009323910421
+"pr_post:nonmember:sphinx-galleryTRUE:year2014-pr_post:nonmember:sphinx-galleryFALSE:year2014" 1.73579538804957 0.0826000198827632 0.234603606767611
+"issue_reply:nonmember:sphinx-galleryTRUE:year2014-issue_reply:nonmember:sphinx-galleryFALSE:year2014" 0.057876954674438 0.95384663985018 0.972073008764514
+"pr_reply:nonmember:sphinx-galleryTRUE:year2014-pr_reply:nonmember:sphinx-galleryFALSE:year2014" -0.282582049183142 0.777497242387772 0.894624867334701
+"issue_post:member:sphinx-galleryTRUE:year2015-issue_post:member:sphinx-galleryFALSE:year2015" -0.440217216352218 0.659779791603947 0.837815608385965
+"pr_post:member:sphinx-galleryTRUE:year2015-pr_post:member:sphinx-galleryFALSE:year2015" 1.49549131350601 0.134786265247311 0.314271700669053
+"issue_reply:member:sphinx-galleryTRUE:year2015-issue_reply:member:sphinx-galleryFALSE:year2015" -0.333615856526531 0.738669451377783 0.885511854216625
+"pr_reply:member:sphinx-galleryTRUE:year2015-pr_reply:member:sphinx-galleryFALSE:year2015" 1.54300663056353 0.122829167150536 0.305054569792031
+"issue_post:nonmember:sphinx-galleryTRUE:year2015-issue_post:nonmember:sphinx-galleryFALSE:year2015" -0.18363381335229 0.854300734960679 0.93365835734551
+"pr_post:nonmember:sphinx-galleryTRUE:year2015-pr_post:nonmember:sphinx-galleryFALSE:year2015" 1.4374783283799 0.150582126347298 0.334370102419848
+"issue_reply:nonmember:sphinx-galleryTRUE:year2015-issue_reply:nonmember:sphinx-galleryFALSE:year2015" -0.0226251274938948 0.981949300114259 0.992375391555603
+"pr_reply:nonmember:sphinx-galleryTRUE:year2015-pr_reply:nonmember:sphinx-galleryFALSE:year2015" 0.27326278391201 0.784651221101424 0.894624867334701
+"issue_post:member:sphinx-galleryTRUE:year2016-issue_post:member:sphinx-galleryFALSE:year2016" -2.08253018246754 0.0372940689409667 0.13359069471391
+"pr_post:member:sphinx-galleryTRUE:year2016-pr_post:member:sphinx-galleryFALSE:year2016" 0.139054359207426 0.889407193819381 0.948628853845081
+"issue_reply:member:sphinx-galleryTRUE:year2016-issue_reply:member:sphinx-galleryFALSE:year2016" 1.35161742096702 0.176497734396508 0.364009323910421
+"pr_reply:member:sphinx-galleryTRUE:year2016-pr_reply:member:sphinx-galleryFALSE:year2016" -0.309134354910581 0.75721932676035 0.888668158545155
+"issue_post:nonmember:sphinx-galleryTRUE:year2016-issue_post:nonmember:sphinx-galleryFALSE:year2016" -0.790725966369435 0.429103920070089 0.649328633220789
+"pr_post:nonmember:sphinx-galleryTRUE:year2016-pr_post:nonmember:sphinx-galleryFALSE:year2016" -0.791578106209158 0.428606717012981 0.649328633220789
+"issue_reply:nonmember:sphinx-galleryTRUE:year2016-issue_reply:nonmember:sphinx-galleryFALSE:year2016" 1.22224182450292 0.221616191728951 0.422126079483717
+"pr_reply:nonmember:sphinx-galleryTRUE:year2016-pr_reply:nonmember:sphinx-galleryFALSE:year2016" -1.10741756596364 0.268113434691936 0.465483020384377
+"issue_post:member:sphinx-galleryTRUE:year2017-issue_post:member:sphinx-galleryFALSE:year2017" -0.177319814268943 0.859257187867508 0.93365835734551
+"pr_post:member:sphinx-galleryTRUE:year2017-pr_post:member:sphinx-galleryFALSE:year2017" -0.222640913834037 0.823814990921044 0.919607431725816
+"issue_reply:member:sphinx-galleryTRUE:year2017-issue_reply:member:sphinx-galleryFALSE:year2017" 2.67152708572284 0.00755069784706253 0.0453113185989564
+"pr_reply:member:sphinx-galleryTRUE:year2017-pr_reply:member:sphinx-galleryFALSE:year2017" -1.08668464777926 0.277176201080366 0.472133202897109
+"issue_post:nonmember:sphinx-galleryTRUE:year2017-issue_post:nonmember:sphinx-galleryFALSE:year2017" 0.195742358572909 0.844811828330981 0.93365835734551
+"pr_post:nonmember:sphinx-galleryTRUE:year2017-pr_post:nonmember:sphinx-galleryFALSE:year2017" 1.43657330303845 0.150839273893811 0.334370102419848
+"issue_reply:nonmember:sphinx-galleryTRUE:year2017-issue_reply:nonmember:sphinx-galleryFALSE:year2017" 0.636766328096779 0.524277062034586 0.73798530726276
+"pr_reply:nonmember:sphinx-galleryTRUE:year2017-pr_reply:nonmember:sphinx-galleryFALSE:year2017" -0.229884214887438 0.818181742565765 0.917587001008334
+"issue_post:member:sphinx-galleryTRUE:year2018-issue_post:member:sphinx-galleryFALSE:year2018" 2.00950256267034 0.0444838631841384 0.151434427860897
+"pr_post:member:sphinx-galleryTRUE:year2018-pr_post:member:sphinx-galleryFALSE:year2018" 0.139986192207686 0.888670899983513 0.948628853845081
+"issue_reply:member:sphinx-galleryTRUE:year2018-issue_reply:member:sphinx-galleryFALSE:year2018" 3.50263203077367 0.00046068540264077 0.0058191840333571
+"pr_reply:member:sphinx-galleryTRUE:year2018-pr_reply:member:sphinx-galleryFALSE:year2018" 2.21800143120629 0.0265547348325339 0.10197018175693
+"issue_post:nonmember:sphinx-galleryTRUE:year2018-issue_post:nonmember:sphinx-galleryFALSE:year2018" -2.16561719730032 0.0303404511390126 0.115582671005762
+"pr_post:nonmember:sphinx-galleryTRUE:year2018-pr_post:nonmember:sphinx-galleryFALSE:year2018" 0.852752763669968 0.393796423903513 0.613708712576903
+"issue_reply:nonmember:sphinx-galleryTRUE:year2018-issue_reply:nonmember:sphinx-galleryFALSE:year2018" 2.30050369772324 0.0214197000391951 0.0868907237081143
+"pr_reply:nonmember:sphinx-galleryTRUE:year2018-pr_reply:nonmember:sphinx-galleryFALSE:year2018" 0.869129754947807 0.38477616345444 0.607541310717537
+"issue_post:member:matplotlibTRUE:year2011-issue_post:member:matplotlibFALSE:year2011" 2.0970852343073 0.0359860308423736 0.130858293972268
+"pr_post:member:matplotlibTRUE:year2011-pr_post:member:matplotlibFALSE:year2011" -4.58421456595874 4.55696111889559e-06 9.94246062304491e-05
+"issue_reply:member:matplotlibTRUE:year2011-issue_reply:member:matplotlibFALSE:year2011" -4.03727399892271 5.40758975240418e-05 0.0009613492893163
+"pr_reply:member:matplotlibTRUE:year2011-pr_reply:member:matplotlibFALSE:year2011" -2.29835383759533 0.02154165858597 0.0868907237081143
+"issue_post:nonmember:matplotlibTRUE:year2011-issue_post:nonmember:matplotlibFALSE:year2011" -1.23315239743185 0.21751891157012 0.419313564472521
+"pr_post:nonmember:matplotlibTRUE:year2011-pr_post:nonmember:matplotlibFALSE:year2011" -1.59410251170921 0.110913076457464 0.28318232287012
+"issue_reply:nonmember:matplotlibTRUE:year2011-issue_reply:nonmember:matplotlibFALSE:year2011" 0.0804428710100514 0.935885031226372 0.960309602359648
+"pr_reply:nonmember:matplotlibTRUE:year2011-pr_reply:nonmember:matplotlibFALSE:year2011" -1.03689904715316 0.299782908059764 0.501379079681835
+"issue_post:member:matplotlibTRUE:year2012-issue_post:member:matplotlibFALSE:year2012" -2.35934349823506 0.0183073010689341 0.0811224540960531
+"pr_post:member:matplotlibTRUE:year2012-pr_post:member:matplotlibFALSE:year2012" 1.70560126770181 0.0880823431989619 0.241597284202867
+"issue_reply:member:matplotlibTRUE:year2012-issue_reply:member:matplotlibFALSE:year2012" -0.787020977431298 0.431269586268671 0.649328633220789
+"pr_reply:member:matplotlibTRUE:year2012-pr_reply:member:matplotlibFALSE:year2012" -1.52492363719141 0.127278145430319 0.308553079831077
+"issue_post:nonmember:matplotlibTRUE:year2012-issue_post:nonmember:matplotlibFALSE:year2012" 1.41805701964975 0.156174118235527 0.339201704764945
+"pr_post:nonmember:matplotlibTRUE:year2012-pr_post:nonmember:matplotlibFALSE:year2012" 0.100184909773375 0.920197525992826 0.959437695871673
+"issue_reply:nonmember:matplotlibTRUE:year2012-issue_reply:nonmember:matplotlibFALSE:year2012" 0.10543225416159 0.91603282356255 0.959437695871673
+"pr_reply:nonmember:matplotlibTRUE:year2012-pr_reply:nonmember:matplotlibFALSE:year2012" 1.3466819137289 0.178082699703569 0.364009323910421
+"issue_post:member:matplotlibTRUE:year2013-issue_post:member:matplotlibFALSE:year2013" -3.16973828449964 0.00152576297131368 0.0146473245246113
+"pr_post:member:matplotlibTRUE:year2013-pr_post:member:matplotlibFALSE:year2013" -0.406184519726344 0.684607027505701 0.851278928428933
+"issue_reply:member:matplotlibTRUE:year2013-issue_reply:member:matplotlibFALSE:year2013" -1.0176136975476 0.308861575245073 0.51002924676627
+"pr_reply:member:matplotlibTRUE:year2013-pr_reply:member:matplotlibFALSE:year2013" -3.08186120671908 0.00205710728855113 0.0182853981204545
+"issue_post:nonmember:matplotlibTRUE:year2013-issue_post:nonmember:matplotlibFALSE:year2013" 1.51030397172902 0.130965878756801 0.311728342979411
+"pr_post:nonmember:matplotlibTRUE:year2013-pr_post:nonmember:matplotlibFALSE:year2013" -1.41228142091205 0.157867114689372 0.339803654936764
+"issue_reply:nonmember:matplotlibTRUE:year2013-issue_reply:nonmember:matplotlibFALSE:year2013" -0.903730968223693 0.366138073881623 0.587780185495582
+"pr_reply:nonmember:matplotlibTRUE:year2013-pr_reply:nonmember:matplotlibFALSE:year2013" 0.16656722566276 0.867710583507181 0.935957483333589
+"issue_post:member:matplotlibTRUE:year2014-issue_post:member:matplotlibFALSE:year2014" -0.0774035618924791 0.938302507305573 0.960309602359648
+"pr_post:member:matplotlibTRUE:year2014-pr_post:member:matplotlibFALSE:year2014" 0.400425018749968 0.688843499967768 0.851278928428933
+"issue_reply:member:matplotlibTRUE:year2014-issue_reply:member:matplotlibFALSE:year2014" -1.86631918068878 0.0619967228219935 0.189544120729662
+"pr_reply:member:matplotlibTRUE:year2014-pr_reply:member:matplotlibFALSE:year2014" -2.78740678162991 0.00531317380320151 0.0370665966911904
+"issue_post:nonmember:matplotlibTRUE:year2014-issue_post:nonmember:matplotlibFALSE:year2014" -1.22666051477954 0.2199502142014 0.422126079483717
+"pr_post:nonmember:matplotlibTRUE:year2014-pr_post:nonmember:matplotlibFALSE:year2014" 1.32448323494345 0.185342607337672 0.370685214675345
+"issue_reply:nonmember:matplotlibTRUE:year2014-issue_reply:nonmember:matplotlibFALSE:year2014" -3.45951597499059 0.000541147176190693 0.00633538157491543
+"pr_reply:nonmember:matplotlibTRUE:year2014-pr_reply:nonmember:matplotlibFALSE:year2014" 0.178862932829216 0.858045328690203 0.93365835734551
+"issue_post:member:matplotlibTRUE:year2015-issue_post:member:matplotlibFALSE:year2015" 2.56179806207347 0.0104131845569131 0.0535809962906553
+"pr_post:member:matplotlibTRUE:year2015-pr_post:member:matplotlibFALSE:year2015" -0.113957150701227 0.90927176088291 0.959437695871673
+"issue_reply:member:matplotlibTRUE:year2015-issue_reply:member:matplotlibFALSE:year2015" -0.823219204889985 0.410383349534561 0.63135899928394
+"pr_reply:member:matplotlibTRUE:year2015-pr_reply:member:matplotlibFALSE:year2015" -5.01897152103486 5.19488496442122e-07 1.38530265717899e-05
+"issue_post:nonmember:matplotlibTRUE:year2015-issue_post:nonmember:matplotlibFALSE:year2015" 2.6274867939736 0.0086018180624412 0.0480101473252532
+"pr_post:nonmember:matplotlibTRUE:year2015-pr_post:nonmember:matplotlibFALSE:year2015" -0.0628389310330571 0.94989476463078 0.970105291537818
+"issue_reply:nonmember:matplotlibTRUE:year2015-issue_reply:nonmember:matplotlibFALSE:year2015" -1.18847857133012 0.234644917309329 0.438247316375401
+"pr_reply:nonmember:matplotlibTRUE:year2015-pr_reply:nonmember:matplotlibFALSE:year2015" -1.69899717097056 0.0893197166561523 0.243599227244052
+"issue_post:member:matplotlibTRUE:year2016-issue_post:member:matplotlibFALSE:year2016" 1.96378676719092 0.0495548253104476 0.165182751034825
+"pr_post:member:matplotlibTRUE:year2016-pr_post:member:matplotlibFALSE:year2016" 1.77821641513966 0.0753683179465463 0.222929038085775
+"issue_reply:member:matplotlibTRUE:year2016-issue_reply:member:matplotlibFALSE:year2016" 1.17684955383187 0.239255559883981 0.444847863092309
+"pr_reply:member:matplotlibTRUE:year2016-pr_reply:member:matplotlibFALSE:year2016" -4.48870391585509 7.16578112269772e-06 0.000149546736473692
+"issue_post:nonmember:matplotlibTRUE:year2016-issue_post:nonmember:matplotlibFALSE:year2016" 1.43741271824322 0.150600757108409 0.334370102419848
+"pr_post:nonmember:matplotlibTRUE:year2016-pr_post:nonmember:matplotlibFALSE:year2016" -0.66257683698336 0.507601609113539 0.723452735253123
+"issue_reply:nonmember:matplotlibTRUE:year2016-issue_reply:nonmember:matplotlibFALSE:year2016" -0.246691978464223 0.80514661500027 0.909342059294423
+"pr_reply:nonmember:matplotlibTRUE:year2016-pr_reply:nonmember:matplotlibFALSE:year2016" -2.85328049265175 0.00432704100572345 0.0329679314721787
+"issue_post:member:matplotlibTRUE:year2017-issue_post:member:matplotlibFALSE:year2017" -1.43543509793542 0.151163150468973 0.334370102419848
+"pr_post:member:matplotlibTRUE:year2017-pr_post:member:matplotlibFALSE:year2017" 1.93339486631913 0.0531875731911651 0.167960757445784
+"issue_reply:member:matplotlibTRUE:year2017-issue_reply:member:matplotlibFALSE:year2017" -1.46734328235866 0.142282695098761 0.323676273210451
+"pr_reply:member:matplotlibTRUE:year2017-pr_reply:member:matplotlibFALSE:year2017" -2.41612016023821 0.0156868836431576 0.0731039237739384
+"issue_post:nonmember:matplotlibTRUE:year2017-issue_post:nonmember:matplotlibFALSE:year2017" -2.05099049993872 0.0402678719101823 0.139054521704227
+"pr_post:nonmember:matplotlibTRUE:year2017-pr_post:nonmember:matplotlibFALSE:year2017" -0.622658029117842 0.533509269047296 0.748164273402007
+"issue_reply:nonmember:matplotlibTRUE:year2017-issue_reply:nonmember:matplotlibFALSE:year2017" -1.73704767443906 0.0823787561871501 0.234603606767611
+"pr_reply:nonmember:matplotlibTRUE:year2017-pr_reply:nonmember:matplotlibFALSE:year2017" -2.8026390290593 0.00506863647158817 0.0364558955100162
+"issue_post:member:matplotlibTRUE:year2018-issue_post:member:matplotlibFALSE:year2018" -2.64947602297632 0.00806166923976215 0.0466763363197277
+"pr_post:member:matplotlibTRUE:year2018-pr_post:member:matplotlibFALSE:year2018" 0.720543613949978 0.471190356589027 0.691655569304994
+"issue_reply:member:matplotlibTRUE:year2018-issue_reply:member:matplotlibFALSE:year2018" 0.231958897392707 0.816569938277427 0.917587001008334
+"pr_reply:member:matplotlibTRUE:year2018-pr_reply:member:matplotlibFALSE:year2018" -1.10764933728242 0.26801328713525 0.465483020384377
+"issue_post:nonmember:matplotlibTRUE:year2018-issue_post:nonmember:matplotlibFALSE:year2018" -1.16946146686353 0.242217757442415 0.444847863092309
+"pr_post:nonmember:matplotlibTRUE:year2018-pr_post:nonmember:matplotlibFALSE:year2018" -1.62461673258374 0.1042442495582 0.271941520586609
+"issue_reply:nonmember:matplotlibTRUE:year2018-issue_reply:nonmember:matplotlibFALSE:year2018" -1.69235009100766 0.0905792423583329 0.244258631078651
+"pr_reply:nonmember:matplotlibTRUE:year2018-pr_reply:nonmember:matplotlibFALSE:year2018" -0.388263370790625 0.697821141043241 0.858856788976297
+"issue_post:member:scikit-imageTRUE:year2011-issue_post:member:scikit-imageFALSE:year2011" 0.274780449753228 0.783484918985264 0.894624867334701
+"pr_post:member:scikit-imageTRUE:year2011-pr_post:member:scikit-imageFALSE:year2011" -1.56742742566149 0.117014817590949 0.292537043977373
+"issue_reply:member:scikit-imageTRUE:year2011-issue_reply:member:scikit-imageFALSE:year2011" 0.40405653739659 0.686171144487808 0.851278928428933
+"pr_reply:member:scikit-imageTRUE:year2011-pr_reply:member:scikit-imageFALSE:year2011" 0.262924759785312 0.792608571974854 0.90107310503705
+"issue_post:nonmember:scikit-imageTRUE:year2011-issue_post:nonmember:scikit-imageFALSE:year2011" 0.187296145200122 0.851428445193725 0.93365835734551
+"pr_post:nonmember:scikit-imageTRUE:year2011-pr_post:nonmember:scikit-imageFALSE:year2011" 0.563596170722243 0.573028993470977 0.781403172914968
+"issue_reply:nonmember:scikit-imageTRUE:year2011-issue_reply:nonmember:scikit-imageFALSE:year2011" -0.423958910476467 0.671595779862684 0.843889985167771
+"pr_reply:nonmember:scikit-imageTRUE:year2011-pr_reply:nonmember:scikit-imageFALSE:year2011" 1.26850829351719 0.204616490892503 0.397635285944944
+"issue_post:member:scikit-imageTRUE:year2012-issue_post:member:scikit-imageFALSE:year2012" -2.03390874729701 0.0419607968562257 0.143865589221345
+"pr_post:member:scikit-imageTRUE:year2012-pr_post:member:scikit-imageFALSE:year2012" -1.44641747046111 0.148060144628625 0.333656663951831
+"issue_reply:member:scikit-imageTRUE:year2012-issue_reply:member:scikit-imageFALSE:year2012" 0.224118392460945 0.822665181358703 0.919607431725816
+"pr_reply:member:scikit-imageTRUE:year2012-pr_reply:member:scikit-imageFALSE:year2012" 1.4255751045655 0.153991026638294 0.337514578933247
+"issue_post:nonmember:scikit-imageTRUE:year2012-issue_post:nonmember:scikit-imageFALSE:year2012" -2.14804174783969 0.0317104391285914 0.119629991757091
+"pr_post:nonmember:scikit-imageTRUE:year2012-pr_post:nonmember:scikit-imageFALSE:year2012" -0.0913874120221651 0.927184763644523 0.959437695871673
+"issue_reply:nonmember:scikit-imageTRUE:year2012-issue_reply:nonmember:scikit-imageFALSE:year2012" -0.693654806622467 0.487898714254902 0.707011518302499
+"pr_reply:nonmember:scikit-imageTRUE:year2012-pr_reply:nonmember:scikit-imageFALSE:year2012" -1.50944274036096 0.131185677670502 0.311728342979411
+"issue_post:member:scikit-imageTRUE:year2013-issue_post:member:scikit-imageFALSE:year2013" -1.59426994802934 0.110875585608256 0.28318232287012
+"pr_post:member:scikit-imageTRUE:year2013-pr_post:member:scikit-imageFALSE:year2013" 0.374385130954154 0.708117803722684 0.867083024966551
+"issue_reply:member:scikit-imageTRUE:year2013-issue_reply:member:scikit-imageFALSE:year2013" -0.10797736562988 0.914013646829829 0.959437695871673
+"pr_reply:member:scikit-imageTRUE:year2013-pr_reply:member:scikit-imageFALSE:year2013" 2.95219376150705 0.00315524871088169 0.0256698200207324
+"issue_post:nonmember:scikit-imageTRUE:year2013-issue_post:nonmember:scikit-imageFALSE:year2013" -0.618593179851606 0.536184395938105 0.748164273402007
+"pr_post:nonmember:scikit-imageTRUE:year2013-pr_post:nonmember:scikit-imageFALSE:year2013" 2.32658800212521 0.0199872037188913 0.084156647237437
+"issue_reply:nonmember:scikit-imageTRUE:year2013-issue_reply:nonmember:scikit-imageFALSE:year2013" -0.856664458793055 0.391630350827333 0.613079481917963
+"pr_reply:nonmember:scikit-imageTRUE:year2013-pr_reply:nonmember:scikit-imageFALSE:year2013" 0.914051645541752 0.360689708895576 0.580976712315022
+"issue_post:member:scikit-imageTRUE:year2014-issue_post:member:scikit-imageFALSE:year2014" -1.82098457968488 0.0686092009347152 0.205827602804146
+"pr_post:member:scikit-imageTRUE:year2014-pr_post:member:scikit-imageFALSE:year2014" -1.16798505835946 0.242812791937885 0.444847863092309
+"issue_reply:member:scikit-imageTRUE:year2014-issue_reply:member:scikit-imageFALSE:year2014" -1.24989435834147 0.211338140586362 0.409041562425217
+"pr_reply:member:scikit-imageTRUE:year2014-pr_reply:member:scikit-imageFALSE:year2014" 1.74620226222152 0.0807758118757629 0.232169998205786
+"issue_post:nonmember:scikit-imageTRUE:year2014-issue_post:nonmember:scikit-imageFALSE:year2014" 0.553940102723137 0.579619838610012 0.781573750708921
+"pr_post:nonmember:scikit-imageTRUE:year2014-pr_post:nonmember:scikit-imageFALSE:year2014" 0.752518608938037 0.451739243271462 0.669243323365129
+"issue_reply:nonmember:scikit-imageTRUE:year2014-issue_reply:nonmember:scikit-imageFALSE:year2014" 0.018084717174246 0.985571269887322 0.992375391555603
+"pr_reply:nonmember:scikit-imageTRUE:year2014-pr_reply:nonmember:scikit-imageFALSE:year2014" 1.70949144662841 0.087359954754088 0.241597284202867
+"issue_post:member:scikit-imageTRUE:year2015-issue_post:member:scikit-imageFALSE:year2015" -0.645756542047522 0.518437036335129 0.731911110120182
+"pr_post:member:scikit-imageTRUE:year2015-pr_post:member:scikit-imageFALSE:year2015" 0.0885302183221528 0.929455267875684 0.959437695871673
+"issue_reply:member:scikit-imageTRUE:year2015-issue_reply:member:scikit-imageFALSE:year2015" 2.11832707103813 0.0341473775094263 0.126082624650189
+"pr_reply:member:scikit-imageTRUE:year2015-pr_reply:member:scikit-imageFALSE:year2015" 2.70622957486256 0.00680519826297665 0.0447465091264218
+"issue_post:nonmember:scikit-imageTRUE:year2015-issue_post:nonmember:scikit-imageFALSE:year2015" 1.1636866428852 0.244551024397295 0.446328865820158
+"pr_post:nonmember:scikit-imageTRUE:year2015-pr_post:nonmember:scikit-imageFALSE:year2015" 1.2142128858835 0.224666441091286 0.426244631319435
+"issue_reply:nonmember:scikit-imageTRUE:year2015-issue_reply:nonmember:scikit-imageFALSE:year2015" 1.12466063555584 0.260732868526238 0.46524824123641
+"pr_reply:nonmember:scikit-imageTRUE:year2015-pr_reply:nonmember:scikit-imageFALSE:year2015" -1.37957315948915 0.167718106270985 0.357798626711434
+"issue_post:member:scikit-imageTRUE:year2016-issue_post:member:scikit-imageFALSE:year2016" -2.66956835155595 0.00759488131891617 0.0453113185989564
+"pr_post:member:scikit-imageTRUE:year2016-pr_post:member:scikit-imageFALSE:year2016" 0.596793946163348 0.550644960271655 0.76169908049105
+"issue_reply:member:scikit-imageTRUE:year2016-issue_reply:member:scikit-imageFALSE:year2016" 0.199785187673603 0.841648586311061 0.93365835734551
+"pr_reply:member:scikit-imageTRUE:year2016-pr_reply:member:scikit-imageFALSE:year2016" 1.75993189430489 0.0784193547730929 0.228129032067179
+"issue_post:nonmember:scikit-imageTRUE:year2016-issue_post:nonmember:scikit-imageFALSE:year2016" -1.08792417859726 0.27662858118211 0.472133202897109
+"pr_post:nonmember:scikit-imageTRUE:year2016-pr_post:nonmember:scikit-imageFALSE:year2016" 5.05991479159812 4.19443876076286e-07 1.25833162822886e-05
+"issue_reply:nonmember:scikit-imageTRUE:year2016-issue_reply:nonmember:scikit-imageFALSE:year2016" -0.444559606201317 0.656638044287817 0.836037828270961
+"pr_reply:nonmember:scikit-imageTRUE:year2016-pr_reply:nonmember:scikit-imageFALSE:year2016" 1.92085907008681 0.0547494770368855 0.171763065213758
+"issue_post:member:scikit-imageTRUE:year2017-issue_post:member:scikit-imageFALSE:year2017" -1.34541287752724 0.178491938934279 0.364009323910421
+"pr_post:member:scikit-imageTRUE:year2017-pr_post:member:scikit-imageFALSE:year2017" 2.40379324780615 0.0162259472557387 0.0734759875731562
+"issue_reply:member:scikit-imageTRUE:year2017-issue_reply:member:scikit-imageFALSE:year2017" 2.37860217683767 0.017378419877957 0.0779592667422368
+"pr_reply:member:scikit-imageTRUE:year2017-pr_reply:member:scikit-imageFALSE:year2017" 2.34032442469896 0.0192669951782696 0.0833167359060306
+"issue_post:nonmember:scikit-imageTRUE:year2017-issue_post:nonmember:scikit-imageFALSE:year2017" -1.27556303329537 0.20211002872347 0.395970668519452
+"pr_post:nonmember:scikit-imageTRUE:year2017-pr_post:nonmember:scikit-imageFALSE:year2017" 8.70144021679189 0 0
+"issue_reply:nonmember:scikit-imageTRUE:year2017-issue_reply:nonmember:scikit-imageFALSE:year2017" 0.876708221515404 0.380645140036745 0.603353231069099
+"pr_reply:nonmember:scikit-imageTRUE:year2017-pr_reply:nonmember:scikit-imageFALSE:year2017" 5.53998976610491 3.02489322479005e-08 1.20995728991602e-06
+"issue_post:member:scikit-imageTRUE:year2018-issue_post:member:scikit-imageFALSE:year2018" 1.34392929782574 0.178971250922624 0.364009323910421
+"pr_post:member:scikit-imageTRUE:year2018-pr_post:member:scikit-imageFALSE:year2018" 6.40855277807218 1.4690737515366e-10 1.00736485819652e-08
+"issue_reply:member:scikit-imageTRUE:year2018-issue_reply:member:scikit-imageFALSE:year2018" 2.49115683538479 0.0127327900816532 0.0643340972546687
+"pr_reply:member:scikit-imageTRUE:year2018-pr_reply:member:scikit-imageFALSE:year2018" 0.840542986206052 0.400604010310934 0.620532037180176
+"issue_post:nonmember:scikit-imageTRUE:year2018-issue_post:nonmember:scikit-imageFALSE:year2018" -0.468675879816677 0.639301330246791 0.822693400853779
+"pr_post:nonmember:scikit-imageTRUE:year2018-pr_post:nonmember:scikit-imageFALSE:year2018" 6.1754959641923 6.59560850380103e-10 3.1658920818245e-08
+"issue_reply:nonmember:scikit-imageTRUE:year2018-issue_reply:nonmember:scikit-imageFALSE:year2018" 2.31525502731127 0.0205989793895227 0.0845086333929137
+"pr_reply:nonmember:scikit-imageTRUE:year2018-pr_reply:nonmember:scikit-imageFALSE:year2018" 6.46081475713546 1.04140696066679e-10 8.33125568533433e-09
+"issue_post:member:pandasTRUE:year2010-issue_post:member:pandasFALSE:year2010" 0.579066434008669 0.56254434763667 0.769291415571515
+"issue_reply:member:pandasTRUE:year2010-issue_reply:member:pandasFALSE:year2010" 0.399003491537657 0.689890631580948 0.851278928428933
+"issue_post:nonmember:pandasTRUE:year2010-issue_post:nonmember:pandasFALSE:year2010" 0.00227941577922195 0.998181290917031 0.999235465424997
+"issue_reply:nonmember:pandasTRUE:year2010-issue_reply:nonmember:pandasFALSE:year2010" 1.22363126630516 0.221091359233961 0.422126079483717
+"issue_post:member:pandasTRUE:year2011-issue_post:member:pandasFALSE:year2011" -2.24814292399309 0.0245670777657352 0.0950983655447814
+"pr_post:member:pandasTRUE:year2011-pr_post:member:pandasFALSE:year2011" -0.274788343847051 0.783478853768526 0.894624867334701
+"issue_reply:member:pandasTRUE:year2011-issue_reply:member:pandasFALSE:year2011" 1.77618162520574 0.0757029858499612 0.222929038085775
+"pr_reply:member:pandasTRUE:year2011-pr_reply:member:pandasFALSE:year2011" 1.58999693507454 0.111835495900606 0.284026656255507
+"issue_post:nonmember:pandasTRUE:year2011-issue_post:nonmember:pandasFALSE:year2011" 1.19941311098241 0.230367352037482 0.431938785070279
+"pr_post:nonmember:pandasTRUE:year2011-pr_post:nonmember:pandasFALSE:year2011" 0.593159785520235 0.553074222814556 0.762860996985594
+"issue_reply:nonmember:pandasTRUE:year2011-issue_reply:nonmember:pandasFALSE:year2011" 0.828272908861038 0.407515961658484 0.628963542109557
+"pr_reply:nonmember:pandasTRUE:year2011-pr_reply:nonmember:pandasFALSE:year2011" 1.31721416280531 0.187766847884214 0.373975464665655
+"issue_post:member:pandasTRUE:year2012-issue_post:member:pandasFALSE:year2012" 0.260166526795894 0.794735323146448 0.90107310503705
+"pr_post:member:pandasTRUE:year2012-pr_post:member:pandasFALSE:year2012" -2.10147312622356 0.0355994546311329 0.130440749793464
+"issue_reply:member:pandasTRUE:year2012-issue_reply:member:pandasFALSE:year2012" -1.86724510723497 0.0618673671371017 0.189544120729662
+"pr_reply:member:pandasTRUE:year2012-pr_reply:member:pandasFALSE:year2012" -0.192546175940945 0.847314401348685 0.93365835734551
+"issue_post:nonmember:pandasTRUE:year2012-issue_post:nonmember:pandasFALSE:year2012" 2.06457813443057 0.0389629339086182 0.136728519193795
+"pr_post:nonmember:pandasTRUE:year2012-pr_post:nonmember:pandasFALSE:year2012" -0.102659572797368 0.918233160293018 0.959437695871673
+"issue_reply:nonmember:pandasTRUE:year2012-issue_reply:nonmember:pandasFALSE:year2012" 2.87312396723821 0.00406434598869776 0.0314659044286278
+"pr_reply:nonmember:pandasTRUE:year2012-pr_reply:nonmember:pandasFALSE:year2012" 0.324673401317537 0.745428267645115 0.885511854216625
+"issue_post:member:pandasTRUE:year2013-issue_post:member:pandasFALSE:year2013" 3.2274177052243 0.00124912966329238 0.0122363722118437
+"pr_post:member:pandasTRUE:year2013-pr_post:member:pandasFALSE:year2013" -1.42760564449887 0.153405398043985 0.337514578933247
+"issue_reply:member:pandasTRUE:year2013-issue_reply:member:pandasFALSE:year2013" 0.274195630096619 0.78393428615905 0.894624867334701
+"pr_reply:member:pandasTRUE:year2013-pr_reply:member:pandasFALSE:year2013" -8.06459436225433 6.66133814775094e-16 1.59872115546023e-13
+"issue_post:nonmember:pandasTRUE:year2013-issue_post:nonmember:pandasFALSE:year2013" 0.51265336649775 0.608193815687898 0.791146426911087
+"pr_post:nonmember:pandasTRUE:year2013-pr_post:nonmember:pandasFALSE:year2013" -0.708754228302149 0.478477006385707 0.700210253247376
+"issue_reply:nonmember:pandasTRUE:year2013-issue_reply:nonmember:pandasFALSE:year2013" 5.22280986629781 1.7622831460784e-07 6.04211364369738e-06
+"pr_reply:nonmember:pandasTRUE:year2013-pr_reply:nonmember:pandasFALSE:year2013" -1.1147505874185 0.264957316365099 0.465483020384377
+"issue_post:member:pandasTRUE:year2014-issue_post:member:pandasFALSE:year2014" 3.11572315329339 0.00183494453430977 0.0169379495474748
+"pr_post:member:pandasTRUE:year2014-pr_post:member:pandasFALSE:year2014" -0.319785664025485 0.749130815878672 0.885671900546213
+"issue_reply:member:pandasTRUE:year2014-issue_reply:member:pandasFALSE:year2014" 2.78648409545098 0.00532832327435862 0.0370665966911904
+"pr_reply:member:pandasTRUE:year2014-pr_reply:member:pandasFALSE:year2014" -1.61188177209269 0.106987669429711 0.276097211431512
+"issue_post:nonmember:pandasTRUE:year2014-issue_post:nonmember:pandasFALSE:year2014" 0.65112906536387 0.514963175510527 0.729151398952959
+"pr_post:nonmember:pandasTRUE:year2014-pr_post:nonmember:pandasFALSE:year2014" -2.06392742326725 0.0390245981865622 0.136728519193795
+"issue_reply:nonmember:pandasTRUE:year2014-issue_reply:nonmember:pandasFALSE:year2014" 4.58601052437767 4.51795836764468e-06 9.94246062304491e-05
+"pr_reply:nonmember:pandasTRUE:year2014-pr_reply:nonmember:pandasFALSE:year2014" -2.26319219483229 0.0236238441632972 0.0921906113689647
+"issue_post:member:pandasTRUE:year2015-issue_post:member:pandasFALSE:year2015" 0.137377273044765 0.890732594198954 0.948628853845081
+"pr_post:member:pandasTRUE:year2015-pr_post:member:pandasFALSE:year2015" -2.28244448443764 0.0224631115475167 0.0891098639901488
+"issue_reply:member:pandasTRUE:year2015-issue_reply:member:pandasFALSE:year2015" 0.155967578043432 0.876058577398098 0.940734042843595
+"pr_reply:member:pandasTRUE:year2015-pr_reply:member:pandasFALSE:year2015" 1.00442529711127 0.315173661725295 0.516583633740995
+"issue_post:nonmember:pandasTRUE:year2015-issue_post:nonmember:pandasFALSE:year2015" -0.584618092488989 0.558804539548985 0.768556386772243
+"pr_post:nonmember:pandasTRUE:year2015-pr_post:nonmember:pandasFALSE:year2015" -0.547103952992803 0.584307316652151 0.781573750708921
+"issue_reply:nonmember:pandasTRUE:year2015-issue_reply:nonmember:pandasFALSE:year2015" 1.08518500405859 0.277839724586354 0.472133202897109
+"pr_reply:nonmember:pandasTRUE:year2015-pr_reply:nonmember:pandasFALSE:year2015" -1.16820414624702 0.242724428427104 0.444847863092309
+"issue_post:member:pandasTRUE:year2016-issue_post:member:pandasFALSE:year2016" 2.69680857138235 0.00700075023311397 0.0449298914677691
+"pr_post:member:pandasTRUE:year2016-pr_post:member:pandasFALSE:year2016" -2.64908024546926 0.00807111648861958 0.0466763363197277
+"issue_reply:member:pandasTRUE:year2016-issue_reply:member:pandasFALSE:year2016" -1.15801890938386 0.246856319813056 0.448829672387375
+"pr_reply:member:pandasTRUE:year2016-pr_reply:member:pandasFALSE:year2016" -1.49968819565034 0.133695189726655 0.314271700669053
+"issue_post:nonmember:pandasTRUE:year2016-issue_post:nonmember:pandasFALSE:year2016" 4.02663730918124 5.65802043239749e-05 0.00096994635983957
+"pr_post:nonmember:pandasTRUE:year2016-pr_post:nonmember:pandasFALSE:year2016" -3.01889260372697 0.00253700448386063 0.0213642482851421
+"issue_reply:nonmember:pandasTRUE:year2016-issue_reply:nonmember:pandasFALSE:year2016" 0.041908095303283 0.966571962950382 0.982954538593608
+"pr_reply:nonmember:pandasTRUE:year2016-pr_reply:nonmember:pandasFALSE:year2016" -2.93657410420961 0.00331859521228961 0.0265487616983169
+"issue_post:member:pandasTRUE:year2017-issue_post:member:pandasFALSE:year2017" 3.43637546680959 0.000589553316979075 0.00673775219404657
+"pr_post:member:pandasTRUE:year2017-pr_post:member:pandasFALSE:year2017" -1.33629714019769 0.181452170891749 0.36749806762886
+"issue_reply:member:pandasTRUE:year2017-issue_reply:member:pandasFALSE:year2017" 3.26507084917461 0.0010943669952117 0.010943669952117
+"pr_reply:member:pandasTRUE:year2017-pr_reply:member:pandasFALSE:year2017" -1.08127158320586 0.279576324067424 0.472523364620998
+"issue_post:nonmember:pandasTRUE:year2017-issue_post:nonmember:pandasFALSE:year2017" 3.56275662585988 0.000366980872376299 0.0049612449751398
+"pr_post:nonmember:pandasTRUE:year2017-pr_post:nonmember:pandasFALSE:year2017" -2.687393231908 0.00720121200968227 0.0449298914677691
+"issue_reply:nonmember:pandasTRUE:year2017-issue_reply:nonmember:pandasFALSE:year2017" 0.1580319979452 0.874431584805956 0.940734042843595
+"pr_reply:nonmember:pandasTRUE:year2017-pr_reply:nonmember:pandasFALSE:year2017" -1.64400282720892 0.100175618386507 0.265659098483555
+"issue_post:member:pandasTRUE:year2018-issue_post:member:pandasFALSE:year2018" 3.91557583059088 9.01886912727523e-05 0.00139647005841681
+"pr_post:member:pandasTRUE:year2018-pr_post:member:pandasFALSE:year2018" -0.997650081276426 0.318449067124787 0.519916844285367
+"issue_reply:member:pandasTRUE:year2018-issue_reply:member:pandasFALSE:year2018" 1.96952874128458 0.0488924054569237 0.165182751034825
+"pr_reply:member:pandasTRUE:year2018-pr_reply:member:pandasFALSE:year2018" -1.14569986155338 0.251919361164454 0.452888739172053
+"issue_post:nonmember:pandasTRUE:year2018-issue_post:nonmember:pandasFALSE:year2018" 3.33927343111745 0.000839978401616204 0.00895976961723951
+"pr_post:nonmember:pandasTRUE:year2018-pr_post:nonmember:pandasFALSE:year2018" 4.6837786660731 2.81634119025931e-06 6.75921885662234e-05
+"issue_reply:nonmember:pandasTRUE:year2018-issue_reply:nonmember:pandasFALSE:year2018" -1.50235347477434 0.133005845111951 0.314271700669053
+"pr_reply:nonmember:pandasTRUE:year2018-pr_reply:nonmember:pandasFALSE:year2018" -7.9949188441674 1.33226762955019e-15 2.1316282072803e-13

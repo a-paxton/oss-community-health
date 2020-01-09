@@ -1921,6 +1921,11 @@ write.table(all_coefs_and_se,
 	    file="results/models/model_2.1.tsv", sep="\t")
 ```
 
+```{r write_all_results}
+retention_tests$p_val_adjusted = p.adjust(retention_tests$p_value, method="BH")
+write.table(retention_tests, file="results/models/model_2.tsv")
+```
+
 
 ***
 

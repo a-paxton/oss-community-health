@@ -23,7 +23,7 @@ creates new functions for our analyses.
 **Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux
 (CNRS)
 
-**Date last compiled**:  2019-12-15 19:29:18
+**Date last compiled**:  2020-01-09 12:00:45
 
 
 
@@ -471,7 +471,7 @@ pander_clean_anova(all_project_tests, rename_columns=FALSE,
 
 
 ```r
-all_tests$p_val_adjusted = p.adjust(all_tests$p_value, method="BH")
+all_project_tests$p_val_adjusted = p.adjust(all_project_tests$p_value, method="BH")
 write.table(all_project_tests,
 	    file="results/models/model-timecourse-emotion-pvalues.tsv")
 ```
@@ -801,7 +801,7 @@ Still painful in terms of fitting the models…
 
 
 ```r
-all_tests$p_val_adjusted = p.adjust(all_tests$p_value, method="BH")
+all_project_tests$p_val_adjusted = p.adjust(all_project_tests$p_value, method="BH")
 write.table(all_project_tests,
 	    file="results/models/model-timecourse-gratitude-pvalues.tsv")
 ```

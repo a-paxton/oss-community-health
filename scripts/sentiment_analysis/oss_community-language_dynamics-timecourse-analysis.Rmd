@@ -295,7 +295,7 @@ pander_clean_anova(all_project_tests, rename_columns=FALSE,
 ```
 
 ```{r output_timecourse_emotion_pvalues}
-all_tests$p_val_adjusted = p.adjust(all_tests$p_value, method="BH")
+all_project_tests$p_val_adjusted = p.adjust(all_project_tests$p_value, method="BH")
 write.table(all_project_tests,
 	    file="results/models/model-timecourse-emotion-pvalues.tsv")
 ```
@@ -464,7 +464,7 @@ pander_clean_anova(all_project_tests, rename_columns=FALSE,
 Still painful in terms of fitting the models…
 
 ```{r gratitute_write_results}
-all_tests$p_val_adjusted = p.adjust(all_tests$p_value, method="BH")
+all_project_tests$p_val_adjusted = p.adjust(all_project_tests$p_value, method="BH")
 write.table(all_project_tests,
 	    file="results/models/model-timecourse-gratitude-pvalues.tsv")
 

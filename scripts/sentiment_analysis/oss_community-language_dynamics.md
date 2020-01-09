@@ -25,7 +25,7 @@ creates new functions for our analyses.
 **Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux
 (CNRS)
 
-**Date last compiled**:  2020-01-09 10:08:57
+**Date last compiled**:  2020-01-09 11:43:51
 
 
 
@@ -77,7 +77,7 @@ mean of 8583.875 tickets per project.
 
 On these tickets, the dataset includes
 437321 unique comments, with
-54665.125 average comments per project.
+5.4665125\times 10^{4} average comments per project.
 
 In total, we have 15559 unique commenters,
 14147 unique ticket-creators, and
@@ -2283,6 +2283,12 @@ pander_clean_anova(retention_comment_sentiment_variance, rename_columns=FALSE)
 ```r
 write.table(all_coefs_and_se,
 	    file="results/models/model_2.1.tsv", sep="\t")
+```
+
+
+```r
+retention_tests$p_val_adjusted = p.adjust(retention_tests$p_value, method="BH")
+write.table(retention_tests, file="results/models/model_2.tsv")
 ```
 
 
