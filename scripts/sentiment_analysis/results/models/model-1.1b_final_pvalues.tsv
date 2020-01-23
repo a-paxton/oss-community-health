@@ -1,114 +1,114 @@
 "model" "t_stats" "p_value" "p_val_adjusted"
-"member-nonmember" "Main Terms" -0.115127975845986 0.908343685814001 0.941677399054882
-"issue_post-issue_reply" "Main Terms" -9.67063406685519 0 0
-"pr_post-pr_reply" "Main Terms" -12.5279639448474 0 0
-"issue_post-pr_post" "Main Terms" -0.691963771486445 0.488960080594658 0.594112786098886
-"issue_reply-pr_reply" "Main Terms" -3.65976284878517 0.000252448774858527 0.000620145903456816
-"issue_post:member-issue_post:nonmember" "2W: Types x Author Groups" -0.768483793401098 0.4421998154083 0.54910526528723
-"issue_reply:member-issue_reply:nonmember" "2W: Types x Author Groups" -2.48876156946834 0.0128188902192081 0.0237464687667298
-"pr_post:member-pr_post:nonmember" "2W: Types x Author Groups" -2.79124913496325 0.00525050411468997 0.0104088941221047
-"pr_reply:member-pr_reply:nonmember" "2W: Types x Author Groups" -0.561106243340942 0.574725112261697 0.67389145904493
-"issue_post:member-issue_reply:member" "2W: Types x Author Groups" -7.95682673907766 1.77635683940025e-15 6.92166630524925e-15
-"issue_post:nonmember-issue_reply:nonmember" "2W: Types x Author Groups" -10.1263616701436 0 0
-"pr_post:member-pr_reply:member" "2W: Types x Author Groups" -11.900536821309 0 0
-"pr_post:nonmember-pr_reply:nonmember" "2W: Types x Author Groups" -9.62275254270178 0 0
-"issue_post:member-pr_post:member" "2W: Types x Author Groups" 0.232115290599708 0.816448468992293 0.88418630437819
-"issue_post:nonmember-pr_post:nonmember" "2W: Types x Author Groups" -1.8276350409658 0.0676043431602988 0.104647818864572
-"issue_reply:member-pr_reply:member" "2W: Types x Author Groups" -3.62487342599724 0.000289103009544434 0.00069507744847917
-"issue_reply:nonmember-pr_reply:nonmember" "2W: Types x Author Groups" -1.79707220699412 0.0723241573134514 0.110440942924595
-"scikit.learn:issue_post:member-scikit.learn:issue_post:nonmember" "3W: Types x Author Groups x Project" -0.711731004100465 0.476631364826954 0.585427654624411
-"scikit.learn:issue_reply:member-scikit.learn:issue_reply:nonmember" "3W: Types x Author Groups x Project" -3.61193516214417 0.000303920563626159 0.000715479660203249
-"scikit.learn:pr_post:member-scikit.learn:pr_post:nonmember" "3W: Types x Author Groups x Project" -0.0113630973941541 0.990933755132288 0.992518399657801
-"scikit.learn:pr_reply:member-scikit.learn:pr_reply:nonmember" "3W: Types x Author Groups x Project" -0.842340088444426 0.399597617787616 0.501717009000007
-"scikit.learn:issue_post:member-scikit.learn:issue_reply:member" "3W: Types x Author Groups x Project" -8.91295967304735 0 0
-"scikit.learn:issue_post:nonmember-scikit.learn:issue_reply:nonmember" "3W: Types x Author Groups x Project" -12.5362007210787 0 0
-"scikit.learn:pr_post:member-scikit.learn:pr_reply:member" "3W: Types x Author Groups x Project" -12.6270861940112 0 0
-"scikit.learn:pr_post:nonmember-scikit.learn:pr_reply:nonmember" "3W: Types x Author Groups x Project" -13.3510766682338 0 0
-"scikit.learn:issue_post:member-scikit.learn:pr_post:member" "3W: Types x Author Groups x Project" -1.87690243816287 0.0605314666538339 0.0950007740539338
-"scikit.learn:issue_post:nonmember-scikit.learn:pr_post:nonmember" "3W: Types x Author Groups x Project" -1.34395126835618 0.17896414575087 0.249666030491954
-"scikit.learn:issue_reply:member-scikit.learn:pr_reply:member" "3W: Types x Author Groups x Project" -6.37537366697721 1.82517334579302e-10 6.06601729631209e-10
-"scikit.learn:issue_reply:nonmember-scikit.learn:pr_reply:nonmember" "3W: Types x Author Groups x Project" -3.79653158853013 0.000146734672634707 0.000368467066838265
-"scikit.image:issue_post:member-scikit.image:issue_post:nonmember" "3W: Types x Author Groups x Project" -1.31464107279917 0.18863055946473 0.256810279753187
-"scikit.image:issue_reply:member-scikit.image:issue_reply:nonmember" "3W: Types x Author Groups x Project" -1.32321873019133 0.185762648961062 0.255989991860976
-"scikit.image:pr_post:member-scikit.image:pr_post:nonmember" "3W: Types x Author Groups x Project" -7.07023281331755 1.54676271790777e-12 5.2964905188963e-12
-"scikit.image:pr_reply:member-scikit.image:pr_reply:nonmember" "3W: Types x Author Groups x Project" -0.00937693289087092 0.992518399657801 0.992518399657801
-"scikit.image:issue_post:member-scikit.image:issue_reply:member" "3W: Types x Author Groups x Project" -7.62428464352616 2.46469511466785e-14 9.28368493191556e-14
-"scikit.image:issue_post:nonmember-scikit.image:issue_reply:nonmember" "3W: Types x Author Groups x Project" -7.25217475991201 4.10116385296533e-13 1.44822348557838e-12
-"scikit.image:pr_post:member-scikit.image:pr_reply:member" "3W: Types x Author Groups x Project" -8.90069486928611 0 0
-"scikit.image:pr_post:nonmember-scikit.image:pr_reply:nonmember" "3W: Types x Author Groups x Project" 0.625507296785258 0.531638160879962 0.639096938079103
-"scikit.image:issue_post:member-scikit.image:pr_post:member" "3W: Types x Author Groups x Project" -3.25497814403244 0.0011340109245126 0.00246429297057545
-"scikit.image:issue_post:nonmember-scikit.image:pr_post:nonmember" "3W: Types x Author Groups x Project" -7.98137250035358 1.55431223447522e-15 6.27276008913213e-15
-"scikit.image:issue_reply:member-scikit.image:pr_reply:member" "3W: Types x Author Groups x Project" -4.00252188058277 6.26708698392431e-05 0.000168614483138916
-"scikit.image:issue_reply:nonmember-scikit.image:pr_reply:nonmember" "3W: Types x Author Groups x Project" -2.13740259295999 0.0325652607062703 0.0557556736334628
-"matplotlib:issue_post:member-matplotlib:issue_post:nonmember" "3W: Types x Author Groups x Project" -0.933368150763887 0.350629918782896 0.448636248475081
-"matplotlib:issue_reply:member-matplotlib:issue_reply:nonmember" "3W: Types x Author Groups x Project" -1.96464996189773 0.0494547650983106 0.0798341208015585
-"matplotlib:pr_post:member-matplotlib:pr_post:nonmember" "3W: Types x Author Groups x Project" -0.92810969019883 0.353350673577719 0.448636248475081
-"matplotlib:pr_reply:member-matplotlib:pr_reply:nonmember" "3W: Types x Author Groups x Project" -1.74560986359032 0.0808787671289595 0.121857342474299
-"matplotlib:issue_post:member-matplotlib:issue_reply:member" "3W: Types x Author Groups x Project" -7.36944402255781 1.71418435002124e-13 6.2484784371742e-13
-"matplotlib:issue_post:nonmember-matplotlib:issue_reply:nonmember" "3W: Types x Author Groups x Project" -9.99090545332708 0 0
-"matplotlib:pr_post:member-matplotlib:pr_reply:member" "3W: Types x Author Groups x Project" -11.4538727828997 0 0
-"matplotlib:pr_post:nonmember-matplotlib:pr_reply:nonmember" "3W: Types x Author Groups x Project" -8.9451316270228 0 0
-"matplotlib:issue_post:member-matplotlib:pr_post:member" "3W: Types x Author Groups x Project" -0.55561628060249 0.578473199357152 0.67389145904493
-"matplotlib:issue_post:nonmember-matplotlib:pr_post:nonmember" "3W: Types x Author Groups x Project" -0.516866429830097 0.605249403375418 0.690840228095174
-"matplotlib:issue_reply:member-matplotlib:pr_reply:member" "3W: Types x Author Groups x Project" -2.93261596889959 0.00336119366426457 0.0070336089641092
-"matplotlib:issue_reply:nonmember-matplotlib:pr_reply:nonmember" "3W: Types x Author Groups x Project" -2.71287920196473 0.00667014167017488 0.0129952760125821
-"mayavi:issue_post:member-mayavi:issue_post:nonmember" "3W: Types x Author Groups x Project" -1.56813602963684 0.116849389648384 0.169281808080351
-"mayavi:issue_reply:member-mayavi:issue_reply:nonmember" "3W: Types x Author Groups x Project" -1.40562158576466 0.159836522768542 0.228626924972725
-"mayavi:pr_post:member-mayavi:pr_post:nonmember" "3W: Types x Author Groups x Project" -0.519737501386739 0.603246545181852 0.690840228095174
-"mayavi:pr_reply:member-mayavi:pr_reply:nonmember" "3W: Types x Author Groups x Project" -2.07514781712303 0.0379728371987784 0.0631019206391465
-"mayavi:issue_post:member-mayavi:issue_reply:member" "3W: Types x Author Groups x Project" -1.88239322796907 0.0597826447114946 0.0950007740539338
-"mayavi:issue_post:nonmember-mayavi:issue_reply:nonmember" "3W: Types x Author Groups x Project" -2.89047435104187 0.00384660919202906 0.00790303343089607
-"mayavi:pr_post:member-mayavi:pr_reply:member" "3W: Types x Author Groups x Project" -2.27924574192983 0.0226524613798735 0.0412859376762211
-"mayavi:pr_post:nonmember-mayavi:pr_reply:nonmember" "3W: Types x Author Groups x Project" -3.40409359385635 0.000663840031364105 0.0014708612459636
-"mayavi:issue_post:member-mayavi:pr_post:member" "3W: Types x Author Groups x Project" -0.0693725310323846 0.944693093290246 0.961714590466647
-"mayavi:issue_post:nonmember-mayavi:pr_post:nonmember" "3W: Types x Author Groups x Project" 1.07139832069958 0.283990367613761 0.377540135768882
-"mayavi:issue_reply:member-mayavi:pr_reply:member" "3W: Types x Author Groups x Project" -0.193052711088149 0.846917686983751 0.902846213482678
-"mayavi:issue_reply:nonmember-mayavi:pr_reply:nonmember" "3W: Types x Author Groups x Project" -1.56980801203577 0.116459783059652 0.169281808080351
-"pandas:issue_post:member-pandas:issue_post:nonmember" "3W: Types x Author Groups x Project" -1.05164829583863 0.292960940954709 0.38493705032421
-"pandas:issue_reply:member-pandas:issue_reply:nonmember" "3W: Types x Author Groups x Project" -5.48309792221251 4.17941521391185e-08 1.31187199770011e-07
-"pandas:pr_post:member-pandas:pr_post:nonmember" "3W: Types x Author Groups x Project" -4.69966035016583 2.60594538348258e-06 7.74925864035609e-06
-"pandas:pr_reply:member-pandas:pr_reply:nonmember" "3W: Types x Author Groups x Project" 1.39745913545024 0.162275546967042 0.229214210090946
-"pandas:issue_post:member-pandas:issue_reply:member" "3W: Types x Author Groups x Project" -9.8864280005673 0 0
-"pandas:issue_post:nonmember-pandas:issue_reply:nonmember" "3W: Types x Author Groups x Project" -15.061495726144 0 0
-"pandas:pr_post:member-pandas:pr_reply:member" "3W: Types x Author Groups x Project" -18.3514973436953 0 0
-"pandas:pr_post:nonmember-pandas:pr_reply:nonmember" "3W: Types x Author Groups x Project" -9.04953946874681 0 0
-"pandas:issue_post:member-pandas:pr_post:member" "3W: Types x Author Groups x Project" 4.58740244836728 4.48795020058235e-06 1.30035480170719e-05
-"pandas:issue_post:nonmember-pandas:pr_post:nonmember" "3W: Types x Author Groups x Project" 0.313702809556735 0.753746766700709 0.835033182717452
-"pandas:issue_reply:member-pandas:pr_reply:member" "3W: Types x Author Groups x Project" -3.83891123948905 0.000123581092297487 0.000317378714309455
-"pandas:issue_reply:nonmember-pandas:pr_reply:nonmember" "3W: Types x Author Groups x Project" 2.69122429693511 0.00711903136879455 0.0136347549944709
-"scipy:issue_post:member-scipy:issue_post:nonmember" "3W: Types x Author Groups x Project" -3.03491708238731 0.00240601824666453 0.00512981248817155
-"scipy:issue_reply:member-scipy:issue_reply:nonmember" "3W: Types x Author Groups x Project" -5.66865127542356 1.43925962259317e-08 4.64675249580081e-08
-"scipy:pr_post:member-scipy:pr_post:nonmember" "3W: Types x Author Groups x Project" -3.92067030318741 8.83030057827749e-05 0.000232052084964036
-"scipy:pr_reply:member-scipy:pr_reply:nonmember" "3W: Types x Author Groups x Project" -2.11924740514313 0.0340695639382971 0.0574606078362324
-"scipy:issue_post:member-scipy:issue_reply:member" "3W: Types x Author Groups x Project" -8.78994421668953 0 0
-"scipy:issue_post:nonmember-scipy:issue_reply:nonmember" "3W: Types x Author Groups x Project" -11.8279441304437 0 0
-"scipy:pr_post:member-scipy:pr_reply:member" "3W: Types x Author Groups x Project" -16.5974219044343 0 0
-"scipy:pr_post:nonmember-scipy:pr_reply:nonmember" "3W: Types x Author Groups x Project" -10.3572295567366 0 0
-"scipy:issue_post:member-scipy:pr_post:member" "3W: Types x Author Groups x Project" -2.26301480822664 0.0236347764608567 0.0423925355567746
-"scipy:issue_post:nonmember-scipy:pr_post:nonmember" "3W: Types x Author Groups x Project" -2.84652127163123 0.00441997761262702 0.0089188833969081
-"scipy:issue_reply:member-scipy:pr_reply:member" "3W: Types x Author Groups x Project" -9.01696653770037 0 0
-"scipy:issue_reply:nonmember-scipy:pr_reply:nonmember" "3W: Types x Author Groups x Project" -4.26164281746163 2.02929602697299e-05 5.73276127619871e-05
-"numpy:issue_post:member-numpy:issue_post:nonmember" "3W: Types x Author Groups x Project" 0.0916972072219682 0.926938616358725 0.952218760441236
-"numpy:issue_reply:member-numpy:issue_reply:nonmember" "3W: Types x Author Groups x Project" -2.54225320516565 0.0110140352242309 0.0207430996723016
-"numpy:pr_post:member-numpy:pr_post:nonmember" "3W: Types x Author Groups x Project" -0.225501647453832 0.821589043891239 0.88418630437819
-"numpy:pr_reply:member-numpy:pr_reply:nonmember" "3W: Types x Author Groups x Project" 0.480319461795196 0.631000252332206 0.713030285135393
-"numpy:issue_post:member-numpy:issue_reply:member" "3W: Types x Author Groups x Project" -9.89887527571378 0 0
-"numpy:issue_post:nonmember-numpy:issue_reply:nonmember" "3W: Types x Author Groups x Project" -13.2858889036783 0 0
-"numpy:pr_post:member-numpy:pr_reply:member" "3W: Types x Author Groups x Project" -16.979397005696 0 0
-"numpy:pr_post:nonmember-numpy:pr_reply:nonmember" "3W: Types x Author Groups x Project" -11.6779989885299 0 0
-"numpy:issue_post:member-numpy:pr_post:member" "3W: Types x Author Groups x Project" -1.99618327941388 0.0459139767781112 0.0751924547235733
-"numpy:issue_post:nonmember-numpy:pr_post:nonmember" "3W: Types x Author Groups x Project" -2.19092932935911 0.0284569069314458 0.049471238203898
-"numpy:issue_reply:member-numpy:pr_reply:member" "3W: Types x Author Groups x Project" -9.49160496790469 0 0
-"numpy:issue_reply:nonmember-numpy:pr_reply:nonmember" "3W: Types x Author Groups x Project" -5.0021800131397 5.66856212635969e-07 1.73120951426661e-06
-"sphinx.gallery:issue_post:member-sphinx.gallery:issue_post:nonmember" "3W: Types x Author Groups x Project" 0.57047109367227 0.568358222363612 0.67389145904493
-"sphinx.gallery:issue_reply:member-sphinx.gallery:issue_reply:nonmember" "3W: Types x Author Groups x Project" -0.354179674534619 0.723204234973611 0.809129490614041
-"sphinx.gallery:pr_post:member-sphinx.gallery:pr_post:nonmember" "3W: Types x Author Groups x Project" -1.62475106772941 0.104215611185383 0.154952158736162
-"sphinx.gallery:pr_reply:member-sphinx.gallery:pr_reply:nonmember" "3W: Types x Author Groups x Project" 0.135234950775221 0.892426114185205 0.933742137990076
-"sphinx.gallery:issue_post:member-sphinx.gallery:issue_reply:member" "3W: Types x Author Groups x Project" -3.57676303422601 0.000347875257637353 0.00080224294108206
-"sphinx.gallery:issue_post:nonmember-sphinx.gallery:issue_reply:nonmember" "3W: Types x Author Groups x Project" -4.13651075307363 3.52626837942793e-05 9.71873967988674e-05
-"sphinx.gallery:pr_post:member-sphinx.gallery:pr_reply:member" "3W: Types x Author Groups x Project" -3.46242907915351 0.000535322976330965 0.00120982992650798
-"sphinx.gallery:pr_post:nonmember-sphinx.gallery:pr_reply:nonmember" "3W: Types x Author Groups x Project" -0.181771232400382 0.855762261604895 0.903748930479936
-"sphinx.gallery:issue_post:member-sphinx.gallery:pr_post:member" "3W: Types x Author Groups x Project" -0.297538168442868 0.766055672447576 0.840430009578409
-"sphinx.gallery:issue_post:nonmember-sphinx.gallery:pr_post:nonmember" "3W: Types x Author Groups x Project" -2.21562231653035 0.0267173791704738 0.0471728725978678
-"sphinx.gallery:issue_reply:member-sphinx.gallery:pr_reply:member" "3W: Types x Author Groups x Project" 1.22386066453947 0.22100479462477 0.297304068959512
-"sphinx.gallery:issue_reply:nonmember-sphinx.gallery:pr_reply:nonmember" "3W: Types x Author Groups x Project" 1.03404680139341 0.301114284405063 0.391102461353703
+"member-nonmember" "Main Terms" -0.0930310971439479 0.925878856395832 0.942561358312874
+"issue_post-issue_reply" "Main Terms" -8.82890213610701 0 0
+"pr_post-pr_reply" "Main Terms" -11.4532412974154 0 0
+"issue_post-pr_post" "Main Terms" -0.620778272495774 0.534745520945775 0.642832381562474
+"issue_reply-pr_reply" "Main Terms" -3.3296298239161 0.000869615133572088 0.00185408509610653
+"issue_post:member-issue_post:nonmember" "2W: Types x Author Groups" -0.71012023841109 0.477629577050746 0.586653719638417
+"issue_reply:member-issue_reply:nonmember" "2W: Types x Author Groups" -2.28355875873643 0.0223974758785734 0.0401732503853778
+"pr_post:member-pr_post:nonmember" "2W: Types x Author Groups" -2.57923314817678 0.00990199302923589 0.0184506803866663
+"pr_reply:member-pr_reply:nonmember" "2W: Types x Author Groups" -0.489685053262135 0.624356780132419 0.698537783712509
+"issue_post:member-issue_reply:member" "2W: Types x Author Groups" -7.38814588785034 0.000000000000148991929904696 0.000000000000561202935974355
+"issue_post:nonmember-issue_reply:nonmember" "2W: Types x Author Groups" -9.31826152130612 0 0
+"pr_post:member-pr_reply:member" "2W: Types x Author Groups" -11.0265783339829 0 0
+"pr_post:nonmember-pr_reply:nonmember" "2W: Types x Author Groups" -8.89953230313484 0 0
+"issue_post:member-pr_post:member" "2W: Types x Author Groups" 0.222710600383711 0.82376075064541 0.886523474504108
+"issue_post:nonmember-pr_post:nonmember" "2W: Types x Author Groups" -1.67569511983855 0.0937979262254616 0.141322208846362
+"issue_reply:member-pr_reply:member" "2W: Types x Author Groups" -3.34564842511724 0.000820904103643105 0.00178388776368598
+"issue_reply:nonmember-pr_reply:nonmember" "2W: Types x Author Groups" -1.62980769725464 0.103142146470632 0.151098923953441
+"scikit.learn:issue_post:member-scikit.learn:issue_post:nonmember" "3W: Types x Author Groups x Project" -0.666040672853409 0.505385103483911 0.614070071975075
+"scikit.learn:issue_reply:member-scikit.learn:issue_reply:nonmember" "3W: Types x Author Groups x Project" -3.53113544818852 0.000413779801518022 0.000954226889215029
+"scikit.learn:pr_post:member-scikit.learn:pr_post:nonmember" "3W: Types x Author Groups x Project" 0.0292035803343634 0.976702225759088 0.976702225759088
+"scikit.learn:pr_reply:member-scikit.learn:pr_reply:nonmember" "3W: Types x Author Groups x Project" -0.755745363078519 0.44980188049246 0.558545192259867
+"scikit.learn:issue_post:member-scikit.learn:issue_reply:member" "3W: Types x Author Groups x Project" -8.9046571811411 0 0
+"scikit.learn:issue_post:nonmember-scikit.learn:issue_reply:nonmember" "3W: Types x Author Groups x Project" -12.5264991998156 0 0
+"scikit.learn:pr_post:member-scikit.learn:pr_reply:member" "3W: Types x Author Groups x Project" -12.6166070564563 0 0
+"scikit.learn:pr_post:nonmember-scikit.learn:pr_reply:nonmember" "3W: Types x Author Groups x Project" -13.3248172110563 0 0
+"scikit.learn:issue_post:member-scikit.learn:pr_post:member" "3W: Types x Author Groups x Project" -1.87537045882926 0.0607417762615625 0.0940249413363913
+"scikit.learn:issue_post:nonmember-scikit.learn:pr_post:nonmember" "3W: Types x Author Groups x Project" -1.35197383870313 0.176383684459287 0.243065321267066
+"scikit.learn:issue_reply:member-scikit.learn:pr_reply:member" "3W: Types x Author Groups x Project" -6.37294282308869 0.000000000185435000688017 0.000000000616298678757232
+"scikit.learn:issue_reply:nonmember-scikit.learn:pr_reply:nonmember" "3W: Types x Author Groups x Project" -3.78762114226894 0.000152096532655577 0.00036567889766128
+"scikit.image:issue_post:member-scikit.image:issue_post:nonmember" "3W: Types x Author Groups x Project" -1.23834230820184 0.215589162491785 0.290018754304425
+"scikit.image:issue_reply:member-scikit.image:issue_reply:nonmember" "3W: Types x Author Groups x Project" -1.25071684103433 0.211037803922825 0.28731652823228
+"scikit.image:pr_post:member-scikit.image:pr_post:nonmember" "3W: Types x Author Groups x Project" -7.14948443901938 0.000000000000871080985120898 0.00000000000298279246420186
+"scikit.image:pr_reply:member-scikit.image:pr_reply:nonmember" "3W: Types x Author Groups x Project" -1.97166493273061 0.0486478693259562 0.0774254821666627
+"scikit.image:issue_post:member-scikit.image:issue_reply:member" "3W: Types x Author Groups x Project" -7.6204189982149 0.0000000000000253130849614536 0.0000000000000986337448498018
+"scikit.image:issue_post:nonmember-scikit.image:issue_reply:nonmember" "3W: Types x Author Groups x Project" -7.29212940240178 0.000000000000305089287166993 0.00000000000107734654530844
+"scikit.image:pr_post:member-scikit.image:pr_reply:member" "3W: Types x Author Groups x Project" -8.90508506129013 0 0
+"scikit.image:pr_post:nonmember-scikit.image:pr_reply:nonmember" "3W: Types x Author Groups x Project" -0.570634921299186 0.568247141537544 0.667673229431985
+"scikit.image:issue_post:member-scikit.image:pr_post:member" "3W: Types x Author Groups x Project" -3.25255416348705 0.00114372795653228 0.00239335664978051
+"scikit.image:issue_post:nonmember-scikit.image:pr_post:nonmember" "3W: Types x Author Groups x Project" -8.12981799230618 0.000000000000000444089209850063 0.00000000000000179221716832347
+"scikit.image:issue_reply:member-scikit.image:pr_reply:member" "3W: Types x Author Groups x Project" -4.00915894203485 0.0000609353930949297 0.000163945224279216
+"scikit.image:issue_reply:nonmember-scikit.image:pr_reply:nonmember" "3W: Types x Author Groups x Project" -3.98138180396274 0.0000685157896196387 0.000180053121558585
+"matplotlib:issue_post:member-matplotlib:issue_post:nonmember" "3W: Types x Author Groups x Project" -0.870598650429953 0.38397333361569 0.484975590317039
+"matplotlib:issue_reply:member-matplotlib:issue_reply:nonmember" "3W: Types x Author Groups x Project" -1.84576798095764 0.0649259016039281 0.0991436065032956
+"matplotlib:pr_post:member-matplotlib:pr_post:nonmember" "3W: Types x Author Groups x Project" -0.866412950564629 0.386263744500297 0.484975590317039
+"matplotlib:pr_reply:member-matplotlib:pr_reply:nonmember" "3W: Types x Author Groups x Project" -1.6628728641195 0.0963378872893779 0.143239227153943
+"matplotlib:issue_post:member-matplotlib:issue_reply:member" "3W: Types x Author Groups x Project" -7.3694845710124 0.000000000000171196390397199 0.000000000000624038455318823
+"matplotlib:issue_post:nonmember-matplotlib:issue_reply:nonmember" "3W: Types x Author Groups x Project" -9.98067227309836 0 0
+"matplotlib:pr_post:member-matplotlib:pr_reply:member" "3W: Types x Author Groups x Project" -11.4451235973323 0 0
+"matplotlib:pr_post:nonmember-matplotlib:pr_reply:nonmember" "3W: Types x Author Groups x Project" -8.93814024414849 0 0
+"matplotlib:issue_post:member-matplotlib:pr_post:member" "3W: Types x Author Groups x Project" -0.563993834504757 0.572758328138803 0.667673229431985
+"matplotlib:issue_post:nonmember-matplotlib:pr_post:nonmember" "3W: Types x Author Groups x Project" -0.529766200229926 0.596274042499094 0.687540477575486
+"matplotlib:issue_reply:member-matplotlib:pr_reply:member" "3W: Types x Author Groups x Project" -2.93337284355713 0.00335300968580055 0.00676589454456181
+"matplotlib:issue_reply:nonmember-matplotlib:pr_reply:nonmember" "3W: Types x Author Groups x Project" -2.73404515243871 0.00625614647249484 0.011982111040541
+"mayavi:issue_post:member-mayavi:issue_post:nonmember" "3W: Types x Author Groups x Project" -1.5643393765429 0.117737889465419 0.166304768869905
+"mayavi:issue_reply:member-mayavi:issue_reply:nonmember" "3W: Types x Author Groups x Project" -1.40357557868641 0.160445271526768 0.223831057808948
+"mayavi:pr_post:member-mayavi:pr_post:nonmember" "3W: Types x Author Groups x Project" -0.519433961201701 0.60345815370646 0.688795670392222
+"mayavi:pr_reply:member-mayavi:pr_reply:nonmember" "3W: Types x Author Groups x Project" -2.07031728607057 0.0384226418707427 0.0629240366868685
+"mayavi:issue_post:member-mayavi:issue_reply:member" "3W: Types x Author Groups x Project" -1.88053468129257 0.0600352443581771 0.0940249413363913
+"mayavi:issue_post:nonmember-mayavi:issue_reply:nonmember" "3W: Types x Author Groups x Project" -2.88989328775568 0.00385372619832602 0.00763984316510247
+"mayavi:pr_post:member-mayavi:pr_reply:member" "3W: Types x Author Groups x Project" -2.27741789476949 0.0227612824997077 0.0401878894135463
+"mayavi:pr_post:nonmember-mayavi:pr_reply:nonmember" "3W: Types x Author Groups x Project" -3.39688932778854 0.000681565261259509 0.00151013479455538
+"mayavi:issue_post:member-mayavi:pr_post:member" "3W: Types x Author Groups x Project" -0.0694719777269052 0.944613937282291 0.95304799029374
+"mayavi:issue_post:nonmember-mayavi:pr_post:nonmember" "3W: Types x Author Groups x Project" 1.06721177972116 0.285876214426839 0.374092981097774
+"mayavi:issue_reply:member-mayavi:pr_reply:member" "3W: Types x Author Groups x Project" -0.19310853026467 0.846873972212504 0.89436223233657
+"mayavi:issue_reply:nonmember-mayavi:pr_reply:nonmember" "3W: Types x Author Groups x Project" -1.56558769362638 0.117445172867502 0.166304768869905
+"pandas:issue_post:member-pandas:issue_post:nonmember" "3W: Types x Author Groups x Project" -1.06247855183865 0.288018489871738 0.374092981097774
+"pandas:issue_reply:member-pandas:issue_reply:nonmember" "3W: Types x Author Groups x Project" -5.45967749856518 0.0000000477000243748193 0.00000014972507650985
+"pandas:pr_post:member-pandas:pr_post:nonmember" "3W: Types x Author Groups x Project" -4.60132333533372 0.00000419815144225844 0.0000124839766572422
+"pandas:pr_reply:member-pandas:pr_reply:nonmember" "3W: Types x Author Groups x Project" 2.5772113914729 0.00996010180165174 0.0184506803866663
+"pandas:issue_post:member-pandas:issue_reply:member" "3W: Types x Author Groups x Project" -9.8771308883922 0 0
+"pandas:issue_post:nonmember-pandas:issue_reply:nonmember" "3W: Types x Author Groups x Project" -15.0148532126898 0 0
+"pandas:pr_post:member-pandas:pr_reply:member" "3W: Types x Author Groups x Project" -18.343853392019 0 0
+"pandas:pr_post:nonmember-pandas:pr_reply:nonmember" "3W: Types x Author Groups x Project" -8.31680018172969 0 0
+"pandas:issue_post:member-pandas:pr_post:member" "3W: Types x Author Groups x Project" 4.59462000352676 0.00000433538576727344 0.0000125615023513307
+"pandas:issue_post:nonmember-pandas:pr_post:nonmember" "3W: Types x Author Groups x Project" 0.434143740925878 0.664184063774889 0.735811756927083
+"pandas:issue_reply:member-pandas:pr_reply:member" "3W: Types x Author Groups x Project" -3.83071335759824 0.000127772285375194 0.000313875396682542
+"pandas:issue_reply:nonmember-pandas:pr_reply:nonmember" "3W: Types x Author Groups x Project" 3.93886328280674 0.0000818685622614446 0.000210253353080528
+"scipy:issue_post:member-scipy:issue_post:nonmember" "3W: Types x Author Groups x Project" -2.99367766554514 0.00275636976476967 0.00566308697125405
+"scipy:issue_reply:member-scipy:issue_reply:nonmember" "3W: Types x Author Groups x Project" -5.59892805681598 0.0000000215681275061996 0.0000000696342402343017
+"scipy:pr_post:member-scipy:pr_post:nonmember" "3W: Types x Author Groups x Project" -3.89113005599362 0.0000997784300669213 0.000250554724390269
+"scipy:pr_reply:member-scipy:pr_reply:nonmember" "3W: Types x Author Groups x Project" -2.10332472828893 0.0354373932700129 0.0588886094045803
+"scipy:issue_post:member-scipy:issue_reply:member" "3W: Types x Author Groups x Project" -8.77683621729142 0 0
+"scipy:issue_post:nonmember-scipy:issue_reply:nonmember" "3W: Types x Author Groups x Project" -11.8204932338657 0 0
+"scipy:pr_post:member-scipy:pr_reply:member" "3W: Types x Author Groups x Project" -16.5744045358605 0 0
+"scipy:pr_post:nonmember-scipy:pr_reply:nonmember" "3W: Types x Author Groups x Project" -10.3592727451411 0 0
+"scipy:issue_post:member-scipy:pr_post:member" "3W: Types x Author Groups x Project" -2.26060325078351 0.0237838362748255 0.0413472846008505
+"scipy:issue_post:nonmember-scipy:pr_post:nonmember" "3W: Types x Author Groups x Project" -2.86445162515321 0.00417731954361278 0.00813857083496972
+"scipy:issue_reply:member-scipy:pr_reply:member" "3W: Types x Author Groups x Project" -9.00739615298217 0 0
+"scipy:issue_reply:nonmember-scipy:pr_reply:nonmember" "3W: Types x Author Groups x Project" -4.30258015899998 0.0000168820563335448 0.000047691809142264
+"numpy:issue_post:member-numpy:issue_post:nonmember" "3W: Types x Author Groups x Project" 0.134690375520695 0.892856683067467 0.921038625564757
+"numpy:issue_reply:member-numpy:issue_reply:nonmember" "3W: Types x Author Groups x Project" -2.46980657152102 0.0135186127445583 0.0246387619376628
+"numpy:pr_post:member-numpy:pr_post:nonmember" "3W: Types x Author Groups x Project" -0.200311214429694 0.841237192442425 0.89436223233657
+"numpy:pr_reply:member-numpy:pr_reply:nonmember" "3W: Types x Author Groups x Project" 0.499891143253595 0.617151728909798 0.697381453668071
+"numpy:issue_post:member-numpy:issue_reply:member" "3W: Types x Author Groups x Project" -9.88466028017529 0 0
+"numpy:issue_post:nonmember-numpy:issue_reply:nonmember" "3W: Types x Author Groups x Project" -13.272460004639 0 0
+"numpy:pr_post:member-numpy:pr_reply:member" "3W: Types x Author Groups x Project" -16.960392389557 0 0
+"numpy:pr_post:nonmember-numpy:pr_reply:nonmember" "3W: Types x Author Groups x Project" -11.6762587815786 0 0
+"numpy:issue_post:member-numpy:pr_post:member" "3W: Types x Author Groups x Project" -1.99099018613319 0.0464819661831848 0.0750351739814269
+"numpy:issue_post:nonmember-numpy:pr_post:nonmember" "3W: Types x Author Groups x Project" -2.20359037729465 0.0275531646336651 0.0464702627403605
+"numpy:issue_reply:member-numpy:pr_reply:member" "3W: Types x Author Groups x Project" -9.4817476593835 0 0
+"numpy:issue_reply:nonmember-numpy:pr_reply:nonmember" "3W: Types x Author Groups x Project" -5.03620302938357 0.000000474856892695996 0.00000145023861823372
+"sphinx.gallery:issue_post:member-sphinx.gallery:issue_post:nonmember" "3W: Types x Author Groups x Project" 0.563439822049694 0.573135427034536 0.667673229431985
+"sphinx.gallery:issue_reply:member-sphinx.gallery:issue_reply:nonmember" "3W: Types x Author Groups x Project" -0.358660081404031 0.719849394522109 0.789737685252411
+"sphinx.gallery:pr_post:member-sphinx.gallery:pr_post:nonmember" "3W: Types x Author Groups x Project" -1.62436293699533 0.104298372286446 0.151098923953441
+"sphinx.gallery:pr_reply:member-sphinx.gallery:pr_reply:nonmember" "3W: Types x Author Groups x Project" 0.129974915720629 0.896586272673657 0.921038625564757
+"sphinx.gallery:issue_post:member-sphinx.gallery:issue_reply:member" "3W: Types x Author Groups x Project" -3.57130235255808 0.000355210550499585 0.00083622483763444
+"sphinx.gallery:issue_post:nonmember-sphinx.gallery:issue_reply:nonmember" "3W: Types x Author Groups x Project" -4.12649143137743 0.0000368339721639188 0.00010151802084202
+"sphinx.gallery:pr_post:member-sphinx.gallery:pr_reply:member" "3W: Types x Author Groups x Project" -3.45562947687674 0.000549009441465076 0.00124076133771107
+"sphinx.gallery:pr_post:nonmember-sphinx.gallery:pr_reply:nonmember" "3W: Types x Author Groups x Project" -0.180999398241529 0.856368048347264 0.896014717252229
+"sphinx.gallery:issue_post:member-sphinx.gallery:pr_post:member" "3W: Types x Author Groups x Project" -0.297596930656593 0.766010817475227 0.832300215141353
+"sphinx.gallery:issue_post:nonmember-sphinx.gallery:pr_post:nonmember" "3W: Types x Author Groups x Project" -2.20940287260642 0.0271466314092144 0.0464702627403605
+"sphinx.gallery:issue_reply:member-sphinx.gallery:pr_reply:member" "3W: Types x Author Groups x Project" 1.22349125929063 0.221144203546478 0.2939917058912
+"sphinx.gallery:issue_reply:nonmember-sphinx.gallery:pr_reply:nonmember" "3W: Types x Author Groups x Project" 1.03345711515104 0.301390029727684 0.387012197263958
