@@ -1941,6 +1941,17 @@ pander_clean_anova(retention_comment_sentiment_variance, rename_columns=FALSE)
 
 ```{r add-sentiment-variance-and-recalculate-ps}
 
+retention_comment_sentiment_variance[, "row_names"] = row.names(
+  retention_comment_sentiment_variance)
+
+mask = (
+  retention_comment_sentiment_variance$row_names != "(Intercept)" &
+    retention_comment_sentiment_variance$row_names != "ticket_familyissue" &
+    retention_comment_sentiment_variance$row_names != "ticket_familypr")
+retention_comment_sentiment_variance = retention_comment_sentiment_variance[mask, ]
+row.names(retention_comment_sentiment_variance) = retention_comment_sentiment_variance[,
+                                                                                       "row_names"] 
+
 columns_of_interest = c("Z value", "p_value")
 retention_comment_sentiment_variance = select(retention_comment_sentiment_variance, 
                                               one_of(columns_of_interest))
