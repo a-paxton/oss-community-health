@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import rc
+
+rc('text', usetex=True)
 
 model_results = pd.read_csv("results/models/model_2.1.tsv", sep="\t")
 
@@ -20,7 +23,7 @@ ax.spines["bottom"].set_position(('data', 0))
 ax.xaxis.set_ticks_position('top')
 ax.set_xticks([1, 2])
 ax.set_xticklabels(["Issue", "PR"], fontweight="bold")
-ax.set_ylabel("Retention Rate", fontweight="bold")
+ax.set_ylabel(r"$\log(p_r)$", fontweight="bold")
 
 fig.savefig("figures/supp/retention_rates_ticket_vs_PR.pdf")
 fig.savefig("figures/supp/retention_rates_ticket_vs_PR.png")
@@ -45,7 +48,7 @@ ax.legend(frameon=False)
 
 ax.spines["right"].set_linewidth(0)
 ax.spines["top"].set_linewidth(0)
-ax.set_ylabel("Newcomer retention", fontweight="bold")
+ax.set_ylabel(r"\log(p_r)$", fontweight="bold")
 ax.set_xlabel("Max negative emotion", fontweight="bold")
 fig.savefig(
     "figures/supp/newcomer_retention_max_negative_emotion_cross_ticket.pdf")
