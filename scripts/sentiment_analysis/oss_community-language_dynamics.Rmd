@@ -1781,10 +1781,6 @@ all_coefs_and_se = rbind(
 retention_comment_sentiment_mean[, "row_names"] = row.names(
   retention_comment_sentiment_mean)
 retention_tests_continuous = rbind(
-<<<<<<< HEAD
-  retention_tests_continuous,
-  retention_comment_sentiment_mean)
-=======
     retention_tests_continuous,
     retention_comment_sentiment_mean)
 
@@ -1792,7 +1788,6 @@ random_effects = ranef(retention_predictor)$project
 colnames(random_effects) = "comment_sentiment_mean"
 all_random_effects = cbind(all_random_effects, random_effects)
 
->>>>>>> Changes
 ```
 
 Now let's do interaction terms between contribution types and everything else.
@@ -1812,16 +1807,11 @@ all_coefs_and_se = rbind(
 retention_open_time[, "row_names"] = row.names(
   retention_open_time)
 retention_tests_continuous = rbind(
-<<<<<<< HEAD
-  retention_tests_continuous,
-  retention_open_time)
-=======
     retention_tests_continuous,
     retention_open_time)
 random_effects = ranef(retention_predictor)$project
 colnames(random_effects) = "ticket_family_open_time"
 all_random_effects = cbind(all_random_effects, random_effects)
->>>>>>> Changes
 
 # Ticket family x comment sentiment max negative
 retention_predictor = glmer(
