@@ -13,7 +13,8 @@ This R markdown provides the data preparation for our forthcoming manuscript
 To run this from scratch, you will need the following files:
 
 * `../../data/analysis_data/sentiment_frame_tickets-for_r.csv`: Contains cleaned
-**tickets**-related data and derived variables from scraped GitHub data.
+**posts**-related data (sometimes also referred to as *tickets*) and 
+derived variables from scraped GitHub data.
 * `../../data/analysis_data/sentiment_frame_comments-for_r.csv`: Contains
 cleaned **comments**-related data and derived variables from scraped GitHub
 data.
@@ -48,18 +49,19 @@ source("./utils/data-loading.R")
 
 ```{r choosing_dataset}
 
-# We are now going to select the dataset we'll be working on.
-library(dplyr)
+# select the dataset we'll be working on
 tickets_frame = loading_tickets_data(dataset="original")
 comments_frame = loading_comments_data(dataset="original")
 
 ```
 
+***
 
 ## Basic summary stats
 
-The data has been largely cleaned. Let's take a look at some basic
-patterns.
+The data have been largely cleaned by the time we load them. 
+Let's take a look at some basic patterns in the aggregate and
+broken down by specific projects.
 
 ```{r user-stats, include=FALSE, eval=TRUE}
 
@@ -70,7 +72,7 @@ unique_users = as.character(unique(append(unique_commenters, unique_ticketers)))
 
 ```
 
-```{r activity-stats, echo=FALSE, eval=TRUE}
+```{r activity-stats, echo=FALSE, eval=TRUE, message=FALSE}
 
 # get counts of ticket activity per project
 ticket_counts = tickets_frame %>% ungroup() %>%
@@ -116,13 +118,15 @@ In total, we have `r length(unique_commenters)` unique commenters,
 
 ## Model Series 1: Sentiment analysis
 
+***
+
 ### Data preparation
 
 Before we can run Model Series 1, we need to combine `tickets_frame` and
 `comments_frame` into a single dataframe. We do this using the
 `combine_tickets_and_comments` function, `defined in utils/data-loading.R`
 
-```{r prepare-data-for-sentiment-analysis}
+```{r prepare-data-for-sentiment-analysis, message=FALSE}
 sentiment_frame = combine_tickets_and_comments(tickets_frame, comments_frame)
 ```
 
@@ -137,7 +141,7 @@ write.table(sentiment_frame,
 
 ***
 
-### Model 1.1: Do different kinds of user contributions materially differ in emotion?
+### Model 1.1: Do different kinds of activities materially differ in emotion?
 
 Now we begin the actual modeling. Our first general question is whether users'
 patterns of sentiment differ materially by whether they are a member of the
@@ -193,7 +197,7 @@ Projects here are random effects, but the rest of the model is the same as
 before. This allows us to do pairwise testing of main and interaction terms,
 along with better exploring inter-project variability.
 
-##### Model 1.1b.1: Does sentiment vary significantly by community membership?
+#### Model 1.1a: Does sentiment vary significantly by community membership?
 
 First, look at whether there are differences in sentiment between author 
 groups.
@@ -208,11 +212,11 @@ fixed_creators_v_commenters_emotion = lmer(
 
 ```
 
-Run *t*-tests among levels and prepare for the Model 1.1b table later.
+Run *t*-tests among levels and prepare for the Model 1.1 table later.
 
-```{r clean-up-model-1.1b1-output}
+```{r clean-up-model-1.1a-output}
 
-# convert Model 1.1b1 output to dataframe
+# convert Model 1.1a output to dataframe
 coefficients_and_se = data.frame(
   summary(fixed_creators_v_commenters_emotion)$coefficients)
 
@@ -237,7 +241,7 @@ author_groups_tests[, "p_value"] = compute_p_value_from_t_stats(
   author_groups_tests$t_stats)
 ```
 
-```{r saving_results-model-1.1b1}
+```{r saving_results-model-1.1a}
 dir.create("results/models", showWarnings=FALSE)
 write.table(coefficients_and_se,
             file="results/models/model-1.1b1.tsv",
@@ -245,14 +249,14 @@ write.table(coefficients_and_se,
 
 ```
 
-##### Model 1.1b.2: Does sentiment vary significantly across contribution types?
+#### Model 1.1b: Does sentiment vary significantly across activity types?
 
-Now, look at whether there are differences in sentiment between contribution
+Now, look at whether there are differences in sentiment between activity
 types.
 
 ```{r model-emotion-by-type}
 
-# do tickets and comments materially differ in emotion?
+# do posts and comments materially differ in emotion?
 fixed_types_emotion = lmer(
   compound_emotion ~ 0 + type + (1 | author_name) + (1 | project),
   data=sentiment_frame,
@@ -260,11 +264,11 @@ fixed_types_emotion = lmer(
 
 ```
 
-Run *t*-tests among levels and prepare for the Model 1.1b table later.
+Run *t*-tests among levels and prepare for the Model 1.1 table later.
 
-```{r clean-up-model-1.1b2-output}
+```{r clean-up-model-1.1b-output}
 
-# convert Model 1.1b2 output to dataframe
+# convert Model 1.1b output to dataframe
 coefficients_and_se = data.frame(
   summary(fixed_types_emotion)$coefficients)
 
@@ -292,20 +296,20 @@ types_tests[, "p_value"] = compute_p_value_from_t_stats(types_tests$t_stats)
 
 ```
 
-```{r saving_results-model-1.1b2}
+```{r saving_results-model-1.1b}
 write.table(coefficients_and_se,
             file="results/models/model-1.1b2.tsv",
             sep="\t")
 ```
 
 
-##### Model 1.1b.3: Does sentiment vary significantly across community memberships and contribution types?
+#### Model 1.1c: Does sentiment vary significantly across community memberships and activity types?
 
-Finally, let's look at the interaction between membership and contribution.
+Finally, let's look at the interaction between membership and activity.
 
 ```{r model-emotion-by-type-and-author-interaction-only}
 
-# does emotion differ by the interaction between contribution and authorship group?
+# does emotion differ by the interaction between activity and authorship group?
 community_contribution_emotion = lmer(
   compound_emotion ~ 0 + type:author_group + (1 | author_name) + (1 | project),
   data=sentiment_frame,
@@ -313,11 +317,11 @@ community_contribution_emotion = lmer(
 
 ```
 
-Run *t*-tests among levels and prepare for the Model 1.1b table later.
+Run *t*-tests among levels and prepare for the Model 1.1 table later.
 
-```{r clean-up-model-1.1b3-output}
+```{r clean-up-model-1.1c-output}
 
-# convert Model 1.1b3 output to dataframe
+# convert Model 1.1c output to dataframe
 coefficients_and_se = data.frame(
   summary(community_contribution_emotion)$coefficients)
 
@@ -334,18 +338,18 @@ names(se) = row_names
 
 # compute t-statistics and p-values for desired contrasts
 contrasts = c(
-  "issue_post:member-issue_post:nonmember",     # contribution static (issue posts); membership varies (members v. nonmembers)
-  "issue_reply:member-issue_reply:nonmember",   # contribution static (issue replies); membership varies (members v. nonmembers)
-  "pr_post:member-pr_post:nonmember",           # contribution static (PR posts); membership varies (members v. nonmembers)
-  "pr_reply:member-pr_reply:nonmember",         # contribution static (PR replies); membership varies (members v. nonmembers)
-  "issue_post:member-issue_reply:member",       # contribution varies (issue posts vs. issue replies); membership static (members)
-  "issue_post:nonmember-issue_reply:nonmember", # contribution varies (issue posts vs. issue replies); membership static (nonmembers)
-  "pr_post:member-pr_reply:member",             # contribution varies (PR posts vs. PR replies); membership static (members)
-  "pr_post:nonmember-pr_reply:nonmember",       # contribution varies (PR posts vs. PR replies); membership static (nonmembers)
-  "issue_post:member-pr_post:member",           # contribution varies (issue posts vs. PR posts); membership static (members)
-  "issue_post:nonmember-pr_post:nonmember",     # contribution varies (issue posts vs. PR posts); membership static (nonmembers)
-  "issue_reply:member-pr_reply:member",         # contribution varies (issue replies vs. PR replies); membership static (members)
-  "issue_reply:nonmember-pr_reply:nonmember")   # contribution varies (issue replies vs. PR replies); membership static (nonmembers)
+  "issue_post:member-issue_post:nonmember",     # activity static (issue posts); membership varies (members v. nonmembers)
+  "issue_reply:member-issue_reply:nonmember",   # activity static (issue replies); membership varies (members v. nonmembers)
+  "pr_post:member-pr_post:nonmember",           # activity static (PR posts); membership varies (members v. nonmembers)
+  "pr_reply:member-pr_reply:nonmember",         # activity static (PR replies); membership varies (members v. nonmembers)
+  "issue_post:member-issue_reply:member",       # activity varies (issue posts vs. issue replies); membership static (members)
+  "issue_post:nonmember-issue_reply:nonmember", # activity varies (issue posts vs. issue replies); membership static (nonmembers)
+  "pr_post:member-pr_reply:member",             # activity varies (PR posts vs. PR replies); membership static (members)
+  "pr_post:nonmember-pr_reply:nonmember",       # activity varies (PR posts vs. PR replies); membership static (nonmembers)
+  "issue_post:member-pr_post:member",           # activity varies (issue posts vs. PR posts); membership static (members)
+  "issue_post:nonmember-pr_post:nonmember",     # activity varies (issue posts vs. PR posts); membership static (nonmembers)
+  "issue_reply:member-pr_reply:member",         # activity varies (issue replies vs. PR replies); membership static (members)
+  "issue_reply:nonmember-pr_reply:nonmember")   # activity varies (issue replies vs. PR replies); membership static (nonmembers)
 types_author_groups_tests = compute_t_statistics(
   means, se,
   contrasts)
@@ -354,21 +358,21 @@ types_author_groups_tests[, "p_value"] = compute_p_value_from_t_stats(
 
 ```
 
-```{r saving_results-model-1.1b3}
+```{r saving_results-model-1.1c}
 write.table(coefficients_and_se,
             file="results/models/model-1.1b3.tsv",
             sep="\t")
 ```
 
 
-##### Model 1.1b.4 : Do different kinds of user contributions differ in emotion by projects?
+#### Model 1.1d : Do different kinds of activities differ in emotion by projects?
 
 Now adding projects into the mix to understand how the previous analysis
 varies across projects.
 
 ```{r model-emotion-by-type-and-author-and-project}
 
-# do tickets and comments materially differ in emotion by projects?
+# do posts and comments materially differ in emotion by projects?
 creators_v_commenters_emotion_by_project = lmer(
   compound_emotion ~ 0 + project:type:author_group + (1 | author_name),
   data = sentiment_frame,
@@ -376,11 +380,11 @@ creators_v_commenters_emotion_by_project = lmer(
 
 ```
 
-Run *t*-tests among levels and prepare for the Model 1.1b table later.
+Run *t*-tests among levels and prepare for the Model 1.1 table later.
 
-```{r clean-up-model-1.1c-output}
+```{r clean-up-model-1.1d-output}
 
-# convert Model 1.1c output to dataframe
+# convert Model 1.1d output to dataframe
 coefficients_and_se = data.frame(
   summary(creators_v_commenters_emotion_by_project)$coefficients)
 
@@ -404,7 +408,7 @@ se = coefficients_and_se$Std..Error
 names(se) = row_names
 
 # compute t-statistics and p-values for desired contrasts
-# (note: ordering of contrasts within each project is identical to Model 1.1b.3)
+# (note: ordering of contrasts within each project is identical to Model 1.1c)
 contrasts = c(
   
   # scikit-learn
@@ -527,18 +531,18 @@ project_types_author_group_tests[, "p_value"] = compute_p_value_from_t_stats(
 
 ```
 
-```{r saving_results-model-1.1c}
+```{r saving_results-model-1.1d}
 write.table(coefficients_and_se,
             file="results/models/model-1.1c.tsv",
             sep="\t")
 ```
 
 
-#### Model 1.1b: Overall results
+#### Overall results
 
-Now we bring together all analyses from Model 1.1b.
+Now we bring together all analyses from Model 1.1.
 
-```{r output-model1.1b-results-table}
+```{r output-model1.1-results-table}
 
 # specify main terms
 author_groups_tests["contrast"] = row.names(author_groups_tests)
@@ -561,7 +565,7 @@ all_tests = merge(all_tests, project_types_author_group_tests, all=TRUE,
 
 Let's correct all tests at once for multiple comparisons.
 
-```{r correct-and-display-all-model-1.1b-tests}
+```{r correct-and-display-all-model-1.1-tests}
 
 # specify all contrasts
 row.names(all_tests) = all_tests$contrast
@@ -580,8 +584,8 @@ write.table(all_tests, file="results/models/model-1.1b_final_pvalues.tsv")
 
 Finally, let's plot these effects.
 
-
 ```{r plot-model-emotion-by-type, echo=FALSE, eval=TRUE}
+
 # aggregate sentiment over all projects
 sentiment_plot_aggregated = ggplot(data=sentiment_frame,
                                    aes(x=type,
@@ -591,10 +595,10 @@ sentiment_plot_aggregated = ggplot(data=sentiment_frame,
   stat_summary(fun.data = mean_se, geom = "errorbar") +
   #coord_cartesian(ylim=c(0,.5)) +
   facet_grid(cols=vars(ticket_family)) +
-  ggtitle('Message sentiment by contribution\nand community membership') +
+  ggtitle('Message sentiment by activity\nand community membership') +
   ylab('Sentiment score') +
   xlab('Community membership') +
-  labs(color='Contribution type') +
+  labs(color='Activity type') +
   scale_color_manual(labels = c("Issue: Post",
                                 "Issue: Reply",
                                 "PR: Post",
@@ -617,10 +621,10 @@ sentiment_plot_aggregated = ggplot(data=sentiment_frame,
   stat_summary(fun.data = mean_se, geom = "errorbar") +
   #coord_cartesian(ylim=c(0,.5)) +
   facet_grid(cols=vars(ticket_family)) +
-  ggtitle('Message sentiment by contribution\nand community membership') +
+  ggtitle('Message sentiment by activity\nand community membership') +
   ylab('Sentiment score') +
   xlab('Community membership') +
-  labs(color='Contribution type') +
+  labs(color='Activity type') +
   scale_color_manual(labels = c("Issue: Post",
                                 "Issue: Reply",
                                 "PR: Post",
@@ -645,7 +649,7 @@ ggsave(plot = sentiment_plot_aggregated,
 
 ```
 
-![**Figure**. Sentiment by contribution type (ticket vs. comment) and community membership at the time of posting (member vs. nonmember).](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution-aggregated-knitr.jpg)
+![**Figure**. Sentiment by activity type and community membership at the time of posting (member vs. nonmember).](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution-aggregated-knitr.jpg)
 
 ```{r plot-model-emotion-by-type-and-membership-and-project, echo=FALSE, eval=TRUE}
 
@@ -659,10 +663,10 @@ sentiment_plot_by_project = ggplot(data=sentiment_frame,
   #coord_cartesian(ylim=c(0,.5)) +
   facet_grid(cols=vars(ticket_family),
              rows=vars(project)) +
-  ggtitle('Message sentiment by contribution\nand community membership') +
+  ggtitle('Message sentiment by activity\nand community membership') +
   ylab('Sentiment score') +
   xlab('Community membership') +
-  labs(color='Contribution type') +
+  labs(color='Activity type') +
   scale_color_manual(labels = c("Issue: Post",
                                 "Issue: Reply",
                                 "PR: Post",
@@ -918,14 +922,16 @@ Now apply multiple correction and display the results of the analysis.
 pander_clean_anova(all_project_tests, rename_columns=FALSE)
 ```
 
-### Model 1.2 time-course analysis
+### Model 1.2: Time-course analysis for sentiment
 
 The time-course analysis has been moved in a separate file.
 
-### Model 1.3: Do tickets and comments materially differ in gratitude?
+***
+
+### Model 1.3: Do posts and comments materially differ in gratitude?
 
 First, let's take a look at a summary table of expressions of gratitude by
-membership status and contribution type.
+membership status and activity type.
 
 ```{r gratitude-summary-stats, eval=TRUE, echo=TRUE}
 
@@ -961,10 +967,10 @@ grateful_plot = ggplot(data=sentiment_frame,
   stat_summary(fun.data = mean_se, geom = "errorbar") +
   facet_grid(cols = vars(ticket_family),
              rows = vars(project)) +
-  ggtitle('Expressions of gratitude by contribution\nand community membership') +
+  ggtitle('Expressions of gratitude by activity\nand community membership') +
   ylab('Gratitude') +
   xlab('Community membership') +
-  labs(color='Contribution type') +
+  labs(color='Activity type') +
   scale_color_manual(labels = c("Issue: Post",
                                 "Issue: Reply",
                                 "PR: Post",
@@ -989,7 +995,7 @@ ggsave(plot = grateful_plot,
 
 ```
 
-![**Figure**. Expressions of gratitude by contribution type (ticket vs. comment) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-grateful_membership_contribution-knitr.jpg)
+![**Figure**. Expressions of gratitude by activity type (posted issue, comment on issue, posted pull request, or comment on pull request) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-grateful_membership_contribution-knitr.jpg)
 
 ### Testing Model 1.3 using Model 1.1 methods
 
@@ -1040,7 +1046,7 @@ Projects here are random effects, but the rest of the model is the same as
 before. This allows us to do pairwise testing of main and interaction terms,
 along with better exploring inter-project variability.
 
-##### Model 1.3b.1: Does sentiment vary significantly by community membership?
+#### Model 1.3b: Does sentiment vary significantly by community membership?
 
 First, look at whether there are differences in sentiment between author
 groups.
@@ -1055,11 +1061,11 @@ fixed_authors_gratitude = lmer(
 
 ```
 
-Run *t*-tests among levels and prepare for the Model 1.1b table later.
+Run *t*-tests among levels and prepare for the Model 1.3 table later.
 
-```{r clean-up-model-1.3b1-output}
+```{r clean-up-model-1.3b-output}
 
-# convert Model 1.1b1 output to dataframe
+# convert Model 1.3b output to dataframe
 coefficients_and_se = data.frame(
   summary(fixed_authors_gratitude)$coefficients)
 
@@ -1085,21 +1091,20 @@ author_groups_tests[, "p_value"] = compute_p_value_from_t_stats(
 
 ```
 
-```{r saving_results-model-1.3b1}
+```{r saving_results-model-1.3b}
 write.table(coefficients_and_se,
             file="results/models/model-1.3b1.tsv",
             sep="\t")
 ```
 
+#### Model 1.3c: Does sentiment vary significantly across activity types?
 
-##### Model 1.3b.2: Does sentiment vary significantly across contribution types?
-
-Now, look at whether there are differences in sentiment between contribution
+Now, look at whether there are differences in sentiment between activity
 types.
 
 ```{r model-gratitude-by-type}
 
-# do tickets and comments materially differ in emotion?
+# do posts and comments materially differ in emotion?
 fixed_types_gratitude = lmer(
   log(grateful_count + 1) ~ 0 + type + (1 | project),
   data=sentiment_frame,
@@ -1107,11 +1112,11 @@ fixed_types_gratitude = lmer(
 
 ```
 
-Run *t*-tests among levels and prepare for the Model 1.1b table later.
+Run *t*-tests among levels and prepare for the Model 1.3 table later.
 
-```{r clean-up-model-1.3b2-output}
+```{r clean-up-model-1.3c-output}
 
-# convert Model 1.1b2 output to dataframe
+# convert Model 1.1c output to dataframe
 coefficients_and_se = data.frame(
   summary(fixed_types_gratitude)$coefficients)
 
@@ -1139,20 +1144,19 @@ types_tests[, "p_value"] = compute_p_value_from_t_stats(types_tests$t_stats)
 
 ```
 
-```{r saving_results-model-1.3b2}
+```{r saving_results-model-1.3c}
 write.table(coefficients_and_se,
             file="results/models/model-1.3b2.tsv",
             sep="\t")
 ```
 
+#### Model 1.3d: Does sentiment vary significantly across community memberships and activity types?
 
-##### Model 1.3b.3: Does sentiment vary significantly across community memberships and contribution types?
-
-Finally, let's look at the interaction between membership and contribution.
+Finally, let's look at the interaction between membership and activity.
 
 ```{r model-gratitude-by-type-and-author-interaction-only}
 
-# does emotion differ by the interaction between contribution and authorship group?
+# does emotion differ by the interaction between activity and authorship group?
 community_contribution_gratitude = lmer(
   log(grateful_count + 1) ~ 0 + type:author_group + (1 | project),
   data=sentiment_frame,
@@ -1160,11 +1164,11 @@ community_contribution_gratitude = lmer(
 
 ```
 
-Run *t*-tests among levels and prepare for the Model 1.1b table later.
+Run *t*-tests among levels and prepare for the Model 1.3 table later.
 
-```{r clean-up-model-1.3b3-output}
+```{r clean-up-model-1.3d-output}
 
-# convert Model 1.1b3 output to dataframe
+# convert Model 1.3d output to dataframe
 coefficients_and_se = data.frame(
   summary(community_contribution_gratitude)$coefficients)
 
@@ -1181,18 +1185,18 @@ names(se) = row_names
 
 # compute t-statistics and p-values for desired contrasts
 contrasts = c(
-  "issue_post:member-issue_post:nonmember",     # contribution static (issue posts); membership varies (members v. nonmembers)
-  "issue_reply:member-issue_reply:nonmember",   # contribution static (issue replies); membership varies (members v. nonmembers)
-  "pr_post:member-pr_post:nonmember",           # contribution static (PR posts); membership varies (members v. nonmembers)
-  "pr_reply:member-pr_reply:nonmember",         # contribution static (PR replies); membership varies (members v. nonmembers)
-  "issue_post:member-issue_reply:member",       # contribution varies (issue posts vs. issue replies); membership static (members)
-  "issue_post:nonmember-issue_reply:nonmember", # contribution varies (issue posts vs. issue replies); membership static (nonmembers)
-  "pr_post:member-pr_reply:member",             # contribution varies (PR posts vs. PR replies); membership static (members)
-  "pr_post:nonmember-pr_reply:nonmember",       # contribution varies (PR posts vs. PR replies); membership static (nonmembers)
-  "issue_post:member-pr_post:member",           # contribution varies (issue posts vs. PR posts); membership static (members)
-  "issue_post:nonmember-pr_post:nonmember",     # contribution varies (issue posts vs. PR posts); membership static (nonmembers)
-  "issue_reply:member-pr_reply:member",         # contribution varies (issue replies vs. PR replies); membership static (members)
-  "issue_reply:nonmember-pr_reply:nonmember")   # contribution varies (issue replies vs. PR replies); membership static (nonmembers)
+  "issue_post:member-issue_post:nonmember",     # activity static (issue posts); membership varies (members v. nonmembers)
+  "issue_reply:member-issue_reply:nonmember",   # activity static (issue replies); membership varies (members v. nonmembers)
+  "pr_post:member-pr_post:nonmember",           # activity static (PR posts); membership varies (members v. nonmembers)
+  "pr_reply:member-pr_reply:nonmember",         # activity static (PR replies); membership varies (members v. nonmembers)
+  "issue_post:member-issue_reply:member",       # activity varies (issue posts vs. issue replies); membership static (members)
+  "issue_post:nonmember-issue_reply:nonmember", # activity varies (issue posts vs. issue replies); membership static (nonmembers)
+  "pr_post:member-pr_reply:member",             # activity varies (PR posts vs. PR replies); membership static (members)
+  "pr_post:nonmember-pr_reply:nonmember",       # activity varies (PR posts vs. PR replies); membership static (nonmembers)
+  "issue_post:member-pr_post:member",           # activity varies (issue posts vs. PR posts); membership static (members)
+  "issue_post:nonmember-pr_post:nonmember",     # activity varies (issue posts vs. PR posts); membership static (nonmembers)
+  "issue_reply:member-pr_reply:member",         # activity varies (issue replies vs. PR replies); membership static (members)
+  "issue_reply:nonmember-pr_reply:nonmember")   # activity varies (issue replies vs. PR replies); membership static (nonmembers)
 types_author_groups_tests = compute_t_statistics(
   means, se,
   contrasts)
@@ -1201,32 +1205,31 @@ types_author_groups_tests[, "p_value"] = compute_p_value_from_t_stats(
 
 ```
 
-```{r saving_results-model-1.3b3}
+```{r saving_results-model-1.3d}
 write.table(coefficients_and_se,
             file="results/models/model-1.3b3.tsv",
             sep="\t")
 ```
 
-
-##### Model 1.3b.4 : Do different kinds of user contributions differ in emotion by projects?
+#### Model 1.3e : Do different kinds of activities differ in emotion by projects?
 
 Now adding projects into the mix to understand how the previous analysis
 varies across projects.
 
 ```{r model-gratitude-by-type-and-author-and-project}
 
-# do tickets and comments materially differ in gratitude by projects?
+# do posts and comments materially differ in gratitude by projects?
 creators_v_commenters_gratitude_by_project = lm(
   log(grateful_count + 1) ~ 0 + project:type:author_group,
   data = sentiment_frame)
 
 ```
 
-Run *t*-tests among levels and prepare for the Model 1.1b table later.
+Run *t*-tests among levels and prepare for the Model 1.3 table later.
 
-```{r clean-up-model-1.3c-output}
+```{r clean-up-model-1.3e-output}
 
-# convert Model 1.1c output to dataframe
+# convert Model 1.3e output to dataframe
 coefficients_and_se = data.frame(
   summary(creators_v_commenters_gratitude_by_project)$coefficients)
 
@@ -1250,7 +1253,7 @@ se = coefficients_and_se$Std..Error
 names(se) = row_names
 
 # compute t-statistics and p-values for desired contrasts
-# (note: ordering of contrasts within each project is identical to Model 1.3b.3)
+# (note: ordering of contrasts within each project is identical to Model 1.3c)
 contrasts = c(
   
   # scikit-learn
@@ -1373,18 +1376,17 @@ project_types_author_group_tests[, "p_value"] = compute_p_value_from_t_stats(
 
 ```
 
-```{r saving_results-model-1.3b4}
+```{r saving_results-model-1.3e}
 write.table(coefficients_and_se,
-            file="results/models/model-1.3b4.tsv",
+            file="results/models/model-1.3e.tsv",
             sep="\t")
 ```
 
+#### Overall results
 
-#### Model 1.3b: Overall results
+Now we bring together all analyses from Model 1.3.
 
-Now we bring together all analyses from Model 1.3b.
-
-```{r output-model1.3b-results-table}
+```{r output-model1.3-results-table}
 
 # specify main terms
 author_groups_tests["contrast"] = row.names(author_groups_tests)
@@ -1407,7 +1409,7 @@ all_tests = merge(all_tests, project_types_author_group_tests, all=TRUE,
 
 Let's correct all tests at once for multiple comparisons.
 
-```{r corect-and-display-all-model-1.3b-tests}
+```{r corect-and-display-all-model-1.3-tests}
 
 # specify all contrasts
 row.names(all_tests) = all_tests$contrast
@@ -1426,17 +1428,25 @@ write.table(all_tests, file="results/models/model-1.3b_final_pvalues.tsv")
 
 ***
 
+### Model 1.4: Time-course analysis for gratitude
+
+The time-course analysis has been moved in a separate file.
+
+***
+
 ## Model Series 2: Retention
 
 Our second set of models investigates what aspects of the response to a 
-newcomer's first contribution (including aspects of the community's response
+newcomer's first activity (including aspects of the community's response
 to their contribution) might predict their likelihood to come back to 
 contribute a second time.
+
+***
 
 ### Data preparation
 
 Because each ticket has multiple comments, we cannot use the standard long-form
-format for the dataset, or we would lead to (uneven) duplication of tickets
+format for the dataset, or we would lead to (uneven) duplication of posts
 based on the varying numbers of comments. As a result, we pull metrics of the
 whole comment chain and use them as our measures of the community's response
 to the newcomer's contribution.
@@ -1465,7 +1475,7 @@ aggregated_comments = comments_frame %>% ungroup() %>%
 ```
 
 After we've summarized the comment threads, we next join those metrics with the
-tickets dataframe in preparation for our models.
+posts dataframe in preparation for our models.
 
 ```{r prep-for-retention-analysis}
 
@@ -1910,6 +1920,8 @@ retention_tests$p_val_adjusted = p.adjust(retention_tests$p_value, method="BH")
 write.table(retention_tests, file="results/models/model-2.1.tsv")
 ```
 
+***
+
 ### Model 2.2: Hints of different newcomer goals
 
 Both mean sentiment and max negative sentiment are predictive of newcomer
@@ -1978,7 +1990,6 @@ pander_clean_anova(retention_tests_2.1[c("model", "stat", "p_value")],
                    rename_columns=FALSE)
 
 ```
-
 
 ***
 
