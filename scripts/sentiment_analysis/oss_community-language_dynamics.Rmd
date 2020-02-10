@@ -31,6 +31,7 @@ preprocessing.
 ```{r silent-preparations, include=FALSE}
 library(knitr)
 knitr::opts_chunk$set(cache=TRUE, autodep=TRUE, cache.lazy=FALSE)
+options(scipen=999)
 ```
 
 ***
