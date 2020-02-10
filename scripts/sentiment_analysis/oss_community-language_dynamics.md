@@ -13,7 +13,8 @@ This R markdown provides the data preparation for our forthcoming manuscript
 To run this from scratch, you will need the following files:
 
 * `../../data/analysis_data/sentiment_frame_tickets-for_r.csv`: Contains cleaned
-**tickets**-related data and derived variables from scraped GitHub data.
+**posts**-related data (sometimes also referred to as *tickets*) and 
+derived variables from scraped GitHub data.
 * `../../data/analysis_data/sentiment_frame_comments-for_r.csv`: Contains
 cleaned **comments**-related data and derived variables from scraped GitHub
 data.
@@ -25,7 +26,7 @@ preprocessing.
 **Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux
 (CNRS)
 
-**Date last compiled**:  2020-01-23 09:25:00
+**Date last compiled**:  2020-02-10 16:02:25
 
 
 
@@ -45,42 +46,63 @@ source("./utils/data-loading.R")
 
 
 ```r
-# We are now going to select the dataset we'll be working on.
-library(dplyr)
+# select the dataset we'll be working on
 tickets_frame = loading_tickets_data(dataset="original")
 comments_frame = loading_comments_data(dataset="original")
 ```
 
+***
 
 ## Basic summary stats
 
-The data has been largely cleaned. Let's take a look at some basic
-patterns.
+The data have been largely cleaned by the time we load them. 
+Let's take a look at some basic patterns in the aggregate and
+broken down by specific projects.
 
 
 
 
-|    project     | unique_tickets | unique_comments |
-|:--------------:|:--------------:|:---------------:|
-|   matplotlib   |     12204      |      65592      |
-|     mayavi     |      730       |      2104       |
-|     numpy      |     10021      |      60973      |
-|     pandas     |     23239      |     133950      |
-|  scikit-image  |      3277      |      22602      |
-|  scikit-learn  |     11649      |     107930      |
-|     scipy      |      7142      |      42967      |
-| sphinx-gallery |      409       |      2906       |
+| ticket_family | unique_tickets | unique_comments |
+|:-------------:|:--------------:|:---------------:|
+|     issue     |     32133      |     185529      |
+|      pr       |     36538      |     253495      |
 
-Our dataset includes 8 unique projects with a
-total of 68671 unique tickets, with a
-mean of 8583.875 tickets per project.
 
-On these tickets, the dataset includes
-439024 unique comments, with
-5.4878\times 10^{4} average comments per project.
+
+|    project     | ticket_family | unique_tickets | unique_comments |
+|:--------------:|:-------------:|:--------------:|:---------------:|
+|   matplotlib   |     issue     |      4819      |      28904      |
+|   matplotlib   |      pr       |      7385      |      36688      |
+|     mayavi     |     issue     |      440       |      1459       |
+|     mayavi     |      pr       |      290       |       645       |
+|     numpy      |     issue     |      4467      |      27720      |
+|     numpy      |      pr       |      5554      |      33253      |
+|     pandas     |     issue     |     12991      |      64587      |
+|     pandas     |      pr       |     10248      |      69363      |
+|  scikit-image  |     issue     |      1174      |      7240       |
+|  scikit-image  |      pr       |      2103      |      15362      |
+|  scikit-learn  |     issue     |      5205      |      37783      |
+|  scikit-learn  |      pr       |      6444      |      70147      |
+|     scipy      |     issue     |      2847      |      16762      |
+|     scipy      |      pr       |      4295      |      26205      |
+| sphinx-gallery |     issue     |      190       |      1074       |
+| sphinx-gallery |      pr       |      219       |      1832       |
+
+Our dataset includes 8 unique projects. The dataset has
+total of 32133 unique posted issues, with a mean of 
+4016.625 posted issues per project. It also includes a total of 
+36538 unique posted pull requests, with a mean of 
+4567.25 posted pull requests per project.
+
+On these contributions, the dataset includes
+185529 unique comments on issues and 
+253495 unique comments on pull requests. This includes an average of
+23191.125 comments on issues per project and an average of 
+31686.875 
+comments on pull requests per project.
 
 In total, we have 15560 unique commenters,
-14147 unique ticket-creators, and
+14147 unique post creators, and
 19430 overall unique users.
 
 ***
@@ -90,6 +112,8 @@ In total, we have 15560 unique commenters,
 ***
 
 ## Model Series 1: Sentiment analysis
+
+***
 
 ### Data preparation
 
@@ -154,55 +178,51 @@ sentiment_frame = combine_tickets_and_comments(tickets_frame, comments_frame)
 
 ***
 
-### Model 1.1: Do different kinds of user contributions materially differ in emotion?
+### Model 1.1: Do different kinds of activities materially differ in emotion?
 
-Now we begin the actual modeling. Our first general question is whether users'
-patterns of sentiment differ materially by whether they are a member of the
-community versus a nonmember of the community and by their different kinds of
-possible contributions (i.e., a posted pull request, a reply to a pull request,
-a posted issue, or a reply to an issue).
+<!-- Now we begin the actual modeling. Our first general question is whether users' -->
+<!-- patterns of sentiment differ materially by whether they are a member of the -->
+<!-- community versus a nonmember of the community and by their different kinds of -->
+<!-- possible contributions (i.e., a posted pull request, a reply to a pull request, -->
+<!-- a posted issue, or a reply to an issue). -->
 
-#### Model 1.1a: Overall effects with linear mixed-effects models
+<!-- #### Model 1.1a: Overall effects with linear mixed-effects models -->
 
-This model presents the analyses in a way that is typical of psychological
-analyses. We predict the changes in emotion by community membership and 
-contribution type, including random effects for project and for author. This
-allows us to explore the general patterns of the main and interaction terms,
-rather than focusing in on the project-specific variability.
+<!-- This model presents the analyses in a way that is typical of psychological -->
+<!-- analyses. We predict the changes in emotion by community membership and  -->
+<!-- activity type, including random effects for project and for author. This -->
+<!-- allows us to explore the general patterns of the main and interaction terms, -->
+<!-- rather than focusing in on the project-specific variability. -->
 
+<!-- ```{r model-emotion-by-type-and-author} -->
 
-```r
-# do tickets and comments materially differ in emotion?
-creators_v_commenters_emotion_by_project = lmer(compound_emotion ~ type * author_group  +
-                                                  (1 | project) + (1 | author_name),
-                                                data = sentiment_frame,
-                                                REML = FALSE)
-```
+<!-- # do posts and comments materially differ in emotion? -->
+<!-- creators_v_commenters_emotion_by_project = lmer(compound_emotion ~ type * author_group  + -->
+<!--                                                   (1 | project) + (1 | author_name), -->
+<!--                                                 data = sentiment_frame, -->
+<!--                                                 REML = FALSE) -->
 
+<!-- ``` -->
 
-|                  &nbsp;                   | Estimate  | Std..Error |   df   | t.value |   p    | p_adj  | sig |
-|:-----------------------------------------:|:---------:|:----------:|:------:|:-------:|:------:|:------:|:---:|
-|              **(Intercept)**              |  0.07149  |  0.009515  | 11.46  |  7.513  | 0.0001 | 0.0001 | *** |
-|            **typeissue_reply**            |  0.09652  |  0.003701  | 495665 |  26.08  | 0.0001 | 0.0001 | *** |
-|              **typepr_post**              | -0.002956 |  0.004442  | 496774 | -0.6655 |  0.51  |  0.58  |     |
-|             **typepr_reply**              |  0.1388   |  0.003687  | 497463 |  37.65  | 0.0001 | 0.0001 | *** |
-|         **author_groupnonmember**         | 0.009269  |  0.005382  | 307538 |  1.722  | 0.085  | 0.113  |     |
-| **typeissue_reply:author_groupnonmember** |  0.01909  |  0.005288  | 491934 |  3.61   | 0.0003 |   0    | *** |
-|   **typepr_post:author_groupnonmember**   |  0.02457  |  0.006811  | 446590 |  3.607  | 0.0003 |   0    | *** |
-|  **typepr_reply:author_groupnonmember**   | -0.003124 |  0.005593  | 349946 | -0.5585 |  0.58  |  0.58  |     |
+<!-- ```{r print-model-emotion-by-type-and-author, eval=TRUE, echo=FALSE} -->
 
-While we see significant differences in the model, interpreting the results is
-difficult because of the way that `lmer` handles factor comparisons. All 
-factors are compared against a "reference level," the first level in the model.
-This makes intepreting models with factors that include more than two levels
-incredibly difficult, because the intercept is essentially an interaction term
-among all reference levels of all factors.
+<!-- # print results -->
+<!-- pander_lme(creators_v_commenters_emotion_by_project) -->
 
-As a result, we turn to the biostatistics approach of multiple *t*-tests 
-(corrected for comparisons) of the model estimates to better understand the 
-effects.
+<!-- ``` -->
 
-#### Model 1.1b: In-depth investigation through *t*-tests of model estimates
+<!-- While we see significant differences in the model, interpreting the results is -->
+<!-- difficult because of the way that `lmer` handles factor comparisons. All  -->
+<!-- factors are compared against a "reference level," the first level in the model. -->
+<!-- This makes intepreting models with factors that include more than two levels -->
+<!-- incredibly difficult, because the intercept is essentially an interaction term -->
+<!-- among all reference levels of all factors. -->
+
+<!-- As a result, we turn to the biostatistics approach of multiple *t*-tests  -->
+<!-- (corrected for comparisons) of the model estimates to better understand the  -->
+<!-- effects. -->
+
+<!-- #### Model 1.1b: In-depth investigation through *t*-tests of model estimates -->
 
 First, we build a series of linear mixed-effects models with one term included
 in each model (either main term or interaction term). We then use the estimates
@@ -214,7 +234,7 @@ Projects here are random effects, but the rest of the model is the same as
 before. This allows us to do pairwise testing of main and interaction terms,
 along with better exploring inter-project variability.
 
-##### Model 1.1b.1: Does sentiment vary significantly by community membership?
+#### Model 1.1a: Does sentiment vary significantly by community membership?
 
 First, look at whether there are differences in sentiment between author 
 groups.
@@ -228,11 +248,11 @@ fixed_creators_v_commenters_emotion = lmer(
   REML=FALSE)
 ```
 
-Run *t*-tests among levels and prepare for the Model 1.1b table later.
+Run *t*-tests among levels and prepare for the Model 1.1 table later.
 
 
 ```r
-# convert Model 1.1b1 output to dataframe
+# convert Model 1.1a output to dataframe
 coefficients_and_se = data.frame(
   summary(fixed_creators_v_commenters_emotion)$coefficients)
 
@@ -265,25 +285,25 @@ write.table(coefficients_and_se,
             sep="\t")
 ```
 
-##### Model 1.1b.2: Does sentiment vary significantly across contribution types?
+#### Model 1.1b: Does sentiment vary significantly across activity types?
 
-Now, look at whether there are differences in sentiment between contribution
+Now, look at whether there are differences in sentiment between activity
 types.
 
 
 ```r
-# do tickets and comments materially differ in emotion?
+# do posts and comments materially differ in emotion?
 fixed_types_emotion = lmer(
   compound_emotion ~ 0 + type + (1 | author_name) + (1 | project),
   data=sentiment_frame,
   REML=FALSE)
 ```
 
-Run *t*-tests among levels and prepare for the Model 1.1b table later.
+Run *t*-tests among levels and prepare for the Model 1.1 table later.
 
 
 ```r
-# convert Model 1.1b2 output to dataframe
+# convert Model 1.1b output to dataframe
 coefficients_and_se = data.frame(
   summary(fixed_types_emotion)$coefficients)
 
@@ -318,24 +338,24 @@ write.table(coefficients_and_se,
 ```
 
 
-##### Model 1.1b.3: Does sentiment vary significantly across community memberships and contribution types?
+#### Model 1.1c: Does sentiment vary significantly across community memberships and activity types?
 
-Finally, let's look at the interaction between membership and contribution.
+Finally, let's look at the interaction between membership and activity.
 
 
 ```r
-# does emotion differ by the interaction between contribution and authorship group?
+# does emotion differ by the interaction between activity and authorship group?
 community_contribution_emotion = lmer(
   compound_emotion ~ 0 + type:author_group + (1 | author_name) + (1 | project),
   data=sentiment_frame,
   REML=FALSE)
 ```
 
-Run *t*-tests among levels and prepare for the Model 1.1b table later.
+Run *t*-tests among levels and prepare for the Model 1.1 table later.
 
 
 ```r
-# convert Model 1.1b3 output to dataframe
+# convert Model 1.1c output to dataframe
 coefficients_and_se = data.frame(
   summary(community_contribution_emotion)$coefficients)
 
@@ -352,18 +372,18 @@ names(se) = row_names
 
 # compute t-statistics and p-values for desired contrasts
 contrasts = c(
-  "issue_post:member-issue_post:nonmember",     # contribution static (issue posts); membership varies (members v. nonmembers)
-  "issue_reply:member-issue_reply:nonmember",   # contribution static (issue replies); membership varies (members v. nonmembers)
-  "pr_post:member-pr_post:nonmember",           # contribution static (PR posts); membership varies (members v. nonmembers)
-  "pr_reply:member-pr_reply:nonmember",         # contribution static (PR replies); membership varies (members v. nonmembers)
-  "issue_post:member-issue_reply:member",       # contribution varies (issue posts vs. issue replies); membership static (members)
-  "issue_post:nonmember-issue_reply:nonmember", # contribution varies (issue posts vs. issue replies); membership static (nonmembers)
-  "pr_post:member-pr_reply:member",             # contribution varies (PR posts vs. PR replies); membership static (members)
-  "pr_post:nonmember-pr_reply:nonmember",       # contribution varies (PR posts vs. PR replies); membership static (nonmembers)
-  "issue_post:member-pr_post:member",           # contribution varies (issue posts vs. PR posts); membership static (members)
-  "issue_post:nonmember-pr_post:nonmember",     # contribution varies (issue posts vs. PR posts); membership static (nonmembers)
-  "issue_reply:member-pr_reply:member",         # contribution varies (issue replies vs. PR replies); membership static (members)
-  "issue_reply:nonmember-pr_reply:nonmember")   # contribution varies (issue replies vs. PR replies); membership static (nonmembers)
+  "issue_post:member-issue_post:nonmember",     # activity static (issue posts); membership varies (members v. nonmembers)
+  "issue_reply:member-issue_reply:nonmember",   # activity static (issue replies); membership varies (members v. nonmembers)
+  "pr_post:member-pr_post:nonmember",           # activity static (PR posts); membership varies (members v. nonmembers)
+  "pr_reply:member-pr_reply:nonmember",         # activity static (PR replies); membership varies (members v. nonmembers)
+  "issue_post:member-issue_reply:member",       # activity varies (issue posts vs. issue replies); membership static (members)
+  "issue_post:nonmember-issue_reply:nonmember", # activity varies (issue posts vs. issue replies); membership static (nonmembers)
+  "pr_post:member-pr_reply:member",             # activity varies (PR posts vs. PR replies); membership static (members)
+  "pr_post:nonmember-pr_reply:nonmember",       # activity varies (PR posts vs. PR replies); membership static (nonmembers)
+  "issue_post:member-pr_post:member",           # activity varies (issue posts vs. PR posts); membership static (members)
+  "issue_post:nonmember-pr_post:nonmember",     # activity varies (issue posts vs. PR posts); membership static (nonmembers)
+  "issue_reply:member-pr_reply:member",         # activity varies (issue replies vs. PR replies); membership static (members)
+  "issue_reply:nonmember-pr_reply:nonmember")   # activity varies (issue replies vs. PR replies); membership static (nonmembers)
 types_author_groups_tests = compute_t_statistics(
   means, se,
   contrasts)
@@ -379,25 +399,25 @@ write.table(coefficients_and_se,
 ```
 
 
-##### Model 1.1b.4 : Do different kinds of user contributions differ in emotion by projects?
+#### Model 1.1d : Do different kinds of activities differ in emotion by projects?
 
 Now adding projects into the mix to understand how the previous analysis
 varies across projects.
 
 
 ```r
-# do tickets and comments materially differ in emotion by projects?
+# do posts and comments materially differ in emotion by projects?
 creators_v_commenters_emotion_by_project = lmer(
   compound_emotion ~ 0 + project:type:author_group + (1 | author_name),
   data = sentiment_frame,
   REML = FALSE)
 ```
 
-Run *t*-tests among levels and prepare for the Model 1.1b table later.
+Run *t*-tests among levels and prepare for the Model 1.1 table later.
 
 
 ```r
-# convert Model 1.1c output to dataframe
+# convert Model 1.1d output to dataframe
 coefficients_and_se = data.frame(
   summary(creators_v_commenters_emotion_by_project)$coefficients)
 
@@ -421,7 +441,7 @@ se = coefficients_and_se$Std..Error
 names(se) = row_names
 
 # compute t-statistics and p-values for desired contrasts
-# (note: ordering of contrasts within each project is identical to Model 1.1b.3)
+# (note: ordering of contrasts within each project is identical to Model 1.1c)
 contrasts = c(
   
   # scikit-learn
@@ -551,9 +571,9 @@ write.table(coefficients_and_se,
 ```
 
 
-#### Model 1.1b: Overall results
+#### Overall results
 
-Now we bring together all analyses from Model 1.1b.
+Now we bring together all analyses from Model 1.1.
 
 
 ```r
@@ -718,401 +738,251 @@ Finally, let's plot these effects.
 
 
 
-
-![**Figure**. Sentiment by contribution type (ticket vs. comment) and community membership at the time of posting (member vs. nonmember).](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution-aggregated-knitr.jpg)
-
-
-
-![**Figure**. Sentiment by contribution type (ticket vs. comment) and community membership at the time of posting (member vs. nonmember) for each project.](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution-by_project-knitr.jpg)
-
-#### Model 1.2b: More plots, this time using means and std estimated from model-fit
-
-Here, we are going to test whether projects differ from the mean.
-
-
-```r
-coefficients_and_se = data.frame(
-  summary(creators_v_commenters_emotion_by_project)$coefficients)
-
-# get comparison names as rownames
-row_names = gsub(
-  "project", "", gsub(
-    "author_group", "", gsub(
-      "type", "", row.names(coefficients_and_se))))
-
-# replace hyphens in project names with periods
-row_names = gsub(
-  "scikit-", "scikit.", gsub(
-    "sphinx-", "sphinx.", row_names))
-
-# convert model estimates to a dataframe
-means = coefficients_and_se$Estimate
-names(means) = row_names
-
-# convert standard error to dataframe
-se = coefficients_and_se$Std..Error
-names(se) = row_names
-```
-
-
-```r
-projects = c("Matplotlib", "Mayavi", "numpy", "pandas",
-             "scikit-image", "scikit-learn", "scipy", "sphinx-gallery")
-```
-
-
-```r
-group_of_interest = "pr_post:member"
-rows_to_plot = grep(group_of_interest, names(means))
-
-bar_centers = barplot(means[rows_to_plot], names.arg=projects,
-                      main=group_of_interest,    
-                      cex.names=0.8)
-arrows(bar_centers,
-       means[rows_to_plot] - se[rows_to_plot] ** 2, 
-       bar_centers,
-       means[rows_to_plot] + se[rows_to_plot] ** 2,
-       angle=90,
-       code=3)
-```
-
-![](oss_community-language_dynamics_files/figure-html/plot_pr_post_members-1.png)<!-- -->
-
-
-```r
-group_of_interest = "pr_post:nonmember"
-rows_to_plot = grep(group_of_interest, names(means))
-
-bar_centers = barplot(means[rows_to_plot], names.arg=projects,
-                      main=group_of_interest,
-                      cex.names=0.8)
-
-arrows(bar_centers,
-       means[rows_to_plot] - se[rows_to_plot] ** 2, 
-       bar_centers,
-       means[rows_to_plot] + se[rows_to_plot] ** 2,
-       angle=90,
-       code=3)
-```
-
-![](oss_community-language_dynamics_files/figure-html/plot_pr_post_nonmembers-1.png)<!-- -->
-
-
-
-```r
-group_of_interest = "issue_post:member"
-rows_to_plot = grep(group_of_interest, names(means))
-
-bar_centers = barplot(means[rows_to_plot], names.arg=projects,
-                      main=group_of_interest,
-                      cex.names=0.8
-)
-arrows(bar_centers,
-       means[rows_to_plot] - se[rows_to_plot] ** 2, 
-       bar_centers,
-       means[rows_to_plot] + se[rows_to_plot] ** 2,
-       angle=90,
-       code=3)
-```
-
-![](oss_community-language_dynamics_files/figure-html/plot_issue_post_members-1.png)<!-- -->
-
-
-```r
-group_of_interest = "issue_post:nonmember"
-rows_to_plot = grep(group_of_interest, names(means))
-
-bar_centers = barplot(means[rows_to_plot], names.arg=projects,
-                      main=group_of_interest,
-                      cex.names=0.8
-)
-arrows(bar_centers,
-       means[rows_to_plot] - se[rows_to_plot] ** 2, 
-       bar_centers,
-       means[rows_to_plot] + se[rows_to_plot] ** 2,
-       angle=90,
-       code=3)
-```
-
-![](oss_community-language_dynamics_files/figure-html/plot_issue_post_nonmembers-1.png)<!-- -->
-
-
-
-```r
-group_of_interest = "pr_reply:member"
-rows_to_plot = grep(group_of_interest, names(means))
-
-bar_centers = barplot(means[rows_to_plot], names.arg=projects,
-                      main=group_of_interest,
-                      cex.names=0.8)
-arrows(bar_centers,
-       means[rows_to_plot] - se[rows_to_plot] ** 2, 
-       bar_centers,
-       means[rows_to_plot] + se[rows_to_plot] ** 2,
-       angle=90,
-       code=3)
-```
-
-```
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
-## zero-length arrow is of indeterminate angle and so skipped
-
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
-## zero-length arrow is of indeterminate angle and so skipped
-
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
-## zero-length arrow is of indeterminate angle and so skipped
-
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
-## zero-length arrow is of indeterminate angle and so skipped
-
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
-## zero-length arrow is of indeterminate angle and so skipped
-```
-
-![](oss_community-language_dynamics_files/figure-html/plot_pr_reply_members-1.png)<!-- -->
-
-
-```r
-group_of_interest = "pr_reply:nonmember"
-rows_to_plot = grep(group_of_interest, names(means))
-
-bar_centers = barplot(means[rows_to_plot], names.arg=projects,
-                      main=group_of_interest,
-                      cex.names=0.8)
-arrows(bar_centers,
-       means[rows_to_plot] - se[rows_to_plot] ** 2, 
-       bar_centers,
-       means[rows_to_plot] + se[rows_to_plot] ** 2,
-       angle=90,
-       code=3)
-```
-
-```
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
-## zero-length arrow is of indeterminate angle and so skipped
-
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
-## zero-length arrow is of indeterminate angle and so skipped
-```
-
-![](oss_community-language_dynamics_files/figure-html/plot_pr_reply_nonmembers-1.png)<!-- -->
-
-
-
-```r
-group_of_interest = "issue_reply:member"
-rows_to_plot = grep(group_of_interest, names(means))
-
-bar_centers = barplot(means[rows_to_plot], names.arg=projects,
-                      main=group_of_interest,
-                      cex.names=0.8)
-arrows(bar_centers,
-       means[rows_to_plot] - se[rows_to_plot] ** 2, 
-       bar_centers,
-       means[rows_to_plot] + se[rows_to_plot] ** 2,
-       angle=90,
-       code=3)
-```
-
-```
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
-## zero-length arrow is of indeterminate angle and so skipped
-
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
-## zero-length arrow is of indeterminate angle and so skipped
-
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
-## zero-length arrow is of indeterminate angle and so skipped
-
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
-## zero-length arrow is of indeterminate angle and so skipped
-
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
-## zero-length arrow is of indeterminate angle and so skipped
-```
-
-![](oss_community-language_dynamics_files/figure-html/plot_issue_reply_members-1.png)<!-- -->
-
-
-```r
-group_of_interest = "issue_reply:nonmember"
-rows_to_plot = grep(group_of_interest, names(means))
-
-bar_centers = barplot(means[rows_to_plot], names.arg=projects,
-                      main=group_of_interest,
-                      cex.names=0.8)
-arrows(bar_centers,
-       means[rows_to_plot] - se[rows_to_plot] ** 2, 
-       bar_centers,
-       means[rows_to_plot] + se[rows_to_plot] ** 2,
-       angle=90,
-       code=3)
-```
-
-```
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
-## zero-length arrow is of indeterminate angle and so skipped
-
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
-## zero-length arrow is of indeterminate angle and so skipped
-
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
-## zero-length arrow is of indeterminate angle and so skipped
-
-## Warning in arrows(bar_centers, means[rows_to_plot] - se[rows_to_plot]^2, :
-## zero-length arrow is of indeterminate angle and so skipped
-```
-
-![](oss_community-language_dynamics_files/figure-html/plot_issue_reply_nonmembers-1.png)<!-- -->
-
-### Model 1.1c Do projects differ in emotion between one another?
-
-One versus all minus one type of approach.
-
-
-```r
-all_project_tests = NA
-all_projects = unique(sentiment_frame$project)
-
-# We're going to fit the model for each projects, and concatenate the results
-# in a dataframe. Then, we'll apply multiple correction and display the
-# results
-for(project in all_projects){
-  sentiment_frame$test_group = sentiment_frame$project == project
-  one_versus_all_emotion = lmer(
-    compound_emotion ~ 0 + type:author_group:test_group + (1|author_name),
-    data=sentiment_frame,
-    REML=FALSE)
-  
-  # Clean up mode
-  coefficients_and_se = data.frame(
-    summary(one_versus_all_emotion)$coefficients)
-  row_names = gsub(
-    "author_group", "", 
-    gsub("type", "",
-         gsub("project", "", row.names(coefficients_and_se))))
-  
-  means = coefficients_and_se$Estimate
-  names(means) = row_names
-  se = coefficients_and_se$Std..Error
-  names(se) = row_names
-  
-  contrasts = c(
-    "issue_post:member:test_groupTRUE-issue_post:member:test_groupFALSE",
-    "pr_post:member:test_groupTRUE-pr_post:member:test_groupFALSE",
-    "issue_reply:member:test_groupTRUE-issue_reply:member:test_groupFALSE",
-    "pr_reply:member:test_groupTRUE-pr_reply:member:test_groupFALSE",
-    "issue_post:nonmember:test_groupTRUE-issue_post:nonmember:test_groupFALSE",
-    "pr_post:nonmember:test_groupTRUE-pr_post:nonmember:test_groupFALSE",
-    "issue_reply:nonmember:test_groupTRUE-issue_reply:nonmember:test_groupFALSE",
-    "pr_reply:nonmember:test_groupTRUE-pr_reply:nonmember:test_groupFALSE"
-  )
-  
-  one_versus_all_emotion_tests = compute_t_statistics(
-    means, se,
-    contrasts)
-  one_versus_all_emotion_tests[, "p_value"] = compute_p_value_from_t_stats(
-    one_versus_all_emotion_tests$t_stats)
-  
-  # Add unique identifier based on the project of interest in the table.
-  row.names(one_versus_all_emotion_tests) = gsub(
-    "test_group", project,
-    row.names(one_versus_all_emotion_tests))
-  
-  if(is.null(dim(all_project_tests))){
-    all_project_tests = one_versus_all_emotion_tests
-  }else{
-    all_project_tests = rbind(
-      all_project_tests, one_versus_all_emotion_tests)
-  }
-}
-```
-
-Now apply multiple correction and display the results of the analysis.
-
-
-```r
-pander_clean_anova(all_project_tests, rename_columns=FALSE)
-```
-
-
-
-|                                         &nbsp;                                         | t_stats  | p_value | p_adj | sig |
-|:--------------------------------------------------------------------------------------:|:--------:|:-------:|:-----:|:---:|
-|     **issue_post:member:sphinx-galleryTRUE-issue_post:member:sphinx-galleryFALSE**     | 0.02178  |  0.98   | 0.99  |     |
-|        **pr_post:member:sphinx-galleryTRUE-pr_post:member:sphinx-galleryFALSE**        |  0.5591  |  0.58   | 0.69  |     |
-|    **issue_reply:member:sphinx-galleryTRUE-issue_reply:member:sphinx-galleryFALSE**    |  4.143   |  1e-04  | 2e-04 | *** |
-|       **pr_reply:member:sphinx-galleryTRUE-pr_reply:member:sphinx-galleryFALSE**       | -0.03669 |  0.97   | 0.99  |     |
-|  **issue_post:nonmember:sphinx-galleryTRUE-issue_post:nonmember:sphinx-galleryFALSE**  | -0.8765  |  0.38   | 0.51  |     |
-|     **pr_post:nonmember:sphinx-galleryTRUE-pr_post:nonmember:sphinx-galleryFALSE**     |  1.721   |  0.085  | 0.152 |     |
-| **issue_reply:nonmember:sphinx-galleryTRUE-issue_reply:nonmember:sphinx-galleryFALSE** |  2.095   |  0.036  | 0.07  |  .  |
-|    **pr_reply:nonmember:sphinx-galleryTRUE-pr_reply:nonmember:sphinx-galleryFALSE**    | -0.3261  |  0.74   | 0.82  |     |
-|             **issue_post:member:mayaviTRUE-issue_post:member:mayaviFALSE**             |  -2.025  |  0.043  | 0.078 |  .  |
-|                **pr_post:member:mayaviTRUE-pr_post:member:mayaviFALSE**                |  -2.453  |  0.014  | 0.032 |  *  |
-|            **issue_reply:member:mayaviTRUE-issue_reply:member:mayaviFALSE**            |   -2.5   |  0.012  | 0.03  |  *  |
-|               **pr_reply:member:mayaviTRUE-pr_reply:member:mayaviFALSE**               |  -3.296  |  0.001  | 0.003 | **  |
-|          **issue_post:nonmember:mayaviTRUE-issue_post:nonmember:mayaviFALSE**          | -0.9832  |  0.33   | 0.45  |     |
-|             **pr_post:nonmember:mayaviTRUE-pr_post:nonmember:mayaviFALSE**             |  -2.18   |  0.029  | 0.058 |  .  |
-|         **issue_reply:nonmember:mayaviTRUE-issue_reply:nonmember:mayaviFALSE**         |  -3.533  |  4e-04  | 0.002 | **  |
-|            **pr_reply:nonmember:mayaviTRUE-pr_reply:nonmember:mayaviFALSE**            | -0.5364  |  0.59   | 0.69  |     |
-|              **issue_post:member:numpyTRUE-issue_post:member:numpyFALSE**              |  -4.762  |  1e-04  | 1e-04 | *** |
-|                 **pr_post:member:numpyTRUE-pr_post:member:numpyFALSE**                 |  -2.573  |  0.01   | 0.025 |  *  |
-|             **issue_reply:member:numpyTRUE-issue_reply:member:numpyFALSE**             |  -5.293  |  1e-04  | 1e-04 | *** |
-|                **pr_reply:member:numpyTRUE-pr_reply:member:numpyFALSE**                |  0.219   |  0.83   | 0.88  |     |
-|           **issue_post:nonmember:numpyTRUE-issue_post:nonmember:numpyFALSE**           |  -6.615  |  1e-04  | 1e-04 | *** |
-|              **pr_post:nonmember:numpyTRUE-pr_post:nonmember:numpyFALSE**              |  -4.597  |  1e-04  | 1e-04 | *** |
-|          **issue_reply:nonmember:numpyTRUE-issue_reply:nonmember:numpyFALSE**          |  -5.683  |  1e-04  | 1e-04 | *** |
-|             **pr_reply:nonmember:numpyTRUE-pr_reply:nonmember:numpyFALSE**             |  -1.11   |  0.27   | 0.38  |     |
-|       **issue_post:member:scikit-imageTRUE-issue_post:member:scikit-imageFALSE**       |  -2.323  |  0.02   | 0.043 |  *  |
-|          **pr_post:member:scikit-imageTRUE-pr_post:member:scikit-imageFALSE**          |  2.636   |  0.008  | 0.022 |  *  |
-|      **issue_reply:member:scikit-imageTRUE-issue_reply:member:scikit-imageFALSE**      |  2.359   |  0.018  | 0.04  |  *  |
-|         **pr_reply:member:scikit-imageTRUE-pr_reply:member:scikit-imageFALSE**         |  3.601   |  3e-04  | 0.001 | **  |
-|    **issue_post:nonmember:scikit-imageTRUE-issue_post:nonmember:scikit-imageFALSE**    |  -1.11   |  0.27   | 0.38  |     |
-|       **pr_post:nonmember:scikit-imageTRUE-pr_post:nonmember:scikit-imageFALSE**       |  9.303   |  1e-04  | 1e-04 | *** |
-|   **issue_reply:nonmember:scikit-imageTRUE-issue_reply:nonmember:scikit-imageFALSE**   |   1.38   |  0.168  | 0.26  |     |
-|      **pr_reply:nonmember:scikit-imageTRUE-pr_reply:nonmember:scikit-imageFALSE**      |  5.701   |  1e-04  | 1e-04 | *** |
-|         **issue_post:member:matplotlibTRUE-issue_post:member:matplotlibFALSE**         | -0.3677  |  0.71   | 0.81  |     |
-|            **pr_post:member:matplotlibTRUE-pr_post:member:matplotlibFALSE**            |  0.963   |  0.34   | 0.46  |     |
-|        **issue_reply:member:matplotlibTRUE-issue_reply:member:matplotlibFALSE**        |  -1.243  |  0.214  | 0.32  |     |
-|           **pr_reply:member:matplotlibTRUE-pr_reply:member:matplotlibFALSE**           |  -4.548  |  1e-04  | 1e-04 | *** |
-|      **issue_post:nonmember:matplotlibTRUE-issue_post:nonmember:matplotlibFALSE**      |  0.3518  |  0.72   | 0.81  |     |
-|         **pr_post:nonmember:matplotlibTRUE-pr_post:nonmember:matplotlibFALSE**         |  -1.513  |  0.13   | 0.214 |     |
-|     **issue_reply:nonmember:matplotlibTRUE-issue_reply:nonmember:matplotlibFALSE**     |  -3.286  |  0.001  | 0.003 | **  |
-|        **pr_reply:nonmember:matplotlibTRUE-pr_reply:nonmember:matplotlibFALSE**        |  -2.074  |  0.038  | 0.072 |  .  |
-|              **issue_post:member:scipyTRUE-issue_post:member:scipyFALSE**              |  -3.122  |  0.002  | 0.005 | **  |
-|                 **pr_post:member:scipyTRUE-pr_post:member:scipyFALSE**                 | -0.5708  |  0.57   | 0.69  |     |
-|             **issue_reply:member:scipyTRUE-issue_reply:member:scipyFALSE**             |  -0.189  |  0.85   | 0.89  |     |
-|                **pr_reply:member:scipyTRUE-pr_reply:member:scipyFALSE**                |  5.345   |  1e-04  | 1e-04 | *** |
-|           **issue_post:nonmember:scipyTRUE-issue_post:nonmember:scipyFALSE**           | -0.2549  |   0.8   | 0.87  |     |
-|              **pr_post:nonmember:scipyTRUE-pr_post:nonmember:scipyFALSE**              |  1.554   |  0.12   | 0.205 |     |
-|          **issue_reply:nonmember:scipyTRUE-issue_reply:nonmember:scipyFALSE**          |  3.279   |  0.001  | 0.003 | **  |
-|             **pr_reply:nonmember:scipyTRUE-pr_reply:nonmember:scipyFALSE**             |   5.89   |  1e-04  | 1e-04 | *** |
-|       **issue_post:member:scikit-learnTRUE-issue_post:member:scikit-learnFALSE**       | -0.01398 |  0.99   | 0.99  |     |
-|          **pr_post:member:scikit-learnTRUE-pr_post:member:scikit-learnFALSE**          |  3.399   |  0.001  | 0.002 | **  |
-|      **issue_reply:member:scikit-learnTRUE-issue_reply:member:scikit-learnFALSE**      |  0.5696  |  0.57   | 0.69  |     |
-|         **pr_reply:member:scikit-learnTRUE-pr_reply:member:scikit-learnFALSE**         |  1.548   |  0.122  | 0.205 |     |
-|    **issue_post:nonmember:scikit-learnTRUE-issue_post:nonmember:scikit-learnFALSE**    |  0.7041  |  0.48   | 0.63  |     |
-|       **pr_post:nonmember:scikit-learnTRUE-pr_post:nonmember:scikit-learnFALSE**       | -0.5552  |  0.58   | 0.69  |     |
-|   **issue_reply:nonmember:scikit-learnTRUE-issue_reply:nonmember:scikit-learnFALSE**   |  1.382   |  0.167  | 0.26  |     |
-|      **pr_reply:nonmember:scikit-learnTRUE-pr_reply:nonmember:scikit-learnFALSE**      |  2.235   |  0.025  | 0.052 |  .  |
-|             **issue_post:member:pandasTRUE-issue_post:member:pandasFALSE**             |   4.74   |  1e-04  | 1e-04 | *** |
-|                **pr_post:member:pandasTRUE-pr_post:member:pandasFALSE**                |  -3.146  |  0.002  | 0.005 | **  |
-|            **issue_reply:member:pandasTRUE-issue_reply:member:pandasFALSE**            |  1.491   |  0.136  | 0.218 |     |
-|               **pr_reply:member:pandasTRUE-pr_reply:member:pandasFALSE**               |  -2.64   |  0.008  | 0.022 |  *  |
-|          **issue_post:nonmember:pandasTRUE-issue_post:nonmember:pandasFALSE**          |  4.907   |  1e-04  | 1e-04 | *** |
-|             **pr_post:nonmember:pandasTRUE-pr_post:nonmember:pandasFALSE**             | -0.6625  |  0.51   | 0.65  |     |
-|         **issue_reply:nonmember:pandasTRUE-issue_reply:nonmember:pandasFALSE**         |  3.448   |  0.001  | 0.002 | **  |
-|            **pr_reply:nonmember:pandasTRUE-pr_reply:nonmember:pandasFALSE**            |  -7.581  |  1e-04  | 1e-04 | *** |
-
-### Model 1.2 time-course analysis
+![**Figure**. Sentiment by activity type and community membership at the time of posting (member vs. nonmember).](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution-aggregated-knitr.jpg)
+
+
+
+![**Figure**. Sentiment by activity type  and community membership at the time of posting (member vs. nonmember) for each project.](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution-by_project-knitr.jpg)
+
+<!-- ### Model 1.2: More plots, this time using means and std estimated from model-fit -->
+
+<!-- Here, we are going to test whether projects differ from the mean. -->
+
+<!-- ```{r eval=TRUE, echo=TRUE} -->
+<!-- coefficients_and_se = data.frame( -->
+<!--   summary(creators_v_commenters_emotion_by_project)$coefficients) -->
+
+<!-- # get comparison names as rownames -->
+<!-- row_names = gsub( -->
+<!--   "project", "", gsub( -->
+<!--     "author_group", "", gsub( -->
+<!--       "type", "", row.names(coefficients_and_se)))) -->
+
+<!-- # replace hyphens in project names with periods -->
+<!-- row_names = gsub( -->
+<!--   "scikit-", "scikit.", gsub( -->
+<!--     "sphinx-", "sphinx.", row_names)) -->
+
+<!-- # convert model estimates to a dataframe -->
+<!-- means = coefficients_and_se$Estimate -->
+<!-- names(means) = row_names -->
+
+<!-- # convert standard error to dataframe -->
+<!-- se = coefficients_and_se$Std..Error -->
+<!-- names(se) = row_names -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- projects = c("Matplotlib", "Mayavi", "numpy", "pandas", -->
+<!--              "scikit-image", "scikit-learn", "scipy", "sphinx-gallery") -->
+<!-- ``` -->
+
+<!-- ```{r plot_pr_post_members, fig.width=8} -->
+<!-- group_of_interest = "pr_post:member" -->
+<!-- rows_to_plot = grep(group_of_interest, names(means)) -->
+
+<!-- bar_centers = barplot(means[rows_to_plot], names.arg=projects, -->
+<!--                       main=group_of_interest,     -->
+<!--                       cex.names=0.8) -->
+<!-- arrows(bar_centers, -->
+<!--        means[rows_to_plot] - se[rows_to_plot] ** 2,  -->
+<!--        bar_centers, -->
+<!--        means[rows_to_plot] + se[rows_to_plot] ** 2, -->
+<!--        angle=90, -->
+<!--        code=3) -->
+<!-- ``` -->
+
+<!-- ```{r plot_pr_post_nonmembers, fig.width=8} -->
+<!-- group_of_interest = "pr_post:nonmember" -->
+<!-- rows_to_plot = grep(group_of_interest, names(means)) -->
+
+<!-- bar_centers = barplot(means[rows_to_plot], names.arg=projects, -->
+<!--                       main=group_of_interest, -->
+<!--                       cex.names=0.8) -->
+
+<!-- arrows(bar_centers, -->
+<!--        means[rows_to_plot] - se[rows_to_plot] ** 2,  -->
+<!--        bar_centers, -->
+<!--        means[rows_to_plot] + se[rows_to_plot] ** 2, -->
+<!--        angle=90, -->
+<!--        code=3) -->
+<!-- ``` -->
+
+
+<!-- ```{r plot_issue_post_members, fig.width=8} -->
+<!-- group_of_interest = "issue_post:member" -->
+<!-- rows_to_plot = grep(group_of_interest, names(means)) -->
+
+<!-- bar_centers = barplot(means[rows_to_plot], names.arg=projects, -->
+<!--                       main=group_of_interest, -->
+<!--                       cex.names=0.8 -->
+<!-- ) -->
+<!-- arrows(bar_centers, -->
+<!--        means[rows_to_plot] - se[rows_to_plot] ** 2,  -->
+<!--        bar_centers, -->
+<!--        means[rows_to_plot] + se[rows_to_plot] ** 2, -->
+<!--        angle=90, -->
+<!--        code=3) -->
+<!-- ``` -->
+
+<!-- ```{r plot_issue_post_nonmembers, fig.width=8} -->
+<!-- group_of_interest = "issue_post:nonmember" -->
+<!-- rows_to_plot = grep(group_of_interest, names(means)) -->
+
+<!-- bar_centers = barplot(means[rows_to_plot], names.arg=projects, -->
+<!--                       main=group_of_interest, -->
+<!--                       cex.names=0.8 -->
+<!-- ) -->
+<!-- arrows(bar_centers, -->
+<!--        means[rows_to_plot] - se[rows_to_plot] ** 2,  -->
+<!--        bar_centers, -->
+<!--        means[rows_to_plot] + se[rows_to_plot] ** 2, -->
+<!--        angle=90, -->
+<!--        code=3) -->
+<!-- ``` -->
+
+
+<!-- ```{r plot_pr_reply_members, fig.width=8} -->
+<!-- group_of_interest = "pr_reply:member" -->
+<!-- rows_to_plot = grep(group_of_interest, names(means)) -->
+
+<!-- bar_centers = barplot(means[rows_to_plot], names.arg=projects, -->
+<!--                       main=group_of_interest, -->
+<!--                       cex.names=0.8) -->
+<!-- arrows(bar_centers, -->
+<!--        means[rows_to_plot] - se[rows_to_plot] ** 2,  -->
+<!--        bar_centers, -->
+<!--        means[rows_to_plot] + se[rows_to_plot] ** 2, -->
+<!--        angle=90, -->
+<!--        code=3) -->
+<!-- ``` -->
+
+<!-- ```{r plot_pr_reply_nonmembers, fig.width=8} -->
+<!-- group_of_interest = "pr_reply:nonmember" -->
+<!-- rows_to_plot = grep(group_of_interest, names(means)) -->
+
+<!-- bar_centers = barplot(means[rows_to_plot], names.arg=projects, -->
+<!--                       main=group_of_interest, -->
+<!--                       cex.names=0.8) -->
+<!-- arrows(bar_centers, -->
+<!--        means[rows_to_plot] - se[rows_to_plot] ** 2,  -->
+<!--        bar_centers, -->
+<!--        means[rows_to_plot] + se[rows_to_plot] ** 2, -->
+<!--        angle=90, -->
+<!--        code=3) -->
+<!-- ``` -->
+
+
+<!-- ```{r plot_issue_reply_members, fig.width=8} -->
+<!-- group_of_interest = "issue_reply:member" -->
+<!-- rows_to_plot = grep(group_of_interest, names(means)) -->
+
+<!-- bar_centers = barplot(means[rows_to_plot], names.arg=projects, -->
+<!--                       main=group_of_interest, -->
+<!--                       cex.names=0.8) -->
+<!-- arrows(bar_centers, -->
+<!--        means[rows_to_plot] - se[rows_to_plot] ** 2,  -->
+<!--        bar_centers, -->
+<!--        means[rows_to_plot] + se[rows_to_plot] ** 2, -->
+<!--        angle=90, -->
+<!--        code=3) -->
+<!-- ``` -->
+
+<!-- ```{r plot_issue_reply_nonmembers, fig.width=8} -->
+<!-- group_of_interest = "issue_reply:nonmember" -->
+<!-- rows_to_plot = grep(group_of_interest, names(means)) -->
+
+<!-- bar_centers = barplot(means[rows_to_plot], names.arg=projects, -->
+<!--                       main=group_of_interest, -->
+<!--                       cex.names=0.8) -->
+<!-- arrows(bar_centers, -->
+<!--        means[rows_to_plot] - se[rows_to_plot] ** 2,  -->
+<!--        bar_centers, -->
+<!--        means[rows_to_plot] + se[rows_to_plot] ** 2, -->
+<!--        angle=90, -->
+<!--        code=3) -->
+<!-- ``` -->
+
+<!-- ### Model 1.1c Do projects differ in emotion between one another? -->
+
+<!-- One versus all minus one type of approach. -->
+
+<!-- ```{r compound_emotion_all_vs_one} -->
+<!-- all_project_tests = NA -->
+<!-- all_projects = unique(sentiment_frame$project) -->
+
+<!-- # We're going to fit the model for each projects, and concatenate the results -->
+<!-- # in a dataframe. Then, we'll apply multiple correction and display the -->
+<!-- # results -->
+<!-- for(project in all_projects){ -->
+<!--   sentiment_frame$test_group = sentiment_frame$project == project -->
+<!--   one_versus_all_emotion = lmer( -->
+<!--     compound_emotion ~ 0 + type:author_group:test_group + (1|author_name), -->
+<!--     data=sentiment_frame, -->
+<!--     REML=FALSE) -->
+
+<!--   # Clean up mode -->
+<!--   coefficients_and_se = data.frame( -->
+<!--     summary(one_versus_all_emotion)$coefficients) -->
+<!--   row_names = gsub( -->
+<!--     "author_group", "",  -->
+<!--     gsub("type", "", -->
+<!--          gsub("project", "", row.names(coefficients_and_se)))) -->
+
+<!--   means = coefficients_and_se$Estimate -->
+<!--   names(means) = row_names -->
+<!--   se = coefficients_and_se$Std..Error -->
+<!--   names(se) = row_names -->
+
+<!--   contrasts = c( -->
+<!--     "issue_post:member:test_groupTRUE-issue_post:member:test_groupFALSE", -->
+<!--     "pr_post:member:test_groupTRUE-pr_post:member:test_groupFALSE", -->
+<!--     "issue_reply:member:test_groupTRUE-issue_reply:member:test_groupFALSE", -->
+<!--     "pr_reply:member:test_groupTRUE-pr_reply:member:test_groupFALSE", -->
+<!--     "issue_post:nonmember:test_groupTRUE-issue_post:nonmember:test_groupFALSE", -->
+<!--     "pr_post:nonmember:test_groupTRUE-pr_post:nonmember:test_groupFALSE", -->
+<!--     "issue_reply:nonmember:test_groupTRUE-issue_reply:nonmember:test_groupFALSE", -->
+<!--     "pr_reply:nonmember:test_groupTRUE-pr_reply:nonmember:test_groupFALSE" -->
+<!--   ) -->
+
+<!--   one_versus_all_emotion_tests = compute_t_statistics( -->
+<!--     means, se, -->
+<!--     contrasts) -->
+<!--   one_versus_all_emotion_tests[, "p_value"] = compute_p_value_from_t_stats( -->
+<!--     one_versus_all_emotion_tests$t_stats) -->
+
+<!--   # Add unique identifier based on the project of interest in the table. -->
+<!--   row.names(one_versus_all_emotion_tests) = gsub( -->
+<!--     "test_group", project, -->
+<!--     row.names(one_versus_all_emotion_tests)) -->
+
+<!--   if(is.null(dim(all_project_tests))){ -->
+<!--     all_project_tests = one_versus_all_emotion_tests -->
+<!--   }else{ -->
+<!--     all_project_tests = rbind( -->
+<!--       all_project_tests, one_versus_all_emotion_tests) -->
+<!--   } -->
+<!-- } -->
+<!-- ``` -->
+
+<!-- Now apply multiple correction and display the results of the analysis. -->
+
+<!-- ```{r one_versus_all_display_results} -->
+<!-- pander_clean_anova(all_project_tests, rename_columns=FALSE) -->
+<!-- ``` -->
+
+***
+
+### Model 1.2: Time-course analysis for sentiment
 
 The time-course analysis has been moved in a separate file.
 
-### Model 1.3: Do tickets and comments materially differ in gratitude?
+***
+
+### Model 1.3: Do posts and comments materially differ in gratitude?
 
 First, let's take a look at a summary table of expressions of gratitude by
-membership status and contribution type.
+membership status and activity type.
 
 
 ```r
@@ -1164,132 +1034,60 @@ pander(gratitude_summary_stats, style = 'rmarkdown')
 Now that we have a better idea of how the underlying data look, let's go ahead
 and build our model.
 
+<!-- ```{r model-gratitude-by-type-and-author-and-project-v1, eval = TRUE} -->
 
-```r
-# do users tend to express appreciation and gratitude differently by group and content?
-creators_v_commenters_gratitude_by_project = lmer(log(grateful_count + 1) ~ project * author_group * type +
-                                                    (1 | author_name),
-                                                  data=sentiment_frame)
+<!-- # do users tend to express appreciation and gratitude differently by group and content? -->
+<!-- creators_v_commenters_gratitude_by_project = lmer(log(grateful_count + 1) ~ project * author_group * type + -->
+<!--                                                     (1 | author_name), -->
+<!--                                                   data=sentiment_frame) -->
 
-# print results
-pander_lme(creators_v_commenters_gratitude_by_project)
-```
+<!-- # print results -->
+<!-- pander_lme(creators_v_commenters_gratitude_by_project) -->
 
-
-
-|                             &nbsp;                              | Estimate  | Std..Error |   df   | t.value |   p    | p_adj  | sig |
-|:---------------------------------------------------------------:|:---------:|:----------:|:------:|:-------:|:------:|:------:|:---:|
-|                         **(Intercept)**                         |  0.08939  |  0.005854  | 475280 |  15.27  | 0.0001 | 0.0001 | *** |
-|                        **projectmayavi**                        | -0.00541  |  0.02909   | 485881 | -0.186  |  0.85  |  0.89  |     |
-|                        **projectnumpy**                         | -0.01738  |  0.007603  | 497011 | -2.285  | 0.022  | 0.048  |  *  |
-|                        **projectpandas**                        | -0.03162  |  0.006502  | 505910 | -4.863  | 0.0001 | 0.0001 | *** |
-|                     **projectscikit-image**                     | -0.05825  |  0.01119   | 496520 | -5.203  | 0.0001 | 0.0001 | *** |
-|                     **projectscikit-learn**                     | -0.03577  |  0.007506  | 503031 | -4.766  | 0.0001 | 0.0001 | *** |
-|                        **projectscipy**                         | -0.01448  |  0.009381  | 494975 | -1.544  | 0.123  | 0.207  |     |
-|                    **projectsphinx-gallery**                    | -0.01805  |  0.02272   | 490235 | -0.7944 |  0.43  |  0.58  |     |
-|                    **author_groupnonmember**                    | -0.02049  |  0.00703   | 491106 | -2.915  | 0.004  | 0.009  | **  |
-|                       **typeissue_reply**                       |  0.02565  |  0.005444  | 490881 |  4.711  | 0.0001 | 0.0001 | *** |
-|                         **typepr_post**                         | 0.002612  |  0.005991  | 491145 | 0.4359  |  0.66  |  0.79  |     |
-|                        **typepr_reply**                         |  0.05334  |  0.005385  | 491204 |  9.906  | 0.0001 | 0.0001 | *** |
-|             **projectmayavi:author_groupnonmember**             |  0.08542  |  0.03133   | 481224 |  2.726  | 0.006  | 0.016  |  *  |
-|             **projectnumpy:author_groupnonmember**              | 0.009888  |  0.009761  | 490459 |  1.013  |  0.31  |  0.45  |     |
-|             **projectpandas:author_groupnonmember**             |  0.01496  |  0.008171  | 485244 |  1.83   | 0.067  | 0.123  |     |
-|          **projectscikit-image:author_groupnonmember**          |  0.07383  |  0.01498   | 478671 |  4.928  | 0.0001 | 0.0001 | *** |
-|          **projectscikit-learn:author_groupnonmember**          |  0.05506  |  0.009497  | 484148 |  5.798  | 0.0001 | 0.0001 | *** |
-|             **projectscipy:author_groupnonmember**              |  0.02364  |  0.01143   | 497459 |  2.068  | 0.039  | 0.077  |  .  |
-|         **projectsphinx-gallery:author_groupnonmember**         |  0.0572   |  0.03192   | 503101 |  1.792  | 0.073  |  0.13  |     |
-|                **projectmayavi:typeissue_reply**                | 0.001107  |  0.02601   | 490156 | 0.04255 |  0.97  |  0.97  |     |
-|                **projectnumpy:typeissue_reply**                 | -0.00765  |  0.007452  | 490088 | -1.026  |  0.3   |  0.45  |     |
-|                **projectpandas:typeissue_reply**                |  0.01468  |  0.006121  | 490762 |  2.399  | 0.016  | 0.036  |  *  |
-|             **projectscikit-image:typeissue_reply**             |  0.0345   |  0.01097   | 489209 |  3.146  | 0.002  | 0.004  | **  |
-|             **projectscikit-learn:typeissue_reply**             |  0.0184   |  0.007169  | 490127 |  2.567  |  0.01  | 0.024  |  *  |
-|                **projectscipy:typeissue_reply**                 | 0.001001  |  0.009351  | 489679 | 0.1071  |  0.92  |  0.93  |     |
-|            **projectsphinx-gallery:typeissue_reply**            | -0.006232 |  0.02373   | 488985 | -0.2626 |  0.79  |  0.86  |     |
-|                  **projectmayavi:typepr_post**                  | -0.03733  |  0.02868   | 489228 | -1.302  | 0.193  |  0.3   |     |
-|                  **projectnumpy:typepr_post**                   | -0.01123  |  0.008484  | 490199 | -1.324  | 0.186  |  0.3   |     |
-|                  **projectpandas:typepr_post**                  | 0.002889  |  0.007027  | 491063 | 0.4112  |  0.68  |  0.79  |     |
-|               **projectscikit-image:typepr_post**               |  0.01147  |  0.01222   | 489351 | 0.9386  |  0.35  |  0.5   |     |
-|               **projectscikit-learn:typepr_post**               | -0.004068 |  0.00831   | 490280 | -0.4895 |  0.62  |  0.77  |     |
-|                  **projectscipy:typepr_post**                   | -0.006662 |  0.01029   | 489817 | -0.6473 |  0.52  |  0.68  |     |
-|              **projectsphinx-gallery:typepr_post**              | -0.004425 |  0.02815   | 489005 | -0.1572 |  0.88  |  0.9   |     |
-|                 **projectmayavi:typepr_reply**                  |  0.1147   |  0.02649   | 489611 |  4.33   | 0.0001 | 0.0001 | *** |
-|                  **projectnumpy:typepr_reply**                  |  0.02764  |  0.007444  | 490377 |  3.713  | 0.0002 | 0.001  | **  |
-|                 **projectpandas:typepr_reply**                  |  0.04779  |  0.00608   | 491191 |  7.861  | 0.0001 | 0.0001 | *** |
-|              **projectscikit-image:typepr_reply**               |  0.06862  |  0.01072   | 489358 |  6.401  | 0.0001 | 0.0001 | *** |
-|              **projectscikit-learn:typepr_reply**               |  0.03854  |  0.007073  | 490435 |  5.449  | 0.0001 | 0.0001 | *** |
-|                  **projectscipy:typepr_reply**                  |  0.04695  |  0.009234  | 489869 |  5.084  | 0.0001 | 0.0001 | *** |
-|             **projectsphinx-gallery:typepr_reply**              |  0.01067  |  0.02314   | 489110 |  0.461  |  0.64  |  0.78  |     |
-|            **author_groupnonmember:typeissue_reply**            |  0.05941  |  0.007262  | 506722 |  8.181  | 0.0001 | 0.0001 | *** |
-|              **author_groupnonmember:typepr_post**              | -0.02019  |  0.00909   | 488096 | -2.221  | 0.026  | 0.054  |  .  |
-|             **author_groupnonmember:typepr_reply**              |  0.0379   |  0.007805  | 469726 |  4.856  | 0.0001 | 0.0001 | *** |
-|     **projectmayavi:author_groupnonmember:typeissue_reply**     | -0.05677  |  0.03002   | 507310 | -1.891  | 0.059  | 0.114  |     |
-|     **projectnumpy:author_groupnonmember:typeissue_reply**      |  0.01268  |  0.01031   | 505156 |  1.231  | 0.218  |  0.33  |     |
-|     **projectpandas:author_groupnonmember:typeissue_reply**     | -0.00213  |  0.008504  | 505016 | -0.2504 |  0.8   |  0.86  |     |
-|  **projectscikit-image:author_groupnonmember:typeissue_reply**  | -0.06068  |  0.01582   | 504794 | -3.836  | 0.0001 | 0.0004 | *** |
-|  **projectscikit-learn:author_groupnonmember:typeissue_reply**  | -0.05756  |  0.009833  | 503820 | -5.854  | 0.0001 | 0.0001 | *** |
-|     **projectscipy:author_groupnonmember:typeissue_reply**      | -0.008078 |  0.01207   | 507034 | -0.6691 |  0.5   |  0.67  |     |
-| **projectsphinx-gallery:author_groupnonmember:typeissue_reply** | -0.01751  |  0.03532   | 500843 | -0.4958 |  0.62  |  0.77  |     |
-|       **projectmayavi:author_groupnonmember:typepr_post**       | -0.01222  |  0.03992   | 502137 | -0.3061 |  0.76  |  0.85  |     |
-|       **projectnumpy:author_groupnonmember:typepr_post**        |  0.01054  |  0.01307   | 491557 | 0.8063  |  0.42  |  0.58  |     |
-|       **projectpandas:author_groupnonmember:typepr_post**       | 0.005876  |  0.01101   | 484100 | 0.5336  |  0.59  |  0.76  |     |
-|    **projectscikit-image:author_groupnonmember:typepr_post**    | -0.02653  |  0.01881   | 492333 | -1.411  | 0.158  |  0.26  |     |
-|    **projectscikit-learn:author_groupnonmember:typepr_post**    | -0.02014  |  0.01227   | 489436 | -1.642  |  0.1   | 0.174  |     |
-|       **projectscipy:author_groupnonmember:typepr_post**        | 0.004067  |  0.01455   | 498159 | 0.2796  |  0.78  |  0.86  |     |
-|   **projectsphinx-gallery:author_groupnonmember:typepr_post**   | -0.01693  |  0.04677   | 504994 | -0.362  |  0.72  |  0.82  |     |
-|      **projectmayavi:author_groupnonmember:typepr_reply**       |  -0.115   |  0.03498   | 499600 | -3.286  | 0.001  | 0.003  | **  |
-|       **projectnumpy:author_groupnonmember:typepr_reply**       | -0.02069  |  0.01104   | 478200 | -1.875  | 0.061  | 0.114  |     |
-|      **projectpandas:author_groupnonmember:typepr_reply**       | -0.02918  |  0.009248  | 461702 | -3.155  | 0.002  | 0.004  | **  |
-|   **projectscikit-image:author_groupnonmember:typepr_reply**    | -0.08685  |  0.01589   | 474921 | -5.465  | 0.0001 | 0.0001 | *** |
-|   **projectscikit-learn:author_groupnonmember:typepr_reply**    | -0.06118  |   0.0103   | 469477 |  -5.94  | 0.0001 | 0.0001 | *** |
-|       **projectscipy:author_groupnonmember:typepr_reply**       | -0.04245  |  0.01248   | 489470 | -3.401  | 0.001  | 0.002  | **  |
-|  **projectsphinx-gallery:author_groupnonmember:typepr_reply**   | -0.08952  |   0.0354   | 503994 | -2.529  | 0.011  | 0.026  |  *  |
+<!-- ``` -->
 
 
 
-![**Figure**. Expressions of gratitude by contribution type (ticket vs. comment) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-grateful_membership_contribution-knitr.jpg)
+![**Figure**. Expressions of gratitude by activity type (posted issue, comment on issue, posted pull request, or comment on pull request) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-grateful_membership_contribution-knitr.jpg)
 
-### Testing Model 1.3 using Model 1.1 methods
+<!-- ### Testing Model 1.3 using Model 1.1 methods -->
 
-#### Model 1.3a: Overall effects with linear mixed-effects models
+<!-- #### Model 1.3a: Overall effects with linear mixed-effects models -->
 
-This model presents the analyses in a way that is typical of psychological
-analyses. We predict the changes in emotion by community membership and 
-contribution type, including random effects for project and for author. This
-allows us to explore the general patterns of the main and interaction terms,
-rather than focusing in on the project-specific variability.
+<!-- This model presents the analyses in a way that is typical of psychological -->
+<!-- analyses. We predict the changes in emotion by community membership and  -->
+<!-- activity type, including random effects for project and for author. This -->
+<!-- allows us to explore the general patterns of the main and interaction terms, -->
+<!-- rather than focusing in on the project-specific variability. -->
 
+<!-- ```{r retrying-model-1.3} -->
 
-```r
-# do users tend to express appreciation and gratitude differently by group and content?
-retrying_model_1.3 = lmer(log(grateful_count + 1) ~ author_group * type +
-                            (1 | project),
-                          data=sentiment_frame)
-```
+<!-- # do users tend to express appreciation and gratitude differently by group and content? -->
+<!-- retrying_model_1.3 = lmer(log(grateful_count + 1) ~ author_group * type + -->
+<!--                             (1 | project), -->
+<!--                           data=sentiment_frame) -->
 
+<!-- ``` -->
 
-|                  &nbsp;                   | Estimate  | Std..Error |   df   | t.value |   p    | p_adj  | sig |
-|:-----------------------------------------:|:---------:|:----------:|:------:|:-------:|:------:|:------:|:---:|
-|              **(Intercept)**              |  0.01942  |  0.008113  | 7.545  |  2.394  | 0.045  | 0.052  |  .  |
-|         **author_groupnonmember**         |  0.05539  |   0.0025   | 507686 |  22.16  | 0.0001 | 0.0001 | *** |
-|            **typeissue_reply**            |  0.02959  |  0.001947  | 507681 |  15.2   | 0.0001 | 0.0001 | *** |
-|              **typepr_post**              | -0.003142 |  0.002332  | 507683 | -1.348  | 0.178  | 0.178  |     |
-|             **typepr_reply**              |  0.08472  |  0.00192   | 507686 |  44.12  | 0.0001 | 0.0001 | *** |
-| **author_groupnonmember:typeissue_reply** |  0.03474  |  0.002772  | 507681 |  12.53  | 0.0001 | 0.0001 | *** |
-|   **author_groupnonmember:typepr_post**   | -0.04586  |  0.003541  | 507687 | -12.95  | 0.0001 | 0.0001 | *** |
-|  **author_groupnonmember:typepr_reply**   | -0.01989  |  0.002779  | 507687 | -7.157  | 0.0001 | 0.0001 | *** |
+<!-- ```{r print-retrying-model-1.3, eval=TRUE, echo=FALSE} -->
 
-While we see significant differences in the model, interpreting the results is
-difficult because of the way that `lmer` handles factor comparisons. All 
-factors are compared against a "reference level," the first level in the model.
-This makes intepreting models with factors that include more than two levels
-incredibly difficult, because the intercept is essentially an interaction term
-among all reference levels of all factors.
+<!-- # print results -->
+<!-- pander_lme(retrying_model_1.3) -->
 
-As a result, we turn to the biostatistics approach of multiple *t*-tests 
-(corrected for comparisons) of the model estimates to better understand the 
-effects.
+<!-- ``` -->
 
-#### Model 1.3b: In-depth investigation through *t*-tests of model estimates
+<!-- While we see significant differences in the model, interpreting the results is -->
+<!-- difficult because of the way that `lmer` handles factor comparisons. All  -->
+<!-- factors are compared against a "reference level," the first level in the model. -->
+<!-- This makes intepreting models with factors that include more than two levels -->
+<!-- incredibly difficult, because the intercept is essentially an interaction term -->
+<!-- among all reference levels of all factors. -->
+
+<!-- As a result, we turn to the biostatistics approach of multiple *t*-tests  -->
+<!-- (corrected for comparisons) of the model estimates to better understand the  -->
+<!-- effects. -->
+
+<!-- #### Model 1.3b: In-depth investigation through *t*-tests of model estimates -->
 
 First, we build a series of linear mixed-effects models with one term included
 in each model (either main term or interaction term). We then use the estimates
@@ -1301,7 +1099,7 @@ Projects here are random effects, but the rest of the model is the same as
 before. This allows us to do pairwise testing of main and interaction terms,
 along with better exploring inter-project variability.
 
-##### Model 1.3b.1: Does sentiment vary significantly by community membership?
+#### Model 1.3b: Does sentiment vary significantly by community membership?
 
 First, look at whether there are differences in sentiment between author
 groups.
@@ -1315,11 +1113,11 @@ fixed_authors_gratitude = lmer(
   REML=FALSE)
 ```
 
-Run *t*-tests among levels and prepare for the Model 1.1b table later.
+Run *t*-tests among levels and prepare for the Model 1.3 table later.
 
 
 ```r
-# convert Model 1.1b1 output to dataframe
+# convert Model 1.3b output to dataframe
 coefficients_and_se = data.frame(
   summary(fixed_authors_gratitude)$coefficients)
 
@@ -1351,26 +1149,25 @@ write.table(coefficients_and_se,
             sep="\t")
 ```
 
+#### Model 1.3c: Does sentiment vary significantly across activity types?
 
-##### Model 1.3b.2: Does sentiment vary significantly across contribution types?
-
-Now, look at whether there are differences in sentiment between contribution
+Now, look at whether there are differences in sentiment between activity
 types.
 
 
 ```r
-# do tickets and comments materially differ in emotion?
+# do posts and comments materially differ in emotion?
 fixed_types_gratitude = lmer(
   log(grateful_count + 1) ~ 0 + type + (1 | project),
   data=sentiment_frame,
   REML=FALSE)
 ```
 
-Run *t*-tests among levels and prepare for the Model 1.1b table later.
+Run *t*-tests among levels and prepare for the Model 1.3 table later.
 
 
 ```r
-# convert Model 1.1b2 output to dataframe
+# convert Model 1.1c output to dataframe
 coefficients_and_se = data.frame(
   summary(fixed_types_gratitude)$coefficients)
 
@@ -1404,25 +1201,24 @@ write.table(coefficients_and_se,
             sep="\t")
 ```
 
+#### Model 1.3d: Does sentiment vary significantly across community memberships and activity types?
 
-##### Model 1.3b.3: Does sentiment vary significantly across community memberships and contribution types?
-
-Finally, let's look at the interaction between membership and contribution.
+Finally, let's look at the interaction between membership and activity.
 
 
 ```r
-# does emotion differ by the interaction between contribution and authorship group?
+# does emotion differ by the interaction between activity and authorship group?
 community_contribution_gratitude = lmer(
   log(grateful_count + 1) ~ 0 + type:author_group + (1 | project),
   data=sentiment_frame,
   REML=FALSE)
 ```
 
-Run *t*-tests among levels and prepare for the Model 1.1b table later.
+Run *t*-tests among levels and prepare for the Model 1.3 table later.
 
 
 ```r
-# convert Model 1.1b3 output to dataframe
+# convert Model 1.3d output to dataframe
 coefficients_and_se = data.frame(
   summary(community_contribution_gratitude)$coefficients)
 
@@ -1439,18 +1235,18 @@ names(se) = row_names
 
 # compute t-statistics and p-values for desired contrasts
 contrasts = c(
-  "issue_post:member-issue_post:nonmember",     # contribution static (issue posts); membership varies (members v. nonmembers)
-  "issue_reply:member-issue_reply:nonmember",   # contribution static (issue replies); membership varies (members v. nonmembers)
-  "pr_post:member-pr_post:nonmember",           # contribution static (PR posts); membership varies (members v. nonmembers)
-  "pr_reply:member-pr_reply:nonmember",         # contribution static (PR replies); membership varies (members v. nonmembers)
-  "issue_post:member-issue_reply:member",       # contribution varies (issue posts vs. issue replies); membership static (members)
-  "issue_post:nonmember-issue_reply:nonmember", # contribution varies (issue posts vs. issue replies); membership static (nonmembers)
-  "pr_post:member-pr_reply:member",             # contribution varies (PR posts vs. PR replies); membership static (members)
-  "pr_post:nonmember-pr_reply:nonmember",       # contribution varies (PR posts vs. PR replies); membership static (nonmembers)
-  "issue_post:member-pr_post:member",           # contribution varies (issue posts vs. PR posts); membership static (members)
-  "issue_post:nonmember-pr_post:nonmember",     # contribution varies (issue posts vs. PR posts); membership static (nonmembers)
-  "issue_reply:member-pr_reply:member",         # contribution varies (issue replies vs. PR replies); membership static (members)
-  "issue_reply:nonmember-pr_reply:nonmember")   # contribution varies (issue replies vs. PR replies); membership static (nonmembers)
+  "issue_post:member-issue_post:nonmember",     # activity static (issue posts); membership varies (members v. nonmembers)
+  "issue_reply:member-issue_reply:nonmember",   # activity static (issue replies); membership varies (members v. nonmembers)
+  "pr_post:member-pr_post:nonmember",           # activity static (PR posts); membership varies (members v. nonmembers)
+  "pr_reply:member-pr_reply:nonmember",         # activity static (PR replies); membership varies (members v. nonmembers)
+  "issue_post:member-issue_reply:member",       # activity varies (issue posts vs. issue replies); membership static (members)
+  "issue_post:nonmember-issue_reply:nonmember", # activity varies (issue posts vs. issue replies); membership static (nonmembers)
+  "pr_post:member-pr_reply:member",             # activity varies (PR posts vs. PR replies); membership static (members)
+  "pr_post:nonmember-pr_reply:nonmember",       # activity varies (PR posts vs. PR replies); membership static (nonmembers)
+  "issue_post:member-pr_post:member",           # activity varies (issue posts vs. PR posts); membership static (members)
+  "issue_post:nonmember-pr_post:nonmember",     # activity varies (issue posts vs. PR posts); membership static (nonmembers)
+  "issue_reply:member-pr_reply:member",         # activity varies (issue replies vs. PR replies); membership static (members)
+  "issue_reply:nonmember-pr_reply:nonmember")   # activity varies (issue replies vs. PR replies); membership static (nonmembers)
 types_author_groups_tests = compute_t_statistics(
   means, se,
   contrasts)
@@ -1465,25 +1261,24 @@ write.table(coefficients_and_se,
             sep="\t")
 ```
 
-
-##### Model 1.3b.4 : Do different kinds of user contributions differ in emotion by projects?
+#### Model 1.3e : Do different kinds of activities differ in emotion by projects?
 
 Now adding projects into the mix to understand how the previous analysis
 varies across projects.
 
 
 ```r
-# do tickets and comments materially differ in gratitude by projects?
+# do posts and comments materially differ in gratitude by projects?
 creators_v_commenters_gratitude_by_project = lm(
   log(grateful_count + 1) ~ 0 + project:type:author_group,
   data = sentiment_frame)
 ```
 
-Run *t*-tests among levels and prepare for the Model 1.1b table later.
+Run *t*-tests among levels and prepare for the Model 1.3 table later.
 
 
 ```r
-# convert Model 1.1c output to dataframe
+# convert Model 1.3e output to dataframe
 coefficients_and_se = data.frame(
   summary(creators_v_commenters_gratitude_by_project)$coefficients)
 
@@ -1507,7 +1302,7 @@ se = coefficients_and_se$Std..Error
 names(se) = row_names
 
 # compute t-statistics and p-values for desired contrasts
-# (note: ordering of contrasts within each project is identical to Model 1.3b.3)
+# (note: ordering of contrasts within each project is identical to Model 1.3c)
 contrasts = c(
   
   # scikit-learn
@@ -1632,14 +1427,13 @@ project_types_author_group_tests[, "p_value"] = compute_p_value_from_t_stats(
 
 ```r
 write.table(coefficients_and_se,
-            file="results/models/model-1.3b4.tsv",
+            file="results/models/model-1.3e.tsv",
             sep="\t")
 ```
 
+#### Overall results
 
-#### Model 1.3b: Overall results
-
-Now we bring together all analyses from Model 1.3b.
+Now we bring together all analyses from Model 1.3.
 
 
 ```r
@@ -1800,17 +1594,25 @@ write.table(all_tests, file="results/models/model-1.3b_final_pvalues.tsv")
 
 ***
 
+### Model 1.4: Time-course analysis for gratitude
+
+The time-course analysis has been moved in a separate file.
+
+***
+
 ## Model Series 2: Retention
 
 Our second set of models investigates what aspects of the response to a 
-newcomer's first contribution (including aspects of the community's response
+newcomer's first activity (including aspects of the community's response
 to their contribution) might predict their likelihood to come back to 
 contribute a second time.
+
+***
 
 ### Data preparation
 
 Because each ticket has multiple comments, we cannot use the standard long-form
-format for the dataset, or we would lead to (uneven) duplication of tickets
+format for the dataset, or we would lead to (uneven) duplication of posts
 based on the varying numbers of comments. As a result, we pull metrics of the
 whole comment chain and use them as our measures of the community's response
 to the newcomer's contribution.
@@ -1838,7 +1640,7 @@ aggregated_comments = comments_frame %>% ungroup() %>%
 ```
 
 After we've summarized the comment threads, we next join those metrics with the
-tickets dataframe in preparation for our models.
+posts dataframe in preparation for our models.
 
 
 ```r
@@ -1900,14 +1702,21 @@ retention_frame = tickets_frame %>%
 write.table(retention_frame, "results/data/newcomer_retention.tsv", sep="\t")
 ```
 
+***
 
-```r
-proportion_of_newcomer = (
-  sum(as.integer(retention_frame$retained_newcomer) - 1) / dim(retention_frame)[1] * 100)
-```
+### Summary statistics
+
+What do these newcomers look like?
+
+
 
 35.010285% of first-time contributors come back for a second
 contribution.
+
+70.4966206% of first-time contributors post issues (compared
+with pull requests).
+
+***
 
 ### Model 2.1: How does a community's response to newcomers predict the newcomer's decision to return?
 
@@ -2259,6 +2068,8 @@ retention_tests$p_val_adjusted = p.adjust(retention_tests$p_value, method="BH")
 write.table(retention_tests, file="results/models/model-2.1.tsv")
 ```
 
+***
+
 ### Model 2.2: Hints of different newcomer goals
 
 Both mean sentiment and max negative sentiment are predictive of newcomer
@@ -2289,15 +2100,26 @@ pander_clean_anova(retention_comment_sentiment_variance, rename_columns=FALSE)
 
 
 
-|                      &nbsp;                       | Estimate | Std Error | Z value | p_value | p_adj | sig |
-|:-------------------------------------------------:|:--------:|:---------:|:-------:|:-------:|:-----:|:---:|
-|              **ticket_familyissue**               | -0.7759  |  0.07294  | -10.64  |  1e-04  | 1e-04 | *** |
-|                **ticket_familypr**                | -0.2323  |  0.08432  | -2.755  |  0.006  | 0.012 |  *  |
-| **ticket_familyissue:comment_sentiment_variance** | -0.1616  |   0.166   | -0.9735 |  0.33   | 0.33  |     |
-|  **ticket_familypr:comment_sentiment_variance**   |  0.3532  |  0.2869   |  1.231  |  0.218  | 0.29  |     |
+|                      &nbsp;                       | Estimate | Std Error | Z value | p_value | p_adj  | sig |
+|:-------------------------------------------------:|:--------:|:---------:|:-------:|:-------:|:------:|:---:|
+|              **ticket_familyissue**               | -0.7759  |  0.07294  | -10.64  | 0.0001  | 0.0001 | *** |
+|                **ticket_familypr**                | -0.2323  |  0.08432  | -2.755  |  0.006  | 0.012  |  *  |
+| **ticket_familyissue:comment_sentiment_variance** | -0.1616  |   0.166   | -0.9735 |  0.33   |  0.33  |     |
+|  **ticket_familypr:comment_sentiment_variance**   |  0.3532  |  0.2869   |  1.231  |  0.218  |  0.29  |     |
 
 
 ```r
+retention_comment_sentiment_variance[, "row_names"] = row.names(
+  retention_comment_sentiment_variance)
+
+mask = (
+  retention_comment_sentiment_variance$row_names != "(Intercept)" &
+    retention_comment_sentiment_variance$row_names != "ticket_familyissue" &
+    retention_comment_sentiment_variance$row_names != "ticket_familypr")
+retention_comment_sentiment_variance = retention_comment_sentiment_variance[mask, ]
+row.names(retention_comment_sentiment_variance) = retention_comment_sentiment_variance[,
+                                                                                       "row_names"] 
+
 columns_of_interest = c("Z value", "p_value")
 retention_comment_sentiment_variance = select(retention_comment_sentiment_variance, 
                                               one_of(columns_of_interest))
@@ -2320,6 +2142,40 @@ write.table(retention_tests, file="results/models/model-2.2.tsv")
 ```
 
 
+```r
+pander_clean_anova(retention_tests_2.1[c("model", "stat", "p_value")],
+                   rename_columns=FALSE)
+```
+
+
+
+|                        &nbsp;                         |                       model                       |  stat   | p_value | p_adj  | sig |
+|:-----------------------------------------------------:|:-------------------------------------------------:|:-------:|:-------:|:------:|:---:|
+|                     **pr-issue**                      |                     pr-issue                      |  5.542  | 0.0001  | 0.0001 | *** |
+|                     **open_time**                     |                     open_time                     | -0.9746 |  0.33   |  0.38  |     |
+|            **comment_grateful_cumulative**            |            comment_grateful_cumulative            |  6.722  | 0.0001  | 0.0001 | *** |
+|          **comment_sentiment_max_negative**           |          comment_sentiment_max_negative           |  1.367  |  0.172  | 0.242  |     |
+|          **comment_sentiment_max_positive**           |          comment_sentiment_max_positive           |  10.86  | 0.0001  | 0.0001 | *** |
+|                **number_of_comments**                 |                number_of_comments                 |  9.338  | 0.0001  | 0.0001 | *** |
+|               **comment_member_ratio**                |               comment_member_ratio                | -8.344  | 0.0001  | 0.0001 | *** |
+|              **comment_sentiment_mean**               |              comment_sentiment_mean               |  6.342  | 0.0001  | 0.0001 | *** |
+|           **ticket_familyissue:open_time**            |           ticket_familyissue:open_time            |  3.596  | 0.0003  | 0.001  | **  |
+|             **ticket_familypr:open_time**             |             ticket_familypr:open_time             | -2.903  |  0.004  | 0.006  | **  |
+| **ticket_familyissue:comment_sentiment_max_negative** | ticket_familyissue:comment_sentiment_max_negative | -1.276  |  0.202  |  0.27  |     |
+|  **ticket_familypr:comment_sentiment_max_negative**   |  ticket_familypr:comment_sentiment_max_negative   |  3.872  | 0.0001  | 0.0002 | *** |
+| **ticket_familyissue:comment_sentiment_max_positive** | ticket_familyissue:comment_sentiment_max_positive |  5.301  | 0.0001  | 0.0001 | *** |
+|  **ticket_familypr:comment_sentiment_max_positive**   |  ticket_familypr:comment_sentiment_max_positive   |  0.395  |  0.69   |  0.72  |     |
+|       **ticket_familyissue:number_of_comments**       |       ticket_familyissue:number_of_comments       |  4.012  | 0.0001  | 0.0001 | *** |
+|        **ticket_familypr:number_of_comments**         |        ticket_familypr:number_of_comments         |  6.535  | 0.0001  | 0.0001 | *** |
+|      **ticket_familyissue:comment_member_ratio**      |      ticket_familyissue:comment_member_ratio      | -4.281  | 0.0001  | 0.0001 | *** |
+|       **ticket_familypr:comment_member_ratio**        |       ticket_familypr:comment_member_ratio        | -8.937  | 0.0001  | 0.0001 | *** |
+|     **ticket_familyissue:comment_sentiment_mean**     |     ticket_familyissue:comment_sentiment_mean     |  4.387  | 0.0001  | 0.0001 | *** |
+|      **ticket_familypr:comment_sentiment_mean**       |      ticket_familypr:comment_sentiment_mean       | -0.8239 |  0.41   |  0.45  |     |
+|  **ticket_familyissue:comment_grateful_cumulative**   |  ticket_familyissue:comment_grateful_cumulative   | 0.05856 |  0.95   |  0.95  |     |
+|    **ticket_familypr:comment_grateful_cumulative**    |    ticket_familypr:comment_grateful_cumulative    |  3.011  |  0.003  | 0.004  | **  |
+|   **ticket_familyissue:comment_sentiment_variance**   |   ticket_familyissue:comment_sentiment_variance   | -0.9735 |  0.33   |  0.38  |     |
+|    **ticket_familypr:comment_sentiment_variance**     |    ticket_familypr:comment_sentiment_variance     |  1.231  |  0.218  |  0.28  |     |
+
 ***
 
 # Future directions
@@ -2334,3 +2190,4 @@ they'll come back to make a second one?
 * Does the number and intensity of negative and positive comments on a
 first-time contributor's ticket change whether they come back to make another
 ticket?
+* Can we track the enculturation of sentiment and gratitude continuously?
