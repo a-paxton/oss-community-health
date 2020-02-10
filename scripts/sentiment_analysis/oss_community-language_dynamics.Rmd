@@ -2094,3 +2094,4 @@ they'll come back to make a second one?
 * Does the number and intensity of negative and positive comments on a
 first-time contributor's ticket change whether they come back to make another
 ticket?
+* Can we track the enculturation of sentiment and gratitude continuously?
