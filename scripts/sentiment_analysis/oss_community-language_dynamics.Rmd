@@ -76,40 +76,109 @@ unique_users = as.character(unique(append(unique_commenters, unique_ticketers)))
 ```{r activity-stats, echo=FALSE, eval=TRUE, message=FALSE}
 
 # get counts of ticket activity per project
-ticket_counts = tickets_frame %>% ungroup() %>%
-  dplyr::select(project, id) %>%
+ticket_projectwise_counts = tickets_frame %>% ungroup() %>%
+  dplyr::select(project, id, ticket_family) %>%
   distinct() %>%
-  group_by(project) %>%
-  summarize(unique_tickets = n())
+  group_by(project, ticket_family) %>%
+  summarize(unique_tickets = n()) %>%
+  mutate(ticket_family = as.character(ticket_family))
+
+# get counts of post activity by post type
+ticket_familywise_counts = tickets_frame %>% ungroup() %>%
+  dplyr::select(project, id, ticket_family) %>%
+  distinct() %>%
+  group_by(ticket_family) %>%
+  summarize(unique_tickets = n()) %>%
+  mutate(ticket_family = as.character(ticket_family))
 
 # get counts of comment activity per project
-comment_counts = comments_frame %>% ungroup() %>%
-  dplyr::select(project, id, ticket_id) %>%
+comment_projectwise_counts = comments_frame %>% ungroup() %>%
+  dplyr::select(project, id, ticket_id, type) %>%
   distinct() %>%
-  group_by(project) %>%
-  summarize(unique_comments = n())
+  group_by(project,type) %>%
+  summarize(unique_comments = n()) %>%
+  mutate(type = ifelse(type == "issue_reply",
+                       "issue",
+                       "pr"))
+
+# get counts of comment activity by post type
+comment_familywise_counts = comments_frame %>% ungroup() %>%
+  dplyr::select(project, id, ticket_id, type) %>%
+  distinct() %>%
+  group_by(type) %>%
+  summarize(unique_comments = n()) %>%
+  mutate(type = ifelse(type == "issue_reply",
+                       "issue",
+                       "pr"))
 
 # bind the two
-contribution_counts = dplyr::full_join(ticket_counts, comment_counts,
-                                       by='project')
+contribution_projectwise_counts = dplyr::full_join(ticket_projectwise_counts, comment_projectwise_counts,
+                                                   by=c('project',
+                                                        'ticket_family'='type'))
+contribution_familywise_counts = dplyr::full_join(ticket_familywise_counts, comment_familywise_counts,
+                                                  by=c('ticket_family'='type'))
 
 # print the table and then clean up a bit
-pander(contribution_counts, style = 'rmarkdown')
-rm(ticket_counts, comment_counts)
+pander(contribution_familywise_counts, style = 'rmarkdown')
+pander(contribution_projectwise_counts, style = 'rmarkdown')
+
+# save out some variables we'll need
+
+# grab total overview stats
+unique_total_projects = dim(contribution_projectwise_counts)[1]/2
+unique_commenters = length(unique_commenters)
+unique_posters = length(unique_ticketers)
+unique_users = length(unique_users)
+
+# grab posted issue stats
+unique_posted_issues = contribution_familywise_counts %>% 
+  dplyr::filter(ticket_family=='issue') %>% 
+  .$unique_tickets
+mean_issues_per_project = mean(contribution_projectwise_counts %>% 
+                                 dplyr::filter(ticket_family=='issue') %>% 
+                                 .$unique_tickets)
+
+# grab posted pr stats
+unique_posted_prs = contribution_familywise_counts %>% 
+  dplyr::filter(ticket_family=='pr') %>% 
+  .$unique_tickets
+mean_prs_per_project = mean(contribution_projectwise_counts %>% 
+                              dplyr::filter(ticket_family=='pr') %>% 
+                              .$unique_tickets)
+
+# grab issue comment stats
+unique_issue_comments = contribution_familywise_counts %>% 
+  dplyr::filter(ticket_family=='issue') %>% .$unique_comments
+mean_issue_comments_per_project = mean(contribution_projectwise_counts %>% 
+                                         dplyr::filter(ticket_family=='issue') %>% 
+                                         .$unique_comments)
+
+# grab PR comment stats
+unique_pr_comments = contribution_familywise_counts %>% 
+  dplyr::filter(ticket_family=='pr') %>% 
+  .$unique_comments
+mean_pr_comments_per_project = mean(contribution_projectwise_counts %>% 
+                                      dplyr::filter(ticket_family=='pr') %>% 
+                                      .$unique_comments)
 
 ```
 
-Our dataset includes `r dim(contribution_counts)[1]` unique projects with a
-total of `r sum(contribution_counts$unique_tickets)` unique tickets, with a
-mean of `r mean(contribution_counts$unique_tickets)` tickets per project.
+Our dataset includes `r unique_total_projects` unique projects. The dataset has
+total of `r unique_posted_issues` unique posted issues, with a mean of 
+`r mean_issues_per_project` posted issues per project. It also includes a total of 
+`r unique_posted_prs` unique posted pull requests, with a mean of 
+`r mean_prs_per_project` posted pull requests per project.
 
-On these tickets, the dataset includes
-`r sum(contribution_counts$unique_comments)` unique comments, with
-`r mean(contribution_counts$unique_comments)` average comments per project.
+On these contributions, the dataset includes
+`r unique_issue_comments` unique comments on issues and 
+`r unique_pr_comments` unique comments on pull requests. This includes an average of
+`r mean_issue_comments_per_project` comments on issues per project and an average of 
+`r mean_pr_comments_per_project` 
+comments on pull requests per project.
 
-In total, we have `r length(unique_commenters)` unique commenters,
-`r length(unique_ticketers)` unique ticket-creators, and
-`r length(unique_users)` overall unique users.
+In total, we have `r unique_commenters` unique commenters,
+`r unique_posters` unique post creators, and
+`r unique_users` overall unique users.
 
 ***
 
@@ -1537,15 +1606,32 @@ retention_frame = tickets_frame %>%
 write.table(retention_frame, "results/data/newcomer_retention.tsv", sep="\t")
 ```
 
-```{r proportion_of_newcomer}
+***
 
+### Summary statistics
+
+What do these newcomers look like?
+
+```{r newcomer-proportion-stats, include=FALSE, eval=TRUE}
+
+# how many newcomers return?
 proportion_of_newcomer = (
   sum(as.integer(retention_frame$retained_newcomer) - 1) / dim(retention_frame)[1] * 100)
+
+# what proportion of newcomers post issues (vs. pull requests)?
+newcomer_issue_post = retention_frame %>%
+  dplyr::filter(ticket_family == "issue")
+newcomer_proportion_issues = (dim(newcomer_issue_post)[1] / dim(retention_frame)[1]) * 100
 
 ```
 
 `r proportion_of_newcomer`% of first-time contributors come back for a second
 contribution.
+
+`r newcomer_proportion_issues`% of first-time contributors post issues (compared
+with pull requests).
+
+***
 
 ### Model 2.1: How does a community's response to newcomers predict the newcomer's decision to return?
 
