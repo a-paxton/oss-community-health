@@ -26,7 +26,7 @@ preprocessing.
 **Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux
 (CNRS)
 
-**Date last compiled**:  2020-02-10 16:02:25
+**Date last compiled**:  2020-02-10 19:53:21
 
 
 
@@ -2058,7 +2058,7 @@ pander_clean_anova(retention_tests[c("model", "stat", "p_value")],
 
 
 ```r
-write.table(all_coefs_and_se,
+write.table(retention_tests,
             file="results/models/model-2.1.tsv", sep="\t")
 ```
 
@@ -2131,7 +2131,7 @@ retention_tests_2.1 = rbind(select(retention_tests, -p_val_adjusted),
 
 
 ```r
-write.table(all_coefs_and_se_2.1,
+write.table(retention_tests_2.1,
             file="results/models/model-2.2.tsv", sep="\t")
 ```
 

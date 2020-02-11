@@ -2000,7 +2000,7 @@ pander_clean_anova(retention_tests[c("model", "stat", "p_value")],
 ```
 
 ```{r write_results-2.1}
-write.table(all_coefs_and_se,
+write.table(retention_tests,
             file="results/models/model-2.1.tsv", sep="\t")
 ```
 
@@ -2064,7 +2064,7 @@ retention_tests_2.1 = rbind(select(retention_tests, -p_val_adjusted),
 ```
 
 ```{r write_results-2.2}
-write.table(all_coefs_and_se_2.1,
+write.table(retention_tests_2.1,
             file="results/models/model-2.2.tsv", sep="\t")
 ```
 
@@ -2074,10 +2074,8 @@ write.table(retention_tests, file="results/models/model-2.2.tsv")
 ```
 
 ```{r}
-
 pander_clean_anova(retention_tests_2.1[c("model", "stat", "p_value")],
                    rename_columns=FALSE)
-
 ```
 
 ***
