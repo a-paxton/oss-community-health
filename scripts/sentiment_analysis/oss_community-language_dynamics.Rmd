@@ -1742,9 +1742,13 @@ retention_tests[, "p_value"] = compute_p_value_from_t_stats(
 
 # Keep coefficient + sde for plotting purposes
 all_coefs_and_se = coefficients_and_se[, c("Estimate", "Std..Error")]
+all_random_effects = ranef(retention_predictors)$"project"
+colnames(all_random_effects) = "ticket_family"
 ```
 
+
 ```{r retention_open_time}
+# Open time
 retention_predictor = glmer(retained_newcomer ~ open_time + (1 | project),
                             data=retention_frame, family=binomial, nAGQ=0)
 retention_tests_continuous = as.data.frame(summary(
@@ -1756,6 +1760,11 @@ all_coefs_and_se = rbind(
 retention_tests_continuous[, "row_names"] = row.names(
   retention_tests_continuous)
 
+random_effects = ranef(retention_predictor)$project
+colnames(random_effects) = "open_time"
+all_random_effects = cbind(all_random_effects, random_effects)
+
+# Comment grateful cumulative
 retention_predictor = glmer(retained_newcomer ~ comment_grateful_cumulative + (1 | project),
                             data=retention_frame, family=binomial, nAGQ=0)
 retention_grateful =  as.data.frame(summary(retention_predictor)$coefficients)
@@ -1769,6 +1778,11 @@ retention_tests_continuous = merge(
   retention_tests_continuous,
   retention_grateful, all=TRUE, sort=FALSE)
 
+random_effects = ranef(retention_predictor)$project
+colnames(random_effects) = "comment_grateful_cumulative"
+all_random_effects = cbind(all_random_effects, random_effects)
+
+# Comment sentiment max negative
 retention_predictor = glmer(retained_newcomer ~ comment_sentiment_max_negative + (1 | project),
                             data=retention_frame, family=binomial, nAGQ=0)
 retention_comment_sentiment_max_negative = as.data.frame(
@@ -1784,7 +1798,12 @@ retention_tests_continuous = merge(
   retention_comment_sentiment_max_negative,
   all=TRUE, sort=FALSE)
 
+random_effects = ranef(retention_predictor)$project
+colnames(random_effects) = "comment_sentiment_max_negative"
+all_random_effects = cbind(all_random_effects, random_effects)
 
+
+# Comment sentiment max positive
 retention_predictor = glmer(retained_newcomer ~ comment_sentiment_max_positive + (1 | project),
                             data=retention_frame, family=binomial, nAGQ=0)
 retention_comment_sentiment_max_positive = as.data.frame(
@@ -1800,7 +1819,11 @@ retention_tests_continuous = merge(
   retention_comment_sentiment_max_positive,
   all=TRUE, sort=FALSE)
 
+random_effects = ranef(retention_predictor)$project
+colnames(random_effects) = "comment_sentiment_max_positive"
+all_random_effects = cbind(all_random_effects, random_effects)
 
+# Number of comments
 retention_predictor = glmer(retained_newcomer ~ number_of_comments + (1 | project),
                             data=retention_frame, family=binomial, nAGQ=0)
 retention_number_of_comment = as.data.frame(
@@ -1817,7 +1840,11 @@ retention_tests_continuous = merge(
   retention_number_of_comment,
   all=TRUE, sort=FALSE)
 
+random_effects = ranef(retention_predictor)$project
+colnames(random_effects) = "number_of_comments"
+all_random_effects = cbind(all_random_effects, random_effects)
 
+# Comment member ratio
 retention_predictor = glmer(retained_newcomer ~ comment_member_ratio + (1 | project),
                             data=retention_frame, family=binomial, nAGQ=0)
 
@@ -1836,7 +1863,11 @@ retention_tests_continuous = merge(
   retention_comment_member_ratio,
   all=TRUE, sort=FALSE)
 
+random_effects = ranef(retention_predictor)$project
+colnames(random_effects) = "comment_member_ratio"
+all_random_effects = cbind(all_random_effects, random_effects)
 
+# Comment sentiment mean
 retention_predictor = glmer(retained_newcomer ~ comment_sentiment_mean + (1 | project),
                             data=retention_frame, family=binomial, nAGQ=0)
 retention_comment_sentiment_mean = as.data.frame(
@@ -1849,13 +1880,19 @@ all_coefs_and_se = rbind(
 retention_comment_sentiment_mean[, "row_names"] = row.names(
   retention_comment_sentiment_mean)
 retention_tests_continuous = rbind(
-  retention_tests_continuous,
-  retention_comment_sentiment_mean)
+    retention_tests_continuous,
+    retention_comment_sentiment_mean)
+
+random_effects = ranef(retention_predictor)$project
+colnames(random_effects) = "comment_sentiment_mean"
+all_random_effects = cbind(all_random_effects, random_effects)
+
 ```
 
 Now let's do interaction terms between contribution types and everything else.
 
 ```{r interaction_terms}
+# Ticket family x open time
 retention_predictor = glmer(
   retained_newcomer ~ 0 + ticket_family + ticket_family:open_time + (1 | project),
   data=retention_frame, family=binomial, nAGQ=0)
@@ -1869,9 +1906,13 @@ all_coefs_and_se = rbind(
 retention_open_time[, "row_names"] = row.names(
   retention_open_time)
 retention_tests_continuous = rbind(
-  retention_tests_continuous,
-  retention_open_time)
+    retention_tests_continuous,
+    retention_open_time)
+random_effects = ranef(retention_predictor)$project
+colnames(random_effects) = "ticket_family_open_time"
+all_random_effects = cbind(all_random_effects, random_effects)
 
+# Ticket family x comment sentiment max negative
 retention_predictor = glmer(
   retained_newcomer ~ 0 + ticket_family + ticket_family:comment_sentiment_max_negative + (1 | project),
   data=retention_frame, family=binomial, nAGQ=0)
@@ -1889,6 +1930,11 @@ retention_tests_continuous = merge(
   retention_comment_sentiment_max_negative,
   all=TRUE, sort=FALSE)
 
+random_effects = ranef(retention_predictor)$project
+colnames(random_effects) = "ticket_family_comment_sentiment_max_negative"
+all_random_effects = cbind(all_random_effects, random_effects)
+
+# Ticket family x comment sentiment max positive
 retention_predictor = glmer(
   retained_newcomer ~ 0 + ticket_family + ticket_family:comment_sentiment_max_positive + (1 | project),
   data=retention_frame, family=binomial, nAGQ=0)
@@ -1906,7 +1952,11 @@ retention_tests_continuous = merge(
   retention_comment_sentiment_max_positive,
   all=TRUE, sort=FALSE)
 
+random_effects = ranef(retention_predictor)$project
+colnames(random_effects) = "ticket_family_comment_sentiment_max_positive"
+all_random_effects = cbind(all_random_effects, random_effects)
 
+# Ticket family x number of comments
 retention_predictor = glmer(
   retained_newcomer ~ 0 + ticket_family + ticket_family:number_of_comments + (1 | project),
   data=retention_frame, family=binomial, nAGQ=0)
@@ -1924,6 +1974,11 @@ retention_tests_continuous = merge(
   retention_number_of_comments,
   all=TRUE, sort=FALSE)
 
+random_effects = ranef(retention_predictor)$project
+colnames(random_effects) = "ticket_family_number_of_comments"
+all_random_effects = cbind(all_random_effects, random_effects)
+
+# Ticket family x comment member ratio
 retention_predictor = glmer(
   retained_newcomer ~ 0 + ticket_family + ticket_family:comment_member_ratio + (1 | project),
   data=retention_frame, family=binomial, nAGQ=0)
@@ -1940,6 +1995,11 @@ retention_tests_continuous = rbind(
   retention_tests_continuous,
   retention_comment_member_ratio)
 
+random_effects = ranef(retention_predictor)$project
+colnames(random_effects) = "ticket_family_comment_member_ratio"
+all_random_effects = cbind(all_random_effects, random_effects)
+
+# Ticket family x comment sentiment mean
 retention_predictor = glmer(
   retained_newcomer ~ 0 + ticket_family + ticket_family:comment_sentiment_mean + (1 | project),
   data=retention_frame, family=binomial, nAGQ=0)
@@ -1956,6 +2016,11 @@ retention_tests_continuous = rbind(
   retention_tests_continuous,
   retention_comment_sentiment_mean)
 
+random_effects = ranef(retention_predictor)$project
+colnames(random_effects) = "ticket_family_comment_sentiment_mean"
+all_random_effects = cbind(all_random_effects, random_effects)
+
+# Ticket family x comment grateful cumulative
 retention_predictor = glmer(
   retained_newcomer ~ 0 + ticket_family + ticket_family:comment_grateful_cumulative + (1 | project),
   data=retention_frame, family=binomial, nAGQ=0)
@@ -1971,6 +2036,10 @@ retention_comment_grateful_cumulative[, "row_names"] = row.names(
 retention_tests_continuous = rbind(
   retention_tests_continuous,
   retention_comment_grateful_cumulative)
+
+random_effects = ranef(retention_predictor)$project
+colnames(random_effects) = "ticket_family_comment_grateful_cumulative"
+all_random_effects = cbind(all_random_effects, random_effects)
 
 
 ```
@@ -2068,9 +2137,14 @@ write.table(retention_tests_2.1,
             file="results/models/model-2.2.tsv", sep="\t")
 ```
 
-```{r write_all_results-2.2}
-retention_tests_2.1$p_val_adjusted = p.adjust(retention_tests_2.1$p_value, method="BH")
-write.table(retention_tests, file="results/models/model-2.2.tsv")
+```{r write_all_results}
+retention_tests$p_val_adjusted = p.adjust(retention_tests$p_value, method="BH")
+write.table(retention_tests, file="results/models/model_2.tsv")
+
+write.table(
+    all_random_effects,
+    "results/models/newcomer_retention_ticket_family_random_effects.tsv")
+
 ```
 
 ```{r}

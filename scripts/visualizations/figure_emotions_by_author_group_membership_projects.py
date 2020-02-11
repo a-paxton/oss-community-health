@@ -13,8 +13,6 @@ from utils_vis import add_letter_and_title
 
 model_results = pd.read_csv("results/models/model-1.1b3.tsv", sep="\t")
 
-
-
 fig = plt.figure(figsize=(7.007874, 4.2047))
 
 gs = GridSpec(110, 150, figure=fig,
