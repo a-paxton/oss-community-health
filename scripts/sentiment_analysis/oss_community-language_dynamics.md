@@ -26,11 +26,7 @@ preprocessing.
 **Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux
 (CNRS)
 
-<<<<<<< HEAD
-**Date last compiled**:  2020-02-10 19:53:21
-=======
-**Date last compiled**:  2020-02-05 17:11:23
->>>>>>> 7ea8a4e28ec283d9f6e930c3ad1268db6826f1dc
+**Date last compiled**:  2020-02-10 20:04:41
 
 
 
@@ -73,7 +69,6 @@ broken down by specific projects.
 
 
 
-<<<<<<< HEAD
 |    project     | ticket_family | unique_tickets | unique_comments |
 |:--------------:|:-------------:|:--------------:|:---------------:|
 |   matplotlib   |     issue     |      4819      |      28904      |
@@ -92,18 +87,6 @@ broken down by specific projects.
 |     scipy      |      pr       |      4295      |      26205      |
 | sphinx-gallery |     issue     |      190       |      1074       |
 | sphinx-gallery |      pr       |      219       |      1832       |
-=======
-|    project     | unique_tickets | unique_comments |
-|:--------------:|:--------------:|:---------------:|
-|   matplotlib   |     12204      |      65592      |
-|     mayavi     |      730       |      2104       |
-|     numpy      |     10021      |      60973      |
-|     pandas     |     23239      |     132489      |
-|  scikit-image  |      3277      |      22360      |
-|  scikit-learn  |     11649      |     107930      |
-|     scipy      |      7142      |      42967      |
-| sphinx-gallery |      409       |      2906       |
->>>>>>> 7ea8a4e28ec283d9f6e930c3ad1268db6826f1dc
 
 Our dataset includes 8 unique projects. The dataset has
 total of 32133 unique posted issues, with a mean of 
@@ -111,7 +94,6 @@ total of 32133 unique posted issues, with a mean of
 36538 unique posted pull requests, with a mean of 
 4567.25 posted pull requests per project.
 
-<<<<<<< HEAD
 On these contributions, the dataset includes
 185529 unique comments on issues and 
 253495 unique comments on pull requests. This includes an average of
@@ -122,15 +104,6 @@ comments on pull requests per project.
 In total, we have 15560 unique commenters,
 14147 unique post creators, and
 19430 overall unique users.
-=======
-On these tickets, the dataset includes
-437321 unique comments, with
-54665.125 average comments per project.
-
-In total, we have 15559 unique commenters,
-14147 unique ticket-creators, and
-19429 overall unique users.
->>>>>>> 7ea8a4e28ec283d9f6e930c3ad1268db6826f1dc
 
 ***
 
@@ -223,7 +196,6 @@ sentiment_frame = combine_tickets_and_comments(tickets_frame, comments_frame)
 
 <!-- ```{r model-emotion-by-type-and-author} -->
 
-<<<<<<< HEAD
 <!-- # do posts and comments materially differ in emotion? -->
 <!-- creators_v_commenters_emotion_by_project = lmer(compound_emotion ~ type * author_group  + -->
 <!--                                                   (1 | project) + (1 | author_name), -->
@@ -251,40 +223,6 @@ sentiment_frame = combine_tickets_and_comments(tickets_frame, comments_frame)
 <!-- effects. -->
 
 <!-- #### Model 1.1b: In-depth investigation through *t*-tests of model estimates -->
-=======
-```r
-# do tickets and comments materially differ in emotion?
-creators_v_commenters_emotion_by_project = lmer(compound_emotion ~ type * author_group  +
-                                                  (1 | project) + (1 | author_name),
-                                                data = sentiment_frame,
-                                                REML = FALSE)
-```
-
-
-|                  &nbsp;                   | Estimate  | Std..Error |   df   | t.value |   p    | p_adj  | sig |
-|:-----------------------------------------:|:---------:|:----------:|:------:|:-------:|:------:|:------:|:---:|
-|              **(Intercept)**              |  0.07003  |  0.008879  | 11.87  |  7.887  | 0.0001 | 0.0001 | *** |
-|            **typeissue_reply**            |  0.09656  |  0.003695  | 493838 |  26.14  | 0.0001 | 0.0001 | *** |
-|              **typepr_post**              | -0.002869 |  0.004434  | 494937 | -0.6469 |  0.52  |  0.59  |     |
-|             **typepr_reply**              |  0.1389   |  0.003681  | 495617 |  37.74  | 0.0001 | 0.0001 | *** |
-|         **author_groupnonmember**         | 0.009317  |  0.005375  | 308636 |  1.733  | 0.083  | 0.111  |     |
-| **typeissue_reply:author_groupnonmember** |  0.01915  |  0.00528   | 490454 |  3.628  | 0.0003 |   0    | *** |
-|   **typepr_post:author_groupnonmember**   |  0.02472  |  0.006801  | 445432 |  3.635  | 0.0003 |   0    | *** |
-|  **typepr_reply:author_groupnonmember**   | -0.002818 |  0.005585  | 350072 | -0.5046 |  0.61  |  0.61  |     |
-
-While we see significant differences in the model, interpreting the results is
-difficult because of the way that `lmer` handles factor comparisons. All 
-factors are compared against a "reference level," the first level in the model.
-This makes intepreting models with factors that include more than two levels
-incredibly difficult, because the intercept is essentially an interaction term
-among all reference levels of all factors.
-
-As a result, we turn to the biostatistics approach of multiple *t*-tests 
-(corrected for comparisons) of the model estimates to better understand the 
-effects.
-
-#### Model 1.1b: In-depth investigation through *t*-tests of model estimates
->>>>>>> 7ea8a4e28ec283d9f6e930c3ad1268db6826f1dc
 
 First, we build a series of linear mixed-effects models with one term included
 in each model (either main term or interaction term). We then use the estimates
@@ -475,17 +413,7 @@ creators_v_commenters_emotion_by_project = lmer(
   REML = FALSE)
 ```
 
-<<<<<<< HEAD
 Run *t*-tests among levels and prepare for the Model 1.1 table later.
-=======
-```
-## Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl =
-## control$checkConv, : Model failed to converge with max|grad| = 0.00294682
-## (tol = 0.002, component 1)
-```
-
-Run *t*-tests among levels and prepare for the Model 1.1b table later.
->>>>>>> 7ea8a4e28ec283d9f6e930c3ad1268db6826f1dc
 
 
 ```r
@@ -682,121 +610,121 @@ pander_clean_anova(all_tests, rename_columns=FALSE)
 
 
 
-|                                    &nbsp;                                    |                model                |  t_stats  | p_value | p_adj  | sig |
-|:----------------------------------------------------------------------------:|:-----------------------------------:|:---------:|:-------:|:------:|:---:|
-|                             **member-nonmember**                             |             Main Terms              |  -0.1151  |  0.91   |  0.94  |     |
-|                          **issue_post-issue_reply**                          |             Main Terms              |  -9.671   | 0.0001  | 0.0001 | *** |
-|                             **pr_post-pr_reply**                             |             Main Terms              |  -12.53   | 0.0001  | 0.0001 | *** |
-|                            **issue_post-pr_post**                            |             Main Terms              |  -0.692   |  0.49   |  0.59  |     |
-|                           **issue_reply-pr_reply**                           |             Main Terms              |   -3.66   | 0.0003  | 0.001  | **  |
-|                  **issue_post:member-issue_post:nonmember**                  |      2W: Types x Author Groups      |  -0.7685  |  0.44   |  0.55  |     |
-|                 **issue_reply:member-issue_reply:nonmember**                 |      2W: Types x Author Groups      |  -2.489   |  0.013  | 0.024  |  *  |
-|                     **pr_post:member-pr_post:nonmember**                     |      2W: Types x Author Groups      |  -2.791   |  0.005  |  0.01  |  *  |
-|                    **pr_reply:member-pr_reply:nonmember**                    |      2W: Types x Author Groups      |  -0.5611  |  0.57   |  0.67  |     |
-|                   **issue_post:member-issue_reply:member**                   |      2W: Types x Author Groups      |  -7.957   | 0.0001  | 0.0001 | *** |
-|                **issue_post:nonmember-issue_reply:nonmember**                |      2W: Types x Author Groups      |  -10.13   | 0.0001  | 0.0001 | *** |
-|                      **pr_post:member-pr_reply:member**                      |      2W: Types x Author Groups      |   -11.9   | 0.0001  | 0.0001 | *** |
-|                   **pr_post:nonmember-pr_reply:nonmember**                   |      2W: Types x Author Groups      |  -9.623   | 0.0001  | 0.0001 | *** |
-|                     **issue_post:member-pr_post:member**                     |      2W: Types x Author Groups      |  0.2321   |  0.82   |  0.88  |     |
-|                  **issue_post:nonmember-pr_post:nonmember**                  |      2W: Types x Author Groups      |  -1.828   |  0.068  | 0.105  |     |
-|                    **issue_reply:member-pr_reply:member**                    |      2W: Types x Author Groups      |  -3.625   | 0.0003  | 0.001  | **  |
-|                 **issue_reply:nonmember-pr_reply:nonmember**                 |      2W: Types x Author Groups      |  -1.797   |  0.072  |  0.11  |     |
-|     **scikit.learn:issue_post:member-scikit.learn:issue_post:nonmember**     | 3W: Types x Author Groups x Project |  -0.7117  |  0.48   |  0.58  |     |
-|    **scikit.learn:issue_reply:member-scikit.learn:issue_reply:nonmember**    | 3W: Types x Author Groups x Project |  -3.612   | 0.0003  | 0.001  | **  |
-|        **scikit.learn:pr_post:member-scikit.learn:pr_post:nonmember**        | 3W: Types x Author Groups x Project | -0.01136  |  0.99   |  0.99  |     |
-|       **scikit.learn:pr_reply:member-scikit.learn:pr_reply:nonmember**       | 3W: Types x Author Groups x Project |  -0.8423  |   0.4   |  0.5   |     |
-|      **scikit.learn:issue_post:member-scikit.learn:issue_reply:member**      | 3W: Types x Author Groups x Project |  -8.913   | 0.0001  | 0.0001 | *** |
-|   **scikit.learn:issue_post:nonmember-scikit.learn:issue_reply:nonmember**   | 3W: Types x Author Groups x Project |  -12.54   | 0.0001  | 0.0001 | *** |
-|         **scikit.learn:pr_post:member-scikit.learn:pr_reply:member**         | 3W: Types x Author Groups x Project |  -12.63   | 0.0001  | 0.0001 | *** |
-|      **scikit.learn:pr_post:nonmember-scikit.learn:pr_reply:nonmember**      | 3W: Types x Author Groups x Project |  -13.35   | 0.0001  | 0.0001 | *** |
-|        **scikit.learn:issue_post:member-scikit.learn:pr_post:member**        | 3W: Types x Author Groups x Project |  -1.877   |  0.06   | 0.095  |  .  |
-|     **scikit.learn:issue_post:nonmember-scikit.learn:pr_post:nonmember**     | 3W: Types x Author Groups x Project |  -1.344   |  0.179  |  0.25  |     |
-|       **scikit.learn:issue_reply:member-scikit.learn:pr_reply:member**       | 3W: Types x Author Groups x Project |  -6.375   | 0.0001  | 0.0001 | *** |
-|    **scikit.learn:issue_reply:nonmember-scikit.learn:pr_reply:nonmember**    | 3W: Types x Author Groups x Project |  -3.797   | 0.0001  | 0.0004 | *** |
-|     **scikit.image:issue_post:member-scikit.image:issue_post:nonmember**     | 3W: Types x Author Groups x Project |  -1.315   |  0.189  |  0.26  |     |
-|    **scikit.image:issue_reply:member-scikit.image:issue_reply:nonmember**    | 3W: Types x Author Groups x Project |  -1.323   |  0.186  |  0.26  |     |
-|        **scikit.image:pr_post:member-scikit.image:pr_post:nonmember**        | 3W: Types x Author Groups x Project |   -7.07   | 0.0001  | 0.0001 | *** |
-|       **scikit.image:pr_reply:member-scikit.image:pr_reply:nonmember**       | 3W: Types x Author Groups x Project | -0.009377 |  0.99   |  0.99  |     |
-|      **scikit.image:issue_post:member-scikit.image:issue_reply:member**      | 3W: Types x Author Groups x Project |  -7.624   | 0.0001  | 0.0001 | *** |
-|   **scikit.image:issue_post:nonmember-scikit.image:issue_reply:nonmember**   | 3W: Types x Author Groups x Project |  -7.252   | 0.0001  | 0.0001 | *** |
-|         **scikit.image:pr_post:member-scikit.image:pr_reply:member**         | 3W: Types x Author Groups x Project |  -8.901   | 0.0001  | 0.0001 | *** |
-|      **scikit.image:pr_post:nonmember-scikit.image:pr_reply:nonmember**      | 3W: Types x Author Groups x Project |  0.6255   |  0.53   |  0.64  |     |
-|        **scikit.image:issue_post:member-scikit.image:pr_post:member**        | 3W: Types x Author Groups x Project |  -3.255   |  0.001  | 0.002  | **  |
-|     **scikit.image:issue_post:nonmember-scikit.image:pr_post:nonmember**     | 3W: Types x Author Groups x Project |  -7.981   | 0.0001  | 0.0001 | *** |
-|       **scikit.image:issue_reply:member-scikit.image:pr_reply:member**       | 3W: Types x Author Groups x Project |  -4.003   | 0.0001  | 0.0002 | *** |
-|    **scikit.image:issue_reply:nonmember-scikit.image:pr_reply:nonmember**    | 3W: Types x Author Groups x Project |  -2.137   |  0.033  | 0.056  |  .  |
-|       **matplotlib:issue_post:member-matplotlib:issue_post:nonmember**       | 3W: Types x Author Groups x Project |  -0.9334  |  0.35   |  0.45  |     |
-|      **matplotlib:issue_reply:member-matplotlib:issue_reply:nonmember**      | 3W: Types x Author Groups x Project |  -1.965   |  0.05   |  0.08  |  .  |
-|          **matplotlib:pr_post:member-matplotlib:pr_post:nonmember**          | 3W: Types x Author Groups x Project |  -0.9281  |  0.35   |  0.45  |     |
-|         **matplotlib:pr_reply:member-matplotlib:pr_reply:nonmember**         | 3W: Types x Author Groups x Project |  -1.746   |  0.081  | 0.122  |     |
-|        **matplotlib:issue_post:member-matplotlib:issue_reply:member**        | 3W: Types x Author Groups x Project |  -7.369   | 0.0001  | 0.0001 | *** |
-|     **matplotlib:issue_post:nonmember-matplotlib:issue_reply:nonmember**     | 3W: Types x Author Groups x Project |  -9.991   | 0.0001  | 0.0001 | *** |
-|           **matplotlib:pr_post:member-matplotlib:pr_reply:member**           | 3W: Types x Author Groups x Project |  -11.45   | 0.0001  | 0.0001 | *** |
-|        **matplotlib:pr_post:nonmember-matplotlib:pr_reply:nonmember**        | 3W: Types x Author Groups x Project |  -8.945   | 0.0001  | 0.0001 | *** |
-|          **matplotlib:issue_post:member-matplotlib:pr_post:member**          | 3W: Types x Author Groups x Project |  -0.5556  |  0.58   |  0.67  |     |
-|       **matplotlib:issue_post:nonmember-matplotlib:pr_post:nonmember**       | 3W: Types x Author Groups x Project |  -0.5169  |   0.6   |  0.69  |     |
-|         **matplotlib:issue_reply:member-matplotlib:pr_reply:member**         | 3W: Types x Author Groups x Project |  -2.933   |  0.003  | 0.007  | **  |
-|      **matplotlib:issue_reply:nonmember-matplotlib:pr_reply:nonmember**      | 3W: Types x Author Groups x Project |  -2.713   |  0.007  | 0.013  |  *  |
-|           **mayavi:issue_post:member-mayavi:issue_post:nonmember**           | 3W: Types x Author Groups x Project |  -1.568   |  0.117  | 0.169  |     |
-|          **mayavi:issue_reply:member-mayavi:issue_reply:nonmember**          | 3W: Types x Author Groups x Project |  -1.406   |  0.16   | 0.229  |     |
-|              **mayavi:pr_post:member-mayavi:pr_post:nonmember**              | 3W: Types x Author Groups x Project |  -0.5197  |   0.6   |  0.69  |     |
-|             **mayavi:pr_reply:member-mayavi:pr_reply:nonmember**             | 3W: Types x Author Groups x Project |  -2.075   |  0.038  | 0.063  |  .  |
-|            **mayavi:issue_post:member-mayavi:issue_reply:member**            | 3W: Types x Author Groups x Project |  -1.882   |  0.06   | 0.095  |  .  |
-|         **mayavi:issue_post:nonmember-mayavi:issue_reply:nonmember**         | 3W: Types x Author Groups x Project |   -2.89   |  0.004  | 0.008  | **  |
-|               **mayavi:pr_post:member-mayavi:pr_reply:member**               | 3W: Types x Author Groups x Project |  -2.279   |  0.023  | 0.041  |  *  |
-|            **mayavi:pr_post:nonmember-mayavi:pr_reply:nonmember**            | 3W: Types x Author Groups x Project |  -3.404   |  0.001  | 0.002  | **  |
-|              **mayavi:issue_post:member-mayavi:pr_post:member**              | 3W: Types x Author Groups x Project | -0.06937  |  0.94   |  0.96  |     |
-|           **mayavi:issue_post:nonmember-mayavi:pr_post:nonmember**           | 3W: Types x Author Groups x Project |   1.071   |  0.28   |  0.38  |     |
-|             **mayavi:issue_reply:member-mayavi:pr_reply:member**             | 3W: Types x Author Groups x Project |  -0.1931  |  0.85   |  0.9   |     |
-|          **mayavi:issue_reply:nonmember-mayavi:pr_reply:nonmember**          | 3W: Types x Author Groups x Project |   -1.57   |  0.116  | 0.169  |     |
-|           **pandas:issue_post:member-pandas:issue_post:nonmember**           | 3W: Types x Author Groups x Project |  -1.052   |  0.29   |  0.38  |     |
-|          **pandas:issue_reply:member-pandas:issue_reply:nonmember**          | 3W: Types x Author Groups x Project |  -5.483   | 0.0001  | 0.0001 | *** |
-|              **pandas:pr_post:member-pandas:pr_post:nonmember**              | 3W: Types x Author Groups x Project |   -4.7    | 0.0001  | 0.0001 | *** |
-|             **pandas:pr_reply:member-pandas:pr_reply:nonmember**             | 3W: Types x Author Groups x Project |   1.397   |  0.162  | 0.229  |     |
-|            **pandas:issue_post:member-pandas:issue_reply:member**            | 3W: Types x Author Groups x Project |  -9.886   | 0.0001  | 0.0001 | *** |
-|         **pandas:issue_post:nonmember-pandas:issue_reply:nonmember**         | 3W: Types x Author Groups x Project |  -15.06   | 0.0001  | 0.0001 | *** |
-|               **pandas:pr_post:member-pandas:pr_reply:member**               | 3W: Types x Author Groups x Project |  -18.35   | 0.0001  | 0.0001 | *** |
-|            **pandas:pr_post:nonmember-pandas:pr_reply:nonmember**            | 3W: Types x Author Groups x Project |   -9.05   | 0.0001  | 0.0001 | *** |
-|              **pandas:issue_post:member-pandas:pr_post:member**              | 3W: Types x Author Groups x Project |   4.587   | 0.0001  | 0.0001 | *** |
-|           **pandas:issue_post:nonmember-pandas:pr_post:nonmember**           | 3W: Types x Author Groups x Project |  0.3137   |  0.75   |  0.84  |     |
-|             **pandas:issue_reply:member-pandas:pr_reply:member**             | 3W: Types x Author Groups x Project |  -3.839   | 0.0001  | 0.0003 | *** |
-|          **pandas:issue_reply:nonmember-pandas:pr_reply:nonmember**          | 3W: Types x Author Groups x Project |   2.691   |  0.007  | 0.014  |  *  |
-|            **scipy:issue_post:member-scipy:issue_post:nonmember**            | 3W: Types x Author Groups x Project |  -3.035   |  0.002  | 0.005  | **  |
-|           **scipy:issue_reply:member-scipy:issue_reply:nonmember**           | 3W: Types x Author Groups x Project |  -5.669   | 0.0001  | 0.0001 | *** |
-|               **scipy:pr_post:member-scipy:pr_post:nonmember**               | 3W: Types x Author Groups x Project |  -3.921   | 0.0001  | 0.0002 | *** |
-|              **scipy:pr_reply:member-scipy:pr_reply:nonmember**              | 3W: Types x Author Groups x Project |  -2.119   |  0.034  | 0.058  |  .  |
-|             **scipy:issue_post:member-scipy:issue_reply:member**             | 3W: Types x Author Groups x Project |   -8.79   | 0.0001  | 0.0001 | *** |
-|          **scipy:issue_post:nonmember-scipy:issue_reply:nonmember**          | 3W: Types x Author Groups x Project |  -11.83   | 0.0001  | 0.0001 | *** |
-|                **scipy:pr_post:member-scipy:pr_reply:member**                | 3W: Types x Author Groups x Project |   -16.6   | 0.0001  | 0.0001 | *** |
-|             **scipy:pr_post:nonmember-scipy:pr_reply:nonmember**             | 3W: Types x Author Groups x Project |  -10.36   | 0.0001  | 0.0001 | *** |
-|               **scipy:issue_post:member-scipy:pr_post:member**               | 3W: Types x Author Groups x Project |  -2.263   |  0.024  | 0.042  |  *  |
-|            **scipy:issue_post:nonmember-scipy:pr_post:nonmember**            | 3W: Types x Author Groups x Project |  -2.847   |  0.004  | 0.009  | **  |
-|              **scipy:issue_reply:member-scipy:pr_reply:member**              | 3W: Types x Author Groups x Project |  -9.017   | 0.0001  | 0.0001 | *** |
-|           **scipy:issue_reply:nonmember-scipy:pr_reply:nonmember**           | 3W: Types x Author Groups x Project |  -4.262   | 0.0001  | 0.0001 | *** |
-|            **numpy:issue_post:member-numpy:issue_post:nonmember**            | 3W: Types x Author Groups x Project |  0.0917   |  0.93   |  0.95  |     |
-|           **numpy:issue_reply:member-numpy:issue_reply:nonmember**           | 3W: Types x Author Groups x Project |  -2.542   |  0.011  | 0.021  |  *  |
-|               **numpy:pr_post:member-numpy:pr_post:nonmember**               | 3W: Types x Author Groups x Project |  -0.2255  |  0.82   |  0.88  |     |
-|              **numpy:pr_reply:member-numpy:pr_reply:nonmember**              | 3W: Types x Author Groups x Project |  0.4803   |  0.63   |  0.71  |     |
-|             **numpy:issue_post:member-numpy:issue_reply:member**             | 3W: Types x Author Groups x Project |  -9.899   | 0.0001  | 0.0001 | *** |
-|          **numpy:issue_post:nonmember-numpy:issue_reply:nonmember**          | 3W: Types x Author Groups x Project |  -13.29   | 0.0001  | 0.0001 | *** |
-|                **numpy:pr_post:member-numpy:pr_reply:member**                | 3W: Types x Author Groups x Project |  -16.98   | 0.0001  | 0.0001 | *** |
-|             **numpy:pr_post:nonmember-numpy:pr_reply:nonmember**             | 3W: Types x Author Groups x Project |  -11.68   | 0.0001  | 0.0001 | *** |
-|               **numpy:issue_post:member-numpy:pr_post:member**               | 3W: Types x Author Groups x Project |  -1.996   |  0.046  | 0.075  |  .  |
-|            **numpy:issue_post:nonmember-numpy:pr_post:nonmember**            | 3W: Types x Author Groups x Project |  -2.191   |  0.028  |  0.05  |  .  |
-|              **numpy:issue_reply:member-numpy:pr_reply:member**              | 3W: Types x Author Groups x Project |  -9.492   | 0.0001  | 0.0001 | *** |
-|           **numpy:issue_reply:nonmember-numpy:pr_reply:nonmember**           | 3W: Types x Author Groups x Project |  -5.002   | 0.0001  | 0.0001 | *** |
-|   **sphinx.gallery:issue_post:member-sphinx.gallery:issue_post:nonmember**   | 3W: Types x Author Groups x Project |  0.5705   |  0.57   |  0.67  |     |
-|  **sphinx.gallery:issue_reply:member-sphinx.gallery:issue_reply:nonmember**  | 3W: Types x Author Groups x Project |  -0.3542  |  0.72   |  0.81  |     |
-|      **sphinx.gallery:pr_post:member-sphinx.gallery:pr_post:nonmember**      | 3W: Types x Author Groups x Project |  -1.625   |  0.104  | 0.155  |     |
-|     **sphinx.gallery:pr_reply:member-sphinx.gallery:pr_reply:nonmember**     | 3W: Types x Author Groups x Project |  0.1352   |  0.89   |  0.93  |     |
-|    **sphinx.gallery:issue_post:member-sphinx.gallery:issue_reply:member**    | 3W: Types x Author Groups x Project |  -3.577   | 0.0003  | 0.001  | **  |
-| **sphinx.gallery:issue_post:nonmember-sphinx.gallery:issue_reply:nonmember** | 3W: Types x Author Groups x Project |  -4.137   | 0.0001  | 0.0001 | *** |
-|       **sphinx.gallery:pr_post:member-sphinx.gallery:pr_reply:member**       | 3W: Types x Author Groups x Project |  -3.462   |    0    | 0.001  | **  |
-|    **sphinx.gallery:pr_post:nonmember-sphinx.gallery:pr_reply:nonmember**    | 3W: Types x Author Groups x Project |  -0.1818  |  0.86   |  0.9   |     |
-|      **sphinx.gallery:issue_post:member-sphinx.gallery:pr_post:member**      | 3W: Types x Author Groups x Project |  -0.2975  |  0.77   |  0.84  |     |
-|   **sphinx.gallery:issue_post:nonmember-sphinx.gallery:pr_post:nonmember**   | 3W: Types x Author Groups x Project |  -2.216   |  0.027  | 0.047  |  *  |
-|     **sphinx.gallery:issue_reply:member-sphinx.gallery:pr_reply:member**     | 3W: Types x Author Groups x Project |   1.224   |  0.221  |  0.3   |     |
-|  **sphinx.gallery:issue_reply:nonmember-sphinx.gallery:pr_reply:nonmember**  | 3W: Types x Author Groups x Project |   1.034   |   0.3   |  0.39  |     |
+|                                    &nbsp;                                    |                model                | t_stats  | p_value | p_adj  | sig |
+|:----------------------------------------------------------------------------:|:-----------------------------------:|:--------:|:-------:|:------:|:---:|
+|                             **member-nonmember**                             |             Main Terms              | -0.09303 |  0.93   |  0.94  |     |
+|                          **issue_post-issue_reply**                          |             Main Terms              |  -8.829  | 0.0001  | 0.0001 | *** |
+|                             **pr_post-pr_reply**                             |             Main Terms              |  -11.45  | 0.0001  | 0.0001 | *** |
+|                            **issue_post-pr_post**                            |             Main Terms              | -0.6208  |  0.54   |  0.64  |     |
+|                           **issue_reply-pr_reply**                           |             Main Terms              |  -3.33   |  0.001  | 0.002  | **  |
+|                  **issue_post:member-issue_post:nonmember**                  |      2W: Types x Author Groups      | -0.7101  |  0.48   |  0.59  |     |
+|                 **issue_reply:member-issue_reply:nonmember**                 |      2W: Types x Author Groups      |  -2.284  |  0.022  |  0.04  |  *  |
+|                     **pr_post:member-pr_post:nonmember**                     |      2W: Types x Author Groups      |  -2.579  |  0.01   | 0.018  |  *  |
+|                    **pr_reply:member-pr_reply:nonmember**                    |      2W: Types x Author Groups      | -0.4897  |  0.62   |  0.7   |     |
+|                   **issue_post:member-issue_reply:member**                   |      2W: Types x Author Groups      |  -7.388  | 0.0001  | 0.0001 | *** |
+|                **issue_post:nonmember-issue_reply:nonmember**                |      2W: Types x Author Groups      |  -9.318  | 0.0001  | 0.0001 | *** |
+|                      **pr_post:member-pr_reply:member**                      |      2W: Types x Author Groups      |  -11.03  | 0.0001  | 0.0001 | *** |
+|                   **pr_post:nonmember-pr_reply:nonmember**                   |      2W: Types x Author Groups      |   -8.9   | 0.0001  | 0.0001 | *** |
+|                     **issue_post:member-pr_post:member**                     |      2W: Types x Author Groups      |  0.2227  |  0.82   |  0.89  |     |
+|                  **issue_post:nonmember-pr_post:nonmember**                  |      2W: Types x Author Groups      |  -1.676  |  0.094  | 0.141  |     |
+|                    **issue_reply:member-pr_reply:member**                    |      2W: Types x Author Groups      |  -3.346  |  0.001  | 0.002  | **  |
+|                 **issue_reply:nonmember-pr_reply:nonmember**                 |      2W: Types x Author Groups      |  -1.63   |  0.103  | 0.151  |     |
+|     **scikit.learn:issue_post:member-scikit.learn:issue_post:nonmember**     | 3W: Types x Author Groups x Project |  -0.666  |   0.5   |  0.61  |     |
+|    **scikit.learn:issue_reply:member-scikit.learn:issue_reply:nonmember**    | 3W: Types x Author Groups x Project |  -3.531  | 0.0004  | 0.001  | **  |
+|        **scikit.learn:pr_post:member-scikit.learn:pr_post:nonmember**        | 3W: Types x Author Groups x Project |  0.0292  |  0.98   |  0.98  |     |
+|       **scikit.learn:pr_reply:member-scikit.learn:pr_reply:nonmember**       | 3W: Types x Author Groups x Project | -0.7557  |  0.45   |  0.56  |     |
+|      **scikit.learn:issue_post:member-scikit.learn:issue_reply:member**      | 3W: Types x Author Groups x Project |  -8.905  | 0.0001  | 0.0001 | *** |
+|   **scikit.learn:issue_post:nonmember-scikit.learn:issue_reply:nonmember**   | 3W: Types x Author Groups x Project |  -12.53  | 0.0001  | 0.0001 | *** |
+|         **scikit.learn:pr_post:member-scikit.learn:pr_reply:member**         | 3W: Types x Author Groups x Project |  -12.62  | 0.0001  | 0.0001 | *** |
+|      **scikit.learn:pr_post:nonmember-scikit.learn:pr_reply:nonmember**      | 3W: Types x Author Groups x Project |  -13.32  | 0.0001  | 0.0001 | *** |
+|        **scikit.learn:issue_post:member-scikit.learn:pr_post:member**        | 3W: Types x Author Groups x Project |  -1.875  |  0.061  | 0.094  |  .  |
+|     **scikit.learn:issue_post:nonmember-scikit.learn:pr_post:nonmember**     | 3W: Types x Author Groups x Project |  -1.352  |  0.176  | 0.243  |     |
+|       **scikit.learn:issue_reply:member-scikit.learn:pr_reply:member**       | 3W: Types x Author Groups x Project |  -6.373  | 0.0001  | 0.0001 | *** |
+|    **scikit.learn:issue_reply:nonmember-scikit.learn:pr_reply:nonmember**    | 3W: Types x Author Groups x Project |  -3.788  | 0.0002  | 0.0004 | *** |
+|     **scikit.image:issue_post:member-scikit.image:issue_post:nonmember**     | 3W: Types x Author Groups x Project |  -1.238  |  0.216  |  0.29  |     |
+|    **scikit.image:issue_reply:member-scikit.image:issue_reply:nonmember**    | 3W: Types x Author Groups x Project |  -1.251  |  0.211  |  0.29  |     |
+|        **scikit.image:pr_post:member-scikit.image:pr_post:nonmember**        | 3W: Types x Author Groups x Project |  -7.149  | 0.0001  | 0.0001 | *** |
+|       **scikit.image:pr_reply:member-scikit.image:pr_reply:nonmember**       | 3W: Types x Author Groups x Project |  -1.972  |  0.049  | 0.077  |  .  |
+|      **scikit.image:issue_post:member-scikit.image:issue_reply:member**      | 3W: Types x Author Groups x Project |  -7.62   | 0.0001  | 0.0001 | *** |
+|   **scikit.image:issue_post:nonmember-scikit.image:issue_reply:nonmember**   | 3W: Types x Author Groups x Project |  -7.292  | 0.0001  | 0.0001 | *** |
+|         **scikit.image:pr_post:member-scikit.image:pr_reply:member**         | 3W: Types x Author Groups x Project |  -8.905  | 0.0001  | 0.0001 | *** |
+|      **scikit.image:pr_post:nonmember-scikit.image:pr_reply:nonmember**      | 3W: Types x Author Groups x Project | -0.5706  |  0.57   |  0.67  |     |
+|        **scikit.image:issue_post:member-scikit.image:pr_post:member**        | 3W: Types x Author Groups x Project |  -3.253  |  0.001  | 0.002  | **  |
+|     **scikit.image:issue_post:nonmember-scikit.image:pr_post:nonmember**     | 3W: Types x Author Groups x Project |  -8.13   | 0.0001  | 0.0001 | *** |
+|       **scikit.image:issue_reply:member-scikit.image:pr_reply:member**       | 3W: Types x Author Groups x Project |  -4.009  | 0.0001  | 0.0002 | *** |
+|    **scikit.image:issue_reply:nonmember-scikit.image:pr_reply:nonmember**    | 3W: Types x Author Groups x Project |  -3.981  | 0.0001  | 0.0002 | *** |
+|       **matplotlib:issue_post:member-matplotlib:issue_post:nonmember**       | 3W: Types x Author Groups x Project | -0.8706  |  0.38   |  0.48  |     |
+|      **matplotlib:issue_reply:member-matplotlib:issue_reply:nonmember**      | 3W: Types x Author Groups x Project |  -1.846  |  0.065  | 0.099  |  .  |
+|          **matplotlib:pr_post:member-matplotlib:pr_post:nonmember**          | 3W: Types x Author Groups x Project | -0.8664  |  0.39   |  0.48  |     |
+|         **matplotlib:pr_reply:member-matplotlib:pr_reply:nonmember**         | 3W: Types x Author Groups x Project |  -1.663  |  0.096  | 0.143  |     |
+|        **matplotlib:issue_post:member-matplotlib:issue_reply:member**        | 3W: Types x Author Groups x Project |  -7.369  | 0.0001  | 0.0001 | *** |
+|     **matplotlib:issue_post:nonmember-matplotlib:issue_reply:nonmember**     | 3W: Types x Author Groups x Project |  -9.981  | 0.0001  | 0.0001 | *** |
+|           **matplotlib:pr_post:member-matplotlib:pr_reply:member**           | 3W: Types x Author Groups x Project |  -11.45  | 0.0001  | 0.0001 | *** |
+|        **matplotlib:pr_post:nonmember-matplotlib:pr_reply:nonmember**        | 3W: Types x Author Groups x Project |  -8.938  | 0.0001  | 0.0001 | *** |
+|          **matplotlib:issue_post:member-matplotlib:pr_post:member**          | 3W: Types x Author Groups x Project |  -0.564  |  0.57   |  0.67  |     |
+|       **matplotlib:issue_post:nonmember-matplotlib:pr_post:nonmember**       | 3W: Types x Author Groups x Project | -0.5298  |   0.6   |  0.69  |     |
+|         **matplotlib:issue_reply:member-matplotlib:pr_reply:member**         | 3W: Types x Author Groups x Project |  -2.933  |  0.003  | 0.007  | **  |
+|      **matplotlib:issue_reply:nonmember-matplotlib:pr_reply:nonmember**      | 3W: Types x Author Groups x Project |  -2.734  |  0.006  | 0.012  |  *  |
+|           **mayavi:issue_post:member-mayavi:issue_post:nonmember**           | 3W: Types x Author Groups x Project |  -1.564  |  0.118  | 0.166  |     |
+|          **mayavi:issue_reply:member-mayavi:issue_reply:nonmember**          | 3W: Types x Author Groups x Project |  -1.404  |  0.16   | 0.224  |     |
+|              **mayavi:pr_post:member-mayavi:pr_post:nonmember**              | 3W: Types x Author Groups x Project | -0.5194  |   0.6   |  0.69  |     |
+|             **mayavi:pr_reply:member-mayavi:pr_reply:nonmember**             | 3W: Types x Author Groups x Project |  -2.07   |  0.038  | 0.063  |  .  |
+|            **mayavi:issue_post:member-mayavi:issue_reply:member**            | 3W: Types x Author Groups x Project |  -1.881  |  0.06   | 0.094  |  .  |
+|         **mayavi:issue_post:nonmember-mayavi:issue_reply:nonmember**         | 3W: Types x Author Groups x Project |  -2.89   |  0.004  | 0.008  | **  |
+|               **mayavi:pr_post:member-mayavi:pr_reply:member**               | 3W: Types x Author Groups x Project |  -2.277  |  0.023  |  0.04  |  *  |
+|            **mayavi:pr_post:nonmember-mayavi:pr_reply:nonmember**            | 3W: Types x Author Groups x Project |  -3.397  |  0.001  | 0.002  | **  |
+|              **mayavi:issue_post:member-mayavi:pr_post:member**              | 3W: Types x Author Groups x Project | -0.06947 |  0.94   |  0.95  |     |
+|           **mayavi:issue_post:nonmember-mayavi:pr_post:nonmember**           | 3W: Types x Author Groups x Project |  1.067   |  0.29   |  0.37  |     |
+|             **mayavi:issue_reply:member-mayavi:pr_reply:member**             | 3W: Types x Author Groups x Project | -0.1931  |  0.85   |  0.89  |     |
+|          **mayavi:issue_reply:nonmember-mayavi:pr_reply:nonmember**          | 3W: Types x Author Groups x Project |  -1.566  |  0.117  | 0.166  |     |
+|           **pandas:issue_post:member-pandas:issue_post:nonmember**           | 3W: Types x Author Groups x Project |  -1.062  |  0.29   |  0.37  |     |
+|          **pandas:issue_reply:member-pandas:issue_reply:nonmember**          | 3W: Types x Author Groups x Project |  -5.46   | 0.0001  | 0.0001 | *** |
+|              **pandas:pr_post:member-pandas:pr_post:nonmember**              | 3W: Types x Author Groups x Project |  -4.601  | 0.0001  | 0.0001 | *** |
+|             **pandas:pr_reply:member-pandas:pr_reply:nonmember**             | 3W: Types x Author Groups x Project |  2.577   |  0.01   | 0.018  |  *  |
+|            **pandas:issue_post:member-pandas:issue_reply:member**            | 3W: Types x Author Groups x Project |  -9.877  | 0.0001  | 0.0001 | *** |
+|         **pandas:issue_post:nonmember-pandas:issue_reply:nonmember**         | 3W: Types x Author Groups x Project |  -15.01  | 0.0001  | 0.0001 | *** |
+|               **pandas:pr_post:member-pandas:pr_reply:member**               | 3W: Types x Author Groups x Project |  -18.34  | 0.0001  | 0.0001 | *** |
+|            **pandas:pr_post:nonmember-pandas:pr_reply:nonmember**            | 3W: Types x Author Groups x Project |  -8.317  | 0.0001  | 0.0001 | *** |
+|              **pandas:issue_post:member-pandas:pr_post:member**              | 3W: Types x Author Groups x Project |  4.595   | 0.0001  | 0.0001 | *** |
+|           **pandas:issue_post:nonmember-pandas:pr_post:nonmember**           | 3W: Types x Author Groups x Project |  0.4341  |  0.66   |  0.74  |     |
+|             **pandas:issue_reply:member-pandas:pr_reply:member**             | 3W: Types x Author Groups x Project |  -3.831  | 0.0001  | 0.0003 | *** |
+|          **pandas:issue_reply:nonmember-pandas:pr_reply:nonmember**          | 3W: Types x Author Groups x Project |  3.939   | 0.0001  | 0.0002 | *** |
+|            **scipy:issue_post:member-scipy:issue_post:nonmember**            | 3W: Types x Author Groups x Project |  -2.994  |  0.003  | 0.006  | **  |
+|           **scipy:issue_reply:member-scipy:issue_reply:nonmember**           | 3W: Types x Author Groups x Project |  -5.599  | 0.0001  | 0.0001 | *** |
+|               **scipy:pr_post:member-scipy:pr_post:nonmember**               | 3W: Types x Author Groups x Project |  -3.891  | 0.0001  | 0.0003 | *** |
+|              **scipy:pr_reply:member-scipy:pr_reply:nonmember**              | 3W: Types x Author Groups x Project |  -2.103  |  0.035  | 0.059  |  .  |
+|             **scipy:issue_post:member-scipy:issue_reply:member**             | 3W: Types x Author Groups x Project |  -8.777  | 0.0001  | 0.0001 | *** |
+|          **scipy:issue_post:nonmember-scipy:issue_reply:nonmember**          | 3W: Types x Author Groups x Project |  -11.82  | 0.0001  | 0.0001 | *** |
+|                **scipy:pr_post:member-scipy:pr_reply:member**                | 3W: Types x Author Groups x Project |  -16.57  | 0.0001  | 0.0001 | *** |
+|             **scipy:pr_post:nonmember-scipy:pr_reply:nonmember**             | 3W: Types x Author Groups x Project |  -10.36  | 0.0001  | 0.0001 | *** |
+|               **scipy:issue_post:member-scipy:pr_post:member**               | 3W: Types x Author Groups x Project |  -2.261  |  0.024  | 0.041  |  *  |
+|            **scipy:issue_post:nonmember-scipy:pr_post:nonmember**            | 3W: Types x Author Groups x Project |  -2.864  |  0.004  | 0.008  | **  |
+|              **scipy:issue_reply:member-scipy:pr_reply:member**              | 3W: Types x Author Groups x Project |  -9.007  | 0.0001  | 0.0001 | *** |
+|           **scipy:issue_reply:nonmember-scipy:pr_reply:nonmember**           | 3W: Types x Author Groups x Project |  -4.303  | 0.0001  | 0.0001 | *** |
+|            **numpy:issue_post:member-numpy:issue_post:nonmember**            | 3W: Types x Author Groups x Project |  0.1347  |  0.89   |  0.92  |     |
+|           **numpy:issue_reply:member-numpy:issue_reply:nonmember**           | 3W: Types x Author Groups x Project |  -2.47   |  0.014  | 0.025  |  *  |
+|               **numpy:pr_post:member-numpy:pr_post:nonmember**               | 3W: Types x Author Groups x Project | -0.2003  |  0.84   |  0.89  |     |
+|              **numpy:pr_reply:member-numpy:pr_reply:nonmember**              | 3W: Types x Author Groups x Project |  0.4999  |  0.62   |  0.7   |     |
+|             **numpy:issue_post:member-numpy:issue_reply:member**             | 3W: Types x Author Groups x Project |  -9.885  | 0.0001  | 0.0001 | *** |
+|          **numpy:issue_post:nonmember-numpy:issue_reply:nonmember**          | 3W: Types x Author Groups x Project |  -13.27  | 0.0001  | 0.0001 | *** |
+|                **numpy:pr_post:member-numpy:pr_reply:member**                | 3W: Types x Author Groups x Project |  -16.96  | 0.0001  | 0.0001 | *** |
+|             **numpy:pr_post:nonmember-numpy:pr_reply:nonmember**             | 3W: Types x Author Groups x Project |  -11.68  | 0.0001  | 0.0001 | *** |
+|               **numpy:issue_post:member-numpy:pr_post:member**               | 3W: Types x Author Groups x Project |  -1.991  |  0.046  | 0.075  |  .  |
+|            **numpy:issue_post:nonmember-numpy:pr_post:nonmember**            | 3W: Types x Author Groups x Project |  -2.204  |  0.028  | 0.046  |  *  |
+|              **numpy:issue_reply:member-numpy:pr_reply:member**              | 3W: Types x Author Groups x Project |  -9.482  | 0.0001  | 0.0001 | *** |
+|           **numpy:issue_reply:nonmember-numpy:pr_reply:nonmember**           | 3W: Types x Author Groups x Project |  -5.036  | 0.0001  | 0.0001 | *** |
+|   **sphinx.gallery:issue_post:member-sphinx.gallery:issue_post:nonmember**   | 3W: Types x Author Groups x Project |  0.5634  |  0.57   |  0.67  |     |
+|  **sphinx.gallery:issue_reply:member-sphinx.gallery:issue_reply:nonmember**  | 3W: Types x Author Groups x Project | -0.3587  |  0.72   |  0.79  |     |
+|      **sphinx.gallery:pr_post:member-sphinx.gallery:pr_post:nonmember**      | 3W: Types x Author Groups x Project |  -1.624  |  0.104  | 0.151  |     |
+|     **sphinx.gallery:pr_reply:member-sphinx.gallery:pr_reply:nonmember**     | 3W: Types x Author Groups x Project |   0.13   |   0.9   |  0.92  |     |
+|    **sphinx.gallery:issue_post:member-sphinx.gallery:issue_reply:member**    | 3W: Types x Author Groups x Project |  -3.571  | 0.0004  | 0.001  | **  |
+| **sphinx.gallery:issue_post:nonmember-sphinx.gallery:issue_reply:nonmember** | 3W: Types x Author Groups x Project |  -4.126  | 0.0001  | 0.0001 | *** |
+|       **sphinx.gallery:pr_post:member-sphinx.gallery:pr_reply:member**       | 3W: Types x Author Groups x Project |  -3.456  |    0    | 0.001  | **  |
+|    **sphinx.gallery:pr_post:nonmember-sphinx.gallery:pr_reply:nonmember**    | 3W: Types x Author Groups x Project |  -0.181  |  0.86   |  0.9   |     |
+|      **sphinx.gallery:issue_post:member-sphinx.gallery:pr_post:member**      | 3W: Types x Author Groups x Project | -0.2976  |  0.77   |  0.83  |     |
+|   **sphinx.gallery:issue_post:nonmember-sphinx.gallery:pr_post:nonmember**   | 3W: Types x Author Groups x Project |  -2.209  |  0.027  | 0.046  |  *  |
+|     **sphinx.gallery:issue_reply:member-sphinx.gallery:pr_reply:member**     | 3W: Types x Author Groups x Project |  1.223   |  0.221  |  0.29  |     |
+|  **sphinx.gallery:issue_reply:nonmember-sphinx.gallery:pr_reply:nonmember**  | 3W: Types x Author Groups x Project |  1.033   |   0.3   |  0.39  |     |
 
 
 ```r
@@ -1045,85 +973,7 @@ Finally, let's plot these effects.
 
 ***
 
-<<<<<<< HEAD
 ### Model 1.2: Time-course analysis for sentiment
-=======
-
-```r
-pander_clean_anova(all_project_tests, rename_columns=FALSE)
-```
-
-
-
-|                                         &nbsp;                                         | t_stats  | p_value | p_adj  | sig |
-|:--------------------------------------------------------------------------------------:|:--------:|:-------:|:------:|:---:|
-|              **issue_post:member:numpyTRUE-issue_post:member:numpyFALSE**              |  -4.767  | 0.0001  | 0.0001 | *** |
-|                 **pr_post:member:numpyTRUE-pr_post:member:numpyFALSE**                 |  -2.576  |  0.01   | 0.028  |  *  |
-|             **issue_reply:member:numpyTRUE-issue_reply:member:numpyFALSE**             |  -5.296  | 0.0001  | 0.0001 | *** |
-|                **pr_reply:member:numpyTRUE-pr_reply:member:numpyFALSE**                |  0.2195  |  0.83   |  0.88  |     |
-|           **issue_post:nonmember:numpyTRUE-issue_post:nonmember:numpyFALSE**           |  -6.621  | 0.0001  | 0.0001 | *** |
-|              **pr_post:nonmember:numpyTRUE-pr_post:nonmember:numpyFALSE**              |  -4.603  | 0.0001  | 0.0001 | *** |
-|          **issue_reply:nonmember:numpyTRUE-issue_reply:nonmember:numpyFALSE**          |  -5.686  | 0.0001  | 0.0001 | *** |
-|             **pr_reply:nonmember:numpyTRUE-pr_reply:nonmember:numpyFALSE**             |  -1.111  |  0.27   |  0.38  |     |
-|       **issue_post:member:scikit-learnTRUE-issue_post:member:scikit-learnFALSE**       | -0.01578 |  0.99   |  0.99  |     |
-|          **pr_post:member:scikit-learnTRUE-pr_post:member:scikit-learnFALSE**          |  3.401   |  0.001  | 0.003  | **  |
-|      **issue_reply:member:scikit-learnTRUE-issue_reply:member:scikit-learnFALSE**      |  0.5669  |  0.57   |  0.7   |     |
-|         **pr_reply:member:scikit-learnTRUE-pr_reply:member:scikit-learnFALSE**         |  1.545   |  0.122  | 0.201  |     |
-|    **issue_post:nonmember:scikit-learnTRUE-issue_post:nonmember:scikit-learnFALSE**    |  0.7037  |  0.48   |  0.63  |     |
-|       **pr_post:nonmember:scikit-learnTRUE-pr_post:nonmember:scikit-learnFALSE**       | -0.5547  |  0.58   |  0.7   |     |
-|   **issue_reply:nonmember:scikit-learnTRUE-issue_reply:nonmember:scikit-learnFALSE**   |  1.378   |  0.168  |  0.26  |     |
-|      **pr_reply:nonmember:scikit-learnTRUE-pr_reply:nonmember:scikit-learnFALSE**      |  2.229   |  0.026  | 0.057  |  .  |
-|              **issue_post:member:scipyTRUE-issue_post:member:scipyFALSE**              |  -3.126  |  0.002  | 0.005  | **  |
-|                 **pr_post:member:scipyTRUE-pr_post:member:scipyFALSE**                 | -0.5711  |  0.57   |  0.7   |     |
-|             **issue_reply:member:scipyTRUE-issue_reply:member:scipyFALSE**             | -0.1885  |  0.85   |  0.89  |     |
-|                **pr_reply:member:scipyTRUE-pr_reply:member:scipyFALSE**                |   5.35   | 0.0001  | 0.0001 | *** |
-|           **issue_post:nonmember:scipyTRUE-issue_post:nonmember:scipyFALSE**           | -0.2518  |   0.8   |  0.87  |     |
-|              **pr_post:nonmember:scipyTRUE-pr_post:nonmember:scipyFALSE**              |  1.556   |  0.12   | 0.201  |     |
-|          **issue_reply:nonmember:scipyTRUE-issue_reply:nonmember:scipyFALSE**          |  3.288   |  0.001  | 0.003  | **  |
-|             **pr_reply:nonmember:scipyTRUE-pr_reply:nonmember:scipyFALSE**             |  5.891   | 0.0001  | 0.0001 | *** |
-|             **issue_post:member:mayaviTRUE-issue_post:member:mayaviFALSE**             |  -2.028  |  0.043  | 0.078  |  .  |
-|                **pr_post:member:mayaviTRUE-pr_post:member:mayaviFALSE**                |  -2.456  |  0.014  | 0.035  |  *  |
-|            **issue_reply:member:mayaviTRUE-issue_reply:member:mayaviFALSE**            |  -2.502  |  0.012  | 0.033  |  *  |
-|               **pr_reply:member:mayaviTRUE-pr_reply:member:mayaviFALSE**               |  -3.299  |  0.001  | 0.003  | **  |
-|          **issue_post:nonmember:mayaviTRUE-issue_post:nonmember:mayaviFALSE**          | -0.9843  |  0.32   |  0.45  |     |
-|             **pr_post:nonmember:mayaviTRUE-pr_post:nonmember:mayaviFALSE**             |  -2.183  |  0.029  | 0.062  |  .  |
-|         **issue_reply:nonmember:mayaviTRUE-issue_reply:nonmember:mayaviFALSE**         |  -3.541  | 0.0004  | 0.002  | **  |
-|            **pr_reply:nonmember:mayaviTRUE-pr_reply:nonmember:mayaviFALSE**            | -0.5287  |   0.6   |  0.71  |     |
-|     **issue_post:member:sphinx-galleryTRUE-issue_post:member:sphinx-galleryFALSE**     |  0.0217  |  0.98   |  0.99  |     |
-|        **pr_post:member:sphinx-galleryTRUE-pr_post:member:sphinx-galleryFALSE**        |   0.56   |  0.58   |  0.7   |     |
-|    **issue_reply:member:sphinx-galleryTRUE-issue_reply:member:sphinx-galleryFALSE**    |  4.149   | 0.0001  | 0.0002 | *** |
-|       **pr_reply:member:sphinx-galleryTRUE-pr_reply:member:sphinx-galleryFALSE**       | -0.03689 |  0.97   |  0.99  |     |
-|  **issue_post:nonmember:sphinx-galleryTRUE-issue_post:nonmember:sphinx-galleryFALSE**  |  -0.878  |  0.38   |  0.51  |     |
-|     **pr_post:nonmember:sphinx-galleryTRUE-pr_post:nonmember:sphinx-galleryFALSE**     |  1.723   |  0.085  | 0.147  |     |
-| **issue_reply:nonmember:sphinx-galleryTRUE-issue_reply:nonmember:sphinx-galleryFALSE** |  2.097   |  0.036  | 0.072  |  .  |
-|    **pr_reply:nonmember:sphinx-galleryTRUE-pr_reply:nonmember:sphinx-galleryFALSE**    | -0.3273  |  0.74   |  0.82  |     |
-|         **issue_post:member:matplotlibTRUE-issue_post:member:matplotlibFALSE**         | -0.3683  |  0.71   |  0.81  |     |
-|            **pr_post:member:matplotlibTRUE-pr_post:member:matplotlibFALSE**            |  0.9646  |  0.34   |  0.46  |     |
-|        **issue_reply:member:matplotlibTRUE-issue_reply:member:matplotlibFALSE**        |  -1.243  |  0.214  |  0.33  |     |
-|           **pr_reply:member:matplotlibTRUE-pr_reply:member:matplotlibFALSE**           |  -4.55   | 0.0001  | 0.0001 | *** |
-|      **issue_post:nonmember:matplotlibTRUE-issue_post:nonmember:matplotlibFALSE**      |  0.3523  |  0.72   |  0.81  |     |
-|         **pr_post:nonmember:matplotlibTRUE-pr_post:nonmember:matplotlibFALSE**         |  -1.514  |  0.13   | 0.208  |     |
-|     **issue_reply:nonmember:matplotlibTRUE-issue_reply:nonmember:matplotlibFALSE**     |  -3.287  |  0.001  | 0.003  | **  |
-|        **pr_reply:nonmember:matplotlibTRUE-pr_reply:nonmember:matplotlibFALSE**        |  -2.078  |  0.038  | 0.073  |  .  |
-|       **issue_post:member:scikit-imageTRUE-issue_post:member:scikit-imageFALSE**       |  -2.482  |  0.013  | 0.033  |  *  |
-|          **pr_post:member:scikit-imageTRUE-pr_post:member:scikit-imageFALSE**          |  2.415   |  0.016  | 0.037  |  *  |
-|      **issue_reply:member:scikit-imageTRUE-issue_reply:member:scikit-imageFALSE**      |   2.05   |  0.04   | 0.076  |  .  |
-|         **pr_reply:member:scikit-imageTRUE-pr_reply:member:scikit-imageFALSE**         |  3.245   |  0.001  | 0.004  | **  |
-|    **issue_post:nonmember:scikit-imageTRUE-issue_post:nonmember:scikit-imageFALSE**    |  -1.204  |  0.229  |  0.34  |     |
-|       **pr_post:nonmember:scikit-imageTRUE-pr_post:nonmember:scikit-imageFALSE**       |   8.97   | 0.0001  | 0.0001 | *** |
-|   **issue_reply:nonmember:scikit-imageTRUE-issue_reply:nonmember:scikit-imageFALSE**   |  1.139   |  0.26   |  0.37  |     |
-|      **pr_reply:nonmember:scikit-imageTRUE-pr_reply:nonmember:scikit-imageFALSE**      |  2.161   |  0.031  | 0.063  |  .  |
-|             **issue_post:member:pandasTRUE-issue_post:member:pandasFALSE**             |  4.903   | 0.0001  | 0.0001 | *** |
-|                **pr_post:member:pandasTRUE-pr_post:member:pandasFALSE**                |  -2.956  |  0.003  | 0.009  | **  |
-|            **issue_reply:member:pandasTRUE-issue_reply:member:pandasFALSE**            |  1.732   |  0.083  | 0.147  |     |
-|               **pr_reply:member:pandasTRUE-pr_reply:member:pandasFALSE**               |  -2.388  |  0.017  | 0.039  |  *  |
-|          **issue_post:nonmember:pandasTRUE-issue_post:nonmember:pandasFALSE**          |    5     | 0.0001  | 0.0001 | *** |
-|             **pr_post:nonmember:pandasTRUE-pr_post:nonmember:pandasFALSE**             | -0.4006  |  0.69   |  0.8   |     |
-|         **issue_reply:nonmember:pandasTRUE-issue_reply:nonmember:pandasFALSE**         |  3.657   | 0.0003  | 0.001  | **  |
-|            **pr_reply:nonmember:pandasTRUE-pr_reply:nonmember:pandasFALSE**            |  -5.427  | 0.0001  | 0.0001 | *** |
-
-### Model 1.2 time-course analysis
->>>>>>> 7ea8a4e28ec283d9f6e930c3ad1268db6826f1dc
 
 The time-course analysis has been moved in a separate file.
 
@@ -1176,8 +1026,8 @@ pander(gratitude_summary_stats, style = 'rmarkdown')
 |  nonmember   |   pr_post   |       1        |  322   |
 |  nonmember   |   pr_post   |       2        |   19   |
 |  nonmember   |   pr_post   |       3        |   2    |
-|  nonmember   |  pr_reply   |       0        | 32623  |
-|  nonmember   |  pr_reply   |       1        |  5598  |
+|  nonmember   |  pr_reply   |       0        | 32626  |
+|  nonmember   |  pr_reply   |       1        |  7298  |
 |  nonmember   |  pr_reply   |       2        |  338   |
 |  nonmember   |  pr_reply   |       3        |   34   |
 
@@ -1186,105 +1036,10 @@ and build our model.
 
 <!-- ```{r model-gratitude-by-type-and-author-and-project-v1, eval = TRUE} -->
 
-<<<<<<< HEAD
 <!-- # do users tend to express appreciation and gratitude differently by group and content? -->
 <!-- creators_v_commenters_gratitude_by_project = lmer(log(grateful_count + 1) ~ project * author_group * type + -->
 <!--                                                     (1 | author_name), -->
 <!--                                                   data=sentiment_frame) -->
-=======
-```r
-# do users tend to express appreciation and gratitude differently by group and content?
-creators_v_commenters_gratitude_by_project = lmer(log(grateful_count + 1) ~ project * author_group * type +
-                                                    (1 | author_name),
-                                                  data=sentiment_frame)
-
-# print results
-pander_lme(creators_v_commenters_gratitude_by_project)
-```
-
-
-
-|                             &nbsp;                              | Estimate  | Std..Error |   df   | t.value |   p    | p_adj  | sig |
-|:---------------------------------------------------------------:|:---------:|:----------:|:------:|:-------:|:------:|:------:|:---:|
-|                         **(Intercept)**                         |  0.08927  |  0.005863  | 473533 |  15.23  | 0.0001 | 0.0001 | *** |
-|                        **projectmayavi**                        | -0.005475 |  0.02914   | 483375 | -0.1879 |  0.85  |  0.89  |     |
-|                        **projectnumpy**                         | -0.01739  |  0.007616  | 495363 | -2.283  | 0.022  | 0.048  |  *  |
-|                        **projectpandas**                        | -0.03167  |  0.006514  | 504365 | -4.862  | 0.0001 | 0.0001 | *** |
-|                     **projectscikit-image**                     |  -0.0582  |  0.01122   | 494987 |  -5.19  | 0.0001 | 0.0001 | *** |
-|                     **projectscikit-learn**                     | -0.03577  |  0.007518  | 501401 | -4.757  | 0.0001 | 0.0001 | *** |
-|                        **projectscipy**                         | -0.01449  |  0.009397  | 493304 | -1.542  | 0.123  | 0.207  |     |
-|                    **projectsphinx-gallery**                    | -0.01804  |  0.02276   | 488509 | -0.7927 |  0.43  |  0.58  |     |
-|                    **author_groupnonmember**                    | -0.02037  |  0.007041  | 489322 | -2.893  | 0.004  |  0.01  |  *  |
-|                       **typeissue_reply**                       |  0.02565  |  0.005453  | 489169 |  4.703  | 0.0001 | 0.0001 | *** |
-|                         **typepr_post**                         |  0.00261  |  0.006001  | 489437 | 0.4348  |  0.66  |  0.79  |     |
-|                        **typepr_reply**                         |  0.05334  |  0.005394  | 489497 |  9.889  | 0.0001 | 0.0001 | *** |
-|             **projectmayavi:author_groupnonmember**             |  0.08557  |  0.03138   | 478905 |  2.727  | 0.006  | 0.016  |  *  |
-|             **projectnumpy:author_groupnonmember**              | 0.009887  |  0.009776  | 488835 |  1.011  |  0.31  |  0.45  |     |
-|             **projectpandas:author_groupnonmember**             |  0.01497  |  0.008184  | 483566 |  1.829  | 0.067  | 0.123  |     |
-|          **projectscikit-image:author_groupnonmember**          |  0.07382  |   0.015    | 477106 |  4.92   | 0.0001 | 0.0001 | *** |
-|          **projectscikit-learn:author_groupnonmember**          |  0.05511  |  0.009512  | 482515 |  5.794  | 0.0001 | 0.0001 | *** |
-|             **projectscipy:author_groupnonmember**              |  0.02365  |  0.01145   | 495829 |  2.066  | 0.039  | 0.078  |  .  |
-|         **projectsphinx-gallery:author_groupnonmember**         |  0.05711  |  0.03197   | 501402 |  1.786  | 0.074  | 0.132  |     |
-|                **projectmayavi:typeissue_reply**                | 0.001116  |  0.02606   | 488433 | 0.04281 |  0.97  |  0.97  |     |
-|                **projectnumpy:typeissue_reply**                 | -0.007651 |  0.007465  | 488365 | -1.025  |  0.31  |  0.45  |     |
-|                **projectpandas:typeissue_reply**                |  0.01468  |  0.006132  | 489047 |  2.394  | 0.017  | 0.037  |  *  |
-|             **projectscikit-image:typeissue_reply**             |  0.0345   |  0.01099   | 487474 |  3.141  | 0.002  | 0.004  | **  |
-|             **projectscikit-learn:typeissue_reply**             |  0.0184   |  0.007181  | 488405 |  2.562  |  0.01  | 0.025  |  *  |
-|                **projectscipy:typeissue_reply**                 | 0.001002  |  0.009368  | 487951 |  0.107  |  0.92  |  0.93  |     |
-|            **projectsphinx-gallery:typeissue_reply**            | -0.006237 |  0.02377   | 487246 | -0.2624 |  0.79  |  0.85  |     |
-|                  **projectmayavi:typepr_post**                  | -0.03732  |  0.02873   | 487493 | -1.299  | 0.194  |  0.3   |     |
-|                  **projectnumpy:typepr_post**                   | -0.01123  |  0.008498  | 488478 | -1.322  | 0.186  |  0.3   |     |
-|                  **projectpandas:typepr_post**                  | 0.002879  |  0.007039  | 489355 |  0.409  |  0.68  |  0.79  |     |
-|               **projectscikit-image:typepr_post**               |  0.01147  |  0.01224   | 487617 | 0.9371  |  0.35  |  0.5   |     |
-|               **projectscikit-learn:typepr_post**               | -0.004068 |  0.008324  | 488559 | -0.4887 |  0.62  |  0.77  |     |
-|                  **projectscipy:typepr_post**                   | -0.006659 |  0.01031   | 488090 | -0.6459 |  0.52  |  0.68  |     |
-|              **projectsphinx-gallery:typepr_post**              | -0.00443  |   0.0282   | 487266 | -0.1571 |  0.88  |  0.9   |     |
-|                 **projectmayavi:typepr_reply**                  |  0.1147   |  0.02653   | 487881 |  4.323  | 0.0001 | 0.0001 | *** |
-|                  **projectnumpy:typepr_reply**                  |  0.02763  |  0.007457  | 488659 |  3.706  | 0.0002 | 0.001  | **  |
-|                 **projectpandas:typepr_reply**                  |  0.04779  |  0.006091  | 489483 |  7.846  | 0.0001 | 0.0001 | *** |
-|              **projectscikit-image:typepr_reply**               |  0.06863  |  0.01074   | 487624 |  6.39   | 0.0001 | 0.0001 | *** |
-|              **projectscikit-learn:typepr_reply**               |  0.03854  |  0.007085  | 488716 |  5.439  | 0.0001 | 0.0001 | *** |
-|                  **projectscipy:typepr_reply**                  |  0.04695  |  0.00925   | 488144 |  5.076  | 0.0001 | 0.0001 | *** |
-|             **projectsphinx-gallery:typepr_reply**              |  0.01066  |  0.02318   | 487373 |  0.46   |  0.65  |  0.78  |     |
-|            **author_groupnonmember:typeissue_reply**            |  0.05936  |  0.007274  | 505026 |  8.161  | 0.0001 | 0.0001 | *** |
-|              **author_groupnonmember:typepr_post**              | -0.02032  |  0.009104  | 486377 | -2.232  | 0.026  | 0.053  |  .  |
-|             **author_groupnonmember:typepr_reply**              |  0.03778  |  0.007817  | 467812 |  4.834  | 0.0001 | 0.0001 | *** |
-|     **projectmayavi:author_groupnonmember:typeissue_reply**     | -0.05686  |  0.03007   | 505599 | -1.891  | 0.059  | 0.114  |     |
-|     **projectnumpy:author_groupnonmember:typeissue_reply**      |  0.01268  |  0.01032   | 503471 |  1.228  |  0.22  |  0.33  |     |
-|     **projectpandas:author_groupnonmember:typeissue_reply**     | -0.002151 |  0.008518  | 503323 | -0.2525 |  0.8   |  0.85  |     |
-|  **projectscikit-image:author_groupnonmember:typeissue_reply**  | -0.06066  |  0.01584   | 503107 | -3.829  | 0.0001 | 0.0004 | *** |
-|  **projectscikit-learn:author_groupnonmember:typeissue_reply**  | -0.05761  |  0.009848  | 502140 |  -5.85  | 0.0001 | 0.0001 | *** |
-|     **projectscipy:author_groupnonmember:typeissue_reply**      | -0.008104 |  0.01209   | 505343 | -0.6702 |  0.5   |  0.67  |     |
-| **projectsphinx-gallery:author_groupnonmember:typeissue_reply** | -0.01748  |  0.03538   | 499147 | -0.4941 |  0.62  |  0.77  |     |
-|       **projectmayavi:author_groupnonmember:typepr_post**       | -0.01243  |  0.03998   | 500430 | -0.3108 |  0.76  |  0.85  |     |
-|       **projectnumpy:author_groupnonmember:typepr_post**        |  0.01056  |  0.01309   | 489874 | 0.8062  |  0.42  |  0.58  |     |
-|       **projectpandas:author_groupnonmember:typepr_post**       | 0.005802  |  0.01103   | 482242 |  0.526  |  0.6   |  0.77  |     |
-|    **projectscikit-image:author_groupnonmember:typepr_post**    | -0.02648  |  0.01884   | 490469 | -1.405  |  0.16  |  0.26  |     |
-|    **projectscikit-learn:author_groupnonmember:typepr_post**    | -0.02019  |  0.01228   | 487754 | -1.643  |  0.1   | 0.174  |     |
-|       **projectscipy:author_groupnonmember:typepr_post**        | 0.004069  |  0.01457   | 496482 | 0.2793  |  0.78  |  0.85  |     |
-|   **projectsphinx-gallery:author_groupnonmember:typepr_post**   | -0.01683  |  0.04685   | 503288 | -0.3593 |  0.72  |  0.82  |     |
-|      **projectmayavi:author_groupnonmember:typepr_reply**       |  -0.1152  |  0.03504   | 497802 | -3.288  | 0.001  | 0.003  | **  |
-|       **projectnumpy:author_groupnonmember:typepr_reply**       | -0.02068  |  0.01105   | 476366 | -1.871  | 0.061  | 0.115  |     |
-|      **projectpandas:author_groupnonmember:typepr_reply**       | -0.02962  |  0.009279  | 458552 | -3.192  | 0.001  | 0.004  | **  |
-|   **projectscikit-image:author_groupnonmember:typepr_reply**    | -0.08649  |   0.016    | 471422 | -5.404  | 0.0001 | 0.0001 | *** |
-|   **projectscikit-learn:author_groupnonmember:typepr_reply**    | -0.06125  |  0.01032   | 467640 | -5.937  | 0.0001 | 0.0001 | *** |
-|       **projectscipy:author_groupnonmember:typepr_reply**       | -0.04245  |   0.0125   | 487725 | -3.396  | 0.001  | 0.002  | **  |
-|  **projectsphinx-gallery:author_groupnonmember:typepr_reply**   | -0.08943  |  0.03546   | 502302 | -2.522  | 0.012  | 0.027  |  *  |
-
-
-
-![**Figure**. Expressions of gratitude by contribution type (ticket vs. comment) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-grateful_membership_contribution-knitr.jpg)
-
-### Testing Model 1.3 using Model 1.1 methods
-
-#### Model 1.3a: Overall effects with linear mixed-effects models
-
-This model presents the analyses in a way that is typical of psychological
-analyses. We predict the changes in emotion by community membership and 
-contribution type, including random effects for project and for author. This
-allows us to explore the general patterns of the main and interaction terms,
-rather than focusing in on the project-specific variability.
->>>>>>> 7ea8a4e28ec283d9f6e930c3ad1268db6826f1dc
 
 <!-- # print results -->
 <!-- pander_lme(creators_v_commenters_gratitude_by_project) -->
@@ -1292,19 +1047,6 @@ rather than focusing in on the project-specific variability.
 <!-- ``` -->
 
 
-<<<<<<< HEAD
-=======
-|                  &nbsp;                   | Estimate  | Std..Error |   df   | t.value |   p    | p_adj  | sig |
-|:-----------------------------------------:|:---------:|:----------:|:------:|:-------:|:------:|:------:|:---:|
-|              **(Intercept)**              |  0.02085  |  0.008063  | 7.531  |  2.586  | 0.034  | 0.039  |  *  |
-|         **author_groupnonmember**         |  0.05473  |  0.002477  | 505983 |  22.1   | 0.0001 | 0.0001 | *** |
-|            **typeissue_reply**            |  0.02901  |  0.001929  | 505978 |  15.04  | 0.0001 | 0.0001 | *** |
-|              **typepr_post**              | -0.003978 |  0.00231   | 505980 | -1.722  | 0.085  | 0.085  |  .  |
-|             **typepr_reply**              |  0.08368  |  0.001903  | 505983 |  43.98  | 0.0001 | 0.0001 | *** |
-| **author_groupnonmember:typeissue_reply** |  0.0351   |  0.002747  | 505978 |  12.78  | 0.0001 | 0.0001 | *** |
-|   **author_groupnonmember:typepr_post**   | -0.04542  |  0.003508  | 505983 | -12.95  | 0.0001 | 0.0001 | *** |
-|  **author_groupnonmember:typepr_reply**   | -0.04342  |  0.002762  | 505983 | -15.72  | 0.0001 | 0.0001 | *** |
->>>>>>> 7ea8a4e28ec283d9f6e930c3ad1268db6826f1dc
 
 ![**Figure**. Expressions of gratitude by activity type (posted issue, comment on issue, posted pull request, or comment on pull request) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-grateful_membership_contribution-knitr.jpg)
 
@@ -1730,119 +1472,119 @@ pander_clean_anova(all_tests, rename_columns=FALSE)
 
 |                                    &nbsp;                                    |                model                | t_stats  | p_value | p_adj  | sig |
 |:----------------------------------------------------------------------------:|:-----------------------------------:|:--------:|:-------:|:------:|:---:|
-|                             **member-nonmember**                             |             Main Terms              |  -3.383  |  0.001  | 0.001  | **  |
-|                          **issue_post-issue_reply**                          |             Main Terms              |  -1.619  |  0.105  | 0.135  |     |
-|                             **pr_post-pr_reply**                             |             Main Terms              |  -6.71   | 0.0001  | 0.0001 | *** |
-|                            **issue_post-pr_post**                            |             Main Terms              |  2.418   |  0.016  | 0.022  |  *  |
-|                           **issue_reply-pr_reply**                           |             Main Terms              |  -2.671  |  0.008  | 0.011  |  *  |
-|                  **issue_post:member-issue_post:nonmember**                  |      2W: Types x Author Groups      |  -5.139  | 0.0001  | 0.0001 | *** |
-|                 **issue_reply:member-issue_reply:nonmember**                 |      2W: Types x Author Groups      |  -8.616  | 0.0001  | 0.0001 | *** |
-|                     **pr_post:member-pr_post:nonmember**                     |      2W: Types x Author Groups      | -0.8737  |  0.38   |  0.44  |     |
-|                    **pr_reply:member-pr_reply:nonmember**                    |      2W: Types x Author Groups      |  -1.084  |  0.28   |  0.33  |     |
-|                   **issue_post:member-issue_reply:member**                   |      2W: Types x Author Groups      |  -2.752  |  0.006  | 0.009  | **  |
-|                **issue_post:nonmember-issue_reply:nonmember**                |      2W: Types x Author Groups      |  -6.083  | 0.0001  | 0.0001 | *** |
-|                      **pr_post:member-pr_reply:member**                      |      2W: Types x Author Groups      |  -8.378  | 0.0001  | 0.0001 | *** |
-|                   **pr_post:nonmember-pr_reply:nonmember**                   |      2W: Types x Author Groups      |  -8.442  | 0.0001  | 0.0001 | *** |
-|                     **issue_post:member-pr_post:member**                     |      2W: Types x Author Groups      |  0.3748  |  0.71   |  0.76  |     |
-|                  **issue_post:nonmember-pr_post:nonmember**                  |      2W: Types x Author Groups      |  4.622   | 0.0001  | 0.0001 | *** |
-|                    **issue_reply:member-pr_reply:member**                    |      2W: Types x Author Groups      |  -5.263  | 0.0001  | 0.0001 | *** |
-|                 **issue_reply:nonmember-pr_reply:nonmember**                 |      2W: Types x Author Groups      |  2.278   |  0.023  | 0.031  |  *  |
-|     **scikit.learn:issue_post:member-scikit.learn:issue_post:nonmember**     | 3W: Types x Author Groups x Project |  -14.67  | 0.0001  | 0.0001 | *** |
-|    **scikit.learn:issue_reply:member-scikit.learn:issue_reply:nonmember**    | 3W: Types x Author Groups x Project |  -28.53  | 0.0001  | 0.0001 | *** |
-|        **scikit.learn:pr_post:member-scikit.learn:pr_post:nonmember**        | 3W: Types x Author Groups x Project |  -1.397  |  0.162  | 0.202  |     |
-|       **scikit.learn:pr_reply:member-scikit.learn:pr_reply:nonmember**       | 3W: Types x Author Groups x Project |  -10.27  | 0.0001  | 0.0001 | *** |
-|      **scikit.learn:issue_post:member-scikit.learn:issue_reply:member**      | 3W: Types x Author Groups x Project |  -9.181  | 0.0001  | 0.0001 | *** |
-|   **scikit.learn:issue_post:nonmember-scikit.learn:issue_reply:nonmember**   | 3W: Types x Author Groups x Project |  -5.942  | 0.0001  | 0.0001 | *** |
-|         **scikit.learn:pr_post:member-scikit.learn:pr_reply:member**         | 3W: Types x Author Groups x Project |  -22.7   | 0.0001  | 0.0001 | *** |
-|      **scikit.learn:pr_post:nonmember-scikit.learn:pr_reply:nonmember**      | 3W: Types x Author Groups x Project |  -22.46  | 0.0001  | 0.0001 | *** |
-|        **scikit.learn:issue_post:member-scikit.learn:pr_post:member**        | 3W: Types x Author Groups x Project |  -1.162  |  0.245  |  0.29  |     |
-|     **scikit.learn:issue_post:nonmember-scikit.learn:pr_post:nonmember**     | 3W: Types x Author Groups x Project |  13.22   | 0.0001  | 0.0001 | *** |
-|       **scikit.learn:issue_reply:member-scikit.learn:pr_reply:member**       | 3W: Types x Author Groups x Project |  -31.01  | 0.0001  | 0.0001 | *** |
-|    **scikit.learn:issue_reply:nonmember-scikit.learn:pr_reply:nonmember**    | 3W: Types x Author Groups x Project | -0.07065 |  0.94   |  0.95  |     |
-|     **scikit.image:issue_post:member-scikit.image:issue_post:nonmember**     | 3W: Types x Author Groups x Project |  -5.82   | 0.0001  | 0.0001 | *** |
-|    **scikit.image:issue_reply:member-scikit.image:issue_reply:nonmember**    | 3W: Types x Author Groups x Project |  -10.31  | 0.0001  | 0.0001 | *** |
-|        **scikit.image:pr_post:member-scikit.image:pr_post:nonmember**        | 3W: Types x Author Groups x Project |  -1.363  |  0.173  | 0.212  |     |
-|       **scikit.image:pr_reply:member-scikit.image:pr_reply:nonmember**       | 3W: Types x Author Groups x Project | -0.6262  |  0.53   |  0.59  |     |
-|      **scikit.image:issue_post:member-scikit.image:issue_reply:member**      | 3W: Types x Author Groups x Project |  -5.881  | 0.0001  | 0.0001 | *** |
-|   **scikit.image:issue_post:nonmember-scikit.image:issue_reply:nonmember**   | 3W: Types x Author Groups x Project |  -4.413  | 0.0001  | 0.0001 | *** |
-|         **scikit.image:pr_post:member-scikit.image:pr_reply:member**         | 3W: Types x Author Groups x Project |  -18.89  | 0.0001  | 0.0001 | *** |
-|      **scikit.image:pr_post:nonmember-scikit.image:pr_reply:nonmember**      | 3W: Types x Author Groups x Project |  -10.77  | 0.0001  | 0.0001 | *** |
-|        **scikit.image:issue_post:member-scikit.image:pr_post:member**        | 3W: Types x Author Groups x Project | -0.2474  |   0.8   |  0.84  |     |
-|     **scikit.image:issue_post:nonmember-scikit.image:pr_post:nonmember**     | 3W: Types x Author Groups x Project |  4.725   | 0.0001  | 0.0001 | *** |
-|       **scikit.image:issue_reply:member-scikit.image:pr_reply:member**       | 3W: Types x Author Groups x Project |  -16.86  | 0.0001  | 0.0001 | *** |
-|    **scikit.image:issue_reply:nonmember-scikit.image:pr_reply:nonmember**    | 3W: Types x Author Groups x Project | -0.1531  |  0.88   |  0.9   |     |
-|       **matplotlib:issue_post:member-matplotlib:issue_post:nonmember**       | 3W: Types x Author Groups x Project |  -5.112  | 0.0001  | 0.0001 | *** |
-|      **matplotlib:issue_reply:member-matplotlib:issue_reply:nonmember**      | 3W: Types x Author Groups x Project |  -35.21  | 0.0001  | 0.0001 | *** |
-|          **matplotlib:pr_post:member-matplotlib:pr_post:nonmember**          | 3W: Types x Author Groups x Project |  -1.525  |  0.127  | 0.161  |     |
-|         **matplotlib:pr_reply:member-matplotlib:pr_reply:nonmember**         | 3W: Types x Author Groups x Project |  -17.31  | 0.0001  | 0.0001 | *** |
-|        **matplotlib:issue_post:member-matplotlib:issue_reply:member**        | 3W: Types x Author Groups x Project | -0.2677  |  0.79   |  0.83  |     |
-|     **matplotlib:issue_post:nonmember-matplotlib:issue_reply:nonmember**     | 3W: Types x Author Groups x Project |  -15.15  | 0.0001  | 0.0001 | *** |
-|           **matplotlib:pr_post:member-matplotlib:pr_reply:member**           | 3W: Types x Author Groups x Project |  -16.94  | 0.0001  | 0.0001 | *** |
-|        **matplotlib:pr_post:nonmember-matplotlib:pr_reply:nonmember**        | 3W: Types x Author Groups x Project |  -16.94  | 0.0001  | 0.0001 | *** |
-|          **matplotlib:issue_post:member-matplotlib:pr_post:member**          | 3W: Types x Author Groups x Project |  3.528   | 0.0004  | 0.001  | **  |
-|       **matplotlib:issue_post:nonmember-matplotlib:pr_post:nonmember**       | 3W: Types x Author Groups x Project |  6.776   | 0.0001  | 0.0001 | *** |
-|         **matplotlib:issue_reply:member-matplotlib:pr_reply:member**         | 3W: Types x Author Groups x Project |  -16.2   | 0.0001  | 0.0001 | *** |
-|      **matplotlib:issue_reply:nonmember-matplotlib:pr_reply:nonmember**      | 3W: Types x Author Groups x Project |  2.659   |  0.008  | 0.011  |  *  |
-|           **mayavi:issue_post:member-mayavi:issue_post:nonmember**           | 3W: Types x Author Groups x Project |  -5.731  | 0.0001  | 0.0001 | *** |
-|          **mayavi:issue_reply:member-mayavi:issue_reply:nonmember**          | 3W: Types x Author Groups x Project |  -6.625  | 0.0001  | 0.0001 | *** |
-|              **mayavi:pr_post:member-mayavi:pr_post:nonmember**              | 3W: Types x Author Groups x Project | 0.01385  |  0.99   |  0.99  |     |
-|             **mayavi:pr_reply:member-mayavi:pr_reply:nonmember**             | 3W: Types x Author Groups x Project |  5.396   | 0.0001  | 0.0001 | *** |
-|            **mayavi:issue_post:member-mayavi:issue_reply:member**            | 3W: Types x Author Groups x Project |  -3.359  |  0.001  | 0.001  | **  |
-|         **mayavi:issue_post:nonmember-mayavi:issue_reply:nonmember**         | 3W: Types x Author Groups x Project | -0.6721  |   0.5   |  0.56  |     |
-|               **mayavi:pr_post:member-mayavi:pr_reply:member**               | 3W: Types x Author Groups x Project |  -10.99  | 0.0001  | 0.0001 | *** |
-|            **mayavi:pr_post:nonmember-mayavi:pr_reply:nonmember**            | 3W: Types x Author Groups x Project |  -3.794  | 0.0001  | 0.0002 | *** |
-|              **mayavi:issue_post:member-mayavi:pr_post:member**              | 3W: Types x Author Groups x Project | -0.8359  |   0.4   |  0.46  |     |
-|           **mayavi:issue_post:nonmember-mayavi:pr_post:nonmember**           | 3W: Types x Author Groups x Project |  4.967   | 0.0001  | 0.0001 | *** |
-|             **mayavi:issue_reply:member-mayavi:pr_reply:member**             | 3W: Types x Author Groups x Project |  -10.53  | 0.0001  | 0.0001 | *** |
-|          **mayavi:issue_reply:nonmember-mayavi:pr_reply:nonmember**          | 3W: Types x Author Groups x Project |  1.947   |  0.052  | 0.068  |  .  |
-|           **pandas:issue_post:member-pandas:issue_post:nonmember**           | 3W: Types x Author Groups x Project |  -11.25  | 0.0001  | 0.0001 | *** |
-|          **pandas:issue_reply:member-pandas:issue_reply:nonmember**          | 3W: Types x Author Groups x Project |  -44.77  | 0.0001  | 0.0001 | *** |
-|              **pandas:pr_post:member-pandas:pr_post:nonmember**              | 3W: Types x Author Groups x Project |  -2.763  |  0.006  | 0.009  | **  |
-|             **pandas:pr_reply:member-pandas:pr_reply:nonmember**             | 3W: Types x Author Groups x Project |  9.658   | 0.0001  | 0.0001 | *** |
-|            **pandas:issue_post:member-pandas:issue_reply:member**            | 3W: Types x Author Groups x Project |  -11.53  | 0.0001  | 0.0001 | *** |
-|         **pandas:issue_post:nonmember-pandas:issue_reply:nonmember**         | 3W: Types x Author Groups x Project |  -24.83  | 0.0001  | 0.0001 | *** |
-|               **pandas:pr_post:member-pandas:pr_reply:member**               | 3W: Types x Author Groups x Project |  -34.41  | 0.0001  | 0.0001 | *** |
-|            **pandas:pr_post:nonmember-pandas:pr_reply:nonmember**            | 3W: Types x Author Groups x Project |  -13.47  | 0.0001  | 0.0001 | *** |
-|              **pandas:issue_post:member-pandas:pr_post:member**              | 3W: Types x Author Groups x Project |  1.225   |  0.22   |  0.26  |     |
-|           **pandas:issue_post:nonmember-pandas:pr_post:nonmember**           | 3W: Types x Author Groups x Project |  7.148   | 0.0001  | 0.0001 | *** |
-|             **pandas:issue_reply:member-pandas:pr_reply:member**             | 3W: Types x Author Groups x Project |  -42.61  | 0.0001  | 0.0001 | *** |
-|          **pandas:issue_reply:nonmember-pandas:pr_reply:nonmember**          | 3W: Types x Author Groups x Project |  21.29   | 0.0001  | 0.0001 | *** |
-|            **scipy:issue_post:member-scipy:issue_post:nonmember**            | 3W: Types x Author Groups x Project |  -7.441  | 0.0001  | 0.0001 | *** |
-|           **scipy:issue_reply:member-scipy:issue_reply:nonmember**           | 3W: Types x Author Groups x Project |  -23.61  | 0.0001  | 0.0001 | *** |
-|               **scipy:pr_post:member-scipy:pr_post:nonmember**               | 3W: Types x Author Groups x Project |  -2.325  |  0.02   | 0.028  |  *  |
-|              **scipy:pr_reply:member-scipy:pr_reply:nonmember**              | 3W: Types x Author Groups x Project |  -3.495  |    0    | 0.001  | **  |
-|             **scipy:issue_post:member-scipy:issue_reply:member**             | 3W: Types x Author Groups x Project |  -4.636  | 0.0001  | 0.0001 | *** |
-|          **scipy:issue_post:nonmember-scipy:issue_reply:nonmember**          | 3W: Types x Author Groups x Project |  -9.932  | 0.0001  | 0.0001 | *** |
-|                **scipy:pr_post:member-scipy:pr_reply:member**                | 3W: Types x Author Groups x Project |  -25.04  | 0.0001  | 0.0001 | *** |
-|             **scipy:pr_post:nonmember-scipy:pr_reply:nonmember**             | 3W: Types x Author Groups x Project |  -16.24  | 0.0001  | 0.0001 | *** |
-|               **scipy:issue_post:member-scipy:pr_post:member**               | 3W: Types x Author Groups x Project | -0.3437  |  0.73   |  0.78  |     |
-|            **scipy:issue_post:nonmember-scipy:pr_post:nonmember**            | 3W: Types x Author Groups x Project |  6.361   | 0.0001  | 0.0001 | *** |
-|              **scipy:issue_reply:member-scipy:pr_reply:member**              | 3W: Types x Author Groups x Project |  -30.82  | 0.0001  | 0.0001 | *** |
-|           **scipy:issue_reply:nonmember-scipy:pr_reply:nonmember**           | 3W: Types x Author Groups x Project | -0.1318  |   0.9   |  0.91  |     |
-|            **numpy:issue_post:member-numpy:issue_post:nonmember**            | 3W: Types x Author Groups x Project |  -5.873  | 0.0001  | 0.0001 | *** |
-|           **numpy:issue_reply:member-numpy:issue_reply:nonmember**           | 3W: Types x Author Groups x Project |  -31.86  | 0.0001  | 0.0001 | *** |
-|               **numpy:pr_post:member-numpy:pr_post:nonmember**               | 3W: Types x Author Groups x Project |  -1.053  |  0.29   |  0.34  |     |
-|              **numpy:pr_reply:member-numpy:pr_reply:nonmember**              | 3W: Types x Author Groups x Project |    -5    | 0.0001  | 0.0001 | *** |
-|             **numpy:issue_post:member-numpy:issue_reply:member**             | 3W: Types x Author Groups x Project |  -2.655  |  0.008  | 0.011  |  *  |
-|          **numpy:issue_post:nonmember-numpy:issue_reply:nonmember**          | 3W: Types x Author Groups x Project |  -14.21  | 0.0001  | 0.0001 | *** |
-|                **numpy:pr_post:member-numpy:pr_reply:member**                | 3W: Types x Author Groups x Project |  -24.07  | 0.0001  | 0.0001 | *** |
-|             **numpy:pr_post:nonmember-numpy:pr_reply:nonmember**             | 3W: Types x Author Groups x Project |  -15.47  | 0.0001  | 0.0001 | *** |
-|               **numpy:issue_post:member-numpy:pr_post:member**               | 3W: Types x Author Groups x Project |  1.763   |  0.078  | 0.101  |     |
-|            **numpy:issue_post:nonmember-numpy:pr_post:nonmember**            | 3W: Types x Author Groups x Project |  5.998   | 0.0001  | 0.0001 | *** |
-|              **numpy:issue_reply:member-numpy:pr_reply:member**              | 3W: Types x Author Groups x Project |  -32.58  | 0.0001  | 0.0001 | *** |
-|           **numpy:issue_reply:nonmember-numpy:pr_reply:nonmember**           | 3W: Types x Author Groups x Project |  3.773   | 0.0002  | 0.0003 | *** |
-|   **sphinx.gallery:issue_post:member-sphinx.gallery:issue_post:nonmember**   | 3W: Types x Author Groups x Project |  -1.797  |  0.072  | 0.095  |  .  |
-|  **sphinx.gallery:issue_reply:member-sphinx.gallery:issue_reply:nonmember**  | 3W: Types x Author Groups x Project |  -6.165  | 0.0001  | 0.0001 | *** |
-|      **sphinx.gallery:pr_post:member-sphinx.gallery:pr_post:nonmember**      | 3W: Types x Author Groups x Project |  -0.743  |  0.46   |  0.52  |     |
-|     **sphinx.gallery:pr_reply:member-sphinx.gallery:pr_reply:nonmember**     | 3W: Types x Author Groups x Project | -0.1851  |  0.85   |  0.88  |     |
-|    **sphinx.gallery:issue_post:member-sphinx.gallery:issue_reply:member**    | 3W: Types x Author Groups x Project | -0.5975  |  0.55   |  0.6   |     |
-| **sphinx.gallery:issue_post:nonmember-sphinx.gallery:issue_reply:nonmember** | 3W: Types x Author Groups x Project |  -2.025  |  0.043  | 0.058  |  .  |
-|       **sphinx.gallery:pr_post:member-sphinx.gallery:pr_reply:member**       | 3W: Types x Author Groups x Project |  -3.992  | 0.0001  | 0.0001 | *** |
-|    **sphinx.gallery:pr_post:nonmember-sphinx.gallery:pr_reply:nonmember**    | 3W: Types x Author Groups x Project |  -1.48   |  0.139  | 0.174  |     |
-|      **sphinx.gallery:issue_post:member-sphinx.gallery:pr_post:member**      | 3W: Types x Author Groups x Project |  0.5178  |   0.6   |  0.66  |     |
-|   **sphinx.gallery:issue_post:nonmember-sphinx.gallery:pr_post:nonmember**   | 3W: Types x Author Groups x Project |  1.241   |  0.214  |  0.26  |     |
-|     **sphinx.gallery:issue_reply:member-sphinx.gallery:pr_reply:member**     | 3W: Types x Author Groups x Project |  -4.506  | 0.0001  | 0.0001 | *** |
-|  **sphinx.gallery:issue_reply:nonmember-sphinx.gallery:pr_reply:nonmember**  | 3W: Types x Author Groups x Project |  2.577   |  0.01   | 0.014  |  *  |
+|                             **member-nonmember**                             |             Main Terms              |  -4.341  | 0.0001  | 0.0001 | *** |
+|                          **issue_post-issue_reply**                          |             Main Terms              |  -1.622  |  0.105  | 0.132  |     |
+|                             **pr_post-pr_reply**                             |             Main Terms              |  -6.924  | 0.0001  | 0.0001 | *** |
+|                            **issue_post-pr_post**                            |             Main Terms              |  2.336   |  0.02   | 0.026  |  *  |
+|                           **issue_reply-pr_reply**                           |             Main Terms              |  -2.965  |  0.003  | 0.004  | **  |
+|                  **issue_post:member-issue_post:nonmember**                  |      2W: Types x Author Groups      |  -5.171  | 0.0001  | 0.0001 | *** |
+|                 **issue_reply:member-issue_reply:nonmember**                 |      2W: Types x Author Groups      |  -8.597  | 0.0001  | 0.0001 | *** |
+|                     **pr_post:member-pr_post:nonmember**                     |      2W: Types x Author Groups      | -0.8896  |  0.37   |  0.43  |     |
+|                    **pr_reply:member-pr_reply:nonmember**                    |      2W: Types x Author Groups      |  -3.385  |  0.001  | 0.001  | **  |
+|                   **issue_post:member-issue_reply:member**                   |      2W: Types x Author Groups      |  -2.791  |  0.005  | 0.008  | **  |
+|                **issue_post:nonmember-issue_reply:nonmember**                |      2W: Types x Author Groups      |  -6.07   | 0.0001  | 0.0001 | *** |
+|                      **pr_post:member-pr_reply:member**                      |      2W: Types x Author Groups      |  -8.35   | 0.0001  | 0.0001 | *** |
+|                   **pr_post:nonmember-pr_reply:nonmember**                   |      2W: Types x Author Groups      |  -10.66  | 0.0001  | 0.0001 | *** |
+|                     **issue_post:member-pr_post:member**                     |      2W: Types x Author Groups      |  0.2943  |  0.77   |  0.82  |     |
+|                  **issue_post:nonmember-pr_post:nonmember**                  |      2W: Types x Author Groups      |  4.558   | 0.0001  | 0.0001 | *** |
+|                    **issue_reply:member-pr_reply:member**                    |      2W: Types x Author Groups      |  -5.278  | 0.0001  | 0.0001 | *** |
+|                 **issue_reply:nonmember-pr_reply:nonmember**                 |      2W: Types x Author Groups      | -0.04773 |  0.96   |  0.97  |     |
+|     **scikit.learn:issue_post:member-scikit.learn:issue_post:nonmember**     | 3W: Types x Author Groups x Project |  -14.53  | 0.0001  | 0.0001 | *** |
+|    **scikit.learn:issue_reply:member-scikit.learn:issue_reply:nonmember**    | 3W: Types x Author Groups x Project |  -28.26  | 0.0001  | 0.0001 | *** |
+|        **scikit.learn:pr_post:member-scikit.learn:pr_post:nonmember**        | 3W: Types x Author Groups x Project |  -1.384  |  0.166  | 0.202  |     |
+|       **scikit.learn:pr_reply:member-scikit.learn:pr_reply:nonmember**       | 3W: Types x Author Groups x Project |  -10.17  | 0.0001  | 0.0001 | *** |
+|      **scikit.learn:issue_post:member-scikit.learn:issue_reply:member**      | 3W: Types x Author Groups x Project |  -9.094  | 0.0001  | 0.0001 | *** |
+|   **scikit.learn:issue_post:nonmember-scikit.learn:issue_reply:nonmember**   | 3W: Types x Author Groups x Project |  -5.885  | 0.0001  | 0.0001 | *** |
+|         **scikit.learn:pr_post:member-scikit.learn:pr_reply:member**         | 3W: Types x Author Groups x Project |  -22.48  | 0.0001  | 0.0001 | *** |
+|      **scikit.learn:pr_post:nonmember-scikit.learn:pr_reply:nonmember**      | 3W: Types x Author Groups x Project |  -22.24  | 0.0001  | 0.0001 | *** |
+|        **scikit.learn:issue_post:member-scikit.learn:pr_post:member**        | 3W: Types x Author Groups x Project |  -1.151  |  0.25   |  0.29  |     |
+|     **scikit.learn:issue_post:nonmember-scikit.learn:pr_post:nonmember**     | 3W: Types x Author Groups x Project |  13.09   | 0.0001  | 0.0001 | *** |
+|       **scikit.learn:issue_reply:member-scikit.learn:pr_reply:member**       | 3W: Types x Author Groups x Project |  -30.71  | 0.0001  | 0.0001 | *** |
+|    **scikit.learn:issue_reply:nonmember-scikit.learn:pr_reply:nonmember**    | 3W: Types x Author Groups x Project | -0.06998 |  0.94   |  0.96  |     |
+|     **scikit.image:issue_post:member-scikit.image:issue_post:nonmember**     | 3W: Types x Author Groups x Project |  -5.764  | 0.0001  | 0.0001 | *** |
+|    **scikit.image:issue_reply:member-scikit.image:issue_reply:nonmember**    | 3W: Types x Author Groups x Project |  -10.21  | 0.0001  | 0.0001 | *** |
+|        **scikit.image:pr_post:member-scikit.image:pr_post:nonmember**        | 3W: Types x Author Groups x Project |  -1.35   |  0.177  | 0.213  |     |
+|       **scikit.image:pr_reply:member-scikit.image:pr_reply:nonmember**       | 3W: Types x Author Groups x Project |  -11.27  | 0.0001  | 0.0001 | *** |
+|      **scikit.image:issue_post:member-scikit.image:issue_reply:member**      | 3W: Types x Author Groups x Project |  -5.824  | 0.0001  | 0.0001 | *** |
+|   **scikit.image:issue_post:nonmember-scikit.image:issue_reply:nonmember**   | 3W: Types x Author Groups x Project |  -4.37   | 0.0001  | 0.0001 | *** |
+|         **scikit.image:pr_post:member-scikit.image:pr_reply:member**         | 3W: Types x Author Groups x Project |  -18.71  | 0.0001  | 0.0001 | *** |
+|      **scikit.image:pr_post:nonmember-scikit.image:pr_reply:nonmember**      | 3W: Types x Author Groups x Project |  -15.96  | 0.0001  | 0.0001 | *** |
+|        **scikit.image:issue_post:member-scikit.image:pr_post:member**        | 3W: Types x Author Groups x Project |  -0.245  |  0.81   |  0.84  |     |
+|     **scikit.image:issue_post:nonmember-scikit.image:pr_post:nonmember**     | 3W: Types x Author Groups x Project |   4.68   | 0.0001  | 0.0001 | *** |
+|       **scikit.image:issue_reply:member-scikit.image:pr_reply:member**       | 3W: Types x Author Groups x Project |  -16.7   | 0.0001  | 0.0001 | *** |
+|    **scikit.image:issue_reply:nonmember-scikit.image:pr_reply:nonmember**    | 3W: Types x Author Groups x Project |  -7.533  | 0.0001  | 0.0001 | *** |
+|       **matplotlib:issue_post:member-matplotlib:issue_post:nonmember**       | 3W: Types x Author Groups x Project |  -5.063  | 0.0001  | 0.0001 | *** |
+|      **matplotlib:issue_reply:member-matplotlib:issue_reply:nonmember**      | 3W: Types x Author Groups x Project |  -34.87  | 0.0001  | 0.0001 | *** |
+|          **matplotlib:pr_post:member-matplotlib:pr_post:nonmember**          | 3W: Types x Author Groups x Project |  -1.511  |  0.131  | 0.162  |     |
+|         **matplotlib:pr_reply:member-matplotlib:pr_reply:nonmember**         | 3W: Types x Author Groups x Project |  -17.14  | 0.0001  | 0.0001 | *** |
+|        **matplotlib:issue_post:member-matplotlib:issue_reply:member**        | 3W: Types x Author Groups x Project | -0.2652  |  0.79   |  0.84  |     |
+|     **matplotlib:issue_post:nonmember-matplotlib:issue_reply:nonmember**     | 3W: Types x Author Groups x Project |   -15    | 0.0001  | 0.0001 | *** |
+|           **matplotlib:pr_post:member-matplotlib:pr_reply:member**           | 3W: Types x Author Groups x Project |  -16.78  | 0.0001  | 0.0001 | *** |
+|        **matplotlib:pr_post:nonmember-matplotlib:pr_reply:nonmember**        | 3W: Types x Author Groups x Project |  -16.78  | 0.0001  | 0.0001 | *** |
+|          **matplotlib:issue_post:member-matplotlib:pr_post:member**          | 3W: Types x Author Groups x Project |  3.494   |    0    | 0.001  | **  |
+|       **matplotlib:issue_post:nonmember-matplotlib:pr_post:nonmember**       | 3W: Types x Author Groups x Project |  6.711   | 0.0001  | 0.0001 | *** |
+|         **matplotlib:issue_reply:member-matplotlib:pr_reply:member**         | 3W: Types x Author Groups x Project |  -16.05  | 0.0001  | 0.0001 | *** |
+|      **matplotlib:issue_reply:nonmember-matplotlib:pr_reply:nonmember**      | 3W: Types x Author Groups x Project |  2.634   |  0.008  | 0.012  |  *  |
+|           **mayavi:issue_post:member-mayavi:issue_post:nonmember**           | 3W: Types x Author Groups x Project |  -5.676  | 0.0001  | 0.0001 | *** |
+|          **mayavi:issue_reply:member-mayavi:issue_reply:nonmember**          | 3W: Types x Author Groups x Project |  -6.561  | 0.0001  | 0.0001 | *** |
+|              **mayavi:pr_post:member-mayavi:pr_post:nonmember**              | 3W: Types x Author Groups x Project | 0.01372  |  0.99   |  0.99  |     |
+|             **mayavi:pr_reply:member-mayavi:pr_reply:nonmember**             | 3W: Types x Author Groups x Project |  5.344   | 0.0001  | 0.0001 | *** |
+|            **mayavi:issue_post:member-mayavi:issue_reply:member**            | 3W: Types x Author Groups x Project |  -3.327  |  0.001  | 0.001  | **  |
+|         **mayavi:issue_post:nonmember-mayavi:issue_reply:nonmember**         | 3W: Types x Author Groups x Project | -0.6657  |  0.51   |  0.56  |     |
+|               **mayavi:pr_post:member-mayavi:pr_reply:member**               | 3W: Types x Author Groups x Project |  -10.89  | 0.0001  | 0.0001 | *** |
+|            **mayavi:pr_post:nonmember-mayavi:pr_reply:nonmember**            | 3W: Types x Author Groups x Project |  -3.758  | 0.0002  | 0.0003 | *** |
+|              **mayavi:issue_post:member-mayavi:pr_post:member**              | 3W: Types x Author Groups x Project |  -0.828  |  0.41   |  0.46  |     |
+|           **mayavi:issue_post:nonmember-mayavi:pr_post:nonmember**           | 3W: Types x Author Groups x Project |  4.919   | 0.0001  | 0.0001 | *** |
+|             **mayavi:issue_reply:member-mayavi:pr_reply:member**             | 3W: Types x Author Groups x Project |  -10.43  | 0.0001  | 0.0001 | *** |
+|          **mayavi:issue_reply:nonmember-mayavi:pr_reply:nonmember**          | 3W: Types x Author Groups x Project |  1.928   |  0.054  |  0.07  |  .  |
+|           **pandas:issue_post:member-pandas:issue_post:nonmember**           | 3W: Types x Author Groups x Project |  -11.14  | 0.0001  | 0.0001 | *** |
+|          **pandas:issue_reply:member-pandas:issue_reply:nonmember**          | 3W: Types x Author Groups x Project |  -44.34  | 0.0001  | 0.0001 | *** |
+|              **pandas:pr_post:member-pandas:pr_post:nonmember**              | 3W: Types x Author Groups x Project |  -2.736  |  0.006  | 0.009  | **  |
+|             **pandas:pr_reply:member-pandas:pr_reply:nonmember**             | 3W: Types x Author Groups x Project |  -21.1   | 0.0001  | 0.0001 | *** |
+|            **pandas:issue_post:member-pandas:issue_reply:member**            | 3W: Types x Author Groups x Project |  -11.42  | 0.0001  | 0.0001 | *** |
+|         **pandas:issue_post:nonmember-pandas:issue_reply:nonmember**         | 3W: Types x Author Groups x Project |  -24.59  | 0.0001  | 0.0001 | *** |
+|               **pandas:pr_post:member-pandas:pr_reply:member**               | 3W: Types x Author Groups x Project |  -34.08  | 0.0001  | 0.0001 | *** |
+|            **pandas:pr_post:nonmember-pandas:pr_reply:nonmember**            | 3W: Types x Author Groups x Project |  -28.34  | 0.0001  | 0.0001 | *** |
+|              **pandas:issue_post:member-pandas:pr_post:member**              | 3W: Types x Author Groups x Project |  1.214   |  0.225  |  0.26  |     |
+|           **pandas:issue_post:nonmember-pandas:pr_post:nonmember**           | 3W: Types x Author Groups x Project |   7.08   | 0.0001  | 0.0001 | *** |
+|             **pandas:issue_reply:member-pandas:pr_reply:member**             | 3W: Types x Author Groups x Project |  -42.2   | 0.0001  | 0.0001 | *** |
+|          **pandas:issue_reply:nonmember-pandas:pr_reply:nonmember**          | 3W: Types x Author Groups x Project |  -2.93   |  0.003  | 0.005  | **  |
+|            **scipy:issue_post:member-scipy:issue_post:nonmember**            | 3W: Types x Author Groups x Project |  -7.369  | 0.0001  | 0.0001 | *** |
+|           **scipy:issue_reply:member-scipy:issue_reply:nonmember**           | 3W: Types x Author Groups x Project |  -23.39  | 0.0001  | 0.0001 | *** |
+|               **scipy:pr_post:member-scipy:pr_post:nonmember**               | 3W: Types x Author Groups x Project |  -2.303  |  0.021  | 0.028  |  *  |
+|              **scipy:pr_reply:member-scipy:pr_reply:nonmember**              | 3W: Types x Author Groups x Project |  -3.462  |    0    | 0.001  | **  |
+|             **scipy:issue_post:member-scipy:issue_reply:member**             | 3W: Types x Author Groups x Project |  -4.591  | 0.0001  | 0.0001 | *** |
+|          **scipy:issue_post:nonmember-scipy:issue_reply:nonmember**          | 3W: Types x Author Groups x Project |  -9.837  | 0.0001  | 0.0001 | *** |
+|                **scipy:pr_post:member-scipy:pr_reply:member**                | 3W: Types x Author Groups x Project |  -24.8   | 0.0001  | 0.0001 | *** |
+|             **scipy:pr_post:nonmember-scipy:pr_reply:nonmember**             | 3W: Types x Author Groups x Project |  -16.08  | 0.0001  | 0.0001 | *** |
+|               **scipy:issue_post:member-scipy:pr_post:member**               | 3W: Types x Author Groups x Project | -0.3404  |  0.73   |  0.79  |     |
+|            **scipy:issue_post:nonmember-scipy:pr_post:nonmember**            | 3W: Types x Author Groups x Project |   6.3    | 0.0001  | 0.0001 | *** |
+|              **scipy:issue_reply:member-scipy:pr_reply:member**              | 3W: Types x Author Groups x Project |  -30.52  | 0.0001  | 0.0001 | *** |
+|           **scipy:issue_reply:nonmember-scipy:pr_reply:nonmember**           | 3W: Types x Author Groups x Project | -0.1306  |   0.9   |  0.92  |     |
+|            **numpy:issue_post:member-numpy:issue_post:nonmember**            | 3W: Types x Author Groups x Project |  -5.816  | 0.0001  | 0.0001 | *** |
+|           **numpy:issue_reply:member-numpy:issue_reply:nonmember**           | 3W: Types x Author Groups x Project |  -31.55  | 0.0001  | 0.0001 | *** |
+|               **numpy:pr_post:member-numpy:pr_post:nonmember**               | 3W: Types x Author Groups x Project |  -1.043  |   0.3   |  0.34  |     |
+|              **numpy:pr_reply:member-numpy:pr_reply:nonmember**              | 3W: Types x Author Groups x Project |  -4.952  | 0.0001  | 0.0001 | *** |
+|             **numpy:issue_post:member-numpy:issue_reply:member**             | 3W: Types x Author Groups x Project |  -2.63   |  0.008  | 0.012  |  *  |
+|          **numpy:issue_post:nonmember-numpy:issue_reply:nonmember**          | 3W: Types x Author Groups x Project |  -14.07  | 0.0001  | 0.0001 | *** |
+|                **numpy:pr_post:member-numpy:pr_reply:member**                | 3W: Types x Author Groups x Project |  -23.84  | 0.0001  | 0.0001 | *** |
+|             **numpy:pr_post:nonmember-numpy:pr_reply:nonmember**             | 3W: Types x Author Groups x Project |  -15.33  | 0.0001  | 0.0001 | *** |
+|               **numpy:issue_post:member-numpy:pr_post:member**               | 3W: Types x Author Groups x Project |  1.746   |  0.081  | 0.103  |     |
+|            **numpy:issue_post:nonmember-numpy:pr_post:nonmember**            | 3W: Types x Author Groups x Project |  5.941   | 0.0001  | 0.0001 | *** |
+|              **numpy:issue_reply:member-numpy:pr_reply:member**              | 3W: Types x Author Groups x Project |  -32.27  | 0.0001  | 0.0001 | *** |
+|           **numpy:issue_reply:nonmember-numpy:pr_reply:nonmember**           | 3W: Types x Author Groups x Project |  3.737   | 0.0002  | 0.0003 | *** |
+|   **sphinx.gallery:issue_post:member-sphinx.gallery:issue_post:nonmember**   | 3W: Types x Author Groups x Project |  -1.779  |  0.075  | 0.096  |  .  |
+|  **sphinx.gallery:issue_reply:member-sphinx.gallery:issue_reply:nonmember**  | 3W: Types x Author Groups x Project |  -6.106  | 0.0001  | 0.0001 | *** |
+|      **sphinx.gallery:pr_post:member-sphinx.gallery:pr_post:nonmember**      | 3W: Types x Author Groups x Project | -0.7359  |  0.46   |  0.52  |     |
+|     **sphinx.gallery:pr_reply:member-sphinx.gallery:pr_reply:nonmember**     | 3W: Types x Author Groups x Project | -0.1834  |  0.85   |  0.89  |     |
+|    **sphinx.gallery:issue_post:member-sphinx.gallery:issue_reply:member**    | 3W: Types x Author Groups x Project | -0.5917  |  0.55   |  0.61  |     |
+| **sphinx.gallery:issue_post:nonmember-sphinx.gallery:issue_reply:nonmember** | 3W: Types x Author Groups x Project |  -2.005  |  0.045  | 0.059  |  .  |
+|       **sphinx.gallery:pr_post:member-sphinx.gallery:pr_reply:member**       | 3W: Types x Author Groups x Project |  -3.954  | 0.0001  | 0.0001 | *** |
+|    **sphinx.gallery:pr_post:nonmember-sphinx.gallery:pr_reply:nonmember**    | 3W: Types x Author Groups x Project |  -1.466  |  0.143  | 0.175  |     |
+|      **sphinx.gallery:issue_post:member-sphinx.gallery:pr_post:member**      | 3W: Types x Author Groups x Project |  0.5129  |  0.61   |  0.66  |     |
+|   **sphinx.gallery:issue_post:nonmember-sphinx.gallery:pr_post:nonmember**   | 3W: Types x Author Groups x Project |  1.229   |  0.219  |  0.26  |     |
+|     **sphinx.gallery:issue_reply:member-sphinx.gallery:pr_reply:member**     | 3W: Types x Author Groups x Project |  -4.463  | 0.0001  | 0.0001 | *** |
+|  **sphinx.gallery:issue_reply:nonmember-sphinx.gallery:pr_reply:nonmember**  | 3W: Types x Author Groups x Project |  2.553   |  0.011  | 0.015  |  *  |
 
 
 ```r
@@ -2359,28 +2101,28 @@ pander_clean_anova(retention_tests[c("model", "stat", "p_value")],
 
 |                        &nbsp;                         |                       model                       |  stat   | p_value | p_adj  | sig |
 |:-----------------------------------------------------:|:-------------------------------------------------:|:-------:|:-------:|:------:|:---:|
-|                     **pr-issue**                      |                     pr-issue                      |  5.531  | 0.0001  | 0.0001 | *** |
-|                     **open_time**                     |                     open_time                     | -1.296  |  0.195  | 0.234  |     |
-|            **comment_grateful_cumulative**            |            comment_grateful_cumulative            |  6.701  | 0.0001  | 0.0001 | *** |
-|          **comment_sentiment_max_negative**           |          comment_sentiment_max_negative           |   1.4   |  0.162  | 0.209  |     |
-|          **comment_sentiment_max_positive**           |          comment_sentiment_max_positive           |  10.87  | 0.0001  | 0.0001 | *** |
-|                **number_of_comments**                 |                number_of_comments                 |  9.35   | 0.0001  | 0.0001 | *** |
-|               **comment_member_ratio**                |               comment_member_ratio                | -8.363  | 0.0001  | 0.0001 | *** |
-|              **comment_sentiment_mean**               |              comment_sentiment_mean               |  6.341  | 0.0001  | 0.0001 | *** |
-|           **ticket_familyissue:open_time**            |           ticket_familyissue:open_time            |  3.298  |  0.001  | 0.001  | **  |
-|             **ticket_familypr:open_time**             |             ticket_familypr:open_time             | -2.956  |  0.003  | 0.004  | **  |
-| **ticket_familyissue:comment_sentiment_max_negative** | ticket_familyissue:comment_sentiment_max_negative | -1.275  |  0.202  | 0.234  |     |
-|  **ticket_familypr:comment_sentiment_max_negative**   |  ticket_familypr:comment_sentiment_max_negative   |  4.107  | 0.0001  | 0.0001 | *** |
-| **ticket_familyissue:comment_sentiment_max_positive** | ticket_familyissue:comment_sentiment_max_positive |   5.3   | 0.0001  | 0.0001 | *** |
-|  **ticket_familypr:comment_sentiment_max_positive**   |  ticket_familypr:comment_sentiment_max_positive   | 0.4519  |  0.65   |  0.68  |     |
-|       **ticket_familyissue:number_of_comments**       |       ticket_familyissue:number_of_comments       |  4.011  | 0.0001  | 0.0001 | *** |
-|        **ticket_familypr:number_of_comments**         |        ticket_familypr:number_of_comments         |  6.617  | 0.0001  | 0.0001 | *** |
-|      **ticket_familyissue:comment_member_ratio**      |      ticket_familyissue:comment_member_ratio      | -4.288  | 0.0001  | 0.0001 | *** |
-|       **ticket_familypr:comment_member_ratio**        |       ticket_familypr:comment_member_ratio        | -9.562  | 0.0001  | 0.0001 | *** |
+|                     **pr-issue**                      |                     pr-issue                      |  5.542  | 0.0001  | 0.0001 | *** |
+|                     **open_time**                     |                     open_time                     | -0.9746 |  0.33   |  0.38  |     |
+|            **comment_grateful_cumulative**            |            comment_grateful_cumulative            |  6.722  | 0.0001  | 0.0001 | *** |
+|          **comment_sentiment_max_negative**           |          comment_sentiment_max_negative           |  1.367  |  0.172  | 0.222  |     |
+|          **comment_sentiment_max_positive**           |          comment_sentiment_max_positive           |  10.86  | 0.0001  | 0.0001 | *** |
+|                **number_of_comments**                 |                number_of_comments                 |  9.338  | 0.0001  | 0.0001 | *** |
+|               **comment_member_ratio**                |               comment_member_ratio                | -8.344  | 0.0001  | 0.0001 | *** |
+|              **comment_sentiment_mean**               |              comment_sentiment_mean               |  6.342  | 0.0001  | 0.0001 | *** |
+|           **ticket_familyissue:open_time**            |           ticket_familyissue:open_time            |  3.596  | 0.0003  |   0    | *** |
+|             **ticket_familypr:open_time**             |             ticket_familypr:open_time             | -2.903  |  0.004  | 0.005  | **  |
+| **ticket_familyissue:comment_sentiment_max_negative** | ticket_familyissue:comment_sentiment_max_negative | -1.276  |  0.202  | 0.247  |     |
+|  **ticket_familypr:comment_sentiment_max_negative**   |  ticket_familypr:comment_sentiment_max_negative   |  3.872  | 0.0001  | 0.0002 | *** |
+| **ticket_familyissue:comment_sentiment_max_positive** | ticket_familyissue:comment_sentiment_max_positive |  5.301  | 0.0001  | 0.0001 | *** |
+|  **ticket_familypr:comment_sentiment_max_positive**   |  ticket_familypr:comment_sentiment_max_positive   |  0.395  |  0.69   |  0.73  |     |
+|       **ticket_familyissue:number_of_comments**       |       ticket_familyissue:number_of_comments       |  4.012  | 0.0001  | 0.0001 | *** |
+|        **ticket_familypr:number_of_comments**         |        ticket_familypr:number_of_comments         |  6.535  | 0.0001  | 0.0001 | *** |
+|      **ticket_familyissue:comment_member_ratio**      |      ticket_familyissue:comment_member_ratio      | -4.281  | 0.0001  | 0.0001 | *** |
+|       **ticket_familypr:comment_member_ratio**        |       ticket_familypr:comment_member_ratio        | -8.937  | 0.0001  | 0.0001 | *** |
 |     **ticket_familyissue:comment_sentiment_mean**     |     ticket_familyissue:comment_sentiment_mean     |  4.387  | 0.0001  | 0.0001 | *** |
-|      **ticket_familypr:comment_sentiment_mean**       |      ticket_familypr:comment_sentiment_mean       | -0.6878 |  0.49   |  0.54  |     |
-|  **ticket_familyissue:comment_grateful_cumulative**   |  ticket_familyissue:comment_grateful_cumulative   | 0.06044 |  0.95   |  0.95  |     |
-|    **ticket_familypr:comment_grateful_cumulative**    |    ticket_familypr:comment_grateful_cumulative    |   3.4   |  0.001  | 0.001  | **  |
+|      **ticket_familypr:comment_sentiment_mean**       |      ticket_familypr:comment_sentiment_mean       | -0.8239 |  0.41   |  0.45  |     |
+|  **ticket_familyissue:comment_grateful_cumulative**   |  ticket_familyissue:comment_grateful_cumulative   | 0.05856 |  0.95   |  0.95  |     |
+|    **ticket_familypr:comment_grateful_cumulative**    |    ticket_familypr:comment_grateful_cumulative    |  3.011  |  0.003  | 0.004  | **  |
 
 
 ```r
@@ -2428,17 +2170,10 @@ pander_clean_anova(retention_comment_sentiment_variance, rename_columns=FALSE)
 
 |                      &nbsp;                       | Estimate | Std Error | Z value | p_value | p_adj  | sig |
 |:-------------------------------------------------:|:--------:|:---------:|:-------:|:-------:|:------:|:---:|
-<<<<<<< HEAD
 |              **ticket_familyissue**               | -0.7759  |  0.07294  | -10.64  | 0.0001  | 0.0001 | *** |
 |                **ticket_familypr**                | -0.2323  |  0.08432  | -2.755  |  0.006  | 0.012  |  *  |
 | **ticket_familyissue:comment_sentiment_variance** | -0.1616  |   0.166   | -0.9735 |  0.33   |  0.33  |     |
 |  **ticket_familypr:comment_sentiment_variance**   |  0.3532  |  0.2869   |  1.231  |  0.218  |  0.29  |     |
-=======
-|              **ticket_familyissue**               | -0.7779  |  0.07327  | -10.62  | 0.0001  | 0.0001 | *** |
-|                **ticket_familypr**                | -0.2456  |  0.08486  | -2.894  |  0.004  | 0.008  | **  |
-| **ticket_familyissue:comment_sentiment_variance** | -0.1611  |   0.166   | -0.9703 |  0.33   |  0.33  |     |
-|  **ticket_familypr:comment_sentiment_variance**   |  0.4456  |  0.2917   |  1.527  |  0.127  | 0.169  |     |
->>>>>>> 7ea8a4e28ec283d9f6e930c3ad1268db6826f1dc
 
 
 ```r
@@ -2488,7 +2223,6 @@ pander_clean_anova(retention_tests_2.1[c("model", "stat", "p_value")],
 
 |                        &nbsp;                         |                       model                       |  stat   | p_value | p_adj  | sig |
 |:-----------------------------------------------------:|:-------------------------------------------------:|:-------:|:-------:|:------:|:---:|
-<<<<<<< HEAD
 |                     **pr-issue**                      |                     pr-issue                      |  5.542  | 0.0001  | 0.0001 | *** |
 |                     **open_time**                     |                     open_time                     | -0.9746 |  0.33   |  0.38  |     |
 |            **comment_grateful_cumulative**            |            comment_grateful_cumulative            |  6.722  | 0.0001  | 0.0001 | *** |
@@ -2513,32 +2247,6 @@ pander_clean_anova(retention_tests_2.1[c("model", "stat", "p_value")],
 |    **ticket_familypr:comment_grateful_cumulative**    |    ticket_familypr:comment_grateful_cumulative    |  3.011  |  0.003  | 0.004  | **  |
 |   **ticket_familyissue:comment_sentiment_variance**   |   ticket_familyissue:comment_sentiment_variance   | -0.9735 |  0.33   |  0.38  |     |
 |    **ticket_familypr:comment_sentiment_variance**     |    ticket_familypr:comment_sentiment_variance     |  1.231  |  0.218  |  0.28  |     |
-=======
-|                     **pr-issue**                      |                     pr-issue                      |  5.531  | 0.0001  | 0.0001 | *** |
-|                     **open_time**                     |                     open_time                     | -1.296  |  0.195  | 0.243  |     |
-|            **comment_grateful_cumulative**            |            comment_grateful_cumulative            |  6.701  | 0.0001  | 0.0001 | *** |
-|          **comment_sentiment_max_negative**           |          comment_sentiment_max_negative           |   1.4   |  0.162  | 0.216  |     |
-|          **comment_sentiment_max_positive**           |          comment_sentiment_max_positive           |  10.87  | 0.0001  | 0.0001 | *** |
-|                **number_of_comments**                 |                number_of_comments                 |  9.35   | 0.0001  | 0.0001 | *** |
-|               **comment_member_ratio**                |               comment_member_ratio                | -8.363  | 0.0001  | 0.0001 | *** |
-|              **comment_sentiment_mean**               |              comment_sentiment_mean               |  6.341  | 0.0001  | 0.0001 | *** |
-|           **ticket_familyissue:open_time**            |           ticket_familyissue:open_time            |  3.298  |  0.001  | 0.002  | **  |
-|             **ticket_familypr:open_time**             |             ticket_familypr:open_time             | -2.956  |  0.003  | 0.005  | **  |
-| **ticket_familyissue:comment_sentiment_max_negative** | ticket_familyissue:comment_sentiment_max_negative | -1.275  |  0.202  | 0.243  |     |
-|  **ticket_familypr:comment_sentiment_max_negative**   |  ticket_familypr:comment_sentiment_max_negative   |  4.107  | 0.0001  | 0.0001 | *** |
-| **ticket_familyissue:comment_sentiment_max_positive** | ticket_familyissue:comment_sentiment_max_positive |   5.3   | 0.0001  | 0.0001 | *** |
-|  **ticket_familypr:comment_sentiment_max_positive**   |  ticket_familypr:comment_sentiment_max_positive   | 0.4519  |  0.65   |  0.68  |     |
-|       **ticket_familyissue:number_of_comments**       |       ticket_familyissue:number_of_comments       |  4.011  | 0.0001  | 0.0001 | *** |
-|        **ticket_familypr:number_of_comments**         |        ticket_familypr:number_of_comments         |  6.617  | 0.0001  | 0.0001 | *** |
-|      **ticket_familyissue:comment_member_ratio**      |      ticket_familyissue:comment_member_ratio      | -4.288  | 0.0001  | 0.0001 | *** |
-|       **ticket_familypr:comment_member_ratio**        |       ticket_familypr:comment_member_ratio        | -9.562  | 0.0001  | 0.0001 | *** |
-|     **ticket_familyissue:comment_sentiment_mean**     |     ticket_familyissue:comment_sentiment_mean     |  4.387  | 0.0001  | 0.0001 | *** |
-|      **ticket_familypr:comment_sentiment_mean**       |      ticket_familypr:comment_sentiment_mean       | -0.6878 |  0.49   |  0.54  |     |
-|  **ticket_familyissue:comment_grateful_cumulative**   |  ticket_familyissue:comment_grateful_cumulative   | 0.06044 |  0.95   |  0.95  |     |
-|    **ticket_familypr:comment_grateful_cumulative**    |    ticket_familypr:comment_grateful_cumulative    |   3.4   |  0.001  | 0.001  | **  |
-|   **ticket_familyissue:comment_sentiment_variance**   |   ticket_familyissue:comment_sentiment_variance   | -0.9703 |  0.33   |  0.38  |     |
-|    **ticket_familypr:comment_sentiment_variance**     |    ticket_familypr:comment_sentiment_variance     |  1.527  |  0.127  | 0.179  |     |
->>>>>>> 7ea8a4e28ec283d9f6e930c3ad1268db6826f1dc
 
 ***
 
