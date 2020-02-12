@@ -26,7 +26,7 @@ preprocessing.
 **Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux
 (CNRS)
 
-**Date last compiled**:  2020-02-10 20:04:41
+**Date last compiled**:  2020-02-12 15:24:29
 
 
 
@@ -179,50 +179,6 @@ sentiment_frame = combine_tickets_and_comments(tickets_frame, comments_frame)
 ***
 
 ### Model 1.1: Do different kinds of activities materially differ in emotion?
-
-<!-- Now we begin the actual modeling. Our first general question is whether users' -->
-<!-- patterns of sentiment differ materially by whether they are a member of the -->
-<!-- community versus a nonmember of the community and by their different kinds of -->
-<!-- possible contributions (i.e., a posted pull request, a reply to a pull request, -->
-<!-- a posted issue, or a reply to an issue). -->
-
-<!-- #### Model 1.1a: Overall effects with linear mixed-effects models -->
-
-<!-- This model presents the analyses in a way that is typical of psychological -->
-<!-- analyses. We predict the changes in emotion by community membership and  -->
-<!-- activity type, including random effects for project and for author. This -->
-<!-- allows us to explore the general patterns of the main and interaction terms, -->
-<!-- rather than focusing in on the project-specific variability. -->
-
-<!-- ```{r model-emotion-by-type-and-author} -->
-
-<!-- # do posts and comments materially differ in emotion? -->
-<!-- creators_v_commenters_emotion_by_project = lmer(compound_emotion ~ type * author_group  + -->
-<!--                                                   (1 | project) + (1 | author_name), -->
-<!--                                                 data = sentiment_frame, -->
-<!--                                                 REML = FALSE) -->
-
-<!-- ``` -->
-
-<!-- ```{r print-model-emotion-by-type-and-author, eval=TRUE, echo=FALSE} -->
-
-<!-- # print results -->
-<!-- pander_lme(creators_v_commenters_emotion_by_project) -->
-
-<!-- ``` -->
-
-<!-- While we see significant differences in the model, interpreting the results is -->
-<!-- difficult because of the way that `lmer` handles factor comparisons. All  -->
-<!-- factors are compared against a "reference level," the first level in the model. -->
-<!-- This makes intepreting models with factors that include more than two levels -->
-<!-- incredibly difficult, because the intercept is essentially an interaction term -->
-<!-- among all reference levels of all factors. -->
-
-<!-- As a result, we turn to the biostatistics approach of multiple *t*-tests  -->
-<!-- (corrected for comparisons) of the model estimates to better understand the  -->
-<!-- effects. -->
-
-<!-- #### Model 1.1b: In-depth investigation through *t*-tests of model estimates -->
 
 First, we build a series of linear mixed-effects models with one term included
 in each model (either main term or interaction term). We then use the estimates
@@ -570,7 +526,6 @@ write.table(coefficients_and_se,
             sep="\t")
 ```
 
-
 #### Overall results
 
 Now we bring together all analyses from Model 1.1.
@@ -744,233 +699,6 @@ Finally, let's plot these effects.
 
 ![**Figure**. Sentiment by activity type  and community membership at the time of posting (member vs. nonmember) for each project.](../../figures/sentiment_analysis/ossc-sentiment_membership_contribution-by_project-knitr.jpg)
 
-<!-- ### Model 1.2: More plots, this time using means and std estimated from model-fit -->
-
-<!-- Here, we are going to test whether projects differ from the mean. -->
-
-<!-- ```{r eval=TRUE, echo=TRUE} -->
-<!-- coefficients_and_se = data.frame( -->
-<!--   summary(creators_v_commenters_emotion_by_project)$coefficients) -->
-
-<!-- # get comparison names as rownames -->
-<!-- row_names = gsub( -->
-<!--   "project", "", gsub( -->
-<!--     "author_group", "", gsub( -->
-<!--       "type", "", row.names(coefficients_and_se)))) -->
-
-<!-- # replace hyphens in project names with periods -->
-<!-- row_names = gsub( -->
-<!--   "scikit-", "scikit.", gsub( -->
-<!--     "sphinx-", "sphinx.", row_names)) -->
-
-<!-- # convert model estimates to a dataframe -->
-<!-- means = coefficients_and_se$Estimate -->
-<!-- names(means) = row_names -->
-
-<!-- # convert standard error to dataframe -->
-<!-- se = coefficients_and_se$Std..Error -->
-<!-- names(se) = row_names -->
-<!-- ``` -->
-
-<!-- ```{r} -->
-<!-- projects = c("Matplotlib", "Mayavi", "numpy", "pandas", -->
-<!--              "scikit-image", "scikit-learn", "scipy", "sphinx-gallery") -->
-<!-- ``` -->
-
-<!-- ```{r plot_pr_post_members, fig.width=8} -->
-<!-- group_of_interest = "pr_post:member" -->
-<!-- rows_to_plot = grep(group_of_interest, names(means)) -->
-
-<!-- bar_centers = barplot(means[rows_to_plot], names.arg=projects, -->
-<!--                       main=group_of_interest,     -->
-<!--                       cex.names=0.8) -->
-<!-- arrows(bar_centers, -->
-<!--        means[rows_to_plot] - se[rows_to_plot] ** 2,  -->
-<!--        bar_centers, -->
-<!--        means[rows_to_plot] + se[rows_to_plot] ** 2, -->
-<!--        angle=90, -->
-<!--        code=3) -->
-<!-- ``` -->
-
-<!-- ```{r plot_pr_post_nonmembers, fig.width=8} -->
-<!-- group_of_interest = "pr_post:nonmember" -->
-<!-- rows_to_plot = grep(group_of_interest, names(means)) -->
-
-<!-- bar_centers = barplot(means[rows_to_plot], names.arg=projects, -->
-<!--                       main=group_of_interest, -->
-<!--                       cex.names=0.8) -->
-
-<!-- arrows(bar_centers, -->
-<!--        means[rows_to_plot] - se[rows_to_plot] ** 2,  -->
-<!--        bar_centers, -->
-<!--        means[rows_to_plot] + se[rows_to_plot] ** 2, -->
-<!--        angle=90, -->
-<!--        code=3) -->
-<!-- ``` -->
-
-
-<!-- ```{r plot_issue_post_members, fig.width=8} -->
-<!-- group_of_interest = "issue_post:member" -->
-<!-- rows_to_plot = grep(group_of_interest, names(means)) -->
-
-<!-- bar_centers = barplot(means[rows_to_plot], names.arg=projects, -->
-<!--                       main=group_of_interest, -->
-<!--                       cex.names=0.8 -->
-<!-- ) -->
-<!-- arrows(bar_centers, -->
-<!--        means[rows_to_plot] - se[rows_to_plot] ** 2,  -->
-<!--        bar_centers, -->
-<!--        means[rows_to_plot] + se[rows_to_plot] ** 2, -->
-<!--        angle=90, -->
-<!--        code=3) -->
-<!-- ``` -->
-
-<!-- ```{r plot_issue_post_nonmembers, fig.width=8} -->
-<!-- group_of_interest = "issue_post:nonmember" -->
-<!-- rows_to_plot = grep(group_of_interest, names(means)) -->
-
-<!-- bar_centers = barplot(means[rows_to_plot], names.arg=projects, -->
-<!--                       main=group_of_interest, -->
-<!--                       cex.names=0.8 -->
-<!-- ) -->
-<!-- arrows(bar_centers, -->
-<!--        means[rows_to_plot] - se[rows_to_plot] ** 2,  -->
-<!--        bar_centers, -->
-<!--        means[rows_to_plot] + se[rows_to_plot] ** 2, -->
-<!--        angle=90, -->
-<!--        code=3) -->
-<!-- ``` -->
-
-
-<!-- ```{r plot_pr_reply_members, fig.width=8} -->
-<!-- group_of_interest = "pr_reply:member" -->
-<!-- rows_to_plot = grep(group_of_interest, names(means)) -->
-
-<!-- bar_centers = barplot(means[rows_to_plot], names.arg=projects, -->
-<!--                       main=group_of_interest, -->
-<!--                       cex.names=0.8) -->
-<!-- arrows(bar_centers, -->
-<!--        means[rows_to_plot] - se[rows_to_plot] ** 2,  -->
-<!--        bar_centers, -->
-<!--        means[rows_to_plot] + se[rows_to_plot] ** 2, -->
-<!--        angle=90, -->
-<!--        code=3) -->
-<!-- ``` -->
-
-<!-- ```{r plot_pr_reply_nonmembers, fig.width=8} -->
-<!-- group_of_interest = "pr_reply:nonmember" -->
-<!-- rows_to_plot = grep(group_of_interest, names(means)) -->
-
-<!-- bar_centers = barplot(means[rows_to_plot], names.arg=projects, -->
-<!--                       main=group_of_interest, -->
-<!--                       cex.names=0.8) -->
-<!-- arrows(bar_centers, -->
-<!--        means[rows_to_plot] - se[rows_to_plot] ** 2,  -->
-<!--        bar_centers, -->
-<!--        means[rows_to_plot] + se[rows_to_plot] ** 2, -->
-<!--        angle=90, -->
-<!--        code=3) -->
-<!-- ``` -->
-
-
-<!-- ```{r plot_issue_reply_members, fig.width=8} -->
-<!-- group_of_interest = "issue_reply:member" -->
-<!-- rows_to_plot = grep(group_of_interest, names(means)) -->
-
-<!-- bar_centers = barplot(means[rows_to_plot], names.arg=projects, -->
-<!--                       main=group_of_interest, -->
-<!--                       cex.names=0.8) -->
-<!-- arrows(bar_centers, -->
-<!--        means[rows_to_plot] - se[rows_to_plot] ** 2,  -->
-<!--        bar_centers, -->
-<!--        means[rows_to_plot] + se[rows_to_plot] ** 2, -->
-<!--        angle=90, -->
-<!--        code=3) -->
-<!-- ``` -->
-
-<!-- ```{r plot_issue_reply_nonmembers, fig.width=8} -->
-<!-- group_of_interest = "issue_reply:nonmember" -->
-<!-- rows_to_plot = grep(group_of_interest, names(means)) -->
-
-<!-- bar_centers = barplot(means[rows_to_plot], names.arg=projects, -->
-<!--                       main=group_of_interest, -->
-<!--                       cex.names=0.8) -->
-<!-- arrows(bar_centers, -->
-<!--        means[rows_to_plot] - se[rows_to_plot] ** 2,  -->
-<!--        bar_centers, -->
-<!--        means[rows_to_plot] + se[rows_to_plot] ** 2, -->
-<!--        angle=90, -->
-<!--        code=3) -->
-<!-- ``` -->
-
-<!-- ### Model 1.1c Do projects differ in emotion between one another? -->
-
-<!-- One versus all minus one type of approach. -->
-
-<!-- ```{r compound_emotion_all_vs_one} -->
-<!-- all_project_tests = NA -->
-<!-- all_projects = unique(sentiment_frame$project) -->
-
-<!-- # We're going to fit the model for each projects, and concatenate the results -->
-<!-- # in a dataframe. Then, we'll apply multiple correction and display the -->
-<!-- # results -->
-<!-- for(project in all_projects){ -->
-<!--   sentiment_frame$test_group = sentiment_frame$project == project -->
-<!--   one_versus_all_emotion = lmer( -->
-<!--     compound_emotion ~ 0 + type:author_group:test_group + (1|author_name), -->
-<!--     data=sentiment_frame, -->
-<!--     REML=FALSE) -->
-
-<!--   # Clean up mode -->
-<!--   coefficients_and_se = data.frame( -->
-<!--     summary(one_versus_all_emotion)$coefficients) -->
-<!--   row_names = gsub( -->
-<!--     "author_group", "",  -->
-<!--     gsub("type", "", -->
-<!--          gsub("project", "", row.names(coefficients_and_se)))) -->
-
-<!--   means = coefficients_and_se$Estimate -->
-<!--   names(means) = row_names -->
-<!--   se = coefficients_and_se$Std..Error -->
-<!--   names(se) = row_names -->
-
-<!--   contrasts = c( -->
-<!--     "issue_post:member:test_groupTRUE-issue_post:member:test_groupFALSE", -->
-<!--     "pr_post:member:test_groupTRUE-pr_post:member:test_groupFALSE", -->
-<!--     "issue_reply:member:test_groupTRUE-issue_reply:member:test_groupFALSE", -->
-<!--     "pr_reply:member:test_groupTRUE-pr_reply:member:test_groupFALSE", -->
-<!--     "issue_post:nonmember:test_groupTRUE-issue_post:nonmember:test_groupFALSE", -->
-<!--     "pr_post:nonmember:test_groupTRUE-pr_post:nonmember:test_groupFALSE", -->
-<!--     "issue_reply:nonmember:test_groupTRUE-issue_reply:nonmember:test_groupFALSE", -->
-<!--     "pr_reply:nonmember:test_groupTRUE-pr_reply:nonmember:test_groupFALSE" -->
-<!--   ) -->
-
-<!--   one_versus_all_emotion_tests = compute_t_statistics( -->
-<!--     means, se, -->
-<!--     contrasts) -->
-<!--   one_versus_all_emotion_tests[, "p_value"] = compute_p_value_from_t_stats( -->
-<!--     one_versus_all_emotion_tests$t_stats) -->
-
-<!--   # Add unique identifier based on the project of interest in the table. -->
-<!--   row.names(one_versus_all_emotion_tests) = gsub( -->
-<!--     "test_group", project, -->
-<!--     row.names(one_versus_all_emotion_tests)) -->
-
-<!--   if(is.null(dim(all_project_tests))){ -->
-<!--     all_project_tests = one_versus_all_emotion_tests -->
-<!--   }else{ -->
-<!--     all_project_tests = rbind( -->
-<!--       all_project_tests, one_versus_all_emotion_tests) -->
-<!--   } -->
-<!-- } -->
-<!-- ``` -->
-
-<!-- Now apply multiple correction and display the results of the analysis. -->
-
-<!-- ```{r one_versus_all_display_results} -->
-<!-- pander_clean_anova(all_project_tests, rename_columns=FALSE) -->
-<!-- ``` -->
-
 ***
 
 ### Model 1.2: Time-course analysis for sentiment
@@ -1034,60 +762,9 @@ pander(gratitude_summary_stats, style = 'rmarkdown')
 Now that we have a better idea of how the underlying data look, let's go ahead
 and build our model.
 
-<!-- ```{r model-gratitude-by-type-and-author-and-project-v1, eval = TRUE} -->
-
-<!-- # do users tend to express appreciation and gratitude differently by group and content? -->
-<!-- creators_v_commenters_gratitude_by_project = lmer(log(grateful_count + 1) ~ project * author_group * type + -->
-<!--                                                     (1 | author_name), -->
-<!--                                                   data=sentiment_frame) -->
-
-<!-- # print results -->
-<!-- pander_lme(creators_v_commenters_gratitude_by_project) -->
-
-<!-- ``` -->
-
 
 
 ![**Figure**. Expressions of gratitude by activity type (posted issue, comment on issue, posted pull request, or comment on pull request) and community membership (member vs. nonmember) at the time of posting.](../../figures/sentiment_analysis/ossc-grateful_membership_contribution-knitr.jpg)
-
-<!-- ### Testing Model 1.3 using Model 1.1 methods -->
-
-<!-- #### Model 1.3a: Overall effects with linear mixed-effects models -->
-
-<!-- This model presents the analyses in a way that is typical of psychological -->
-<!-- analyses. We predict the changes in emotion by community membership and  -->
-<!-- activity type, including random effects for project and for author. This -->
-<!-- allows us to explore the general patterns of the main and interaction terms, -->
-<!-- rather than focusing in on the project-specific variability. -->
-
-<!-- ```{r retrying-model-1.3} -->
-
-<!-- # do users tend to express appreciation and gratitude differently by group and content? -->
-<!-- retrying_model_1.3 = lmer(log(grateful_count + 1) ~ author_group * type + -->
-<!--                             (1 | project), -->
-<!--                           data=sentiment_frame) -->
-
-<!-- ``` -->
-
-<!-- ```{r print-retrying-model-1.3, eval=TRUE, echo=FALSE} -->
-
-<!-- # print results -->
-<!-- pander_lme(retrying_model_1.3) -->
-
-<!-- ``` -->
-
-<!-- While we see significant differences in the model, interpreting the results is -->
-<!-- difficult because of the way that `lmer` handles factor comparisons. All  -->
-<!-- factors are compared against a "reference level," the first level in the model. -->
-<!-- This makes intepreting models with factors that include more than two levels -->
-<!-- incredibly difficult, because the intercept is essentially an interaction term -->
-<!-- among all reference levels of all factors. -->
-
-<!-- As a result, we turn to the biostatistics approach of multiple *t*-tests  -->
-<!-- (corrected for comparisons) of the model estimates to better understand the  -->
-<!-- effects. -->
-
-<!-- #### Model 1.3b: In-depth investigation through *t*-tests of model estimates -->
 
 First, we build a series of linear mixed-effects models with one term included
 in each model (either main term or interaction term). We then use the estimates
