@@ -1479,27 +1479,6 @@ random_effects = ranef(retention_predictor)$project
 colnames(random_effects) = "comment_sentiment_max_negative"
 all_random_effects = cbind(all_random_effects, random_effects)
 
-
-# Comment sentiment max positive
-retention_predictor = glmer(retained_newcomer ~ comment_sentiment_max_positive + (1 | project),
-                            data=retention_frame, family=binomial, nAGQ=0)
-retention_comment_sentiment_max_positive = as.data.frame(
-  summary(retention_predictor)$coefficients)
-new_coefs = retention_comment_sentiment_max_positive[, c("Estimate", "Std. Error")]
-colnames(new_coefs) = colnames(all_coefs_and_se)
-all_coefs_and_se = rbind(
-  all_coefs_and_se, new_coefs)
-retention_comment_sentiment_max_positive[, "row_names"] = row.names(
-  retention_comment_sentiment_max_positive)
-retention_tests_continuous = merge(
-  retention_tests_continuous,
-  retention_comment_sentiment_max_positive,
-  all=TRUE, sort=FALSE)
-
-random_effects = ranef(retention_predictor)$project
-colnames(random_effects) = "comment_sentiment_max_positive"
-all_random_effects = cbind(all_random_effects, random_effects)
-
 # Number of comments
 retention_predictor = glmer(retained_newcomer ~ number_of_comments + (1 | project),
                             data=retention_frame, family=binomial, nAGQ=0)
@@ -1557,8 +1536,8 @@ all_coefs_and_se = rbind(
 retention_comment_sentiment_mean[, "row_names"] = row.names(
   retention_comment_sentiment_mean)
 retention_tests_continuous = rbind(
-    retention_tests_continuous,
-    retention_comment_sentiment_mean)
+  retention_tests_continuous,
+  retention_comment_sentiment_mean)
 
 random_effects = ranef(retention_predictor)$project
 colnames(random_effects) = "comment_sentiment_mean"
@@ -1583,8 +1562,8 @@ all_coefs_and_se = rbind(
 retention_open_time[, "row_names"] = row.names(
   retention_open_time)
 retention_tests_continuous = rbind(
-    retention_tests_continuous,
-    retention_open_time)
+  retention_tests_continuous,
+  retention_open_time)
 random_effects = ranef(retention_predictor)$project
 colnames(random_effects) = "ticket_family_open_time"
 all_random_effects = cbind(all_random_effects, random_effects)
@@ -1609,28 +1588,6 @@ retention_tests_continuous = merge(
 
 random_effects = ranef(retention_predictor)$project
 colnames(random_effects) = "ticket_family_comment_sentiment_max_negative"
-all_random_effects = cbind(all_random_effects, random_effects)
-
-# Ticket family x comment sentiment max positive
-retention_predictor = glmer(
-  retained_newcomer ~ 0 + ticket_family + ticket_family:comment_sentiment_max_positive + (1 | project),
-  data=retention_frame, family=binomial, nAGQ=0)
-retention_comment_sentiment_max_positive = as.data.frame(
-  summary(retention_predictor)$coefficients)
-new_coefs = retention_comment_sentiment_max_positive[, c("Estimate", "Std. Error")]
-colnames(new_coefs) = colnames(all_coefs_and_se)
-all_coefs_and_se = rbind(
-  all_coefs_and_se,
-  new_coefs)
-retention_comment_sentiment_max_positive[, "row_names"] = row.names(
-  retention_comment_sentiment_max_positive)
-retention_tests_continuous = merge(
-  retention_tests_continuous,
-  retention_comment_sentiment_max_positive,
-  all=TRUE, sort=FALSE)
-
-random_effects = ranef(retention_predictor)$project
-colnames(random_effects) = "ticket_family_comment_sentiment_max_positive"
 all_random_effects = cbind(all_random_effects, random_effects)
 
 # Ticket family x number of comments
@@ -1764,53 +1721,129 @@ retention. We hypothesize that this might be driven by feedback from the
 community, consistent with previous findings that volunteers in software
 developer communities are often looking for learning experiences.
 
-We thus now look at whether comment sentiment variance is predictive of
-newcomer retention.
+We thus now look at whether comment sentiment variance and maximum
+positive sentiment are predictive of newcomer retention.
+
+```{r max_positive}
+
+# max positive comment sentiment
+retention_predictor = glmer(retained_newcomer ~ comment_sentiment_max_positive + (1 | project),
+                            data=retention_frame, family=binomial, nAGQ=0)
+retention_comment_sentiment_max_positive = as.data.frame(
+  summary(retention_predictor)$coefficients)
+
+# extract coefficients
+new_coefs = retention_comment_sentiment_max_positive[, c("Estimate", "Std. Error")]
+colnames(new_coefs) = colnames(all_coefs_and_se)
+all_coefs_and_se = rbind(
+  all_coefs_and_se, new_coefs)
+
+# concatenate
+retention_comment_sentiment_max_positive[, "row_names"] = row.names(
+  retention_comment_sentiment_max_positive)
+retention_comment_sentiment_followups = retention_comment_sentiment_max_positive
+
+# ticket family x max positive comment sentiment
+retention_predictor = glmer(
+  retained_newcomer ~ 0 + ticket_family + ticket_family:comment_sentiment_max_positive + (1 | project),
+  data=retention_frame, family=binomial, nAGQ=0)
+retention_comment_sentiment_max_positive = as.data.frame(
+  summary(retention_predictor)$coefficients)
+
+# extract coefficients
+new_coefs = retention_comment_sentiment_max_positive[, c("Estimate", "Std. Error")]
+colnames(new_coefs) = colnames(all_coefs_and_se)
+all_coefs_and_se = rbind(
+  all_coefs_and_se,
+  new_coefs)
+
+# concatenate
+retention_comment_sentiment_max_positive[, "row_names"] = row.names(
+  retention_comment_sentiment_max_positive)
+retention_comment_sentiment_followups = merge(
+  retention_comment_sentiment_followups,
+  retention_comment_sentiment_max_positive,
+  all=TRUE, sort=FALSE)
+
+
+```
+
 
 ```{r sentiment_variance}
 
+# sentiment variance
 retention_predictor = glmer(
-  retained_newcomer ~ 0 + ticket_family + ticket_family:comment_sentiment_variance + (1 | project),
+  retained_newcomer ~ 0 + comment_sentiment_variance + (1 | project),
   data=retention_frame, family=binomial, nAGQ=0)
 retention_comment_sentiment_variance = as.data.frame(
   summary(retention_predictor)$coefficients)
 
+# extract coefficients
 new_coefs = retention_comment_sentiment_variance[, c("Estimate", "Std. Error")]
 colnames(new_coefs) = colnames(all_coefs_and_se)
 all_coefs_and_se_2.1 = rbind(
   all_coefs_and_se,
   new_coefs)
 
-colnames(retention_comment_sentiment_variance) = c("Estimate", "Std Error", "Z value", "p_value")
-pander_clean_anova(retention_comment_sentiment_variance, rename_columns=FALSE)
+# concatenate
+retention_comment_sentiment_variance[, "row_names"] = row.names(
+  retention_comment_sentiment_variance)
+retention_comment_sentiment_followups = merge(
+  retention_comment_sentiment_followups,
+  retention_comment_sentiment_variance,
+  all=TRUE, sort=FALSE)
+
+# ticket family x sentiment variance
+retention_predictor = glmer(
+  retained_newcomer ~ 0 + ticket_family + ticket_family:comment_sentiment_variance + (1 | project),
+  data=retention_frame, family=binomial, nAGQ=0)
+retention_comment_sentiment_variance = as.data.frame(
+  summary(retention_predictor)$coefficients)
+
+# extract coefficients
+new_coefs = retention_comment_sentiment_variance[, c("Estimate", "Std. Error")]
+colnames(new_coefs) = colnames(all_coefs_and_se)
+all_coefs_and_se_2.1 = rbind(
+  all_coefs_and_se,
+  new_coefs)
+
+# concatenate
+retention_comment_sentiment_variance[, "row_names"] = row.names(
+  retention_comment_sentiment_variance)
+retention_comment_sentiment_followups = merge(
+  retention_comment_sentiment_followups,
+  retention_comment_sentiment_variance,
+  all=TRUE, sort=FALSE)
 
 ```
 
 ```{r add-sentiment-variance-and-recalculate-ps}
 
-retention_comment_sentiment_variance[, "row_names"] = row.names(
-  retention_comment_sentiment_variance)
+# set column names
+colnames(retention_comment_sentiment_followups) = c("Estimate", "Std Error", "Z value", "p_value", "model")
 
+# remove unneeded rows
 mask = (
-  retention_comment_sentiment_variance$row_names != "(Intercept)" &
-    retention_comment_sentiment_variance$row_names != "ticket_familyissue" &
-    retention_comment_sentiment_variance$row_names != "ticket_familypr")
-retention_comment_sentiment_variance = retention_comment_sentiment_variance[mask, ]
-row.names(retention_comment_sentiment_variance) = retention_comment_sentiment_variance[,
-                                                                                       "row_names"] 
+  retention_comment_sentiment_followups$model != "(Intercept)" &
+    retention_comment_sentiment_followups$model != "ticket_familyissue" &
+    retention_comment_sentiment_followups$model != "ticket_familypr")
+retention_comment_sentiment_followups = retention_comment_sentiment_followups[mask, ]
+rownames(retention_comment_sentiment_followups) = retention_comment_sentiment_followups$model
 
-columns_of_interest = c("Z value", "p_value")
-retention_comment_sentiment_variance = select(retention_comment_sentiment_variance, 
-                                              one_of(columns_of_interest))
-retention_comment_sentiment_variance["model"] = row.names(retention_comment_sentiment_variance)
-colnames(retention_comment_sentiment_variance) = c("stat", "p_value", "model")
-retention_tests_2.1 = rbind(select(retention_tests, -p_val_adjusted), 
-                            retention_comment_sentiment_variance)
+# extract necessary columns and rename
+columns_of_interest = c("Z value", "p_value", "model")
+retention_comment_sentiment_followups = select(retention_comment_sentiment_followups, 
+                                               one_of(columns_of_interest))
+colnames(retention_comment_sentiment_followups) = c("stat", "p_value", "model")
+
+# concatenate with model 2
+retention_tests_2.2 = rbind(select(retention_tests, -p_val_adjusted), 
+                            retention_comment_sentiment_followups)
 
 ```
 
 ```{r write_results-2.2}
-write.table(retention_tests_2.1,
+write.table(retention_tests_2.2,
             file="results/models/model-2.2.tsv", sep="\t")
 ```
 
@@ -1819,13 +1852,13 @@ retention_tests$p_val_adjusted = p.adjust(retention_tests$p_value, method="BH")
 write.table(retention_tests, file="results/models/model_2.tsv")
 
 write.table(
-    all_random_effects,
-    "results/models/newcomer_retention_ticket_family_random_effects.tsv")
+  all_random_effects,
+  "results/models/newcomer_retention_ticket_family_random_effects.tsv")
 
 ```
 
 ```{r}
-pander_clean_anova(retention_tests_2.1[c("model", "stat", "p_value")],
+pander_clean_anova(retention_tests_2.2[c("model", "stat", "p_value")],
                    rename_columns=FALSE)
 ```
 
