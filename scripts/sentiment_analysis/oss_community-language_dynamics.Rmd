@@ -111,6 +111,25 @@ comment_familywise_counts = comments_frame %>% ungroup() %>%
                        "issue",
                        "pr"))
 
+# get unique comment authors per project
+comment_projectwise_authors = comments_frame %>% ungroup() %>%
+  dplyr::select(project, author_name) %>%
+  dplyr::group_by(project) %>%
+  distinct() 
+
+# get unique ticket authors per project
+ticket_projectwise_authors = tickets_frame %>% ungroup() %>%
+  dplyr::select(project, author_name) %>%
+  dplyr::group_by(project) %>%
+  distinct() 
+
+# get number of total unique authors per project
+total_projectwise_authors = rbind.data.frame(comment_projectwise_authors,
+                                             ticket_projectwise_authors) %>%
+  group_by(project) %>%
+  distinct() %>%
+  summarize(unique_authors = n())
+
 # bind the two
 contribution_projectwise_counts = dplyr::full_join(ticket_projectwise_counts, comment_projectwise_counts,
                                                    by=c('project',
@@ -118,9 +137,11 @@ contribution_projectwise_counts = dplyr::full_join(ticket_projectwise_counts, co
 contribution_familywise_counts = dplyr::full_join(ticket_familywise_counts, comment_familywise_counts,
                                                   by=c('ticket_family'='type'))
 
+
 # print the table and then clean up a bit
 pander(contribution_familywise_counts, style = 'rmarkdown')
 pander(contribution_projectwise_counts, style = 'rmarkdown')
+pander(total_projectwise_authors, style = "rmarkdown")
 
 # save out some variables we'll need
 
