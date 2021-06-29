@@ -1872,6 +1872,10 @@ write.table(retention_tests_2.2,
 retention_tests$p_val_adjusted = p.adjust(retention_tests$p_value, method="BH")
 write.table(retention_tests, file="results/models/model_2.tsv")
 
+retention_tests_2.2$p_val_adjusted = p.adjust(retention_tests_2.2$p_value, method="BH")
+write.table(retention_tests_2.2, file="results/models/model_2.2_final_pvalues.tsv")
+
+
 write.table(
   all_random_effects,
   "results/models/newcomer_retention_ticket_family_random_effects.tsv")
