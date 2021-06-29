@@ -3,7 +3,7 @@ library(dplyr)
 loading_tickets_data = function(dataset="original"){
   # load data
   tickets_frame = read.csv(
-    '../../data/analysis_data/dataset_scip/sentiment_frame_tickets-for_r.tsv',
+    '../../data/analysis_data/sentiment_frame_tickets-for_r.tsv',
     sep = '\t', stringsAsFactors=FALSE)
   
   # Sometimes, R fails to load the CSV file properly and truncates it. This cell
@@ -66,7 +66,7 @@ loading_tickets_data = function(dataset="original"){
 
 loading_comments_data = function(dataset){
   comments_frame = read.csv(
-    '../../data/analysis_data/dataset_scip/sentiment_frame_comments-for_r.tsv',
+    '../../data/analysis_data/sentiment_frame_comments-for_r.tsv',
     sep = '\t', stringsAsFactors=FALSE)
   
   # Sometimes, R fails to load the CSV file properly and truncates it. This cell
