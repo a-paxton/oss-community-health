@@ -23,7 +23,7 @@ creates new functions for our analyses.
 **Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux
 (CNRS)
 
-**Date last compiled**:  2020-01-09 12:00:45
+**Date last compiled**:  2021-06-29 10:49:49
 
 
 
@@ -73,7 +73,7 @@ mean of 8583.875 tickets per project.
 
 On these tickets, the dataset includes
 439024 unique comments, with
-5.4878\times 10^{4} average comments per project.
+54878 average comments per project.
 
 In total, we have 15560 unique commenters,
 14147 unique ticket-creators, and
@@ -94,54 +94,6 @@ Before we can run Model Series 1, we need to combine `tickets_frame` and
 
 ```r
 sentiment_frame = combine_tickets_and_comments(tickets_frame, comments_frame)
-```
-
-```
-## Warning in bind_rows_(x, .id): Unequal factor levels: coercing to character
-```
-
-```
-## Warning in bind_rows_(x, .id): binding character and factor vector,
-## coercing into character vector
-
-## Warning in bind_rows_(x, .id): binding character and factor vector,
-## coercing into character vector
-```
-
-```
-## Warning in bind_rows_(x, .id): Unequal factor levels: coercing to character
-```
-
-```
-## Warning in bind_rows_(x, .id): binding character and factor vector,
-## coercing into character vector
-
-## Warning in bind_rows_(x, .id): binding character and factor vector,
-## coercing into character vector
-```
-
-```
-## Warning in bind_rows_(x, .id): Unequal factor levels: coercing to character
-```
-
-```
-## Warning in bind_rows_(x, .id): binding character and factor vector,
-## coercing into character vector
-
-## Warning in bind_rows_(x, .id): binding character and factor vector,
-## coercing into character vector
-```
-
-```
-## Warning in bind_rows_(x, .id): Unequal factor levels: coercing to character
-```
-
-```
-## Warning in bind_rows_(x, .id): binding character and factor vector,
-## coercing into character vector
-
-## Warning in bind_rows_(x, .id): binding character and factor vector,
-## coercing into character vector
 ```
 
 
@@ -350,21 +302,21 @@ for(project in all_projects){
 ```
 
 ```
-## fixed-effect model matrix is rank deficient so dropping 8 columns / coefficients
-```
-
-```
-## fixed-effect model matrix is rank deficient so dropping 16 columns / coefficients
-## fixed-effect model matrix is rank deficient so dropping 16 columns / coefficients
-```
-
-```
 ## fixed-effect model matrix is rank deficient so dropping 36 columns / coefficients
 ```
 
 ```
+## fixed-effect model matrix is rank deficient so dropping 16 columns / coefficients
+```
+
+```
 ## fixed-effect model matrix is rank deficient so dropping 8 columns / coefficients
 ## fixed-effect model matrix is rank deficient so dropping 8 columns / coefficients
+## fixed-effect model matrix is rank deficient so dropping 8 columns / coefficients
+```
+
+```
+## fixed-effect model matrix is rank deficient so dropping 16 columns / coefficients
 ```
 
 ```
@@ -382,6 +334,11 @@ pander_clean_anova(all_project_tests, rename_columns=FALSE,
 
 |                                                &nbsp;                                                | t_stats | p_value | p_adj  | sig |
 |:----------------------------------------------------------------------------------------------------:|:-------:|:-------:|:------:|:---:|
+|  **issue_reply:member:sphinx-galleryTRUE:year2017-issue_reply:member:sphinx-galleryFALSE:year2017**  |  2.672  |  0.008  | 0.045  |  *  |
+|  **issue_reply:member:sphinx-galleryTRUE:year2018-issue_reply:member:sphinx-galleryFALSE:year2018**  |  3.503  |    0    | 0.006  | **  |
+|          **pr_reply:nonmember:mayaviTRUE:year2014-pr_reply:nonmember:mayaviFALSE:year2014**          | -2.745  |  0.006  | 0.041  |  *  |
+|          **issue_reply:member:mayaviTRUE:year2017-issue_reply:member:mayaviFALSE:year2017**          | -2.689  |  0.007  | 0.045  |  *  |
+|          **issue_reply:member:mayaviTRUE:year2018-issue_reply:member:mayaviFALSE:year2018**          | -3.807  | 0.0001  | 0.002  | **  |
 |            **issue_post:member:numpyTRUE:year2012-issue_post:member:numpyFALSE:year2012**            | -3.269  |  0.001  | 0.011  |  *  |
 |               **pr_post:member:numpyTRUE:year2012-pr_post:member:numpyFALSE:year2012**               | -3.401  |  0.001  | 0.007  | **  |
 |           **issue_reply:member:numpyTRUE:year2012-issue_reply:member:numpyFALSE:year2012**           |  -4.46  | 0.0001  | 0.0002 | *** |
@@ -400,33 +357,15 @@ pander_clean_anova(all_project_tests, rename_columns=FALSE,
 |         **issue_post:nonmember:numpyTRUE:year2018-issue_post:nonmember:numpyFALSE:year2018**         | -3.882  | 0.0001  | 0.002  | **  |
 |            **pr_post:nonmember:numpyTRUE:year2018-pr_post:nonmember:numpyFALSE:year2018**            | -2.678  |  0.007  | 0.045  |  *  |
 |        **issue_reply:nonmember:numpyTRUE:year2018-issue_reply:nonmember:numpyFALSE:year2018**        | -3.461  |    0    | 0.006  | **  |
-|        **pr_post:member:scikit-learnTRUE:year2011-pr_post:member:scikit-learnFALSE:year2011**        |  5.644  | 0.0001  | 0.0001 | *** |
-|        **pr_post:member:scikit-learnTRUE:year2012-pr_post:member:scikit-learnFALSE:year2012**        |  3.036  |  0.002  |  0.02  |  *  |
-|    **issue_reply:member:scikit-learnTRUE:year2012-issue_reply:member:scikit-learnFALSE:year2012**    |  3.985  | 0.0001  | 0.001  | **  |
-|       **pr_reply:member:scikit-learnTRUE:year2012-pr_reply:member:scikit-learnFALSE:year2012**       |  4.203  | 0.0001  |   0    | *** |
-|     **pr_post:nonmember:scikit-learnTRUE:year2012-pr_post:nonmember:scikit-learnFALSE:year2012**     |  2.667  |  0.008  | 0.045  |  *  |
-|        **pr_post:member:scikit-learnTRUE:year2013-pr_post:member:scikit-learnFALSE:year2013**        |  3.852  | 0.0001  | 0.002  | **  |
-|       **pr_reply:member:scikit-learnTRUE:year2013-pr_reply:member:scikit-learnFALSE:year2013**       |  5.497  | 0.0001  | 0.0001 | *** |
-|       **pr_reply:member:scikit-learnTRUE:year2014-pr_reply:member:scikit-learnFALSE:year2014**       |  3.418  |  0.001  | 0.007  | **  |
-|    **issue_reply:member:scikit-learnTRUE:year2015-issue_reply:member:scikit-learnFALSE:year2015**    | -2.754  |  0.006  |  0.04  |  *  |
-|     **pr_post:nonmember:scikit-learnTRUE:year2018-pr_post:nonmember:scikit-learnFALSE:year2018**     | -5.046  | 0.0001  | 0.0001 | *** |
-| **issue_reply:nonmember:scikit-learnTRUE:year2018-issue_reply:nonmember:scikit-learnFALSE:year2018** |  2.801  |  0.005  | 0.036  |  *  |
-|    **pr_reply:nonmember:scikit-learnTRUE:year2018-pr_reply:nonmember:scikit-learnFALSE:year2018**    |  3.284  |  0.001  | 0.011  |  *  |
-|              **pr_reply:member:scipyTRUE:year2013-pr_reply:member:scipyFALSE:year2013**              |  6.321  | 0.0001  | 0.0001 | *** |
-|              **pr_reply:member:scipyTRUE:year2015-pr_reply:member:scipyFALSE:year2015**              |  5.066  | 0.0001  | 0.0001 | *** |
-|            **pr_post:nonmember:scipyTRUE:year2015-pr_post:nonmember:scipyFALSE:year2015**            |  2.742  |  0.006  | 0.041  |  *  |
-|        **issue_reply:nonmember:scipyTRUE:year2015-issue_reply:nonmember:scipyFALSE:year2015**        |  3.083  |  0.002  | 0.018  |  *  |
-|           **pr_reply:nonmember:scipyTRUE:year2015-pr_reply:nonmember:scipyFALSE:year2015**           |  4.199  | 0.0001  |   0    | *** |
-|              **pr_reply:member:scipyTRUE:year2016-pr_reply:member:scipyFALSE:year2016**              |  7.714  | 0.0001  | 0.0001 | *** |
-|            **issue_post:member:scipyTRUE:year2017-issue_post:member:scipyFALSE:year2017**            | -3.157  |  0.002  | 0.015  |  *  |
-|              **pr_reply:member:scipyTRUE:year2018-pr_reply:member:scipyFALSE:year2018**              |  2.964  |  0.003  | 0.025  |  *  |
-|        **issue_reply:nonmember:scipyTRUE:year2018-issue_reply:nonmember:scipyFALSE:year2018**        |  2.634  |  0.008  | 0.048  |  *  |
-|           **pr_reply:nonmember:scipyTRUE:year2018-pr_reply:nonmember:scipyFALSE:year2018**           |  4.73   | 0.0001  | 0.0001 | *** |
-|          **pr_reply:nonmember:mayaviTRUE:year2014-pr_reply:nonmember:mayaviFALSE:year2014**          | -2.745  |  0.006  | 0.041  |  *  |
-|          **issue_reply:member:mayaviTRUE:year2017-issue_reply:member:mayaviFALSE:year2017**          | -2.689  |  0.007  | 0.045  |  *  |
-|          **issue_reply:member:mayaviTRUE:year2018-issue_reply:member:mayaviFALSE:year2018**          | -3.807  | 0.0001  | 0.002  | **  |
-|  **issue_reply:member:sphinx-galleryTRUE:year2017-issue_reply:member:sphinx-galleryFALSE:year2017**  |  2.672  |  0.008  | 0.045  |  *  |
-|  **issue_reply:member:sphinx-galleryTRUE:year2018-issue_reply:member:sphinx-galleryFALSE:year2018**  |  3.503  |    0    | 0.006  | **  |
+|       **pr_reply:member:scikit-imageTRUE:year2013-pr_reply:member:scikit-imageFALSE:year2013**       |  2.952  |  0.003  | 0.026  |  *  |
+|       **pr_reply:member:scikit-imageTRUE:year2015-pr_reply:member:scikit-imageFALSE:year2015**       |  2.706  |  0.007  | 0.045  |  *  |
+|     **issue_post:member:scikit-imageTRUE:year2016-issue_post:member:scikit-imageFALSE:year2016**     |  -2.67  |  0.008  | 0.045  |  *  |
+|     **pr_post:nonmember:scikit-imageTRUE:year2016-pr_post:nonmember:scikit-imageFALSE:year2016**     |  5.06   | 0.0001  | 0.0001 | *** |
+|     **pr_post:nonmember:scikit-imageTRUE:year2017-pr_post:nonmember:scikit-imageFALSE:year2017**     |  8.701  | 0.0001  | 0.0001 | *** |
+|    **pr_reply:nonmember:scikit-imageTRUE:year2017-pr_reply:nonmember:scikit-imageFALSE:year2017**    |  5.54   | 0.0001  | 0.0001 | *** |
+|        **pr_post:member:scikit-imageTRUE:year2018-pr_post:member:scikit-imageFALSE:year2018**        |  6.409  | 0.0001  | 0.0001 | *** |
+|     **pr_post:nonmember:scikit-imageTRUE:year2018-pr_post:nonmember:scikit-imageFALSE:year2018**     |  6.175  | 0.0001  | 0.0001 | *** |
+|    **pr_reply:nonmember:scikit-imageTRUE:year2018-pr_reply:nonmember:scikit-imageFALSE:year2018**    |  6.461  | 0.0001  | 0.0001 | *** |
 |          **pr_post:member:matplotlibTRUE:year2011-pr_post:member:matplotlibFALSE:year2011**          | -4.584  | 0.0001  | 0.0001 | *** |
 |      **issue_reply:member:matplotlibTRUE:year2011-issue_reply:member:matplotlibFALSE:year2011**      | -4.037  | 0.0001  | 0.001  | **  |
 |       **issue_post:member:matplotlibTRUE:year2013-issue_post:member:matplotlibFALSE:year2013**       |  -3.17  |  0.002  | 0.015  |  *  |
@@ -439,15 +378,28 @@ pander_clean_anova(all_project_tests, rename_columns=FALSE,
 |      **pr_reply:nonmember:matplotlibTRUE:year2016-pr_reply:nonmember:matplotlibFALSE:year2016**      | -2.853  |  0.004  | 0.033  |  *  |
 |      **pr_reply:nonmember:matplotlibTRUE:year2017-pr_reply:nonmember:matplotlibFALSE:year2017**      | -2.803  |  0.005  | 0.036  |  *  |
 |       **issue_post:member:matplotlibTRUE:year2018-issue_post:member:matplotlibFALSE:year2018**       | -2.649  |  0.008  | 0.047  |  *  |
-|       **pr_reply:member:scikit-imageTRUE:year2013-pr_reply:member:scikit-imageFALSE:year2013**       |  2.952  |  0.003  | 0.026  |  *  |
-|       **pr_reply:member:scikit-imageTRUE:year2015-pr_reply:member:scikit-imageFALSE:year2015**       |  2.706  |  0.007  | 0.045  |  *  |
-|     **issue_post:member:scikit-imageTRUE:year2016-issue_post:member:scikit-imageFALSE:year2016**     |  -2.67  |  0.008  | 0.045  |  *  |
-|     **pr_post:nonmember:scikit-imageTRUE:year2016-pr_post:nonmember:scikit-imageFALSE:year2016**     |  5.06   | 0.0001  | 0.0001 | *** |
-|     **pr_post:nonmember:scikit-imageTRUE:year2017-pr_post:nonmember:scikit-imageFALSE:year2017**     |  8.701  | 0.0001  | 0.0001 | *** |
-|    **pr_reply:nonmember:scikit-imageTRUE:year2017-pr_reply:nonmember:scikit-imageFALSE:year2017**    |  5.54   | 0.0001  | 0.0001 | *** |
-|        **pr_post:member:scikit-imageTRUE:year2018-pr_post:member:scikit-imageFALSE:year2018**        |  6.409  | 0.0001  | 0.0001 | *** |
-|     **pr_post:nonmember:scikit-imageTRUE:year2018-pr_post:nonmember:scikit-imageFALSE:year2018**     |  6.175  | 0.0001  | 0.0001 | *** |
-|    **pr_reply:nonmember:scikit-imageTRUE:year2018-pr_reply:nonmember:scikit-imageFALSE:year2018**    |  6.461  | 0.0001  | 0.0001 | *** |
+|              **pr_reply:member:scipyTRUE:year2013-pr_reply:member:scipyFALSE:year2013**              |  6.321  | 0.0001  | 0.0001 | *** |
+|              **pr_reply:member:scipyTRUE:year2015-pr_reply:member:scipyFALSE:year2015**              |  5.066  | 0.0001  | 0.0001 | *** |
+|            **pr_post:nonmember:scipyTRUE:year2015-pr_post:nonmember:scipyFALSE:year2015**            |  2.742  |  0.006  | 0.041  |  *  |
+|        **issue_reply:nonmember:scipyTRUE:year2015-issue_reply:nonmember:scipyFALSE:year2015**        |  3.083  |  0.002  | 0.018  |  *  |
+|           **pr_reply:nonmember:scipyTRUE:year2015-pr_reply:nonmember:scipyFALSE:year2015**           |  4.199  | 0.0001  |   0    | *** |
+|              **pr_reply:member:scipyTRUE:year2016-pr_reply:member:scipyFALSE:year2016**              |  7.714  | 0.0001  | 0.0001 | *** |
+|            **issue_post:member:scipyTRUE:year2017-issue_post:member:scipyFALSE:year2017**            | -3.157  |  0.002  | 0.015  |  *  |
+|              **pr_reply:member:scipyTRUE:year2018-pr_reply:member:scipyFALSE:year2018**              |  2.964  |  0.003  | 0.025  |  *  |
+|        **issue_reply:nonmember:scipyTRUE:year2018-issue_reply:nonmember:scipyFALSE:year2018**        |  2.634  |  0.008  | 0.048  |  *  |
+|           **pr_reply:nonmember:scipyTRUE:year2018-pr_reply:nonmember:scipyFALSE:year2018**           |  4.73   | 0.0001  | 0.0001 | *** |
+|        **pr_post:member:scikit-learnTRUE:year2011-pr_post:member:scikit-learnFALSE:year2011**        |  5.644  | 0.0001  | 0.0001 | *** |
+|        **pr_post:member:scikit-learnTRUE:year2012-pr_post:member:scikit-learnFALSE:year2012**        |  3.036  |  0.002  |  0.02  |  *  |
+|    **issue_reply:member:scikit-learnTRUE:year2012-issue_reply:member:scikit-learnFALSE:year2012**    |  3.985  | 0.0001  | 0.001  | **  |
+|       **pr_reply:member:scikit-learnTRUE:year2012-pr_reply:member:scikit-learnFALSE:year2012**       |  4.203  | 0.0001  |   0    | *** |
+|     **pr_post:nonmember:scikit-learnTRUE:year2012-pr_post:nonmember:scikit-learnFALSE:year2012**     |  2.667  |  0.008  | 0.045  |  *  |
+|        **pr_post:member:scikit-learnTRUE:year2013-pr_post:member:scikit-learnFALSE:year2013**        |  3.852  | 0.0001  | 0.002  | **  |
+|       **pr_reply:member:scikit-learnTRUE:year2013-pr_reply:member:scikit-learnFALSE:year2013**       |  5.497  | 0.0001  | 0.0001 | *** |
+|       **pr_reply:member:scikit-learnTRUE:year2014-pr_reply:member:scikit-learnFALSE:year2014**       |  3.418  |  0.001  | 0.007  | **  |
+|    **issue_reply:member:scikit-learnTRUE:year2015-issue_reply:member:scikit-learnFALSE:year2015**    | -2.754  |  0.006  |  0.04  |  *  |
+|     **pr_post:nonmember:scikit-learnTRUE:year2018-pr_post:nonmember:scikit-learnFALSE:year2018**     | -5.046  | 0.0001  | 0.0001 | *** |
+| **issue_reply:nonmember:scikit-learnTRUE:year2018-issue_reply:nonmember:scikit-learnFALSE:year2018** |  2.801  |  0.005  | 0.036  |  *  |
+|    **pr_reply:nonmember:scikit-learnTRUE:year2018-pr_reply:nonmember:scikit-learnFALSE:year2018**    |  3.284  |  0.001  | 0.011  |  *  |
 |       **issue_reply:nonmember:pandasTRUE:year2012-issue_reply:nonmember:pandasFALSE:year2012**       |  2.873  |  0.004  | 0.032  |  *  |
 |           **issue_post:member:pandasTRUE:year2013-issue_post:member:pandasFALSE:year2013**           |  3.227  |  0.001  | 0.012  |  *  |
 |             **pr_reply:member:pandasTRUE:year2013-pr_reply:member:pandasFALSE:year2013**             | -8.065  | 0.0001  | 0.0001 | *** |
@@ -670,21 +622,21 @@ for(project in all_projects){
 ```
 
 ```
-## fixed-effect model matrix is rank deficient so dropping 8 columns / coefficients
-```
-
-```
-## fixed-effect model matrix is rank deficient so dropping 16 columns / coefficients
-## fixed-effect model matrix is rank deficient so dropping 16 columns / coefficients
-```
-
-```
 ## fixed-effect model matrix is rank deficient so dropping 36 columns / coefficients
 ```
 
 ```
+## fixed-effect model matrix is rank deficient so dropping 16 columns / coefficients
+```
+
+```
 ## fixed-effect model matrix is rank deficient so dropping 8 columns / coefficients
 ## fixed-effect model matrix is rank deficient so dropping 8 columns / coefficients
+## fixed-effect model matrix is rank deficient so dropping 8 columns / coefficients
+```
+
+```
+## fixed-effect model matrix is rank deficient so dropping 16 columns / coefficients
 ```
 
 ```
@@ -702,6 +654,24 @@ pander_clean_anova(all_project_tests, rename_columns=FALSE,
 
 |                                                  &nbsp;                                                  | t_stats | p_value | p_adj  | sig |
 |:--------------------------------------------------------------------------------------------------------:|:-------:|:-------:|:------:|:---:|
+|       **pr_reply:member:sphinx-galleryTRUE:year2015-pr_reply:member:sphinx-galleryFALSE:year2015**       | -2.683  |  0.007  | 0.038  |  *  |
+|    **pr_reply:nonmember:sphinx-galleryTRUE:year2015-pr_reply:nonmember:sphinx-galleryFALSE:year2015**    | -2.797  |  0.005  |  0.03  |  *  |
+|       **pr_reply:member:sphinx-galleryTRUE:year2017-pr_reply:member:sphinx-galleryFALSE:year2017**       | -3.609  | 0.0003  | 0.003  | **  |
+|  **issue_post:nonmember:sphinx-galleryTRUE:year2017-issue_post:nonmember:sphinx-galleryFALSE:year2017**  |  2.655  |  0.008  | 0.041  |  *  |
+| **issue_reply:nonmember:sphinx-galleryTRUE:year2018-issue_reply:nonmember:sphinx-galleryFALSE:year2018** |  3.238  |  0.001  |  0.01  |  *  |
+|            **pr_reply:nonmember:mayaviTRUE:year2012-pr_reply:nonmember:mayaviFALSE:year2012**            |  2.84   |  0.004  | 0.027  |  *  |
+|            **pr_reply:nonmember:mayaviTRUE:year2013-pr_reply:nonmember:mayaviFALSE:year2013**            |  3.672  | 0.0002  | 0.003  | **  |
+|            **issue_reply:member:mayaviTRUE:year2014-issue_reply:member:mayaviFALSE:year2014**            | -2.992  |  0.003  | 0.018  |  *  |
+|          **issue_post:nonmember:mayaviTRUE:year2015-issue_post:nonmember:mayaviFALSE:year2015**          |  3.641  | 0.0003  | 0.003  | **  |
+|            **issue_reply:member:mayaviTRUE:year2016-issue_reply:member:mayaviFALSE:year2016**            |  3.713  | 0.0002  | 0.002  | **  |
+|               **pr_reply:member:mayaviTRUE:year2016-pr_reply:member:mayaviFALSE:year2016**               |  4.453  | 0.0001  | 0.0001 | *** |
+|          **issue_post:nonmember:mayaviTRUE:year2016-issue_post:nonmember:mayaviFALSE:year2016**          |  2.795  |  0.005  |  0.03  |  *  |
+|         **issue_reply:nonmember:mayaviTRUE:year2016-issue_reply:nonmember:mayaviFALSE:year2016**         |  2.849  |  0.004  | 0.027  |  *  |
+|               **pr_reply:member:mayaviTRUE:year2017-pr_reply:member:mayaviFALSE:year2017**               |  5.386  | 0.0001  | 0.0001 | *** |
+|                **pr_post:member:mayaviTRUE:year2018-pr_post:member:mayaviFALSE:year2018**                | -3.214  |  0.001  |  0.01  |  *  |
+|               **pr_reply:member:mayaviTRUE:year2018-pr_reply:member:mayaviFALSE:year2018**               |  3.407  |  0.001  | 0.006  | **  |
+|          **issue_post:nonmember:mayaviTRUE:year2018-issue_post:nonmember:mayaviFALSE:year2018**          |  4.251  | 0.0001  | 0.0003 | *** |
+|         **issue_reply:nonmember:mayaviTRUE:year2018-issue_reply:nonmember:mayaviFALSE:year2018**         |  5.882  | 0.0001  | 0.0001 | *** |
 |                **pr_reply:member:numpyTRUE:year2011-pr_reply:member:numpyFALSE:year2011**                | -5.381  | 0.0001  | 0.0001 | *** |
 |                 **pr_post:member:numpyTRUE:year2012-pr_post:member:numpyFALSE:year2012**                 | -2.756  |  0.006  | 0.033  |  *  |
 |             **issue_reply:member:numpyTRUE:year2012-issue_reply:member:numpyFALSE:year2012**             | -4.025  | 0.0001  | 0.001  | **  |
@@ -716,46 +686,10 @@ pander_clean_anova(all_project_tests, rename_columns=FALSE,
 |                **pr_reply:member:numpyTRUE:year2017-pr_reply:member:numpyFALSE:year2017**                | -5.809  | 0.0001  | 0.0001 | *** |
 |             **issue_reply:member:numpyTRUE:year2018-issue_reply:member:numpyFALSE:year2018**             | -2.714  |  0.007  | 0.036  |  *  |
 |          **issue_reply:nonmember:numpyTRUE:year2018-issue_reply:nonmember:numpyFALSE:year2018**          |  3.663  | 0.0002  | 0.003  | **  |
-|      **issue_reply:member:scikit-learnTRUE:year2012-issue_reply:member:scikit-learnFALSE:year2012**      |  4.909  | 0.0001  | 0.0001 | *** |
-|         **pr_reply:member:scikit-learnTRUE:year2012-pr_reply:member:scikit-learnFALSE:year2012**         |  3.237  |  0.001  |  0.01  |  *  |
-|      **issue_reply:member:scikit-learnTRUE:year2013-issue_reply:member:scikit-learnFALSE:year2013**      |  3.104  |  0.002  | 0.014  |  *  |
-|         **pr_reply:member:scikit-learnTRUE:year2013-pr_reply:member:scikit-learnFALSE:year2013**         |  4.758  | 0.0001  | 0.0001 | *** |
-|         **pr_reply:member:scikit-learnTRUE:year2015-pr_reply:member:scikit-learnFALSE:year2015**         | -3.047  |  0.002  | 0.016  |  *  |
-|    **issue_post:nonmember:scikit-learnTRUE:year2015-issue_post:nonmember:scikit-learnFALSE:year2015**    |  3.691  | 0.0002  | 0.002  | **  |
-|   **issue_reply:nonmember:scikit-learnTRUE:year2016-issue_reply:nonmember:scikit-learnFALSE:year2016**   |  -3.25  |  0.001  |  0.01  |  *  |
-|          **pr_post:member:scikit-learnTRUE:year2017-pr_post:member:scikit-learnFALSE:year2017**          | -3.092  |  0.002  | 0.014  |  *  |
-|       **issue_post:member:scikit-learnTRUE:year2018-issue_post:member:scikit-learnFALSE:year2018**       |  -2.81  |  0.005  | 0.029  |  *  |
-|          **pr_post:member:scikit-learnTRUE:year2018-pr_post:member:scikit-learnFALSE:year2018**          | -4.746  | 0.0001  | 0.0001 | *** |
-|      **issue_reply:member:scikit-learnTRUE:year2018-issue_reply:member:scikit-learnFALSE:year2018**      | -5.589  | 0.0001  | 0.0001 | *** |
-|         **pr_reply:member:scikit-learnTRUE:year2018-pr_reply:member:scikit-learnFALSE:year2018**         | -11.18  | 0.0001  | 0.0001 | *** |
-|   **issue_reply:nonmember:scikit-learnTRUE:year2018-issue_reply:nonmember:scikit-learnFALSE:year2018**   | -4.177  | 0.0001  | 0.0004 | *** |
-|      **pr_reply:nonmember:scikit-learnTRUE:year2018-pr_reply:nonmember:scikit-learnFALSE:year2018**      | -4.486  | 0.0001  | 0.0001 | *** |
-|                **pr_reply:member:scipyTRUE:year2013-pr_reply:member:scipyFALSE:year2013**                |  8.729  | 0.0001  | 0.0001 | *** |
-|                **pr_reply:member:scipyTRUE:year2014-pr_reply:member:scipyFALSE:year2014**                |  3.37   |  0.001  | 0.007  | **  |
-|             **pr_reply:nonmember:scipyTRUE:year2014-pr_reply:nonmember:scipyFALSE:year2014**             |  3.155  |  0.002  | 0.012  |  *  |
-|                **pr_reply:member:scipyTRUE:year2015-pr_reply:member:scipyFALSE:year2015**                |  3.172  |  0.002  | 0.012  |  *  |
-|                **pr_reply:member:scipyTRUE:year2016-pr_reply:member:scipyFALSE:year2016**                |  5.637  | 0.0001  | 0.0001 | *** |
-|                **pr_reply:member:scipyTRUE:year2017-pr_reply:member:scipyFALSE:year2017**                |  4.499  | 0.0001  | 0.0001 | *** |
-|                **pr_reply:member:scipyTRUE:year2018-pr_reply:member:scipyFALSE:year2018**                |  7.312  | 0.0001  | 0.0001 | *** |
-|             **pr_reply:nonmember:scipyTRUE:year2018-pr_reply:nonmember:scipyFALSE:year2018**             |  3.027  |  0.002  | 0.016  |  *  |
-|            **pr_reply:nonmember:mayaviTRUE:year2012-pr_reply:nonmember:mayaviFALSE:year2012**            |  2.84   |  0.004  | 0.027  |  *  |
-|            **pr_reply:nonmember:mayaviTRUE:year2013-pr_reply:nonmember:mayaviFALSE:year2013**            |  3.672  | 0.0002  | 0.003  | **  |
-|            **issue_reply:member:mayaviTRUE:year2014-issue_reply:member:mayaviFALSE:year2014**            | -2.992  |  0.003  | 0.018  |  *  |
-|          **issue_post:nonmember:mayaviTRUE:year2015-issue_post:nonmember:mayaviFALSE:year2015**          |  3.641  | 0.0003  | 0.003  | **  |
-|            **issue_reply:member:mayaviTRUE:year2016-issue_reply:member:mayaviFALSE:year2016**            |  3.713  | 0.0002  | 0.002  | **  |
-|               **pr_reply:member:mayaviTRUE:year2016-pr_reply:member:mayaviFALSE:year2016**               |  4.453  | 0.0001  | 0.0001 | *** |
-|          **issue_post:nonmember:mayaviTRUE:year2016-issue_post:nonmember:mayaviFALSE:year2016**          |  2.795  |  0.005  |  0.03  |  *  |
-|         **issue_reply:nonmember:mayaviTRUE:year2016-issue_reply:nonmember:mayaviFALSE:year2016**         |  2.849  |  0.004  | 0.027  |  *  |
-|               **pr_reply:member:mayaviTRUE:year2017-pr_reply:member:mayaviFALSE:year2017**               |  5.386  | 0.0001  | 0.0001 | *** |
-|                **pr_post:member:mayaviTRUE:year2018-pr_post:member:mayaviFALSE:year2018**                | -3.214  |  0.001  |  0.01  |  *  |
-|               **pr_reply:member:mayaviTRUE:year2018-pr_reply:member:mayaviFALSE:year2018**               |  3.407  |  0.001  | 0.006  | **  |
-|          **issue_post:nonmember:mayaviTRUE:year2018-issue_post:nonmember:mayaviFALSE:year2018**          |  4.251  | 0.0001  | 0.0003 | *** |
-|         **issue_reply:nonmember:mayaviTRUE:year2018-issue_reply:nonmember:mayaviFALSE:year2018**         |  5.882  | 0.0001  | 0.0001 | *** |
-|       **pr_reply:member:sphinx-galleryTRUE:year2015-pr_reply:member:sphinx-galleryFALSE:year2015**       | -2.683  |  0.007  | 0.038  |  *  |
-|    **pr_reply:nonmember:sphinx-galleryTRUE:year2015-pr_reply:nonmember:sphinx-galleryFALSE:year2015**    | -2.797  |  0.005  |  0.03  |  *  |
-|       **pr_reply:member:sphinx-galleryTRUE:year2017-pr_reply:member:sphinx-galleryFALSE:year2017**       | -3.609  | 0.0003  | 0.003  | **  |
-|  **issue_post:nonmember:sphinx-galleryTRUE:year2017-issue_post:nonmember:sphinx-galleryFALSE:year2017**  |  2.655  |  0.008  | 0.041  |  *  |
-| **issue_reply:nonmember:sphinx-galleryTRUE:year2018-issue_reply:nonmember:sphinx-galleryFALSE:year2018** |  3.238  |  0.001  |  0.01  |  *  |
+|         **pr_reply:member:scikit-imageTRUE:year2011-pr_reply:member:scikit-imageFALSE:year2011**         |  3.652  | 0.0003  | 0.003  | **  |
+|          **pr_post:member:scikit-imageTRUE:year2012-pr_post:member:scikit-imageFALSE:year2012**          | -3.137  |  0.002  | 0.013  |  *  |
+|         **pr_reply:member:scikit-imageTRUE:year2015-pr_reply:member:scikit-imageFALSE:year2015**         |  3.072  |  0.002  | 0.015  |  *  |
+|         **pr_reply:member:scikit-imageTRUE:year2018-pr_reply:member:scikit-imageFALSE:year2018**         | -5.431  | 0.0001  | 0.0001 | *** |
 |         **issue_post:member:matplotlibTRUE:year2011-issue_post:member:matplotlibFALSE:year2011**         |  6.754  | 0.0001  | 0.0001 | *** |
 |            **pr_post:member:matplotlibTRUE:year2012-pr_post:member:matplotlibFALSE:year2012**            |  5.482  | 0.0001  | 0.0001 | *** |
 |        **pr_reply:nonmember:matplotlibTRUE:year2012-pr_reply:nonmember:matplotlibFALSE:year2012**        |  2.967  |  0.003  | 0.019  |  *  |
@@ -774,10 +708,28 @@ pander_clean_anova(all_project_tests, rename_columns=FALSE,
 |        **issue_reply:member:matplotlibTRUE:year2018-issue_reply:member:matplotlibFALSE:year2018**        |  4.867  | 0.0001  | 0.0001 | *** |
 |           **pr_reply:member:matplotlibTRUE:year2018-pr_reply:member:matplotlibFALSE:year2018**           | -4.343  | 0.0001  | 0.0002 | *** |
 |     **issue_reply:nonmember:matplotlibTRUE:year2018-issue_reply:nonmember:matplotlibFALSE:year2018**     |  2.718  |  0.007  | 0.036  |  *  |
-|         **pr_reply:member:scikit-imageTRUE:year2011-pr_reply:member:scikit-imageFALSE:year2011**         |  3.652  | 0.0003  | 0.003  | **  |
-|          **pr_post:member:scikit-imageTRUE:year2012-pr_post:member:scikit-imageFALSE:year2012**          | -3.137  |  0.002  | 0.013  |  *  |
-|         **pr_reply:member:scikit-imageTRUE:year2015-pr_reply:member:scikit-imageFALSE:year2015**         |  3.072  |  0.002  | 0.015  |  *  |
-|         **pr_reply:member:scikit-imageTRUE:year2018-pr_reply:member:scikit-imageFALSE:year2018**         | -5.431  | 0.0001  | 0.0001 | *** |
+|                **pr_reply:member:scipyTRUE:year2013-pr_reply:member:scipyFALSE:year2013**                |  8.729  | 0.0001  | 0.0001 | *** |
+|                **pr_reply:member:scipyTRUE:year2014-pr_reply:member:scipyFALSE:year2014**                |  3.37   |  0.001  | 0.007  | **  |
+|             **pr_reply:nonmember:scipyTRUE:year2014-pr_reply:nonmember:scipyFALSE:year2014**             |  3.155  |  0.002  | 0.012  |  *  |
+|                **pr_reply:member:scipyTRUE:year2015-pr_reply:member:scipyFALSE:year2015**                |  3.172  |  0.002  | 0.012  |  *  |
+|                **pr_reply:member:scipyTRUE:year2016-pr_reply:member:scipyFALSE:year2016**                |  5.637  | 0.0001  | 0.0001 | *** |
+|                **pr_reply:member:scipyTRUE:year2017-pr_reply:member:scipyFALSE:year2017**                |  4.499  | 0.0001  | 0.0001 | *** |
+|                **pr_reply:member:scipyTRUE:year2018-pr_reply:member:scipyFALSE:year2018**                |  7.312  | 0.0001  | 0.0001 | *** |
+|             **pr_reply:nonmember:scipyTRUE:year2018-pr_reply:nonmember:scipyFALSE:year2018**             |  3.027  |  0.002  | 0.016  |  *  |
+|      **issue_reply:member:scikit-learnTRUE:year2012-issue_reply:member:scikit-learnFALSE:year2012**      |  4.909  | 0.0001  | 0.0001 | *** |
+|         **pr_reply:member:scikit-learnTRUE:year2012-pr_reply:member:scikit-learnFALSE:year2012**         |  3.237  |  0.001  |  0.01  |  *  |
+|      **issue_reply:member:scikit-learnTRUE:year2013-issue_reply:member:scikit-learnFALSE:year2013**      |  3.104  |  0.002  | 0.014  |  *  |
+|         **pr_reply:member:scikit-learnTRUE:year2013-pr_reply:member:scikit-learnFALSE:year2013**         |  4.758  | 0.0001  | 0.0001 | *** |
+|         **pr_reply:member:scikit-learnTRUE:year2015-pr_reply:member:scikit-learnFALSE:year2015**         | -3.047  |  0.002  | 0.016  |  *  |
+|    **issue_post:nonmember:scikit-learnTRUE:year2015-issue_post:nonmember:scikit-learnFALSE:year2015**    |  3.691  | 0.0002  | 0.002  | **  |
+|   **issue_reply:nonmember:scikit-learnTRUE:year2016-issue_reply:nonmember:scikit-learnFALSE:year2016**   |  -3.25  |  0.001  |  0.01  |  *  |
+|          **pr_post:member:scikit-learnTRUE:year2017-pr_post:member:scikit-learnFALSE:year2017**          | -3.092  |  0.002  | 0.014  |  *  |
+|       **issue_post:member:scikit-learnTRUE:year2018-issue_post:member:scikit-learnFALSE:year2018**       |  -2.81  |  0.005  | 0.029  |  *  |
+|          **pr_post:member:scikit-learnTRUE:year2018-pr_post:member:scikit-learnFALSE:year2018**          | -4.746  | 0.0001  | 0.0001 | *** |
+|      **issue_reply:member:scikit-learnTRUE:year2018-issue_reply:member:scikit-learnFALSE:year2018**      | -5.589  | 0.0001  | 0.0001 | *** |
+|         **pr_reply:member:scikit-learnTRUE:year2018-pr_reply:member:scikit-learnFALSE:year2018**         | -11.18  | 0.0001  | 0.0001 | *** |
+|   **issue_reply:nonmember:scikit-learnTRUE:year2018-issue_reply:nonmember:scikit-learnFALSE:year2018**   | -4.177  | 0.0001  | 0.0004 | *** |
+|      **pr_reply:nonmember:scikit-learnTRUE:year2018-pr_reply:nonmember:scikit-learnFALSE:year2018**      | -4.486  | 0.0001  | 0.0001 | *** |
 |             **issue_post:member:pandasTRUE:year2011-issue_post:member:pandasFALSE:year2011**             | -3.969  | 0.0001  | 0.001  | **  |
 |               **pr_reply:member:pandasTRUE:year2011-pr_reply:member:pandasFALSE:year2011**               |  8.185  | 0.0001  | 0.0001 | *** |
 |             **issue_post:member:pandasTRUE:year2012-issue_post:member:pandasFALSE:year2012**             | -4.272  | 0.0001  | 0.0003 | *** |
