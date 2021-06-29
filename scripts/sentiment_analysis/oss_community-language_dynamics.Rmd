@@ -637,7 +637,7 @@ sentiment_plot_aggregated = ggplot(data=sentiment_frame,
                                    aes(x=type,
                                        y=compound_emotion,
                                        colour=type)) +
-  stat_summary(fun.y=mean, geom="point", size=2) +
+  stat_summary(fun=mean, geom="point", size=2) +
   stat_summary(fun.data = mean_se, geom = "errorbar") +
   #coord_cartesian(ylim=c(0,.5)) +
   facet_grid(cols=vars(ticket_family)) +
@@ -663,7 +663,7 @@ sentiment_plot_aggregated = ggplot(data=sentiment_frame,
                                    aes(x=author_group,
                                        y=compound_emotion,
                                        colour=type)) +
-  stat_summary(fun.y=mean, geom="point", size=2) +
+  stat_summary(fun=mean, geom="point", size=2) +
   stat_summary(fun.data = mean_se, geom = "errorbar") +
   #coord_cartesian(ylim=c(0,.5)) +
   facet_grid(cols=vars(ticket_family)) +
@@ -704,7 +704,7 @@ sentiment_plot_by_project = ggplot(data=sentiment_frame,
                                    aes(x=author_group,
                                        y=compound_emotion,
                                        colour=type)) +
-  stat_summary(fun.y=mean, geom="point", size=2) +
+  stat_summary(fun=mean, geom="point", size=2) +
   stat_summary(fun.data = mean_se, geom = "errorbar") +
   #coord_cartesian(ylim=c(0,.5)) +
   facet_grid(cols=vars(ticket_family),
@@ -772,7 +772,7 @@ grateful_plot = ggplot(data=sentiment_frame,
                        aes(colour=type,
                            y=grateful_count,
                            x=author_group)) +
-  stat_summary(fun.y=mean, geom="point", size=2) +
+  stat_summary(fun=mean, geom="point", size=2) +
   stat_summary(fun.data = mean_se, geom = "errorbar") +
   facet_grid(cols = vars(ticket_family),
              rows = vars(project)) +
