@@ -1,31 +1,145 @@
 import pandas as pd
+from joblib import Memory
 import itertools
 import numpy as np
 
+mem = Memory(".cache")
 
+
+def create_graph(data, all_authors_mapping):
+    all_projects = np.unique(data["project"])
+    adjacency_matrix = np.zeros(
+        (len(all_authors_mapping), len(all_authors_mapping)))
+    for project in all_projects:
+        print(project)
+        project_data = data[data["project"] == project]
+        project_data.replace(all_authors_mapping, inplace=True)
+
+        print("Finished replacing authors")
+        for ticket_id in np.unique(project_data["ticket_id"]):
+            authors = np.unique(
+                project_data[
+                    project_data["ticket_id"] == ticket_id][
+                        "author_name"])
+            for idx in itertools.product(authors, authors):
+                adjacency_matrix[idx] += 1
+    return adjacency_matrix
+
+
+def compute_contributions_per_project(data):
+    # Now find annotation for nodes
+    number_contribution_per_project = data.groupby(
+        ["project", "author_name"]).count()[["date"]]
+    number_contribution_per_project.columns = ["number"]
+
+    # Now perform a join on the different project
+    formatted_table = None
+    all_projects = np.unique(data["project"])
+    for project in all_projects:
+        if formatted_table is None:
+            formatted_table = number_contribution_per_project.loc[project]
+            formatted_table.columns = [project]
+        else:
+            sub_table = number_contribution_per_project.loc[project]
+            sub_table.columns = [project]
+            formatted_table = formatted_table.join(sub_table, on="author_name",
+                                                   how="outer")
+            formatted_table.index = formatted_table["author_name"]
+            formatted_table.drop("author_name", axis=1, inplace=True)
+
+    formatted_table[formatted_table.isna()] = 0
+    formatted_table = formatted_table.astype(int)
+    return formatted_table
+
+
+print("Loading data")
 data = pd.read_csv("results/data/sentiment_frame_original.tsv", sep="\t")
-
 # First, do some sanity check on this file. Ticket_id should be unique per
 # project for posts.
 assert np.all(data[data["type_family"] == "post"].groupby(
     ["project", "ticket_id"]).count().to_numpy() == 1)
 
-all_authors_mapping = {a: i for i, a in enumerate(np.unique(data["author_name"]))}
 
-all_projects = np.unique(data["project"])
-adjacency_matrix = np.zeros((len(all_authors_mapping), len(all_authors_mapping)))
-for project in all_projects:
-    print(project)
-    project_data = data[data["project"] == project]
-    project_data.replace(all_authors_mapping, inplace=True)
+print("Computing the number of contributiors per project per user")
+contributions_per_project = mem.cache(compute_contributions_per_project)(data)
 
-    print("Finished replacing authors")
-    for ticket_id in np.unique(project_data["ticket_id"]):
-        authors = np.unique(
-            project_data[project_data["ticket_id"] ==
-            ticket_id]["author_name"])
-        for idx in itertools.product(authors, authors):
-            adjacency_matrix[idx] += 1
+# Select users that have contributed to more than one project
+#authors_of_interest = np.array(
+#    contributions_per_project.loc[
+#        np.sum(contributions_per_project != 0, axis=1) > 1].index)
+# Select contributions from authors of interest
+#data = data.loc[np.isin(data["author_name"], authors_of_interest)]
+# data = data.loc[np.isin(data["project"],
+#                ["sphinx-gallery", "mayavi",
+#                 "scikit-image"])]
+
+
+print("Estimating adjacency matrix")
+all_authors_mapping = {
+    a: i for i, a in enumerate(np.unique(data["author_name"]))}
+adjacency_matrix = mem.cache(create_graph)(data, all_authors_mapping)
+contributions_per_project = compute_contributions_per_project(data)
+
 
 # Remove the diagonal
-adjacency_matrix[np.diag_indices_from(adjacency_matrix)] = 0
+#adjacency_matrix[np.diag_indices_from(adjacency_matrix)] = 0
+
+
+###############################################################################
+# Ok… Let's try a simple visualization with Matplotlib & Grave
+import matplotlib.pyplot as plt
+import networkx
+from networkx.algorithms.centrality import closeness_centrality
+import grave
+
+all_projects = contributions_per_project.columns
+graph = networkx.convert_matrix.from_numpy_matrix(np.log(adjacency_matrix+1))
+# Add some information
+
+colors_projects = {"matplotlib": "C0",
+                   "sphinx-gallery": "C1",
+                   "mayavi": "C2",
+                   "scikit-image": "C3",
+                   "numpy": "C4",
+                   "scipy": "C5",
+                   "pandas": "C6",
+                   "scikit-learn": "C7"}
+            
+
+for node, nodes_attr in graph.nodes(data=True):
+    nodes_attr["author_name"] = contributions_per_project.iloc[node].name
+    nodes_attr["main_project"] = all_projects[contributions_per_project.values.argmax(
+        axis=1)[node]]
+    nodes_attr["color"] = colors_projects[nodes_attr["main_project"]]
+    # nodes_attr["size"] = 2+np.log(contributions_per_project.iloc[node].max() + 1)
+    nodes_attr["linewidth"] = 0
+   
+
+# Let's attempt to put some alpha on the edge based on some closeness
+# centrality
+centrality = closeness_centrality(graph)
+max_centrality = max(centrality.values())
+for u, v, edge_attributes in graph.edges.data():
+    c = (centrality[u] +
+         centrality[v]) / 2
+    color_idx = (c / max_centrality)
+    cmap = plt.get_cmap("gray")
+    edge_attributes['width'] = 1
+    edge_attributes["alpha"] = 0.5
+
+networkx.write_gexf(graph, "test.gexf")
+networkx.write_gml(graph, "test.gml")
+stop
+
+fig, axes = plt.subplots()
+grave.plot_network(graph, ax=axes, layout="kamada_kawai",
+                   node_style=grave.use_attributes(),
+                   edge_style=grave.use_attributes())
+
+fig, axes = plt.subplots()
+grave.plot_network(graph, ax=axes, layout="circular",
+                   node_style=grave.use_attributes(),
+                   edge_style=grave.use_attributes())
+
+
+
