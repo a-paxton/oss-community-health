@@ -107,7 +107,7 @@ plot_newcomer_retention_2W(
     ax_G, model_results, "ticket_familyissue7",
     "ticket_familypr7", "ticket_familyissue:comment_grateful_cumulative",
     "ticket_familypr:comment_grateful_cumulative",
-    ylabel="Num. of comments", yrange=[0, 34])
+    ylabel="Cum. grateful counts", yrange=[0, 34])
 
 
 add_letter_and_title(ax_G, "G", "")
