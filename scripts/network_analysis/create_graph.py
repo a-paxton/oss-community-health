@@ -1,55 +1,10 @@
 import pandas as pd
 from joblib import Memory
-import itertools
 import numpy as np
+from utils import create_graph
+from utils import compute_contributions_per_project
 
 mem = Memory(".cache")
-
-
-def create_graph(data, all_authors_mapping):
-    all_projects = np.unique(data["project"])
-    adjacency_matrix = np.zeros(
-        (len(all_authors_mapping), len(all_authors_mapping)))
-    for project in all_projects:
-        print(project)
-        project_data = data[data["project"] == project]
-        project_data.replace(all_authors_mapping, inplace=True)
-
-        print("Finished replacing authors")
-        for ticket_id in np.unique(project_data["ticket_id"]):
-            authors = np.unique(
-                project_data[
-                    project_data["ticket_id"] == ticket_id][
-                        "author_name"])
-            for idx in itertools.product(authors, authors):
-                adjacency_matrix[idx] += 1
-    return adjacency_matrix
-
-
-def compute_contributions_per_project(data):
-    # Now find annotation for nodes
-    number_contribution_per_project = data.groupby(
-        ["project", "author_name"]).count()[["date"]]
-    number_contribution_per_project.columns = ["number"]
-
-    # Now perform a join on the different project
-    formatted_table = None
-    all_projects = np.unique(data["project"])
-    for project in all_projects:
-        if formatted_table is None:
-            formatted_table = number_contribution_per_project.loc[project]
-            formatted_table.columns = [project]
-        else:
-            sub_table = number_contribution_per_project.loc[project]
-            sub_table.columns = [project]
-            formatted_table = formatted_table.join(sub_table, on="author_name",
-                                                   how="outer")
-            formatted_table.index = formatted_table["author_name"]
-            formatted_table.drop("author_name", axis=1, inplace=True)
-
-    formatted_table[formatted_table.isna()] = 0
-    formatted_table = formatted_table.astype(int)
-    return formatted_table
 
 
 print("Loading data")

@@ -30,3 +30,6 @@ figures/supp/timecourse_sentiment_%.pdf: results/models/model-1.2.tsv figure_sup
 figures/supp/timecourse_gratitude_%.pdf: results/models/model-1.2.tsv figure_supp_gratitude_timecourse_by_projects.py
 	python figure_supp_gratitude_timecourse_by_projects.py $* -o $@
 
+
+figures/supp/distribution_num_projects_per_contributor.pdf: results/data/sentiment_frame_original.tsv figure_supp_distribution_num_projects_per_contributor.py
+	python figure_supp_distribution_num_projects_per_contributor.py
