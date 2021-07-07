@@ -89,3 +89,4 @@ leg = ax_leg.legend(
     title="Also contributes to",
     title_fontproperties={"weight": "bold", "size": "x-small"})
 fig.savefig("figures/supp/contributors_also_contribute_to.pdf")
+fig.savefig("figures/supp/contributors_also_contribute_to.png")

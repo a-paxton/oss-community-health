@@ -80,3 +80,4 @@ leg = ax_leg.legend(
     title="Contributors contributing to N projects",
     title_fontproperties={"weight": "bold", "size": "small"})
 fig.savefig("figures/supp/contributors_contributing_to_different_project.pdf")
+fig.savefig("figures/supp/contributors_contributing_to_different_project.png")

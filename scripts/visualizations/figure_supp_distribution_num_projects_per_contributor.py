@@ -31,3 +31,4 @@ ax.yaxis.set_major_locator(
 ax.tick_params(labelsize=8)
 
 fig.savefig("figures/supp/distribution_num_projects_per_contributor.pdf")
+fig.savefig("figures/supp/distribution_num_projects_per_contributor.png")
