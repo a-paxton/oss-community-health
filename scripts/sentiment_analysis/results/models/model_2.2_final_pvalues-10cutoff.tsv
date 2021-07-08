@@ -1,0 +1,26 @@
+"stat" "p_value" "model" "p_val_adjusted"
+"pr-issue" 5.54215957421276 0.0000000298763846995342 "pr-issue" 0.0000000933637021860445
+"open_time" -0.974557339037883 0.329779883758763 "open_time" 0.375335533493907
+"comment_grateful_cumulative" 6.72249903692325 0.0000000000178633919245734 "comment_grateful_cumulative" 0.0000000000893169596228673
+"comment_sentiment_max_negative" 1.36688282838293 0.171662035144497 "comment_sentiment_max_negative" 0.252444169330143
+"number_of_comments" 9.33817786981099 0.00000000000000000000980061716824498 "number_of_comments" 0.0000000000000000000612538573015311
+"comment_member_ratio" -9.41451693108643 0.00000000000000000000475262730151659 "comment_member_ratio" 0.0000000000000000000396052275126383
+"comment_sentiment_mean" 6.34231653792037 0.000000000226335667548611 "comment_sentiment_mean" 0.000000000808341669816468
+"ticket_familyissue:open_time" 3.59613472904788 0.000322980566347567 "ticket_familyissue:open_time" 0.00057675101133494
+"ticket_familypr:open_time" -2.90265829620077 0.00370010112135485 "ticket_familypr:open_time" 0.00578140800211695
+"ticket_familyissue:comment_sentiment_max_negative" -1.27552783813243 0.202122477336641 "ticket_familyissue:comment_sentiment_max_negative" 0.280725662967557
+"ticket_familypr:comment_sentiment_max_negative" 3.87245748618942 0.000107743473892824 "ticket_familypr:comment_sentiment_max_negative" 0.00020719898825543
+"ticket_familyissue:number_of_comments" 4.01159957724027 0.0000603087291767784 "ticket_familyissue:number_of_comments" 0.000125643185784955
+"ticket_familypr:number_of_comments" 6.53490847960629 0.0000000000636484502155372 "ticket_familypr:number_of_comments" 0.000000000265201875898072
+"ticket_familyissue:comment_member_ratio" -4.99599374872004 0.000000585335565581522 "ticket_familyissue:comment_member_ratio" 0.00000146333891395381
+"ticket_familypr:comment_member_ratio" -9.81249574700083 0.0000000000000000000000994772322428812 "ticket_familypr:comment_member_ratio" 0.00000000000000000000124346540303601
+"ticket_familyissue:comment_sentiment_mean" 4.38667314072805 0.0000115097551089714 "ticket_familyissue:comment_sentiment_mean" 0.0000261585343385714
+"ticket_familypr:comment_sentiment_mean" -0.823909710868125 0.409990862280356 "ticket_familypr:comment_sentiment_mean" 0.445642241609083
+"ticket_familyissue:comment_grateful_cumulative" 0.0585577227852563 0.953304385195186 "ticket_familyissue:comment_grateful_cumulative" 0.953304385195186
+"ticket_familypr:comment_grateful_cumulative" 3.01073499267551 0.00260616198989264 "ticket_familypr:comment_grateful_cumulative" 0.00434360331648774
+"comment_sentiment_max_positive" 10.8645971258058 0.00000000000000000000000000169971719067617 "comment_sentiment_max_positive" 0.0000000000000000000000000424929297669042
+"ticket_familyissue:comment_sentiment_max_positive" 5.3005930364907 0.000000115427126170082 "ticket_familyissue:comment_sentiment_max_positive" 0.000000320630906028004
+"ticket_familypr:comment_sentiment_max_positive" 0.394956686689822 0.692874853711923 "ticket_familypr:comment_sentiment_max_positive" 0.721744639283253
+"comment_sentiment_variance" -1.15672648000671 0.247384127431423 "comment_sentiment_variance" 0.309230159289279
+"ticket_familyissue:comment_sentiment_variance" -0.973519306650119 0.330295269474638 "ticket_familyissue:comment_sentiment_variance" 0.375335533493907
+"ticket_familypr:comment_sentiment_variance" 1.23129427753057 0.21821282137988 "ticket_familypr:comment_sentiment_variance" 0.287122133394579

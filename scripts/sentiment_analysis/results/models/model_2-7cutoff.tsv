@@ -1,0 +1,20 @@
+"stat" "p_value" "model" "p_val_adjusted"
+"pr-issue" 5.54215957421276 0.0000000298763846995342 "pr-issue" 0.0000000810930441844501
+"open_time" -0.974557339037883 0.329779883758763 "open_time" 0.368577517142147
+"comment_grateful_cumulative" 6.72249903692325 0.0000000000178633919245734 "comment_grateful_cumulative" 0.0000000000848511116417239
+"comment_sentiment_max_negative" 1.36688282838293 0.171662035144497 "comment_sentiment_max_negative" 0.217438577849697
+"number_of_comments" 9.33817786981099 0.00000000000000000000980061716824498 "number_of_comments" 0.0000000000000000000931058630983273
+"comment_member_ratio" -8.95271618714898 0.000000000000000000346840755551759 "comment_member_ratio" 0.00000000000000000219665811849448
+"comment_sentiment_mean" 6.34231653792037 0.000000000226335667548611 "comment_sentiment_mean" 0.000000000716729613903935
+"ticket_familyissue:open_time" 3.59613472904788 0.000322980566347567 "ticket_familyissue:open_time" 0.00051138589671698
+"ticket_familypr:open_time" -2.90265829620077 0.00370010112135485 "ticket_familypr:open_time" 0.00502156580755301
+"ticket_familyissue:comment_sentiment_max_negative" -1.27552783813243 0.202122477336641 "ticket_familyissue:comment_sentiment_max_negative" 0.240020441837261
+"ticket_familypr:comment_sentiment_max_negative" 3.87245748618942 0.000107743473892824 "ticket_familypr:comment_sentiment_max_negative" 0.000186102363996696
+"ticket_familyissue:number_of_comments" 4.01159957724027 0.0000603087291767784 "ticket_familyissue:number_of_comments" 0.000114586585435879
+"ticket_familypr:number_of_comments" 6.53490847960629 0.0000000000636484502155372 "ticket_familypr:number_of_comments" 0.000000000241864110819041
+"ticket_familyissue:comment_member_ratio" -4.61097921228615 0.0000040077661820977 "ticket_familyissue:comment_member_ratio" 0.00000951844468248204
+"ticket_familypr:comment_member_ratio" -9.52893741995141 0.00000000000000000000158901289409048 "ticket_familypr:comment_member_ratio" 0.0000000000000000000301912449877191
+"ticket_familyissue:comment_sentiment_mean" 4.38667314072805 0.0000115097551089714 "ticket_familyissue:comment_sentiment_mean" 0.0000242983718967174
+"ticket_familypr:comment_sentiment_mean" -0.823909710868125 0.409990862280356 "ticket_familypr:comment_sentiment_mean" 0.432768132407042
+"ticket_familyissue:comment_grateful_cumulative" 0.0585577227852563 0.953304385195186 "ticket_familyissue:comment_grateful_cumulative" 0.953304385195186
+"ticket_familypr:comment_grateful_cumulative" 3.01073499267551 0.00260616198989264 "ticket_familypr:comment_grateful_cumulative" 0.00380900598522771
