@@ -37,7 +37,7 @@ ax_A.set_xticks([1, 2])
 ax_A.set_xticklabels(["Issue", "PR"], fontweight="bold", fontsize=8)
 ax_A.set_yticks([0, -.5])
 ax_A.set_yticklabels(["0", "-0.5"], fontsize="x-small")
-ax_A.set_ylabel("-log(p)", fontweight="bold", fontsize="x-small", labelpad=0)
+ax_A.set_ylabel("log(p)", fontweight="bold", fontsize="x-small", labelpad=0)
 
 add_letter_and_title(ax_A, "A", "")
 
@@ -132,5 +132,5 @@ ax.set_xticks([])
 ax.set_yticks([])
 
 
-fig.savefig("figures/figure_newcomers_redo.pdf")
+fig.savefig("figures/figure_newcomers.pdf")
 
