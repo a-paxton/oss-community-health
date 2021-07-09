@@ -1,0 +1,719 @@
+---
+title: "Temporal communication dynamics in OSS communities: Robustness analyses"
+output:
+  html_document:
+    keep_md: yes
+    number_sections: yes
+    toc: true
+---
+
+This R markdown provides the robustness analysis for our forthcoming manuscript
+(Paxton, Varoquaux, Geiger, & Holdgraf, *in preparation*).
+
+To run this from scratch, you will need the following files:
+
+* `../../data/analysis_data/sentiment_frame_tickets-for_r.csv`: Contains cleaned
+**tickets**-related data and derived variables from scraped GitHub data.
+* `../../data/analysis_data/sentiment_frame_comments-for_r.csv`: Contains
+cleaned **comments**-related data and derived variables from scraped GitHub
+data.
+* `./utils/ossc-libraries_and_functions.r`: Loads in necessary libraries and
+creates new functions for our analyses.
+
+**Code written by**: A. Paxton (University of Connecticut) & N. Varoquaux
+(CNRS)
+
+**Date last compiled**:  `r Sys.time()`
+
+```{r silent-preparations, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(cache=TRUE, autodep=TRUE, cache.lazy=FALSE)
+options(scipen=999)
+```
+
+***
+
+# Preliminaries
+
+```{r prelim, warning = FALSE, error = FALSE, message = FALSE}
+
+# clear everything
+rm(list=ls())
+
+# load libraries and add new functions
+source('./utils/ossc-libraries_and_functions.r')
+source("./utils/data-loading-robustness.R")
+
+```
+
+***
+
+# Create robustness datasets
+
+Here, we'll load the data and specify two additional membership cutoffs: 
+7 contributions and 10 contributions.
+
+```{r choosing_datasets}
+
+# specify 7-contribution cutoff
+tickets_frame_7 = loading_tickets_data(dataset="original", membership_cutoff = 7)
+comments_frame_7 = loading_comments_data(dataset="original", membership_cutoff = 7)
+
+# specify 10-contribution cutoff
+tickets_frame_10 = loading_tickets_data(dataset="original", membership_cutoff = 10)
+comments_frame_10 = loading_comments_data(dataset="original", membership_cutoff = 10)
+
+```
+
+***
+
+# Data analysis: 7-contribution cutoff
+
+***
+
+### Data preparation
+
+
+```{r prepare-data-for-sentiment-analysis-7cutoff}
+
+sentiment_frame_7 = combine_tickets_and_comments(tickets_frame_7, comments_frame_7)
+
+```
+
+### Model 1.2: Do tickets and comments materially differ in emotion over time?
+
+#### Robustness Model 1.2: 7-contribution cutoff
+
+```{r sentiment_modeling_per_year-7cutoff}
+
+# create year factor
+sentiment_frame_7$year = as.factor(sentiment_frame_7$year)
+
+# specify model
+timecourse_compound_emotion_7 = lmer(
+  compound_emotion ~ 0 + project:type:author_group:year + (1 | author_name),
+  data=sentiment_frame_7,
+  REML=FALSE)
+
+```
+
+```{r clean-up_model-1:2c-output-7cutoff}
+coefficients_and_se_7 = data.frame(
+  summary(timecourse_compound_emotion_7)$coefficients)
+
+row_names = gsub(
+  "project", "", gsub(
+    "author_group", "", gsub(
+      "type", "", row.names(coefficients_and_se_7))))
+
+row_names = gsub(
+  "year", "", row_names)
+
+# replace hyphens in project names with periods
+row_names = gsub(
+  "scikit-", "scikit.", gsub(
+    "sphinx-", "sphinx.", row_names))
+
+# convert model estimates to a dataframe
+means = coefficients_and_se_7$Estimate
+names(means) = row_names
+
+# convert standard error to dataframe
+se = coefficients_and_se_7$Std..Error
+names(se) = row_names
+```
+
+```{r saving_results-model-1.2-7cutoff}
+dir.create("results/models", showWarnings=FALSE)
+write.table(coefficients_and_se_7,
+            file="results/models/model-1.2-7cutoff.tsv",
+            sep="\t")
+
+```
+
+#### Robustness Model 1.2 across projects: 7-contribution cutoff
+
+```{r compound-emotion-all-vs-one-timecourse-7cutoff}
+
+all_project_tests_7 = NA
+all_projects = unique(sentiment_frame_7$project)
+
+# We're going to fit the model for each projects, and concatenate the results
+# in a dataframe. Then, we'll apply multiple correction and display the
+# results
+for(project in all_projects){
+  sentiment_frame_7$test_group = sentiment_frame_7$project == project
+  one_versus_all_emotion = lmer(
+    compound_emotion ~ 0 + type:author_group:test_group:year + (1|author_name),
+    data=sentiment_frame_7,
+    REML=FALSE)
+  
+  # Clean up mode
+  coefficients_and_se_7 = data.frame(
+    summary(one_versus_all_emotion)$coefficients)
+  row_names = gsub(
+    "author_group", "", 
+    gsub("type", "",
+         gsub("project", "", row.names(coefficients_and_se_7))))
+  
+  means = coefficients_and_se_7$Estimate
+  names(means) = row_names
+  se = coefficients_and_se_7$Std..Error
+  names(se) = row_names
+  
+  template_contrasts = c(
+    "issue_post:member:test_groupTRUE-issue_post:member:test_groupFALSE",
+    "pr_post:member:test_groupTRUE-pr_post:member:test_groupFALSE",
+    "issue_reply:member:test_groupTRUE-issue_reply:member:test_groupFALSE",
+    "pr_reply:member:test_groupTRUE-pr_reply:member:test_groupFALSE",
+    "issue_post:nonmember:test_groupTRUE-issue_post:nonmember:test_groupFALSE",
+    "pr_post:nonmember:test_groupTRUE-pr_post:nonmember:test_groupFALSE",
+    "issue_reply:nonmember:test_groupTRUE-issue_reply:nonmember:test_groupFALSE",
+    "pr_reply:nonmember:test_groupTRUE-pr_reply:nonmember:test_groupFALSE"
+  )
+  
+  # Now, extend this to all years.
+  contrasts = c(
+    unlist(
+      lapply(gsub("-", ":year2009-", template_contrasts),
+             function(x) paste(x, ":year2009", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2010-", template_contrasts),
+             function(x) paste(x, ":year2010", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2011-", template_contrasts),
+             function(x) paste(x, ":year2011", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2012-", template_contrasts),
+             function(x) paste(x, ":year2012", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2013-", template_contrasts),
+             function(x) paste(x, ":year2013", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2014-", template_contrasts),
+             function(x) paste(x, ":year2014", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2015-", template_contrasts),
+             function(x) paste(x, ":year2015", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2016-", template_contrasts),
+             function(x) paste(x, ":year2016", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2017-", template_contrasts),
+             function(x) paste(x, ":year2017", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2018-", template_contrasts),
+             function(x) paste(x, ":year2018", sep=""))))
+  
+  
+  one_versus_all_emotion_tests_7 = compute_t_statistics(
+    means, se,
+    contrasts)
+  one_versus_all_emotion_tests_7[, "p_value"] = compute_p_value_from_t_stats(
+    one_versus_all_emotion_tests_7$t_stats)
+  
+  # Add unique identifier based on the project of interest in the table.
+  row.names(one_versus_all_emotion_tests_7) = gsub(
+    "test_group", project,
+    row.names(one_versus_all_emotion_tests_7))
+  
+  if(is.null(dim(all_project_tests_7))){
+    all_project_tests_7 = one_versus_all_emotion_tests_7
+  }else{
+    all_project_tests_7 = rbind(
+      all_project_tests_7, one_versus_all_emotion_tests_7)
+  }
+}
+```
+
+```{r display-1.2-results-7cutoff}
+all_project_tests_7 = all_project_tests_7[!is.na(all_project_tests_7[, "p_value"]), ]
+pander_clean_anova(all_project_tests_7, rename_columns=FALSE,
+                   display_only_significant=TRUE)
+```
+
+```{r output_timecourse_emotion_pvalues-7cutoff}
+all_project_tests_7$p_val_adjusted = p.adjust(all_project_tests_7$p_value, method="BH")
+write.table(all_project_tests_7,
+            file="results/models/model-timecourse-emotion-pvalues-7cutoff.tsv")
+```
+
+### Model 1.4: Do tickets and comments materially differ in gratitude over time?
+
+#### Robustness Model 1.4: 7-contribution cutoff
+
+```{r gratitude_modeling_per_year-7cutoff}
+sentiment_frame_7$year = as.factor(sentiment_frame_7$year)
+timecourse_grateful_counts = lmer(
+  log(grateful_count + 1) ~ 0 + project:type:author_group:year + (1 | author_name),
+  data=sentiment_frame_7,
+  REML=FALSE)
+```
+
+```{r clean-up_model-1:4-output-7cutoff}
+coefficients_and_se_7 = data.frame(
+  summary(timecourse_grateful_counts)$coefficients)
+
+row_names = gsub(
+  "project", "", gsub(
+    "author_group", "", gsub(
+      "type", "", row.names(coefficients_and_se_7))))
+
+row_names = gsub(
+  "year", "", row_names)
+
+# replace hyphens in project names with periods
+row_names = gsub(
+  "scikit-", "scikit.", gsub(
+    "sphinx-", "sphinx.", row_names))
+
+# convert model estimates to a dataframe
+means = coefficients_and_se_7$Estimate
+names(means) = row_names
+
+# convert standard error to dataframe
+se = coefficients_and_se_7$Std..Error
+names(se) = row_names
+```
+
+```{r saving_results-model-1.4-7cutoff}
+dir.create("results/models", showWarnings=FALSE)
+write.table(coefficients_and_se_7,
+            file="results/models/model-1.4-7cutoff.tsv",
+            sep="\t")
+
+```
+
+#### Robustness Model 1.4 across projects: 7-contribution cutoff
+
+```{r grateful-counts-all-vs-one-timecourse-7cutoff}
+
+all_project_tests_7 = NA
+all_projects = unique(sentiment_frame_7$project)
+
+# We're going to fit the model for each projects, and concatenate the results
+# in a dataframe. Then, we'll apply multiple correction and display the
+# results
+for(project in all_projects){
+  sentiment_frame_7$test_group = sentiment_frame_7$project == project
+  one_versus_all_emotion = lmer(
+    log(grateful_count + 1) ~ 0 + type:author_group:test_group:year + (1|author_name),
+    data=sentiment_frame_7,
+    REML=FALSE)
+  
+  # Clean up mode
+  coefficients_and_se_7 = data.frame(
+    summary(one_versus_all_emotion)$coefficients)
+  row_names = gsub(
+    "author_group", "", 
+    gsub("type", "",
+         gsub("project", "", row.names(coefficients_and_se_7))))
+  
+  means = coefficients_and_se_7$Estimate
+  names(means) = row_names
+  se = coefficients_and_se_7$Std..Error
+  names(se) = row_names
+  
+  template_contrasts = c(
+    "issue_post:member:test_groupTRUE-issue_post:member:test_groupFALSE",
+    "pr_post:member:test_groupTRUE-pr_post:member:test_groupFALSE",
+    "issue_reply:member:test_groupTRUE-issue_reply:member:test_groupFALSE",
+    "pr_reply:member:test_groupTRUE-pr_reply:member:test_groupFALSE",
+    "issue_post:nonmember:test_groupTRUE-issue_post:nonmember:test_groupFALSE",
+    "pr_post:nonmember:test_groupTRUE-pr_post:nonmember:test_groupFALSE",
+    "issue_reply:nonmember:test_groupTRUE-issue_reply:nonmember:test_groupFALSE",
+    "pr_reply:nonmember:test_groupTRUE-pr_reply:nonmember:test_groupFALSE"
+  )
+  
+  # Now, extend this to all years.
+  contrasts = c(
+    unlist(
+      lapply(gsub("-", ":year2009-", template_contrasts),
+             function(x) paste(x, ":year2009", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2010-", template_contrasts),
+             function(x) paste(x, ":year2010", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2011-", template_contrasts),
+             function(x) paste(x, ":year2011", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2012-", template_contrasts),
+             function(x) paste(x, ":year2012", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2013-", template_contrasts),
+             function(x) paste(x, ":year2013", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2014-", template_contrasts),
+             function(x) paste(x, ":year2014", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2015-", template_contrasts),
+             function(x) paste(x, ":year2015", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2016-", template_contrasts),
+             function(x) paste(x, ":year2016", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2017-", template_contrasts),
+             function(x) paste(x, ":year2017", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2018-", template_contrasts),
+             function(x) paste(x, ":year2018", sep=""))))
+  
+  
+  one_versus_all_emotion_tests_7 = compute_t_statistics(
+    means, se,
+    contrasts)
+  one_versus_all_emotion_tests_7[, "p_value"] = compute_p_value_from_t_stats(
+    one_versus_all_emotion_tests_7$t_stats)
+  
+  # Add unique identifier based on the project of interest in the table.
+  row.names(one_versus_all_emotion_tests_7) = gsub(
+    "test_group", project,
+    row.names(one_versus_all_emotion_tests_7))
+  
+  if(is.null(dim(all_project_tests_7))){
+    all_project_tests_7 = one_versus_all_emotion_tests_7
+  }else{
+    all_project_tests_7 = rbind(
+      all_project_tests_7, one_versus_all_emotion_tests_7)
+  }
+}
+```
+
+```{r display-gratitude-results-7cutoff}
+all_project_tests_7 = all_project_tests_7[!is.na(all_project_tests_7[, "p_value"]), ]
+pander_clean_anova(all_project_tests_7, rename_columns=FALSE,
+                   display_only_significant=TRUE)
+```
+
+```{r gratitute_write_results-7cutoff}
+all_project_tests_7$p_val_adjusted = p.adjust(all_project_tests_7$p_value, method="BH")
+write.table(all_project_tests_7,
+            file="results/models/model-timecourse-gratitude-pvalues-7cutoff.tsv")
+
+```
+
+***
+
+# Data analysis: 10-contribution cutoff
+
+***
+
+### Data preparation
+
+
+```{r prepare-data-for-sentiment-analysis-10cutoff}
+
+sentiment_frame_10 = combine_tickets_and_comments(tickets_frame_10, comments_frame_10)
+
+```
+
+### Model 1.2: Do tickets and comments materially differ in emotion over time?
+
+#### Robustness Model 1.2: 10-contribution cutoff
+
+```{r sentiment_modeling_per_year-10cutoff}
+
+# create year factor
+sentiment_frame_10$year = as.factor(sentiment_frame_10$year)
+
+# specify model
+timecourse_compound_emotion_10 = lmer(
+  compound_emotion ~ 0 + project:type:author_group:year + (1 | author_name),
+  data=sentiment_frame_10,
+  REML=FALSE)
+
+```
+
+```{r clean-up_model-1:2c-output-10cutoff}
+coefficients_and_se_10 = data.frame(
+  summary(timecourse_compound_emotion_10)$coefficients)
+
+row_names = gsub(
+  "project", "", gsub(
+    "author_group", "", gsub(
+      "type", "", row.names(coefficients_and_se_10))))
+
+row_names = gsub(
+  "year", "", row_names)
+
+# replace hyphens in project names with periods
+row_names = gsub(
+  "scikit-", "scikit.", gsub(
+    "sphinx-", "sphinx.", row_names))
+
+# convert model estimates to a dataframe
+means = coefficients_and_se_10$Estimate
+names(means) = row_names
+
+# convert standard error to dataframe
+se = coefficients_and_se_10$Std..Error
+names(se) = row_names
+```
+
+```{r saving_results-model-1.2-10cutoff}
+dir.create("results/models", showWarnings=FALSE)
+write.table(coefficients_and_se_10,
+            file="results/models/model-1.2-10cutoff.tsv",
+            sep="\t")
+
+```
+
+#### Robustness Model 1.2 across projects: 10-contribution cutoff
+
+```{r compound-emotion-all-vs-one-timecourse-10cutoff}
+
+all_project_tests_10 = NA
+all_projects = unique(sentiment_frame_10$project)
+
+# We're going to fit the model for each projects, and concatenate the results
+# in a dataframe. Then, we'll apply multiple correction and display the
+# results
+for(project in all_projects){
+  sentiment_frame_10$test_group = sentiment_frame_10$project == project
+  one_versus_all_emotion = lmer(
+    compound_emotion ~ 0 + type:author_group:test_group:year + (1|author_name),
+    data=sentiment_frame_10,
+    REML=FALSE)
+  
+  # Clean up mode
+  coefficients_and_se_10 = data.frame(
+    summary(one_versus_all_emotion)$coefficients)
+  row_names = gsub(
+    "author_group", "", 
+    gsub("type", "",
+         gsub("project", "", row.names(coefficients_and_se_10))))
+  
+  means = coefficients_and_se_10$Estimate
+  names(means) = row_names
+  se = coefficients_and_se_10$Std..Error
+  names(se) = row_names
+  
+  template_contrasts = c(
+    "issue_post:member:test_groupTRUE-issue_post:member:test_groupFALSE",
+    "pr_post:member:test_groupTRUE-pr_post:member:test_groupFALSE",
+    "issue_reply:member:test_groupTRUE-issue_reply:member:test_groupFALSE",
+    "pr_reply:member:test_groupTRUE-pr_reply:member:test_groupFALSE",
+    "issue_post:nonmember:test_groupTRUE-issue_post:nonmember:test_groupFALSE",
+    "pr_post:nonmember:test_groupTRUE-pr_post:nonmember:test_groupFALSE",
+    "issue_reply:nonmember:test_groupTRUE-issue_reply:nonmember:test_groupFALSE",
+    "pr_reply:nonmember:test_groupTRUE-pr_reply:nonmember:test_groupFALSE"
+  )
+  
+  # Now, extend this to all years.
+  contrasts = c(
+    unlist(
+      lapply(gsub("-", ":year2009-", template_contrasts),
+             function(x) paste(x, ":year2009", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2010-", template_contrasts),
+             function(x) paste(x, ":year2010", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2011-", template_contrasts),
+             function(x) paste(x, ":year2011", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2012-", template_contrasts),
+             function(x) paste(x, ":year2012", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2013-", template_contrasts),
+             function(x) paste(x, ":year2013", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2014-", template_contrasts),
+             function(x) paste(x, ":year2014", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2015-", template_contrasts),
+             function(x) paste(x, ":year2015", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2016-", template_contrasts),
+             function(x) paste(x, ":year2016", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year20110-", template_contrasts),
+             function(x) paste(x, ":year2017", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2018-", template_contrasts),
+             function(x) paste(x, ":year2018", sep=""))))
+  
+  
+  one_versus_all_emotion_tests_10 = compute_t_statistics(
+    means, se,
+    contrasts)
+  one_versus_all_emotion_tests_10[, "p_value"] = compute_p_value_from_t_stats(
+    one_versus_all_emotion_tests_10$t_stats)
+  
+  # Add unique identifier based on the project of interest in the table.
+  row.names(one_versus_all_emotion_tests_10) = gsub(
+    "test_group", project,
+    row.names(one_versus_all_emotion_tests_10))
+  
+  if(is.null(dim(all_project_tests_10))){
+    all_project_tests_10 = one_versus_all_emotion_tests_10
+  }else{
+    all_project_tests_10 = rbind(
+      all_project_tests_10, one_versus_all_emotion_tests_10)
+  }
+}
+```
+
+```{r display-1.2-results-10cutoff}
+all_project_tests_10 = all_project_tests_10[!is.na(all_project_tests_10[, "p_value"]), ]
+pander_clean_anova(all_project_tests_10, rename_columns=FALSE,
+                   display_only_significant=TRUE)
+```
+
+```{r output_timecourse_emotion_pvalues-10cutoff}
+all_project_tests_10$p_val_adjusted = p.adjust(all_project_tests_10$p_value, method="BH")
+write.table(all_project_tests_10,
+            file="results/models/model-timecourse-emotion-pvalues-10cutoff.tsv")
+```
+
+### Model 1.4: Do tickets and comments materially differ in gratitude over time?
+
+#### Robustness Model 1.4: 10-contribution cutoff
+
+```{r gratitude_modeling_per_year-10cutoff}
+sentiment_frame_10$year = as.factor(sentiment_frame_10$year)
+timecourse_grateful_counts = lmer(
+  log(grateful_count + 1) ~ 0 + project:type:author_group:year + (1 | author_name),
+  data=sentiment_frame_10,
+  REML=FALSE)
+```
+
+```{r clean-up_model-1:4-output-10cutoff}
+coefficients_and_se_10 = data.frame(
+  summary(timecourse_grateful_counts)$coefficients)
+
+row_names = gsub(
+  "project", "", gsub(
+    "author_group", "", gsub(
+      "type", "", row.names(coefficients_and_se_10))))
+
+row_names = gsub(
+  "year", "", row_names)
+
+# replace hyphens in project names with periods
+row_names = gsub(
+  "scikit-", "scikit.", gsub(
+    "sphinx-", "sphinx.", row_names))
+
+# convert model estimates to a dataframe
+means = coefficients_and_se_10$Estimate
+names(means) = row_names
+
+# convert standard error to dataframe
+se = coefficients_and_se_10$Std..Error
+names(se) = row_names
+```
+
+```{r saving_results-model-1.4-10cutoff}
+dir.create("results/models", showWarnings=FALSE)
+write.table(coefficients_and_se_10,
+            file="results/models/model-1.4-10cutoff.tsv",
+            sep="\t")
+
+```
+
+#### Robustness Model 1.4 across projects: 10-contribution cutoff
+
+```{r grateful-counts-all-vs-one-timecourse-10cutoff}
+
+all_project_tests_10 = NA
+all_projects = unique(sentiment_frame_10$project)
+
+# We're going to fit the model for each projects, and concatenate the results
+# in a dataframe. Then, we'll apply multiple correction and display the
+# results
+for(project in all_projects){
+  sentiment_frame_10$test_group = sentiment_frame_10$project == project
+  one_versus_all_emotion = lmer(
+    log(grateful_count + 1) ~ 0 + type:author_group:test_group:year + (1|author_name),
+    data=sentiment_frame_10,
+    REML=FALSE)
+  
+  # Clean up mode
+  coefficients_and_se_10 = data.frame(
+    summary(one_versus_all_emotion)$coefficients)
+  row_names = gsub(
+    "author_group", "", 
+    gsub("type", "",
+         gsub("project", "", row.names(coefficients_and_se_10))))
+  
+  means = coefficients_and_se_10$Estimate
+  names(means) = row_names
+  se = coefficients_and_se_10$Std..Error
+  names(se) = row_names
+  
+  template_contrasts = c(
+    "issue_post:member:test_groupTRUE-issue_post:member:test_groupFALSE",
+    "pr_post:member:test_groupTRUE-pr_post:member:test_groupFALSE",
+    "issue_reply:member:test_groupTRUE-issue_reply:member:test_groupFALSE",
+    "pr_reply:member:test_groupTRUE-pr_reply:member:test_groupFALSE",
+    "issue_post:nonmember:test_groupTRUE-issue_post:nonmember:test_groupFALSE",
+    "pr_post:nonmember:test_groupTRUE-pr_post:nonmember:test_groupFALSE",
+    "issue_reply:nonmember:test_groupTRUE-issue_reply:nonmember:test_groupFALSE",
+    "pr_reply:nonmember:test_groupTRUE-pr_reply:nonmember:test_groupFALSE"
+  )
+  
+  # Now, extend this to all years.
+  contrasts = c(
+    unlist(
+      lapply(gsub("-", ":year2009-", template_contrasts),
+             function(x) paste(x, ":year2009", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2010-", template_contrasts),
+             function(x) paste(x, ":year2010", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2011-", template_contrasts),
+             function(x) paste(x, ":year2011", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2012-", template_contrasts),
+             function(x) paste(x, ":year2012", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2013-", template_contrasts),
+             function(x) paste(x, ":year2013", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2014-", template_contrasts),
+             function(x) paste(x, ":year2014", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2015-", template_contrasts),
+             function(x) paste(x, ":year2015", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2016-", template_contrasts),
+             function(x) paste(x, ":year2016", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year20110-", template_contrasts),
+             function(x) paste(x, ":year2017", sep=""))),
+    unlist(
+      lapply(gsub("-", ":year2018-", template_contrasts),
+             function(x) paste(x, ":year2018", sep=""))))
+  
+  
+  one_versus_all_emotion_tests_10 = compute_t_statistics(
+    means, se,
+    contrasts)
+  one_versus_all_emotion_tests_10[, "p_value"] = compute_p_value_from_t_stats(
+    one_versus_all_emotion_tests_10$t_stats)
+  
+  # Add unique identifier based on the project of interest in the table.
+  row.names(one_versus_all_emotion_tests_10) = gsub(
+    "test_group", project,
+    row.names(one_versus_all_emotion_tests_10))
+  
+  if(is.null(dim(all_project_tests_10))){
+    all_project_tests_10 = one_versus_all_emotion_tests_10
+  }else{
+    all_project_tests_10 = rbind(
+      all_project_tests_10, one_versus_all_emotion_tests_10)
+  }
+}
+```
+
+```{r display-gratitude-results-10cutoff}
+all_project_tests_10 = all_project_tests_10[!is.na(all_project_tests_10[, "p_value"]), ]
+pander_clean_anova(all_project_tests_10, rename_columns=FALSE,
+                   display_only_significant=TRUE)
+```
+
+```{r gratitute_write_results-10cutoff}
+all_project_tests_10$p_val_adjusted = p.adjust(all_project_tests_10$p_value, method="BH")
+write.table(all_project_tests_10,
+            file="results/models/model-timecourse-gratitude-pvalues-10cutoff.tsv")
+
