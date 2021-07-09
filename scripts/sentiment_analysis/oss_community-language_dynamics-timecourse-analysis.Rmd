@@ -1,5 +1,5 @@
 ---
-title: "Communication dynamics in OSS communities"
+title: "Temporal communication dynamics in OSS communities"
 output:
   html_document:
     keep_md: yes
